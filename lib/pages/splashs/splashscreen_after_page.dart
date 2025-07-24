@@ -282,13 +282,13 @@ class _SplashState extends State<Splash>
                                           : null,
                                       gradient: LinearGradient(
                                         colors: [
-                                          Color(0xFF00D2FF).withOpacity(0.3 + (animValue * 0.4)),
-                                          Color(0xFF3A7BD5).withOpacity(0.2 + (animValue * 0.3)),
+                                          Color(0xFF00D2FF).withValues(alpha: 0.3 + (animValue * 0.4)),
+                                          Color(0xFF3A7BD5).withValues(alpha: 0.2 + (animValue * 0.3)),
                                         ],
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Color(0xFF00D2FF).withOpacity(0.2),
+                                          color: Color(0xFF00D2FF).withValues(alpha: 0.2),
                                           blurRadius: 10 + (animValue * 15),
                                           spreadRadius: 2,
                                         ),
@@ -326,14 +326,14 @@ class _SplashState extends State<Splash>
                                     shape: BoxShape.circle,
                                     gradient: RadialGradient(
                                       colors: [
-                                        Color(0xFFFF6B6B).withOpacity(0.6 * animValue),
-                                        Color(0xFF4ECDC4).withOpacity(0.3 * animValue),
+                                        Color(0xFFFF6B6B).withValues(alpha: 0.6 * animValue),
+                                        Color(0xFF4ECDC4).withValues(alpha: 0.3 * animValue),
                                         Colors.transparent,
                                       ],
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Color(0xFFFF6B6B).withOpacity(0.3 * animValue),
+                                        color: Color(0xFFFF6B6B).withValues(alpha: 0.3 * animValue),
                                         blurRadius: 20,
                                         spreadRadius: 5,
                                       ),
@@ -359,14 +359,14 @@ class _SplashState extends State<Splash>
                                   shape: BoxShape.circle,
                                   gradient: RadialGradient(
                                     colors: [
-                                      Color(0xFF00F5FF).withOpacity(0.1),
-                                      Color(0xFF00D4FF).withOpacity(0.05),
+                                      Color(0xFF00F5FF).withValues(alpha: 0.1),
+                                      Color(0xFF00D4FF).withValues(alpha: 0.05),
                                       Colors.transparent,
                                     ],
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Color(0xFF00F5FF).withOpacity(0.2),
+                                      color: Color(0xFF00F5FF).withValues(alpha: 0.2),
                                       blurRadius: 40,
                                       spreadRadius: 10,
                                     ),
@@ -391,9 +391,9 @@ class _SplashState extends State<Splash>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.1),
+                    Colors.black.withValues(alpha: 0.1),
                     Colors.transparent,
-                    Colors.black.withOpacity(0.2),
+                    Colors.black.withValues(alpha: 0.2),
                   ],
                   stops: [0.0, 0.5, 1.0],
                 ),
@@ -427,7 +427,7 @@ class _SplashState extends State<Splash>
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Color(0xFF667eea).withOpacity(0.3),
+                                  color: Color(0xFF667eea).withValues(alpha: 0.3),
                                   blurRadius: 20.0,
                                   spreadRadius: 5,
                                 ),
@@ -453,17 +453,17 @@ class _SplashState extends State<Splash>
                               borderRadius: BorderRadius.circular(25),
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.white.withOpacity(0.1),
-                                  Colors.white.withOpacity(0.05),
+                                  Colors.white.withValues(alpha: 0.1),
+                                  Colors.white.withValues(alpha: 0.05),
                                 ],
                               ),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 width: 1,
                               ),
                             ),
                             child: Text(
-                              "Bintar Sepuh",
+                              "SmartDoku",
                               style: TextStyle(
                                 fontSize: 26.0,
                                 fontWeight: FontWeight.w700,
@@ -490,17 +490,17 @@ class _SplashState extends State<Splash>
                               borderRadius: BorderRadius.circular(30),
                               gradient: LinearGradient(
                                 colors: [
-                                  Colors.white.withOpacity(0.15),
-                                  Colors.white.withOpacity(0.08),
+                                  Colors.white.withValues(alpha: 0.15),
+                                  Colors.white.withValues(alpha: 0.08),
                                 ],
                               ),
                               border: Border.all(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 width: 1,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
+                                  color: Colors.black.withValues(alpha: 0.1),
                                   blurRadius: 20.0,
                                   offset: Offset(0, 8),
                                 ),
@@ -574,12 +574,12 @@ class _SplashState extends State<Splash>
                             shadows: [
                               Shadow(
                                 blurRadius: 20.0,
-                                color: Color(0xFF00D4FF).withOpacity(0.5),
+                                color: Color(0xFF00D4FF).withValues(alpha: 0.5),
                                 offset: Offset(0, 0),
                               ),
                               Shadow(
                                 blurRadius: 40.0,
-                                color: Color(0xFF667eea).withOpacity(0.3),
+                                color: Color(0xFF667eea).withValues(alpha: 0.3),
                                 offset: Offset(0, 0),
                               ),
                             ],
@@ -608,12 +608,12 @@ class _SplashState extends State<Splash>
                                   shadows: [
                                     Shadow(
                                       blurRadius: 20.0,
-                                      color: Color(0xFFFF6B6B).withOpacity(0.6),
+                                      color: Color(0xFFFF6B6B).withValues(alpha: 0.6),
                                       offset: Offset(0, 0),
                                     ),
                                     Shadow(
                                       blurRadius: 40.0,
-                                      color: Color(0xFF4ECDC4).withOpacity(0.4),
+                                      color: Color(0xFF4ECDC4).withValues(alpha: 0.4),
                                       offset: Offset(0, 0),
                                     ),
                                   ],

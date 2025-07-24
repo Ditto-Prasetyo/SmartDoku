@@ -35,7 +35,7 @@ class SmartDoku extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: RegisterCredPage(), debugShowCheckedModeBanner: false,
+      home: HomePage(), debugShowCheckedModeBanner: false,
     );
   }
 }
