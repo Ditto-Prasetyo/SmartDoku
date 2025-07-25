@@ -13,15 +13,14 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _textFadeController;
   late AnimationController _backgroundDissolveController;
   late AnimationController _loadingController;
-  late AnimationController
-  _marbleController; 
-  late AnimationController _shimmerController; 
+  late AnimationController _marbleController;
+  late AnimationController _shimmerController;
 
   late Animation<double> _textFadeAnimation;
   late Animation<double> _backgroundDissolveAnimation;
   late Animation<double> _loadingAnimation;
   late Animation<double> _marbleAnimation;
-  late Animation<double> _shimmerAnimation; 
+  late Animation<double> _shimmerAnimation;
 
   bool showText = false;
   bool showLoading = false;
@@ -72,10 +71,9 @@ class _SplashScreenState extends State<SplashScreen>
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _marbleController, curve: Curves.linear));
-    _shimmerAnimation = Tween<double>(
-      begin: -1.0,
-      end: 2.0,
-    ).animate(CurvedAnimation(parent: _shimmerController, curve: Curves.linear));
+    _shimmerAnimation = Tween<double>(begin: -1.0, end: 2.0).animate(
+      CurvedAnimation(parent: _shimmerController, curve: Curves.linear),
+    );
 
     // Start animation sequence
     _startAnimationSequence();
@@ -88,7 +86,7 @@ class _SplashScreenState extends State<SplashScreen>
       showText = true;
     });
     _textFadeController.forward();
-    _shimmerController.repeat(); 
+    _shimmerController.repeat();
 
     // Detik ke-3: Background dissolve + loading muncul + marble animation starts
     await Future.delayed(Duration(milliseconds: 1800));
@@ -98,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(Duration(milliseconds: 2500));
     setState(() {
       showLoading = true;
-    }); 
+    });
     _loadingController.forward();
 
     // Detik ke-4: Loading berubah jadi tombol
@@ -235,11 +233,42 @@ class _SplashScreenState extends State<SplashScreen>
                                 child: Stack(
                                   children: [
                                     BackdropFilter(
-                                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                      filter: ImageFilter.blur(
+                                        sigmaX: 10,
+                                        sigmaY: 10,
+                                      ),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: Colors.white.withValues(alpha: 0.1),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Colors.white.withValues(
+                                                alpha: 0.3,
+                                              ),
+                                              Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                            ],
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                              blurRadius: 30,
+                                              offset: Offset(5, 10),
+                                            ),
+                                            BoxShadow(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.3,
+                                              ),
+                                              blurRadius: 15,
+                                              offset: Offset(-8, -4),
+                                            ),
+                                          ],
                                         ),
+
                                         child: Center(
                                           child: Container(
                                             width: 180,
@@ -256,7 +285,10 @@ class _SplashScreenState extends State<SplashScreen>
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(25),
                                         child: Transform.translate(
-                                          offset: Offset(_shimmerAnimation.value * 140, 0),
+                                          offset: Offset(
+                                            _shimmerAnimation.value * 140,
+                                            0,
+                                          ),
                                           child: Container(
                                             width: 30,
                                             decoration: BoxDecoration(
@@ -265,12 +297,24 @@ class _SplashScreenState extends State<SplashScreen>
                                                 end: Alignment.centerRight,
                                                 colors: [
                                                   Colors.transparent,
-                                                  Colors.white.withValues(alpha: 0.3),
-                                                  Colors.white.withValues(alpha: 0.5),
-                                                  Colors.white.withValues(alpha: 0.3),
+                                                  Colors.white.withValues(
+                                                    alpha: 0.3,
+                                                  ),
+                                                  Colors.white.withValues(
+                                                    alpha: 0.5,
+                                                  ),
+                                                  Colors.white.withValues(
+                                                    alpha: 0.3,
+                                                  ),
                                                   Colors.transparent,
                                                 ],
-                                                stops: [0.0, 0.3, 0.5 ,0.7, 1.0],
+                                                stops: [
+                                                  0.0,
+                                                  0.3,
+                                                  0.5,
+                                                  0.7,
+                                                  1.0,
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -334,18 +378,20 @@ class _SplashScreenState extends State<SplashScreen>
                               elevation: 8,
                             ),
                             child: Row(
-                              mainAxisSize: MainAxisSize
-                                  .min, 
+                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 Container(padding: EdgeInsets.only(left: 0.0)),
                                 Text(
                                   'Get Started',
                                   style: TextStyle(
                                     fontSize: 15,
-                                    fontWeight: FontWeight.bold, color: Colors.white
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
                                   ),
                                 ),
-                                Padding(padding: EdgeInsetsGeometry.only(right: 5.0)),
+                                Padding(
+                                  padding: EdgeInsetsGeometry.only(right: 5.0),
+                                ),
                                 SizedBox(
                                   width: 55,
                                   height: 40,

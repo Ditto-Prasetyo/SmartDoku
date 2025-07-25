@@ -5,6 +5,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
 import 'dart:math';
+import 'package:file_picker/file_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,9 +26,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late Animation<double> _profileAnimation;
   late Animation<double> _profileOpacityAnimation;
   late Animation<double> _arrowRotationAnimation;
-  late Animation<double>
-  _dashboardOpacityAnimation;
-  
+  late Animation<double> _dashboardOpacityAnimation;
+
   bool _showProfileContent = false;
   bool _isProfileExpanded = false;
 
@@ -71,25 +71,21 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     _dashboardOpacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _profileController,
-        curve: Interval(
-          0.0,
-          0.5,
-          curve: Curves.easeOut,
-        ),
+        curve: Interval(0.0, 0.5, curve: Curves.easeOut),
       ),
     );
 
-  _profileController.addStatusListener((status) {
-    if (status == AnimationStatus.forward) {
-      setState(() {
-        _showProfileContent = true;
-      });
-    } else if (status == AnimationStatus.dismissed) {
-      setState(() {
-        _showProfileContent = false;
-      });
-    }
-  });
+    _profileController.addStatusListener((status) {
+      if (status == AnimationStatus.forward) {
+        setState(() {
+          _showProfileContent = true;
+        });
+      } else if (status == AnimationStatus.dismissed) {
+        setState(() {
+          _showProfileContent = false;
+        });
+      }
+    });
 
     _backgroundController.repeat(reverse: true);
   }
@@ -120,6 +116,251 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       'Apakah Anda Yakin Ingin Keluar?',
       Colors.orange,
       Colors.deepOrange,
+    );
+  }
+
+  void _showUploadDialog(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Upload Dialog",
+      barrierColor: Colors.black.withValues(alpha: 0.6),
+      transitionDuration: Duration(milliseconds: 300),
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return ScaleTransition(
+          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+          child: FadeTransition(opacity: animation, child: child),
+        );
+      },
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 30,
+                    spreadRadius: 5,
+                    offset: Offset(0, 15),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                  child: Container(
+                    padding: EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withValues(alpha: 0.2),
+                          Colors.white.withValues(alpha: 0.1),
+                        ],
+                      ),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF7C2D12).withValues(alpha: 0.8),
+                                Color(0xFF9A3412).withValues(alpha: 0.6),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+                                blurRadius: 15,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.upload_file,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'Upload File',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        SizedBox(height: 15),
+                        Text(
+                          'Pilih jenis file yang ingin diupload',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white.withValues(alpha: 0.9),
+                            height: 1.4,
+                            decoration: TextDecoration.none,
+                          ),
+                        ),
+                        SizedBox(height: 25),
+                        Container(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _pickImage();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF059669),
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 8,
+                              shadowColor: Color(
+                                0xFF059669,
+                              ).withValues(alpha: 0.4),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.image, size: 20),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Upload Gambar',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _pickDocument();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF4F46E5),
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              elevation: 8,
+                              shadowColor: Color(
+                                0xFF4F46E5,
+                              ).withValues(alpha: 0.4),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.description, size: 20),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Upload Dokumen',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Container(
+                          width: double.infinity,
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              side: BorderSide(
+                                color: Colors.white.withValues(alpha: 0.3),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Text(
+                              'Batal',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Function untuk pick image (tambahin package image_picker di pubspec.yaml)
+  void _pickImage() async {
+    // final ImagePicker picker = ImagePicker();
+    // final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    // if (image != null) {
+    //   // Handle uploaded image
+    //   print('Image selected: ${image.path}');
+    // }
+
+    // Sementara pake snackbar dulu
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Fitur upload gambar akan segera tersedia')),
+    );
+  }
+
+  // Function untuk pick document (tambahin package file_picker di pubspec.yaml)
+  void _pickDocument() async {
+    // final FilePickerResult? result = await FilePicker.platform.pickFiles(
+    //   type: FileType.custom,
+    //   allowedExtensions: ['pdf', 'doc', 'docx'],
+    // );
+    // if (result != null) {
+    //   // Handle uploaded document
+    //   print('Document selected: ${result.files.single.path}');
+    // }
+
+    // Sementara pake snackbar dulu
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Fitur upload dokumen akan segera tersedia')),
     );
   }
 
@@ -308,7 +549,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
             child: Column(
-              mainAxisSize: MainAxisSize.min, 
+              mainAxisSize: MainAxisSize.min,
               children: [
                 TweenAnimationBuilder<double>(
                   tween: Tween<double>(begin: 0.8, end: 1.0),
@@ -526,7 +767,10 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(20),
                               child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                                filter: ImageFilter.blur(
+                                  sigmaX: 15,
+                                  sigmaY: 15,
+                                ),
                                 child: Container(
                                   padding: EdgeInsets.all(8),
                                   decoration: BoxDecoration(
@@ -540,19 +784,25 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     ),
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.4),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.4,
+                                      ),
                                       width: 2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.2),
-                                        blurRadius: 20,
-                                        offset: Offset(0, 8),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.5,
+                                        ),
+                                        blurRadius: 30,
+                                        offset: Offset(5, 10),
                                       ),
                                       BoxShadow(
-                                        color: Colors.white.withValues(alpha: 0.1),
-                                        blurRadius: 5,
-                                        offset: Offset(0, -2),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        blurRadius: 15,
+                                        offset: Offset(-8, -4),
                                       ),
                                     ],
                                   ),
@@ -573,7 +823,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                               shaderCallback: (bounds) => LinearGradient(
                                 colors: [Colors.white, Colors.grey.shade400],
                                 begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,).createShader(bounds),
+                                end: Alignment.bottomRight,
+                              ).createShader(bounds),
                               child: Text(
                                 'SmartDoku',
                                 style: TextStyle(
@@ -583,7 +834,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   fontFamily: 'Roboto',
                                   shadows: [
                                     Shadow(
-                                      color: Colors.black.withValues(alpha: 0.5),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.5,
+                                      ),
                                       blurRadius: 10,
                                       offset: Offset(0, 2),
                                     ),
@@ -625,19 +878,25 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   ),
                                   borderRadius: BorderRadius.circular(15),
                                   border: Border.all(
-                                    color: Color(0xFF4F46E5).withValues(alpha: 0.4),
+                                    color: Color(
+                                      0xFF4F46E5,
+                                    ).withValues(alpha: 0.4),
                                     width: 1.5,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Color(0xFF4F46E5).withValues(alpha: 0.2),
+                                      color: Color(
+                                        0xFF4F46E5,
+                                      ).withValues(alpha: 0.2),
                                       blurRadius: 15,
                                       offset: Offset(0, 5),
                                     ),
                                     BoxShadow(
-                                      color: Colors.white.withValues(alpha: 0.1),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       blurRadius: 5,
-                                      offset: Offset(0, -1)
+                                      offset: Offset(0, -1),
                                     ),
                                   ],
                                 ),
@@ -656,7 +915,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       borderRadius: BorderRadius.circular(10),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                                          color: Color(
+                                            0xFF4F46E5,
+                                          ).withValues(alpha: 0.5),
                                           blurRadius: 8,
                                           offset: Offset(0, 3),
                                         ),
@@ -677,7 +938,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       fontFamily: 'Roboto',
                                       shadows: [
                                         Shadow(
-                                          color: Colors.black.withValues(alpha: 0.3),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.3,
+                                          ),
                                           blurRadius: 5,
                                           offset: Offset(0, 1),
                                         ),
@@ -719,19 +982,25 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   ),
                                   borderRadius: BorderRadius.circular(15),
                                   border: Border.all(
-                                    color: Color(0xFFDC2626).withValues(alpha: 0.4),
+                                    color: Color(
+                                      0xFFDC2626,
+                                    ).withValues(alpha: 0.4),
                                     width: 1.5,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Color(0xFFDC2626).withValues(alpha: 0.2),
+                                      color: Color(
+                                        0xFFDC2626,
+                                      ).withValues(alpha: 0.2),
                                       blurRadius: 15,
                                       offset: Offset(0, 5),
                                     ),
                                     BoxShadow(
-                                      color: Colors.white.withValues(alpha: 0.1),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       blurRadius: 5,
-                                      offset: Offset(0, -1)
+                                      offset: Offset(0, -1),
                                     ),
                                   ],
                                 ),
@@ -750,7 +1019,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       borderRadius: BorderRadius.circular(10),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Color(0xFFDC2626).withValues(alpha: 0.5),
+                                          color: Color(
+                                            0xFFDC2626,
+                                          ).withValues(alpha: 0.5),
                                           blurRadius: 8,
                                           offset: Offset(0, 3),
                                         ),
@@ -771,7 +1042,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       fontFamily: 'Roboto',
                                       shadows: [
                                         Shadow(
-                                          color: Colors.black.withValues(alpha: 0.3),
+                                          color: Colors.black.withValues(
+                                            alpha: 0.3,
+                                          ),
                                           blurRadius: 5,
                                           offset: Offset(0, 1),
                                         ),
@@ -960,11 +1233,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                             ),
                           ),
 
-
                           if (_showProfileContent)
-                  Flexible(
-                    child: _buildProfileSection(),
-                  ),
+                            Flexible(child: _buildProfileSection()),
                         ],
                       ),
                     );
@@ -1016,8 +1286,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                               if (!_isProfileExpanded) {
                                 _toggleProfile();
                               }
-                            }
-                            else if (details.delta.dy < -2) {
+                            } else if (details.delta.dy < -2) {
                               if (_isProfileExpanded) {
                                 _toggleProfile();
                               }
@@ -1079,7 +1348,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   mainAxisSpacing: 25,
                                   crossAxisSpacing: 0,
                                 ),
-                            shrinkWrap: true, 
+                            shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: 4,
                             itemBuilder: (context, index) {
@@ -1091,6 +1360,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     Color(0xFF4F46E5),
                                     Color(0xFF7C3AED),
                                   ],
+                                  'route': 'surat_permohonan_page.dart',
                                 },
                                 {
                                   'icon': FontAwesomeIcons.envelopeCircleCheck,
@@ -1099,6 +1369,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     Color(0xFF059669),
                                     Color(0xFF0D9488),
                                   ],
+                                  'route': 'surat_keluar_page.dart',
                                 },
                                 {
                                   'icon': Icons.assignment_turned_in_rounded,
@@ -1107,6 +1378,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     Color(0xFFDC2626),
                                     Color(0xFFEA580C),
                                   ],
+                                  'route': 'surat_disposisi_page.dart',
                                 },
                                 {
                                   'icon': Icons.upload,
@@ -1115,12 +1387,39 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     Color(0xFF7C2D12),
                                     Color(0xFF9A3412),
                                   ],
+                                  'route': 'upload_file',
                                 },
                               ];
 
                               return InkWell(
                                 onTap: () {
-                                  // Navigasi entar
+                                  switch (index) {
+                                    case 0:
+                                      // Navigate ke Surat Permohonan Page
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/surat_permohonan',
+                                      );
+                                      break;
+                                    case 1:
+                                      // Navigate ke Surat Keluar Page
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/surat_keluar',
+                                      );
+                                      break;
+                                    case 2:
+                                      // Navigate ke Surat Disposisi Page
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/surat_disposisi',
+                                      );
+                                      break;
+                                    case 3:
+                                      // Upload File functionality
+                                      _showUploadDialog(context);
+                                      break;
+                                  }
                                 },
                                 borderRadius: BorderRadius.circular(20),
                                 child: Container(
@@ -1159,8 +1458,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize:
-                                        MainAxisSize.min, 
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Container(
                                         padding: EdgeInsets.all(16),
