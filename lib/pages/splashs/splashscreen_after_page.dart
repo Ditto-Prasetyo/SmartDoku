@@ -44,12 +44,12 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     );
 
     _helloFadeController = AnimationController(
-      duration: Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 1000),
       vsync: this,
     );
 
     _welcomeFadeController = AnimationController(
-      duration: Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 1000),
       vsync: this,
     );
 
@@ -59,7 +59,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     );
 
     _loadingSpinController = AnimationController(
-      duration: Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 2000),
       vsync: this,
     );
 
@@ -90,7 +90,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
 
     _loadingSpinAnimation = Tween<double>(
       begin: 0.0,
-      end: 1.0,
+      end: 2.0,
     ).animate(_loadingSpinController);
 
     _particleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -106,11 +106,11 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
 
   void _startAnimation() async {
     // Detik ke-1: Fade out semua elemen + mulai animasi background
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 1500));
     _fadeOutController.forward();
     _backgroundController.forward(); // Mulai animasi background bersamaan
 
-    await Future.delayed(Duration(milliseconds: 800));
+    await Future.delayed(Duration(milliseconds: 1000));
     setState(() {
       _showInitialElements = false;
       _showHelloText = true;
@@ -120,12 +120,12 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     _helloFadeController.forward();
 
     // Detik ke-4: Fade out "Hello" dan fade in "Welcome"
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(milliseconds: 2000));
 
     // Fade out Hello
     _helloFadeController.reverse();
 
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(Duration(milliseconds: 600));
 
     setState(() {
       _showHelloText = false;
@@ -136,7 +136,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     _welcomeFadeController.forward();
 
     // Detik ke-5: Mulai loading dots
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(milliseconds: 2500));
 
     setState(() {
       _showLoadingDots = true;
@@ -395,7 +395,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
               },
             ),
 
-            // Overlay gradient untuk depth
+            // Overlay gradient depth
             Container(
               height: size.height,
               width: size.width,
@@ -419,13 +419,11 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // Elemen awal yang bakal fade out di detik ke-1
                   if (_showInitialElements)
                     FadeTransition(
                       opacity: _fadeOutAnimation,
                       child: Column(
                         children: [
-                          // Arrow button with modern styling
                           Container(
                             padding: EdgeInsets.all(12.0),
                             decoration: BoxDecoration(
@@ -467,26 +465,12 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: 40),
+                          SizedBox(height: 20),
 
-                          // App title with modern styling
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 30,
                               vertical: 15,
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.white.withValues(alpha: 0.1),
-                                  Colors.white.withValues(alpha: 0.05),
-                                ],
-                              ),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
                             ),
                             child: Text(
                               "SmartDoku",
@@ -508,37 +492,15 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
 
                           SizedBox(height: 40),
 
-                          // Modern loading indicator
                           Container(
                             width: 280,
                             padding: EdgeInsets.symmetric(
                               horizontal: 25,
                               vertical: 20,
                             ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.white.withValues(alpha: 0.15),
-                                  Colors.white.withValues(alpha: 0.08),
-                                ],
-                              ),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                width: 1,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.1),
-                                  blurRadius: 20.0,
-                                  offset: Offset(0, 8),
-                                ),
-                              ],
-                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                // Modern loading spinner
                                 AnimatedBuilder(
                                   animation: _loadingSpinAnimation,
                                   builder: (context, child) {
@@ -590,7 +552,6 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                       ),
                     ),
 
-                  // Hello text - fade in di detik ke-2
                   if (_showHelloText)
                     FadeTransition(
                       opacity: _helloFadeAnimation,
@@ -599,7 +560,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                         child: Text(
                           "Hello",
                           style: TextStyle(
-                            fontSize: 52.0,
+                            fontSize: 45.0,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 4,
                             color: Colors.white,
@@ -620,7 +581,6 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                       ),
                     ),
 
-                  // Welcome text dengan loading dots - fade in di detik ke-4
                   if (_showWelcomeText)
                     FadeTransition(
                       opacity: _welcomeFadeAnimation,
@@ -633,7 +593,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                               child: Text(
                                 "Welcome$_loadingDots",
                                 style: TextStyle(
-                                  fontSize: 46.0,
+                                  fontSize: 40.0,
                                   fontWeight: FontWeight.w900,
                                   letterSpacing: 3,
                                   color: Colors.white,

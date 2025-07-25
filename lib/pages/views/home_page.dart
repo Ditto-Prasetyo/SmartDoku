@@ -860,7 +860,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         Container(
                           margin: EdgeInsets.symmetric(
                             horizontal: 15,
-                            vertical: 5,
+                            vertical: 8,
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
