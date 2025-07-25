@@ -5,7 +5,6 @@ import 'package:line_icons/line_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
 import 'dart:math';
-import 'package:flutter/services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,8 +26,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late Animation<double> _profileOpacityAnimation;
   late Animation<double> _arrowRotationAnimation;
   late Animation<double>
-  _dashboardOpacityAnimation; // FIX: Tambah animation untuk dashboard text
-
+  _dashboardOpacityAnimation;
+  
+  bool _showProfileContent = false;
   bool _isProfileExpanded = false;
 
   @override
@@ -68,7 +68,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       CurvedAnimation(parent: _profileController, curve: Curves.easeInOutCubic),
     );
 
-    // FIX: Animation untuk dashboard text (hilang pas expand)
     _dashboardOpacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _profileController,
@@ -76,11 +75,22 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           0.0,
           0.5,
           curve: Curves.easeOut,
-        ), // Cepet hilang di awal animasi
+        ),
       ),
     );
 
-    // Start the background animation and repeat it
+  _profileController.addStatusListener((status) {
+    if (status == AnimationStatus.forward) {
+      setState(() {
+        _showProfileContent = true;
+      });
+    } else if (status == AnimationStatus.dismissed) {
+      setState(() {
+        _showProfileContent = false;
+      });
+    }
+  });
+
     _backgroundController.repeat(reverse: true);
   }
 
@@ -298,9 +308,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // FIX: Tambah ini
+              mainAxisSize: MainAxisSize.min, 
               children: [
-                // Profile Avatar with animation
                 TweenAnimationBuilder<double>(
                   tween: Tween<double>(begin: 0.8, end: 1.0),
                   duration: Duration(milliseconds: 600),
@@ -342,9 +351,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
                 SizedBox(height: 20),
 
-                // Profile Info
                 Text(
-                  'Smart Doku User',
+                  'Bintar_Sepuh',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -356,7 +364,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                 SizedBox(height: 8),
 
                 Text(
-                  'Administrator',
+                  'Super User',
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.8),
                     fontSize: 16,
@@ -366,7 +374,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
                 SizedBox(height: 20),
 
-                // Profile Stats Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -395,7 +402,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
         ),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min, // FIX: Tambah ini
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, color: Colors.white, size: 24),
           SizedBox(height: 8),
@@ -446,13 +453,13 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               children: [
                 // Header Drawer
                 Container(
-                  height: 200,
+                  height: 250,
                   width: double.infinity,
                   padding: EdgeInsets.only(
-                    top: 20,
+                    top: 15,
                     left: 10,
                     right: 10,
-                    bottom: 20,
+                    bottom: 15,
                   ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -468,58 +475,120 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     children: [
                       Align(
                         alignment: Alignment.topLeft,
-                        child: Container(
-                          padding: EdgeInsets.all(0.1),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              width: 1,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              padding: EdgeInsets.all(0.1),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.25),
+                                    Colors.white.withValues(alpha: 0.1),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  width: 1.5,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 10,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
                             ),
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              color: Colors.white,
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
                           ),
                         ),
                       ),
-
+                      // App Icon and Title with Glassmorphism
                       Align(
                         alignment: Alignment.center,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(height: 30),
-                            Container(
-                              padding: EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.2),
-                                  width: 1,
+                            SizedBox(height: 50),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.white.withValues(alpha: 0.3),
+                                        Colors.white.withValues(alpha: 0.1),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: 0.4),
+                                      width: 2,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.2),
+                                        blurRadius: 20,
+                                        offset: Offset(0, 8),
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.white.withValues(alpha: 0.1),
+                                        blurRadius: 5,
+                                        offset: Offset(0, -2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.asset(
+                                      'images/Icon_App.png',
+                                      width: 100,
+                                      height: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 40,
                               ),
                             ),
                             SizedBox(height: 15),
-                            Text(
-                              'Smart Doku',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Roboto',
+                            ShaderMask(
+                              shaderCallback: (bounds) => LinearGradient(
+                                colors: [Colors.white, Colors.grey.shade400],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,).createShader(bounds),
+                              child: Text(
+                                'SmartDoku',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Roboto',
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black.withValues(alpha: 0.5),
+                                      blurRadius: 10,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -535,112 +604,186 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     padding: EdgeInsets.symmetric(vertical: 20),
                     child: Column(
                       children: [
-                        // Home Menu
                         Container(
                           margin: EdgeInsets.symmetric(
                             horizontal: 15,
                             vertical: 5,
                           ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(0xFF4F46E5).withValues(alpha: 0.1),
-                                Color(0xFF7C3AED).withValues(alpha: 0.1),
-                              ],
-                            ),
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                              color: Color(0xFF4F46E5).withValues(alpha: 0.3),
-                              width: 1,
-                            ),
-                          ),
-                          child: ListTile(
-                            leading: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFF4F46E5),
-                                    Color(0xFF7C3AED),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFF4F46E5).withValues(alpha: 0.2),
+                                      Color(0xFF7C3AED).withValues(alpha: 0.1),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Color(0xFF4F46E5).withValues(alpha: 0.4),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0xFF4F46E5).withValues(alpha: 0.2),
+                                      blurRadius: 15,
+                                      offset: Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Colors.white.withValues(alpha: 0.1),
+                                      blurRadius: 5,
+                                      offset: Offset(0, -1)
+                                    ),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(10),
+                                child: ListTile(
+                                  leading: Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFF4F46E5),
+                                          Color(0xFF7C3AED),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.home_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    'Home',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontFamily: 'Roboto',
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withValues(alpha: 0.3),
+                                          blurRadius: 5,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
                               ),
-                              child: Icon(
-                                Icons.home_rounded,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                            title: Text(
-                              'Home',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                fontFamily: 'Roboto',
-                              ),
-                            ),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                         ),
 
                         SizedBox(height: 10),
 
-                        // Logout Menu
                         Container(
                           margin: EdgeInsets.symmetric(
                             horizontal: 15,
                             vertical: 5,
                           ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(0xFFDC2626).withValues(alpha: 0.1),
-                                Color(0xFFEA580C).withValues(alpha: 0.1),
-                              ],
-                            ),
+                          child: ClipRRect(
                             borderRadius: BorderRadius.circular(15),
-                            border: Border.all(
-                              color: Color(0xFFDC2626).withValues(alpha: 0.3),
-                              width: 1,
-                            ),
-                          ),
-                          child: ListTile(
-                            leading: Container(
-                              padding: EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFFDC2626),
-                                    Color(0xFFEA580C),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFFDC2626).withValues(alpha: 0.2),
+                                      Color(0xFFEA580C).withValues(alpha: 0.1),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Color(0xFFDC2626).withValues(alpha: 0.4),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0xFFDC2626).withValues(alpha: 0.2),
+                                      blurRadius: 15,
+                                      offset: Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Colors.white.withValues(alpha: 0.1),
+                                      blurRadius: 5,
+                                      offset: Offset(0, -1)
+                                    ),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(10),
+                                child: ListTile(
+                                  leading: Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFFDC2626),
+                                          Color(0xFFEA580C),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(0xFFDC2626).withValues(alpha: 0.5),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.logout_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    'Logout',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontFamily: 'Roboto',
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withValues(alpha: 0.3),
+                                          blurRadius: 5,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: _logout,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
                               ),
-                              child: Icon(
-                                Icons.logout_rounded,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                            title: Text(
-                              'Logout',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 16,
-                                fontFamily: 'Roboto',
-                              ),
-                            ),
-                            onTap: _logout,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                         ),
@@ -658,7 +801,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                       if (!snapshot.hasData) return SizedBox();
                       final version = snapshot.data!.version;
                       final buildNumber = snapshot.data!.buildNumber;
-
                       return Column(
                         children: [
                           Divider(
@@ -713,9 +855,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
             child: Column(
-              // FIX: Ganti dari SingleChildScrollView ke Column langsung
               children: [
-                // Header Container with Profile Expansion
                 AnimatedBuilder(
                   animation: _profileAnimation,
                   builder: (context, child) {
@@ -724,7 +864,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                       height: height * _profileAnimation.value,
                       width: width,
                       child: Column(
-                        mainAxisSize: MainAxisSize.min, // FIX: Tambah ini
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           // Top Navigation Bar
                           Padding(
@@ -798,7 +938,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                             ),
                             child: Column(
                               children: [
-                                // FIX: Wrap dashboard text dengan AnimatedBuilder
                                 AnimatedBuilder(
                                   animation: _dashboardOpacityAnimation,
                                   builder: (context, child) {
@@ -821,11 +960,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                             ),
                           ),
 
-                          // Profile Section (shows when expanded)
-                          if (_isProfileExpanded)
-                            Flexible(
-                              child: _buildProfileSection(),
-                            ), // FIX: Ganti Expanded ke Flexible
+
+                          if (_showProfileContent)
+                  Flexible(
+                    child: _buildProfileSection(),
+                  ),
                         ],
                       ),
                     );
@@ -834,7 +973,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
                 // Main Content Container
                 Expanded(
-                  // FIX: Tetap pakai Expanded tapi struktur udah bener sekarang
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -869,19 +1007,16 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     width: width,
                     padding: EdgeInsets.only(bottom: 30),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min, // FIX: Tambah ini
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        // Arrow Button with gesture detection
                         GestureDetector(
                           onTap: _toggleProfile,
                           onPanUpdate: (details) {
-                            // Detect swipe down gesture
                             if (details.delta.dy > 2) {
                               if (!_isProfileExpanded) {
                                 _toggleProfile();
                               }
                             }
-                            // Detect swipe up gesture
                             else if (details.delta.dy < -2) {
                               if (_isProfileExpanded) {
                                 _toggleProfile();
@@ -935,9 +1070,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
                         SizedBox(height: 25),
 
-                        // Grid Menu
                         Flexible(
-                          // FIX: Ganti Expanded ke Flexible
                           child: GridView.builder(
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
@@ -946,7 +1079,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   mainAxisSpacing: 25,
                                   crossAxisSpacing: 0,
                                 ),
-                            shrinkWrap: true, // FIX: Tambah ini
+                            shrinkWrap: true, 
                             physics: NeverScrollableScrollPhysics(),
                             itemCount: 4,
                             itemBuilder: (context, index) {
@@ -987,7 +1120,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
                               return InkWell(
                                 onTap: () {
-                                  // Tambahin navigation ke halaman masing-masing
+                                  // Navigasi entar
                                 },
                                 borderRadius: BorderRadius.circular(20),
                                 child: Container(
@@ -1027,7 +1160,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize:
-                                        MainAxisSize.min, // FIX: Tambah ini
+                                        MainAxisSize.min, 
                                     children: [
                                       Container(
                                         padding: EdgeInsets.all(16),

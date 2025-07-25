@@ -1,6 +1,7 @@
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+import 'dart:ui';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -13,12 +14,14 @@ class _SplashScreenState extends State<SplashScreen>
   late AnimationController _backgroundDissolveController;
   late AnimationController _loadingController;
   late AnimationController
-  _marbleController; // New controller for marble animation
+  _marbleController; 
+  late AnimationController _shimmerController; 
 
   late Animation<double> _textFadeAnimation;
   late Animation<double> _backgroundDissolveAnimation;
   late Animation<double> _loadingAnimation;
-  late Animation<double> _marbleAnimation; // New animation for marble effect
+  late Animation<double> _marbleAnimation;
+  late Animation<double> _shimmerAnimation; 
 
   bool showText = false;
   bool showLoading = false;
@@ -47,6 +50,10 @@ class _SplashScreenState extends State<SplashScreen>
       duration: Duration(seconds: 8),
       vsync: this,
     );
+    _shimmerController = AnimationController(
+      duration: Duration(seconds: 2),
+      vsync: this,
+    );
 
     // Setup animations
     _textFadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -65,6 +72,10 @@ class _SplashScreenState extends State<SplashScreen>
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _marbleController, curve: Curves.linear));
+    _shimmerAnimation = Tween<double>(
+      begin: -1.0,
+      end: 2.0,
+    ).animate(CurvedAnimation(parent: _shimmerController, curve: Curves.linear));
 
     // Start animation sequence
     _startAnimationSequence();
@@ -77,6 +88,7 @@ class _SplashScreenState extends State<SplashScreen>
       showText = true;
     });
     _textFadeController.forward();
+    _shimmerController.repeat(); 
 
     // Detik ke-3: Background dissolve + loading muncul + marble animation starts
     await Future.delayed(Duration(milliseconds: 1800));
@@ -86,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(Duration(milliseconds: 2500));
     setState(() {
       showLoading = true;
-    }); // Start marble animation and repeat
+    }); 
     _loadingController.forward();
 
     // Detik ke-4: Loading berubah jadi tombol
@@ -102,6 +114,7 @@ class _SplashScreenState extends State<SplashScreen>
     _backgroundDissolveController.dispose();
     _loadingController.dispose();
     _marbleController.dispose();
+    _shimmerController.dispose();
     super.dispose();
   }
 
@@ -144,7 +157,6 @@ class _SplashScreenState extends State<SplashScreen>
             height: double.infinity,
             child: Stack(
               children: [
-                // Original background image
                 Container(
                   width: double.infinity,
                   height: double.infinity,
@@ -155,7 +167,6 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
                 ),
-                // Marble background overlay (dissolve effect)
                 AnimatedBuilder(
                   animation: _backgroundDissolveAnimation,
                   builder: (context, child) {
@@ -181,25 +192,115 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // PENSUDIS text
                 if (showText)
                   FadeTransition(
                     opacity: _textFadeAnimation,
-                    child: Text(
-                      'PENSUDIS',
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 3,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 10,
-                            color: Colors.black.withOpacity(0.5),
-                            offset: Offset(2, 2),
+                    child: Column(
+                      children: [
+                        AnimatedBuilder(
+                          animation: _shimmerAnimation,
+                          builder: (context, child) {
+                            return Container(
+                              width: 140,
+                              height: 140,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.25),
+                                    Colors.white.withValues(alpha: 0.1),
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  width: 1.5,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 20,
+                                    offset: Offset(0, 8),
+                                  ),
+                                  BoxShadow(
+                                    color: Colors.white.withValues(alpha: 0.1),
+                                    blurRadius: 10,
+                                    offset: Offset(-5, -5),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                                child: Stack(
+                                  children: [
+                                    BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(alpha: 0.1),
+                                        ),
+                                        child: Center(
+                                          child: Container(
+                                            width: 180,
+                                            height: 180,
+                                            child: Image.asset(
+                                              'images/Icon_App.png',
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned.fill(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(25),
+                                        child: Transform.translate(
+                                          offset: Offset(_shimmerAnimation.value * 140, 0),
+                                          child: Container(
+                                            width: 30,
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                begin: Alignment.centerLeft,
+                                                end: Alignment.centerRight,
+                                                colors: [
+                                                  Colors.transparent,
+                                                  Colors.white.withValues(alpha: 0.3),
+                                                  Colors.white.withValues(alpha: 0.5),
+                                                  Colors.white.withValues(alpha: 0.3),
+                                                  Colors.transparent,
+                                                ],
+                                                stops: [0.0, 0.3, 0.5 ,0.7, 1.0],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'SmartDoku',
+                          style: TextStyle(
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 3,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10,
+                                color: Colors.black.withValues(alpha: 0.5),
+                                offset: Offset(2, 2),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
               ],
@@ -234,7 +335,7 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize
-                                  .min, // Agar row nggak melebar lebih dari yang diperlukan
+                                  .min, 
                               children: [
                                 Container(padding: EdgeInsets.only(left: 0.0)),
                                 Text(
@@ -376,7 +477,7 @@ class MarbleFluidPainter extends CustomPainter {
     path.addPath(wavePath, Offset.zero);
 
     // Apply opacity for layering effect
-    paint.color = Colors.white.withOpacity(opacity);
+    paint.color = Colors.white.withValues(alpha: opacity);
     canvas.drawPath(path, paint);
   }
 

@@ -68,6 +68,7 @@ flutter:
     - images/background_images.png
     - images/Down.png
     - images/Up.png
+    - images/Icon_App.png
   fonts:
     - family: TimesNewRoman
       fonts:

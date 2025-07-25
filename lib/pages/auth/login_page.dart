@@ -978,6 +978,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                         controller: _usernameController,
                                         onChanged: _checkLengthUsername,
                                         focusNode: _usernameFocus,
+                                        cursorColor: Colors.white,
                                         textInputAction: TextInputAction.next,
                                         onFieldSubmitted: (value) {
                                           FocusScope.of(
@@ -1040,6 +1041,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                         focusNode: _passwordFocus,
                                         obscureText: !_isPasswordVisible,
                                         textInputAction: TextInputAction.done,
+                                        cursorColor: Colors.white,
                                         onFieldSubmitted: (value) {
                                           _handleLogin();
                                         },

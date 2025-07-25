@@ -1,8 +1,6 @@
-import 'package:smart_doku/pages/auth/register_cred_page.dart';
-import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/foundation.dart'; 
 import 'package:flutter/material.dart';
-import 'package:smart_doku/pages/views/home_page.dart';
+import 'package:smart_doku/pages/splashs/splashscreen_before_page.dart';
 import 'dart:io' show Platform;
 import 'package:window_size/window_size.dart';
 
@@ -35,7 +33,7 @@ class SmartDoku extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage(), debugShowCheckedModeBanner: false,
+      home: SplashScreen(), debugShowCheckedModeBanner: false,
     );
   }
 }
