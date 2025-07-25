@@ -166,17 +166,15 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SizedBox(
-                              height: 30,
-                            ),
+                            SizedBox(height: 30),
                             Container(
                               padding: EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white.withValues(alpha: 0.2),
+                                color: Colors.white.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  width: 2,
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  width: 1,
                                 ),
                               ),
                               child: Icon(
@@ -434,10 +432,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                               Container(
                                 padding: EdgeInsets.all(4.5),
                                 decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Color.fromRGBO(255, 255, 255, 0.3),
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: Color.fromRGBO(0, 0, 0, 0.1),
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    width: 1,
                                   ),
                                 ),
                                 child: InkWell(
