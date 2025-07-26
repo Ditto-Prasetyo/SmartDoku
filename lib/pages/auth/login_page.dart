@@ -1,7 +1,7 @@
+import 'package:smart_doku/api/service.dart';
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'dart:ui';
 import 'dart:math';
 
@@ -13,6 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
+  final WhatsappService _whatsAppService = WhatsappService(); // Instance dari class
+
   bool _isPasswordVisible = false;
   bool _isHovered = false;
   bool _isSignUpHovered = false;
@@ -92,25 +94,6 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     _pulseController.repeat(reverse: true);
   }
 
-  Future<void> _launchWhatsApp() async {
-    final adminNumber = "6285161015745";
-    final message =
-        "Selamat pagi Admin, saya lupa password akun saya. Mohon bantuannya. Terima kasih.";
-    final url =
-        "https://wa.me/$adminNumber?text=${Uri.encodeComponent(message)}";
-
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Gagal membuka WhatsApp'),
-          backgroundColor: Color(0xFF533483),
-        ),
-      );
-    }
-  }
-
   void _handleLogin() {
     final usernameChecker = _usernameController.text.trim();
     final passwordChecker = _passwordController.text.trim();
@@ -146,7 +129,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   void _checkLengthPassword(String value) {
     if (value.contains(' ')) {
-      _showErrorDialogSpaceChecker(
+      _showErrorDialog(
         '⚠️ Invalid Format',
         'Password tidak boleh mengandung spasi!',
         Colors.amber,
@@ -159,7 +142,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       _passwordController.selection = TextSelection.fromPosition(
         TextPosition(offset: _passwordController.text.length),
       );
-      _showErrorDialogLengthPassword(
+      _showErrorDialog(
         '⛔ Error',
         'Pastikan Bahwa Anda Mengisi Username Dengan Benar!',
         Colors.deepOrange,
@@ -173,7 +156,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       _usernameController.selection = TextSelection.fromPosition(
         TextPosition(offset: _usernameController.text.length),
       );
-      _showErrorDialogLengthUsername(
+      _showErrorDialog(
         '⛔ Error',
         'Pastikan Bahwa Anda Mengisi Username Dengan Benar!',
         Colors.deepOrange,
@@ -181,7 +164,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     }
   }
 
-  void _showErrorDialogLengthUsername(
+  void _showErrorDialog(
     String title,
     String message,
     Color accentColor,
@@ -326,151 +309,6 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  void _showErrorDialogLengthPassword(
-    String title,
-    String message,
-    Color accentColor,
-  ) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.warning_rounded,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _passwordController.clear();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   void _showModernErrorDialog(String title, String message, Color accentColor) {
     showGeneralDialog(
       context: context,
@@ -577,159 +415,6 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () => Navigator.pop(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showErrorDialogSpaceChecker(
-    String title,
-    String message,
-    Color accentColor,
-  ) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.warning_rounded,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _passwordController.text = _passwordController
-                                  .text
-                                  .replaceAll(' ', '');
-                              _passwordController.selection =
-                                  TextSelection.fromPosition(
-                                    TextPosition(
-                                      offset: _passwordController.text.length,
-                                    ),
-                                  );
-                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: accentColor,
                               foregroundColor: Colors.white,
@@ -1203,7 +888,17 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                       onExit: (_) => setState(() => _isHovered = false),
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
-                        onTap: _launchWhatsApp,
+                        onTap: () async {
+                          bool success = await _whatsAppService.launchWhatsApp();
+                          if (!success) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Gagal membuka WhatsApp'),
+                                backgroundColor: Color(0xFF533483),
+                              ),
+                            );
+                          }
+                        },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 200),
                           padding: EdgeInsets.symmetric(
