@@ -73,7 +73,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       ),
     );
 
-    _formAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _formAnimation = Tween<double>(begin: 0.0, end: 0.9).animate(
       CurvedAnimation(parent: _formController, curve: Curves.easeOutBack),
     );
 
