@@ -1,10 +1,7 @@
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
-import 'dart:math';
 
 import 'package:smart_doku/pages/views/home_page.dart';
 
@@ -948,7 +945,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                         padding: EdgeInsets.only(top: 35, left: 15, right: 15),
                         child: Center(
                           child: Text(
-                            "Dashboard",
+                            "Surat Masuk",
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,
