@@ -966,8 +966,22 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                 Expanded(
                   child: Container(
                     width: width,
-                    padding: EdgeInsets.only(bottom: 30),
-                    color: Colors.white,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.fromRGBO(255, 255, 255, 0.3),
+                          Color.fromRGBO(248, 250, 252, 0.1),
+                          Color.fromRGBO(241, 245, 249, 0.1),
+                          Color.fromRGBO(255, 255, 255, 0.3),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
                   ),
                 ),
               ],
