@@ -1,125 +1,10 @@
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:smart_doku/utils/formatter.dart';
+import 'package:smart_doku/utils/hover.dart';
 import 'dart:ui';
 import 'dart:math';
-import 'package:flutter/services.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-
-class HoverMenuItem extends StatefulWidget {
-  final String label;
-  final IconData icon;
-  final void Function()? onTap;
-
-  const HoverMenuItem({
-    required this.label,
-    required this.icon,
-    this.onTap,
-    super.key,
-  });
-
-  @override
-  _HoverMenuItemState createState() => _HoverMenuItemState();
-}
-
-class _HoverMenuItemState extends State<HoverMenuItem> {
-  bool _isHovering = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      onHover: (hovering) {
-        setState(() => _isHovering = hovering);
-      },
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: EdgeInsets.only(left: 26, top: 8, bottom: 8),
-        decoration: BoxDecoration(
-          color: _isHovering
-              ? Colors.white.withValues(alpha: 0.15)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            Icon(widget.icon, color: Color(0xFF00D4FF)),
-            SizedBox(width: 10),
-            Text(
-              widget.label,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class DigitOnlyWithErrorFormatter extends TextInputFormatter {
-  final Function(String) onInvalidInput;
-
-  DigitOnlyWithErrorFormatter({required this.onInvalidInput});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final digitsOnly = RegExp(r'^\d*$');
-    if (!digitsOnly.hasMatch(newValue.text)) {
-      onInvalidInput("Nomor HP hanya boleh berisi angka!");
-      return oldValue;
-    }
-    return newValue;
-  }
-}
-
-class NoDigitsFormatter extends TextInputFormatter {
-  final Function(String) onInvalidInput;
-
-  NoDigitsFormatter({required this.onInvalidInput});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final containsDigits = RegExp(r'\d');
-
-    if (containsDigits.hasMatch(newValue.text)) {
-      onInvalidInput("Nama tidak boleh mengandung angka!");
-      return oldValue;
-    }
-
-    return newValue;
-  }
-}
-
-class NormalAddressFormatter extends TextInputFormatter {
-  final Function(String) onInvalidInput;
-
-  NormalAddressFormatter({required this.onInvalidInput});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final allowedRegex = RegExp(r'^[a-zA-Z0-9\s.,\-\/]*$');
-
-    if (!allowedRegex.hasMatch(newValue.text)) {
-      onInvalidInput(
-        "Alamat hanya boleh mengandung huruf, angka, spasi, dan tanda baca umum (, . - /)",
-      );
-      return oldValue;
-    }
-
-    return newValue;
-  }
-}
 
 class RegisterCredPage extends StatefulWidget {
   const RegisterCredPage({super.key});
@@ -233,7 +118,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
     _pulseController.repeat(reverse: true);
   }
 
-  void _handleSeason() {
+  void _handleSession() {
     final NameChecker = _nameController.text.trim();
     final PhoneChecker = _phoneController.text.trim();
     final AddressChecker = _addressController.text.trim();
@@ -1020,7 +905,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                         ],
                                         textInputAction: TextInputAction.done,
                                         onFieldSubmitted: (value) {
-                                          _handleSeason();
+                                          _handleSession();
                                         },
                                         style: TextStyle(
                                           fontSize: 16,
@@ -1231,7 +1116,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                               ],
                                             ),
                                             child: ElevatedButton(
-                                              onPressed: _handleSeason,
+                                              onPressed: _handleSession,
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
                                                     Colors.transparent,
