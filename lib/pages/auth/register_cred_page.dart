@@ -190,7 +190,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
         '⛔ Error',
         'Pastikan Bahwa Anda Mengisi Nama Dengan Benar!',
         Colors.deepOrange,
-        Icons.warning_rounded
+        Icons.warning_rounded,
       );
     }
   }
@@ -205,7 +205,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
         '⛔ Error',
         'Pastikan Bahwa Anda Mengisi Nomor Telepon Dengan Benar!',
         Colors.deepOrange,
-        Icons.warning_rounded
+        Icons.warning_rounded,
       );
     }
   }
@@ -220,7 +220,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
         '⛔ Error',
         'Pastikan Bahwa Anda Mengisi Alamat Rumah Dengan Benar!',
         Colors.deepOrange,
-        Icons.warning_rounded
+        Icons.warning_rounded,
       );
     }
   }
@@ -304,11 +304,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                               ),
                             ],
                           ),
-                          child: Icon(
-                            icon,
-                            color: Colors.white,
-                            size: 30,
-                          ),
+                          child: Icon(icon, color: Colors.white, size: 30),
                         ),
                         SizedBox(height: 20),
                         Text(
@@ -739,7 +735,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                               '⛔ Gunakan Nama Asli Anda',
                                               "Nama Anda Tidak Boleh Lebih Dari Lima Spasi!",
                                               Colors.deepOrange,
-                                              Icons.warning_rounded
+                                              Icons.warning_rounded,
                                             );
                                           }
 
@@ -775,7 +771,12 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             horizontal: 20,
                                           ),
                                           prefixIcon: Container(
-                                            padding: EdgeInsets.only(left: 16, right: 14, top: 12, bottom: 12),
+                                            padding: EdgeInsets.only(
+                                              left: 16,
+                                              right: 14,
+                                              top: 12,
+                                              bottom: 12,
+                                            ),
                                             child: Icon(
                                               Icons.person_outline_rounded,
                                               color: Color(0xFF00D4FF),
@@ -847,7 +848,12 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             horizontal: 20,
                                           ),
                                           prefixIcon: Container(
-                                            padding: EdgeInsets.only(left: 16, right: 14, top: 12, bottom: 12),
+                                            padding: EdgeInsets.only(
+                                              left: 16,
+                                              right: 14,
+                                              top: 12,
+                                              bottom: 12,
+                                            ),
                                             child: Icon(
                                               Icons.phone_android_rounded,
                                               color: Color(0xFF00D4FF),
@@ -917,7 +923,12 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             horizontal: 20,
                                           ),
                                           prefixIcon: Container(
-                                            padding: EdgeInsets.only(left: 16, right: 14, top: 12, bottom: 12),
+                                            padding: EdgeInsets.only(
+                                              left: 16,
+                                              right: 14,
+                                              top: 12,
+                                              bottom: 12,
+                                            ),
                                             child: Icon(
                                               Icons.home,
                                               color: Color(0xFF00D4FF),
@@ -962,29 +973,29 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                               AlignmentDirectional.centerStart,
                                           isExpanded: true,
                                           value: _selectedWorkField,
-                                          hint: Padding(
-                                            padding: EdgeInsets.only(
-                                              
-                                            ), // Tambah padding khusus untuk hint
-                                            child: Row(
-                                              children: [
-                                                
-                                                Icon(
-                                                  Icons.home,
-                                                  color: Color(0xFF00D4FF),
-                                                  size: 24,
-                                                ),
-                                                SizedBox(width: 20),
-                                                Text(
+                                          hint: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.home,
+                                                color: Color(0xFF00D4FF),
+                                                size: 24,
+                                              ),
+                                              SizedBox(width: 18),
+                                              Expanded(
+                                                child: Text(
                                                   "Bidang Pekerjaan Anda",
                                                   style: TextStyle(
                                                     fontSize: 16,
                                                     color: Colors.white
                                                         .withValues(alpha: 0.6),
                                                   ),
+                                                  softWrap:
+                                                      true,
+                                                  overflow: TextOverflow
+                                                      .visible,
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
                                           items: _workFields.asMap().entries.map((
                                             entry,
@@ -1035,7 +1046,8 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             ),
                                             elevation: 8,
                                             padding: EdgeInsets.only(
-                                              top: 6, bottom: 6
+                                              top: 6,
+                                              bottom: 6,
                                             ),
                                           ),
                                           iconStyleData: IconStyleData(
@@ -1045,8 +1057,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             ),
                                           ),
                                           buttonStyleData: ButtonStyleData(
-                                            padding: EdgeInsets.only( right: 20,
-                                            ),
+                                            padding: EdgeInsets.only(right: 20),
                                             height: 60,
                                             decoration: BoxDecoration(
                                               color: Colors.transparent,
@@ -1068,8 +1079,6 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                         ),
                                       ),
                                     ),
-
-                                    // Modern login button dengan pulse effect
                                     AnimatedBuilder(
                                       animation: _pulseAnimation,
                                       builder: (context, child) {
