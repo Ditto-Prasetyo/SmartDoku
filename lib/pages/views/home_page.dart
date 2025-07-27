@@ -5,7 +5,6 @@ import 'package:line_icons/line_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
 import 'dart:math';
-import 'package:file_picker/file_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -593,7 +592,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                 SizedBox(height: 20),
 
                 Text(
-                  'Bintar_Sepuh',
+                  'Bintar The Real Sepuh',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -791,11 +790,18 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(
+                                        color: Colors.white.withValues(
                                           alpha: 0.5,
                                         ),
                                         blurRadius: 30,
                                         offset: Offset(5, 10),
+                                      ),
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                        blurRadius: 100,
+                                        offset: Offset(1, 2),
                                       ),
                                       BoxShadow(
                                         color: Colors.white.withValues(

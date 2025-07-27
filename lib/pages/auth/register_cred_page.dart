@@ -33,7 +33,7 @@ class _HoverMenuItemState extends State<HoverMenuItem> {
       },
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: EdgeInsets.only(left: 26, top: 8, bottom: 8),
+        padding: EdgeInsets.only(left: 1, top: 8, bottom: 8),
         decoration: BoxDecoration(
           color: _isHovering
               ? Colors.white.withValues(alpha: 0.15)
@@ -45,7 +45,7 @@ class _HoverMenuItemState extends State<HoverMenuItem> {
           children: [
             SizedBox(height: 10),
             Icon(widget.icon, color: Color(0xFF00D4FF)),
-            SizedBox(width: 10),
+            SizedBox(width: 20),
             Text(
               widget.label,
               textAlign: TextAlign.center,
@@ -1327,7 +1327,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             horizontal: 20,
                                           ),
                                           prefixIcon: Container(
-                                            padding: EdgeInsets.all(12),
+                                            padding: EdgeInsets.only(left: 16, right: 14, top: 12, bottom: 12),
                                             child: Icon(
                                               Icons.person_outline_rounded,
                                               color: Color(0xFF00D4FF),
@@ -1399,7 +1399,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             horizontal: 20,
                                           ),
                                           prefixIcon: Container(
-                                            padding: EdgeInsets.all(12),
+                                            padding: EdgeInsets.only(left: 16, right: 14, top: 12, bottom: 12),
                                             child: Icon(
                                               Icons.phone_android_rounded,
                                               color: Color(0xFF00D4FF),
@@ -1469,7 +1469,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             horizontal: 20,
                                           ),
                                           prefixIcon: Container(
-                                            padding: EdgeInsets.all(12),
+                                            padding: EdgeInsets.only(left: 16, right: 14, top: 12, bottom: 12),
                                             child: Icon(
                                               Icons.home,
                                               color: Color(0xFF00D4FF),
@@ -1510,26 +1510,33 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                       ),
                                       child: DropdownButtonHideUnderline(
                                         child: DropdownButton2<String>(
-                                          alignment: AlignmentDirectional.centerStart,
+                                          alignment:
+                                              AlignmentDirectional.centerStart,
                                           isExpanded: true,
                                           value: _selectedWorkField,
-                                          hint: Row(
-                                            children: [                                
-                                              Icon(
-                                                Icons.home,
-                                                color: Color(0xFF00D4FF),
-                                                size: 24,
-                                              ),
-                                              SizedBox(width: 10),
-                                              Text(
-                                                "Bidang Pekerjaan Anda",
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.6),
+                                          hint: Padding(
+                                            padding: EdgeInsets.only(
+                                              
+                                            ), // Tambah padding khusus untuk hint
+                                            child: Row(
+                                              children: [
+                                                
+                                                Icon(
+                                                  Icons.home,
+                                                  color: Color(0xFF00D4FF),
+                                                  size: 24,
                                                 ),
-                                              ),
-                                            ],
+                                                SizedBox(width: 20),
+                                                Text(
+                                                  "Bidang Pekerjaan Anda",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.6),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           items: _workFields.asMap().entries.map((
                                             entry,
@@ -1553,9 +1560,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                                       value,
                                                     );
                                                   });
-                                                  Navigator.pop(
-                                                    context,
-                                                  );
+                                                  Navigator.pop(context);
                                                 },
                                               ),
                                             );
@@ -1581,9 +1586,8 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                               ),
                                             ),
                                             elevation: 8,
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 10,
-                                              vertical: 6,
+                                            padding: EdgeInsets.only(
+                                              top: 6, bottom: 6
                                             ),
                                           ),
                                           iconStyleData: IconStyleData(
@@ -1593,8 +1597,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             ),
                                           ),
                                           buttonStyleData: ButtonStyleData(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 20,
+                                            padding: EdgeInsets.only( right: 20,
                                             ),
                                             height: 60,
                                             decoration: BoxDecoration(
