@@ -1,125 +1,10 @@
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:smart_doku/utils/formatter.dart';
+import 'package:smart_doku/utils/hover.dart';
 import 'dart:ui';
 import 'dart:math';
-import 'package:flutter/services.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
-
-class HoverMenuItem extends StatefulWidget {
-  final String label;
-  final IconData icon;
-  final void Function()? onTap;
-
-  const HoverMenuItem({
-    required this.label,
-    required this.icon,
-    this.onTap,
-    super.key,
-  });
-
-  @override
-  _HoverMenuItemState createState() => _HoverMenuItemState();
-}
-
-class _HoverMenuItemState extends State<HoverMenuItem> {
-  bool _isHovering = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: widget.onTap,
-      onHover: (hovering) {
-        setState(() => _isHovering = hovering);
-      },
-      borderRadius: BorderRadius.circular(10),
-      child: Container(
-        padding: EdgeInsets.only(left: 1, top: 8, bottom: 8),
-        decoration: BoxDecoration(
-          color: _isHovering
-              ? Colors.white.withValues(alpha: 0.15)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: 10),
-            Icon(widget.icon, color: Color(0xFF00D4FF)),
-            SizedBox(width: 20),
-            Text(
-              widget.label,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class DigitOnlyWithErrorFormatter extends TextInputFormatter {
-  final Function(String) onInvalidInput;
-
-  DigitOnlyWithErrorFormatter({required this.onInvalidInput});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final digitsOnly = RegExp(r'^\d*$');
-    if (!digitsOnly.hasMatch(newValue.text)) {
-      onInvalidInput("Nomor HP hanya boleh berisi angka!");
-      return oldValue;
-    }
-    return newValue;
-  }
-}
-
-class NoDigitsFormatter extends TextInputFormatter {
-  final Function(String) onInvalidInput;
-
-  NoDigitsFormatter({required this.onInvalidInput});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final containsDigits = RegExp(r'\d');
-
-    if (containsDigits.hasMatch(newValue.text)) {
-      onInvalidInput("Nama tidak boleh mengandung angka!");
-      return oldValue;
-    }
-
-    return newValue;
-  }
-}
-
-class NormalAddressFormatter extends TextInputFormatter {
-  final Function(String) onInvalidInput;
-
-  NormalAddressFormatter({required this.onInvalidInput});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final allowedRegex = RegExp(r'^[a-zA-Z0-9\s.,\-\/]*$');
-
-    if (!allowedRegex.hasMatch(newValue.text)) {
-      onInvalidInput(
-        "Alamat hanya boleh mengandung huruf, angka, spasi, dan tanda baca umum (, . - /)",
-      );
-      return oldValue;
-    }
-
-    return newValue;
-  }
-}
 
 class RegisterCredPage extends StatefulWidget {
   const RegisterCredPage({super.key});
@@ -233,7 +118,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
     _pulseController.repeat(reverse: true);
   }
 
-  void _handleSeason() {
+  void _handleSession() {
     final NameChecker = _nameController.text.trim();
     final PhoneChecker = _phoneController.text.trim();
     final AddressChecker = _addressController.text.trim();
@@ -301,10 +186,11 @@ class RegisterCredPageState extends State<RegisterCredPage>
       _nameController.selection = TextSelection.fromPosition(
         TextPosition(offset: _nameController.text.length),
       );
-      _showErrorDialogLengthName(
+      _showErrorDialog(
         '⛔ Error',
         'Pastikan Bahwa Anda Mengisi Nama Dengan Benar!',
         Colors.deepOrange,
+        Icons.warning_rounded
       );
     }
   }
@@ -315,10 +201,11 @@ class RegisterCredPageState extends State<RegisterCredPage>
       _phoneController.selection = TextSelection.fromPosition(
         TextPosition(offset: _phoneController.text.length),
       );
-      _showErrorDialogLengthPhone(
+      _showErrorDialog(
         '⛔ Error',
         'Pastikan Bahwa Anda Mengisi Nomor Telepon Dengan Benar!',
         Colors.deepOrange,
+        Icons.warning_rounded
       );
     }
   }
@@ -329,20 +216,22 @@ class RegisterCredPageState extends State<RegisterCredPage>
       _addressController.selection = TextSelection.fromPosition(
         TextPosition(offset: _addressController.text.length),
       );
-      _showErrorDialogLengthAddress(
+      _showErrorDialog(
         '⛔ Error',
         'Pastikan Bahwa Anda Mengisi Alamat Rumah Dengan Benar!',
         Colors.deepOrange,
+        Icons.warning_rounded
       );
     }
   }
 
   void _checkLengthSectionWork(String value) {}
 
-  void _showErrorDialogLengthName(
+  void _showErrorDialog(
     String title,
     String message,
     Color accentColor,
+    IconData icon,
   ) {
     showGeneralDialog(
       context: context,
@@ -416,7 +305,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                             ],
                           ),
                           child: Icon(
-                            Icons.warning_rounded,
+                            icon,
                             color: Colors.white,
                             size: 30,
                           ),
@@ -451,448 +340,6 @@ class RegisterCredPageState extends State<RegisterCredPage>
                             onPressed: () {
                               Navigator.pop(context);
                               _nameController.clear();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showErrorDialogLengthPhone(
-    String title,
-    String message,
-    Color accentColor,
-  ) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.warning_rounded,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _phoneController.clear();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showErrorDialogLengthAddress(
-    String title,
-    String message,
-    Color accentColor,
-  ) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.warning_rounded,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _addressController.clear();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showErrorDialogNameSpaceChecker(
-    String title,
-    String message,
-    Color accentColor,
-  ) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.warning_rounded,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _nameController.text = _nameController.text
-                                  .replaceAll(' ', '');
-                              _nameController.selection =
-                                  TextSelection.fromPosition(
-                                    TextPosition(
-                                      offset: _nameController.text.length,
-                                    ),
-                                  );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: accentColor,
@@ -1288,10 +735,11 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             r' ',
                                           ).allMatches(value).length;
                                           if (spaceCount > 5) {
-                                            _showErrorDialogNameSpaceChecker(
+                                            _showErrorDialog(
                                               '⛔ Gunakan Nama Asli Anda',
                                               "Nama Anda Tidak Boleh Lebih Dari Lima Spasi!",
                                               Colors.deepOrange,
+                                              Icons.warning_rounded
                                             );
                                           }
 
@@ -1457,7 +905,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                         ],
                                         textInputAction: TextInputAction.done,
                                         onFieldSubmitted: (value) {
-                                          _handleSeason();
+                                          _handleSession();
                                         },
                                         style: TextStyle(
                                           fontSize: 16,
@@ -1671,7 +1119,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                               ],
                                             ),
                                             child: ElevatedButton(
-                                              onPressed: _handleSeason,
+                                              onPressed: _handleSession,
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
                                                     Colors.transparent,

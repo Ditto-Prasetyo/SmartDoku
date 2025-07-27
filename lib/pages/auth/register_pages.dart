@@ -3,53 +3,6 @@ import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:math';
-import 'package:flutter/services.dart';
-
-class NormalUsernameFormatter extends TextInputFormatter {
-  final Function(String) onInvalidInput;
-
-  NormalUsernameFormatter({required this.onInvalidInput});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final allowedRegex = RegExp(r'^[a-zA-Z0-9\s.,\-\/]*$');
-
-    if (!allowedRegex.hasMatch(newValue.text)) {
-      onInvalidInput(
-        "Username hanya boleh mengandung huruf, angka, spasi, dan tanda baca umum (, . - /)",
-      );
-      return oldValue;
-    }
-
-    return newValue;
-  }
-}
-
-class NormalEmailFormatter extends TextInputFormatter {
-  final Function(String) onInvalidInput;
-
-  NormalEmailFormatter({required this.onInvalidInput});
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    final allowedRegex = RegExp(r'^[a-zA-Z0-9\s.,@\-\/]*$');
-
-    if (!allowedRegex.hasMatch(newValue.text)) {
-      onInvalidInput(
-        "Email hanya boleh mengandung huruf, angka, spasi, dan tanda baca umum (, . - / @)",
-      );
-      return oldValue;
-    }
-
-    return newValue;
-  }
-}
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -130,7 +83,7 @@ class RegisterPageState extends State<RegisterPage>
       ),
     );
 
-    _formAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _formAnimation = Tween<double>(begin: 0.0, end: 0.9).animate(
       CurvedAnimation(parent: _formController, curve: Curves.easeOutBack),
     );
 
