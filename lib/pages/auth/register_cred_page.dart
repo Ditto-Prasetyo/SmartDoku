@@ -632,7 +632,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                               "Fill your biodata to complete",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                fontSize: 36,
+                                fontSize: 30,
                                 fontWeight: FontWeight.w900,
                                 letterSpacing: 2,
                                 color: Colors.white,
@@ -659,8 +659,6 @@ class RegisterCredPageState extends State<RegisterCredPage>
                       );
                     },
                   ),
-
-                  // Modern glassmorphism form
                   AnimatedBuilder(
                     animation: _formAnimation,
                     builder: (context, child) {

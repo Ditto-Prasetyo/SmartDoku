@@ -28,7 +28,7 @@ class _HoverMenuItemState extends State<HoverMenuItem> {
       },
       borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: EdgeInsets.only(left: 26, top: 8, bottom: 8),
+        padding: EdgeInsets.only(left: 1, top: 8, bottom: 8),
         decoration: BoxDecoration(
           color: _isHovering
               ? Colors.white.withValues(alpha: 0.15)
@@ -40,11 +40,15 @@ class _HoverMenuItemState extends State<HoverMenuItem> {
           children: [
             SizedBox(height: 10),
             Icon(widget.icon, color: Color(0xFF00D4FF)),
-            SizedBox(width: 10),
-            Text(
-              widget.label,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 16),
+            SizedBox(width: 18),
+            Expanded(
+              child: Text(
+                widget.label,
+                textAlign: TextAlign.start,
+                style: TextStyle(color: Colors.white, fontSize: 16),
+                softWrap: true,
+                overflow: TextOverflow.visible,
+              ),
             ),
           ],
         ),
