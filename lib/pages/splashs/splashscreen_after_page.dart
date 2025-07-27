@@ -59,7 +59,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     );
 
     _loadingSpinController = AnimationController(
-      duration: Duration(milliseconds: 2000),
+      duration: Duration(milliseconds: 4000),
       vsync: this,
     );
 
@@ -145,7 +145,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     _startLoadingAnimation();
 
     // Detik ke-6: Navigate ke HomePage
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 2));
 
     Navigator.pushReplacement(
       context,
@@ -155,8 +155,8 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
 
   void _startLoadingAnimation() async {
     // Loop animasi loading dots
-    for (int i = 0; i < 5; i++) {
-      for (int j = 1; j <= 4; j++) {
+    for (int i = 0; i < 6; i++) {
+      for (int j = 1; j <= 5; j++) {
         await Future.delayed(Duration(milliseconds: 150));
         if (mounted && _showLoadingDots) {
           setState(() {
