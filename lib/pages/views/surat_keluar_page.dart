@@ -51,7 +51,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
 
   List<Map<String, dynamic>> searchOptions = [
     {'value': 'judul', 'label': 'Judul Surat', 'icon': Icons.title_rounded},
-    {'value': 'perihal', 'label': 'Perihal', 'icon': Icons.description_rounded},
+    {'value': 'klasifikasi', 'label': 'Klasifikasi', 'icon': Icons.description_rounded},
     {
       'value': 'tanggal',
       'label': 'Tanggal',
@@ -64,7 +64,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
   List<Map<String, dynamic>> suratData = [
     {
       'judul': 'Surat Pemberitahuan Rapat Bulanan',
-      'perihal':
+      'Klasifikasi':
           'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
       'tanggal': '28 Juli 2025',
       'pengirim': 'HRD Department',
@@ -72,28 +72,28 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
     },
     {
       'judul': 'Pengajuan Cuti Tahunan',
-      'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
+      'Klasifikasi': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
       'tanggal': '27 Juli 2025',
       'pengirim': 'Karyawan - Ahmad Rizki',
       'status': 'Selesai',
     },
     {
       'judul': 'Laporan Keuangan Q2 2025',
-      'perihal': 'Report keuangan triwulan kedua tahun 2025',
+      'Klasifikasi': 'Report keuangan triwulan kedua tahun 2025',
       'tanggal': '26 Juli 2025',
       'pengirim': 'Finance Department',
       'status': 'Selesai',
     },
     {
       'judul': 'Undangan Seminar IT',
-      'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
+      'Klasifikasi': 'Mengundang untuk menghadiri seminar teknologi terbaru',
       'tanggal': '25 Juli 2025',
       'pengirim': 'IT Department',
       'status': 'Proses',
     },
     {
       'judul': 'Surat Peringatan Kedisiplinan',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'Klasifikasi': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
       'tanggal': '24 Juli 2025',
       'pengirim': 'HRD Department',
       'status': 'Selesai',
@@ -593,7 +593,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                 scale: _optionsAnimation.value,
                 alignment: Alignment.topRight,
                 child: Opacity(
-                  opacity: _optionsAnimation.value,
+                  opacity: _optionsAnimation.value.clamp(0.0, 1.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: BackdropFilter(
@@ -1983,9 +1983,9 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
 
                                                         SizedBox(height: 8),
 
-                                                        // Perihal
+                                                        // Klasifikasi
                                                         Text(
-                                                          surat['perihal'],
+                                                          surat['Klasifikasi'],
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
