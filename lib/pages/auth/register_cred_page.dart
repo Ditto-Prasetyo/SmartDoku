@@ -625,7 +625,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                       return Transform.translate(
                         offset: Offset(0, 50 * (1 - _formAnimation.value)),
                         child: Opacity(
-                          opacity: _formAnimation.value,
+                          opacity: _formAnimation.value.clamp(0.0, 1.0),
                           child: Container(
                             margin: EdgeInsets.only(bottom: 50),
                             child: Text(
