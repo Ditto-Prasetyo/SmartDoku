@@ -665,7 +665,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                       return Transform.scale(
                         scale: 0.8 + (0.2 * _formAnimation.value),
                         child: Opacity(
-                          opacity: _formAnimation.value,
+                          opacity: _formAnimation.value.clamp(0.0, 1.0),
                           child: Container(
                             margin: EdgeInsets.symmetric(horizontal: 30),
                             padding: EdgeInsets.all(30),
