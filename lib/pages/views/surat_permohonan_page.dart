@@ -571,11 +571,12 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
           child: AnimatedBuilder(
             animation: _optionsAnimation,
             builder: (context, child) {
+              print("Opacity Value ${_optionsAnimation.value}");
               return Transform.scale(
                 scale: _optionsAnimation.value,
                 alignment: Alignment.topRight,
                 child: Opacity(
-                  opacity: _optionsAnimation.value,
+                  opacity: _optionsAnimation.value.clamp(0.0, 1.0),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
                     child: BackdropFilter(
