@@ -437,7 +437,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
               children: [
                 // Header Drawer
                 Container(
-                  height: 250,
+                  height: 275,
                   width: double.infinity,
                   padding: EdgeInsets.only(
                     top: 15,
@@ -515,53 +515,13 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                   sigmaY: 15,
                                 ),
                                 child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Colors.white.withValues(alpha: 0.3),
-                                        Colors.white.withValues(alpha: 0.1),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.4,
-                                      ),
-                                      width: 2,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.5,
-                                        ),
-                                        blurRadius: 30,
-                                        offset: Offset(5, 10),
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.1,
-                                        ),
-                                        blurRadius: 100,
-                                        offset: Offset(1, 2),
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                        blurRadius: 15,
-                                        offset: Offset(-8, -4),
-                                      ),
-                                    ],
-                                  ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.asset(
                                       'images/Icon_App.png',
-                                      width: 100,
-                                      height: 100,
+                                      width: 180,
+                                      height: 180,
+                                      color: Colors.white,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -575,24 +535,6 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ).createShader(bounds),
-                              child: Text(
-                                'SmartDoku',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Roboto',
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.5,
-                                      ),
-                                      blurRadius: 10,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                              ),
                             ),
                           ],
                         ),

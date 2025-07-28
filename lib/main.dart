@@ -25,7 +25,7 @@ void main() async {
       Size(size.width * 0.3125, size.height * 0.8333),
     ); // Minimum window size
     setWindowMaxSize(
-      Size(size.width * 0.8, size.height * 1.5),
+      Size(size.width * 2.0, size.height * 1.5),
     ); // Maximum window size
   }
 
