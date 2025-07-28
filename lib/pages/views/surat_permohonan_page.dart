@@ -56,8 +56,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
       'label': 'Tanggal',
       'icon': Icons.calendar_today_rounded,
     },
-    {'value': 'pengirim', 'label': 'Pengirim', 'icon': Icons.person_rounded},
-    {'value': 'status', 'label': 'Status', 'icon': Icons.flag_rounded},
+    {'value': 'status', 'label': 'Pengirim', 'icon': Icons.person_rounded},
   ];
 
   List<Map<String, dynamic>> suratData = [
@@ -1221,7 +1220,6 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Animated Header Row (sama seperti sebelumnya tapi tanpa dropdown di Stack)
                       AnimatedBuilder(
                         animation: _searchAnimation,
                         builder: (context, child) {
