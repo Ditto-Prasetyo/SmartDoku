@@ -57,6 +57,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
       'icon': Icons.calendar_today_rounded,
     },
     {'value': 'status', 'label': 'Pengirim', 'icon': Icons.person_rounded},
+    {'value': 'status', 'label': 'Status', 'icon': Icons.flag_rounded},
   ];
 
   List<Map<String, dynamic>> suratData = [
@@ -66,32 +67,48 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
           'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
       'tanggal': '28 Juli 2025',
       'pengirim': 'HRD Department',
+      'status': 'Proses',
     },
     {
       'judul': 'Pengajuan Cuti Tahunan',
       'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
       'tanggal': '27 Juli 2025',
       'pengirim': 'Karyawan - Ahmad Rizki',
+      'status': 'Selesai',
     },
     {
       'judul': 'Laporan Keuangan Q2 2025',
       'perihal': 'Report keuangan triwulan kedua tahun 2025',
       'tanggal': '26 Juli 2025',
       'pengirim': 'Finance Department',
+      'status': 'Proses',
     },
     {
       'judul': 'Undangan Seminar IT',
       'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
       'tanggal': '25 Juli 2025',
       'pengirim': 'IT Department',
+      'status': 'Selesai',
     },
     {
       'judul': 'Surat Peringatan Kedisiplinan',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
       'tanggal': '24 Juli 2025',
       'pengirim': 'HRD Department',
+      'status': 'Selesai',
     },
   ];
+
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'proses':
+        return Color(0xFFF59E0B);
+      case 'selesai':
+        return Color(0xFF10B981);
+      default:
+        return Color(0xFF6366F1);
+    }
+  }
 
   @override
   void initState() {
@@ -1865,8 +1882,66 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                         Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
-                                                                  .end,
+                                                                  .spaceBetween,
                                                           children: [
+                                                            Container(
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical: 6,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                gradient: LinearGradient(
+                                                                  colors: [
+                                                                    getStatusColor(
+                                                                      surat['status'],
+                                                                    ),
+                                                                    getStatusColor(
+                                                                      surat['status'],
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.8,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      20,
+                                                                    ),
+                                                                boxShadow: [
+                                                                  BoxShadow(
+                                                                    color:
+                                                                        getStatusColor(
+                                                                          surat['status'],
+                                                                        ).withValues(
+                                                                          alpha:
+                                                                              0.3,
+                                                                        ),
+                                                                    blurRadius:
+                                                                        8,
+                                                                    offset:
+                                                                        Offset(
+                                                                          0,
+                                                                          2,
+                                                                        ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              child: Text(
+                                                                surat['status'],
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                ),
+                                                              ),
+                                                            ),
                                                             // Tanggal
                                                             Text(
                                                               surat['tanggal'],
