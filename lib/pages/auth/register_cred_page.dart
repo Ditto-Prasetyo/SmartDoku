@@ -1,3 +1,4 @@
+import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -176,7 +177,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => RegisterCredPage()),
+      MaterialPageRoute(builder: (context) => LoginPage()),
     );
   }
 
@@ -974,7 +975,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                           hint: Row(
                                             children: [
                                               Icon(
-                                                Icons.home,
+                                                Icons.work,
                                                 color: Color(0xFF00D4FF),
                                                 size: 24,
                                               ),
