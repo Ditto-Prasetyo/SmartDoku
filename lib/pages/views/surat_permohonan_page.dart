@@ -67,52 +67,32 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
           'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
       'tanggal': '28 Juli 2025',
       'pengirim': 'HRD Department',
-      'status': 'Baru',
     },
     {
       'judul': 'Pengajuan Cuti Tahunan',
       'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
       'tanggal': '27 Juli 2025',
       'pengirim': 'Karyawan - Ahmad Rizki',
-      'status': 'Proses',
     },
     {
       'judul': 'Laporan Keuangan Q2 2025',
       'perihal': 'Report keuangan triwulan kedua tahun 2025',
       'tanggal': '26 Juli 2025',
       'pengirim': 'Finance Department',
-      'status': 'Selesai',
     },
     {
       'judul': 'Undangan Seminar IT',
       'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
       'tanggal': '25 Juli 2025',
       'pengirim': 'IT Department',
-      'status': 'Baru',
     },
     {
       'judul': 'Surat Peringatan Kedisiplinan',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
       'tanggal': '24 Juli 2025',
       'pengirim': 'HRD Department',
-      'status': 'Penting',
     },
   ];
-
-  Color getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'baru':
-        return Color(0xFF10B981);
-      case 'proses':
-        return Color(0xFFF59E0B);
-      case 'selesai':
-        return Color(0xFF6B7280);
-      case 'penting':
-        return Color(0xFFEF4444);
-      default:
-        return Color(0xFF6366F1);
-    }
-  }
 
   @override
   void initState() {
@@ -767,7 +747,6 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
     searchController.dispose();
     searchFocusNode.dispose();
     super.dispose();
-    super.dispose();
   }
 
   @override
@@ -1371,7 +1350,8 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                               searchController,
                                                           focusNode:
                                                               searchFocusNode,
-                                                              cursorColor: Colors.white,
+                                                          cursorColor:
+                                                              Colors.white,
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 16,
@@ -1602,22 +1582,35 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                           gradient: LinearGradient(
                                             begin: Alignment.topLeft,
                                             end: Alignment.bottomRight,
-                                            colors: [
-                                              Colors.white.withValues(
-                                                alpha: 0.2,
-                                              ),
-                                              Colors.white.withValues(
-                                                alpha: 0.05,
-                                              ),
-                                            ],
+                                            colors: isRefreshing
+                                                ? [
+                                                    Colors.white.withValues(
+                                                      alpha: 0.2,
+                                                    ),
+                                                    Colors.white.withValues(
+                                                      alpha: 0.05,
+                                                    ),
+                                                  ]
+                                                : [
+                                                    Color(
+                                                      0xFF10B981,
+                                                    ).withValues(alpha: 0.3),
+                                                    Color(
+                                                      0xFF059669,
+                                                    ).withValues(alpha: 0.2),
+                                                  ],
                                           ),
                                           borderRadius: BorderRadius.circular(
                                             15,
                                           ),
                                           border: Border.all(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.3,
-                                            ),
+                                            color: isRefreshing
+                                                ? Colors.white.withValues(
+                                                    alpha: 0.3,
+                                                  )
+                                                : Color(
+                                                    0xFF10B981,
+                                                  ).withValues(alpha: 0.3),
                                             width: 1.5,
                                           ),
                                           boxShadow: [
@@ -1644,8 +1637,8 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                             // Info text
                                             Expanded(
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     'Data Surat Masuk',
@@ -1873,67 +1866,8 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                         Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
-                                                                  .spaceBetween,
+                                                                  .end,
                                                           children: [
-                                                            // Status Badge
-                                                            Container(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        12,
-                                                                    vertical: 6,
-                                                                  ),
-                                                              decoration: BoxDecoration(
-                                                                gradient: LinearGradient(
-                                                                  colors: [
-                                                                    getStatusColor(
-                                                                      surat['status'],
-                                                                    ),
-                                                                    getStatusColor(
-                                                                      surat['status'],
-                                                                    ).withValues(
-                                                                      alpha:
-                                                                          0.8,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      20,
-                                                                    ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        getStatusColor(
-                                                                          surat['status'],
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.3,
-                                                                        ),
-                                                                    blurRadius:
-                                                                        8,
-                                                                    offset:
-                                                                        Offset(
-                                                                          0,
-                                                                          2,
-                                                                        ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: Text(
-                                                                surat['status'],
-                                                                style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontFamily:
-                                                                      'Roboto',
-                                                                ),
-                                                              ),
-                                                            ),
                                                             // Tanggal
                                                             Text(
                                                               surat['tanggal'],

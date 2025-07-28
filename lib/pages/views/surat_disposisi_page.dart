@@ -1,7 +1,5 @@
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:line_icons/line_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
 
