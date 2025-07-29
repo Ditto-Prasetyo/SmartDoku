@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/dialog.dart';
 
@@ -54,11 +55,48 @@ void action(
   );
 }
 
-void viewDetail(int index) {}
+void viewDetail(
+  BuildContext context,
+  int index,
+  List<Map<String, dynamic>> suratData,
+  ) {
+  final surat = suratData[index];
+  print('View Detail - ID: ${surat['id']}, Judul: ${surat['judul']}');
 
-void editDokumen(int index) {}
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => DetailPage(suratData: surat),
+    ),
+  );
+}
 
-void hapusDokumen(int index) {}
+void editDokumen(
+  int index,
+  List<Map<String, dynamic>> suratData,
+  ) {
+  final surat = suratData[index];
+  print('Edit Document - ID: ${surat['id']}, Judul: ${surat['judul']}');
+}
+
+void hapusDokumen(
+  BuildContext context,
+  int index,
+  List<Map<String, dynamic>> suratData,
+  void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
+) {
+  final surat = suratData[index];
+  showModernHapusDialog(
+    '⚠️ Konfirmasi Hapus',
+    'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
+    Colors.orange,
+    Colors.deepOrange,
+    context,
+    index,
+    suratData,
+    onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
+  );
+}
 
 // Function untuk pick image (tambahin package image_picker di pubspec.yaml)
 void pickImage(BuildContext context) async {

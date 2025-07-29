@@ -202,6 +202,18 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
     searchFocusNode.unfocus();
   }
 
+  void actionSetState(int index) {
+    setState(() {
+      suratData.removeAt(index);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Dokumen berhasil dihapus'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
   OverlayEntry _createOverlayEntry() {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
     var size = renderBox.size;
@@ -1441,20 +1453,47 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                       index,
                                                       context,
                                                       suratData,
-                                                      editDokumen,
-                                                      viewDetail,
-                                                      hapusDokumen);
+                                                      (i) => editDokumen(
+                                                        index,
+                                                        suratData,
+                                                      ),
+                                                      (i) => viewDetail(
+                                                        context,
+                                                        index,
+                                                        suratData,
+                                                      ),
+                                                      (i) => hapusDokumen(
+                                                        context,
+                                                        index,
+                                                        suratData,
+                                                        actionSetState,
+                                                      ),
+                                                    );
                                                     print(
                                                       'Surat dipilih: ${surat['judul']}',
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    action(index,
+                                                    action(
+                                                      index,
                                                       context,
                                                       suratData,
-                                                      editDokumen,
-                                                      viewDetail,
-                                                      hapusDokumen);
+                                                      (i) => editDokumen(
+                                                        index,
+                                                        suratData,
+                                                      ),
+                                                      (i) => viewDetail(
+                                                        context,
+                                                        index,
+                                                        suratData,
+                                                      ),
+                                                      (i) => hapusDokumen(
+                                                        context,
+                                                        index,
+                                                        suratData,
+                                                        actionSetState,
+                                                      ),
+                                                    );
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -1687,7 +1726,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                               ),
                                                               child: Icon(
                                                                 Icons
-                                                                    .arrow_forward_ios_rounded,
+                                                                    .more_vert_rounded,
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(

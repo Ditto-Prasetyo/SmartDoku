@@ -7,16 +7,16 @@ import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/dialog.dart';
 
-class DetailPage extends StatefulWidget {
+class DetailPageAdmin extends StatefulWidget {
   final Map<String, dynamic>? suratData; // Parameter untuk data surat
 
-  const DetailPage({super.key, this.suratData});
+  const DetailPageAdmin({super.key, this.suratData});
 
   @override
-  State<DetailPage> createState() => _DetailPage();
+  State<DetailPageAdmin> createState() => _DetailPageAdmin();
 }
 
-class _DetailPage extends State<DetailPage> with TickerProviderStateMixin {
+class _DetailPageAdmin extends State<DetailPageAdmin> with TickerProviderStateMixin {
   var height, width;
 
   bool isRefreshing = false;
@@ -52,7 +52,7 @@ class _DetailPage extends State<DetailPage> with TickerProviderStateMixin {
       'hari_tanggal': 'Senin, ${baseData['tanggal'] ?? '28 Juli 2025'}',
       'waktu': '09:00 WIB',
       'tempat': 'Ruang Rapat Utama',
-      'disposisi': 'Segera ditindaklanjuti',
+      'disposisi': 'Permukiman',
       'index': 'IDX-${baseData['id']?.toString() ?? '1'}',
       'pengolah': 'Ahmad Santoso',
       'sifat': baseData['status'] == 'Proses' ? 'Urgent' : 'Normal',
@@ -549,6 +549,26 @@ class _DetailPage extends State<DetailPage> with TickerProviderStateMixin {
                                 ),
                               ),
                             ),
+                            InkWell(
+                              onTap: () => Navigator.pop(context),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: EdgeInsets.all(4.5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Color.fromRGBO(255, 255, 255, 1),
+                                  size: 20,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -600,142 +620,90 @@ class _DetailPage extends State<DetailPage> with TickerProviderStateMixin {
                         children: [
                           // Header Info Card
                           buildHeaderCard(detailData),
-
+                          
                           SizedBox(height: 20),
-
+                          
                           // Basic Information Section
                           buildSectionTitle('Informasi Dasar'),
                           SizedBox(height: 15),
                           buildInfoCard([
                             buildDetailRow('Nomor', detailData['nomor']),
-                            buildDetailRow(
-                              'Surat Dari',
-                              detailData['surat_dari'],
-                            ),
-                            buildDetailRow(
-                              'Diterima Tanggal',
-                              detailData['diterima_tgl'],
-                            ),
-                            buildDetailRow(
-                              'Tanggal Surat',
-                              detailData['tgl_surat'],
-                            ),
+                            buildDetailRow('Surat Dari', detailData['surat_dari']),
+                            buildDetailRow('Diterima Tanggal', detailData['diterima_tgl']),
+                            buildDetailRow('Tanggal Surat', detailData['tgl_surat']),
                             buildDetailRow('Kode', detailData['kode']),
                             buildDetailRow('No. Urut', detailData['no_urut']),
                           ]),
-
+                          
                           SizedBox(height: 20),
-
+                          
                           // Document Information Section
                           buildSectionTitle('Informasi Dokumen'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow(
-                              'No. Agenda',
-                              detailData['no_agenda'],
-                            ),
+                            buildDetailRow('No. Agenda', detailData['no_agenda']),
                             buildDetailRow('No. Surat', detailData['no_surat']),
                             buildDetailRow('Hal', detailData['hal']),
-                            buildDetailRow(
-                              'Hari/Tanggal',
-                              detailData['hari_tanggal'],
-                            ),
+                            buildDetailRow('Hari/Tanggal', detailData['hari_tanggal']),
                             buildDetailRow('Waktu', detailData['waktu']),
                             buildDetailRow('Tempat', detailData['tempat']),
                           ]),
-
+                          
                           SizedBox(height: 20),
-
+                          
                           // Processing Information Section
                           buildSectionTitle('Informasi Pemrosesan'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow(
-                              'Disposisi',
-                              detailData['disposisi'],
-                            ),
+                            buildDetailRow('Disposisi', detailData['disposisi']),
                             buildDetailRow('Index', detailData['index']),
                             buildDetailRow('Pengolah', detailData['pengolah']),
-                            buildDetailRow(
-                              'Sifat',
-                              detailData['sifat'],
-                              isStatus: true,
-                              statusColor: getSifatColor(detailData['sifat']),
-                            ),
-                            buildDetailRow(
-                              'Link Scan',
-                              detailData['link_scan'],
-                              isLink: true,
-                            ),
+                            buildDetailRow('Sifat', detailData['sifat'], 
+                                isStatus: true, statusColor: getSifatColor(detailData['sifat'])),
+                            buildDetailRow('Link Scan', detailData['link_scan'], isLink: true),
                           ]),
-
+                          
                           SizedBox(height: 20),
-
+                          
                           // Disposition Section
                           buildSectionTitle('Disposisi'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Disposisi 1', detailData['disp_1']),
-                            buildDetailRow('Disposisi 2', detailData['disp_2']),
-                            buildDetailRow('Disposisi 3', detailData['disp_3']),
-                            buildDetailRow('Disposisi 4', detailData['disp_4']),
-                            buildDetailRow(
-                              'Disposisi Lanjutan',
-                              detailData['disp_lanjutan'],
-                            ),
+                            buildDetailRow('Disposisi Kadin', detailData['disp_1']),
+                            buildDetailRow('Disposisi Sekdin', detailData['disp_2']),
+                            buildDetailRow('Disposisi Kabid / KaUPT', detailData['disp_3']),
+                            buildDetailRow('Disposisi Kasubag / Kasi', detailData['disp_4']),
+                            buildDetailRow('Disposisi Lanjutan', detailData['disp_lanjutan']),
                           ]),
-
+                          
                           SizedBox(height: 20),
-
+                          
                           // Follow Up Section
                           buildSectionTitle('Tindak Lanjut'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow(
-                              'Tindak Lanjut 1',
-                              detailData['tindak_lanjut_1'],
-                            ),
-                            buildDetailRow(
-                              'Tindak Lanjut 2',
-                              detailData['tindak_lanjut_2'],
-                            ),
-                            buildDetailRow(
-                              'Status',
-                              detailData['status'],
-                              isStatus: true,
-                              statusColor: getStatusColor(detailData['status']),
-                            ),
+                            buildDetailRow('Tindak Lanjut 1', detailData['tindak_lanjut_1']),
+                            buildDetailRow('Tindak Lanjut 2', detailData['tindak_lanjut_2']),
+                            buildDetailRow('Status', detailData['status'], 
+                                isStatus: true, statusColor: getStatusColor(detailData['status'])),
                           ]),
-
+                          
                           SizedBox(height: 20),
-
+                          
                           // Final Documents Section
                           buildSectionTitle('Dokumen Final'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow(
-                              'Dokumen Final',
-                              detailData['dokumen_final'],
-                            ),
-                            buildDetailRow(
-                              'Dokumen Dikirim',
-                              detailData['dokumen_dikirim'],
-                              isStatus: true,
-                              statusColor: getYesNoColor(
-                                detailData['dokumen_dikirim'],
-                              ),
-                            ),
-                            buildDetailRow(
-                              'Tanda Terima',
-                              detailData['tanda_terima'],
-                              isStatus: true,
-                              statusColor: getTandaTerimaColor(
-                                detailData['tanda_terima'],
-                              ),
-                            ),
+                            buildDetailRow('Dokumen Final', detailData['dokumen_final']),
+                            buildDetailRow('Dokumen Dikirim', detailData['dokumen_dikirim'], 
+                                isStatus: true, statusColor: getYesNoColor(detailData['dokumen_dikirim'])),
+                            buildDetailRow('Tanda Terima', detailData['tanda_terima'], 
+                                isStatus: true, statusColor: getTandaTerimaColor(detailData['tanda_terima'])),
                           ]),
-
+                          
                           SizedBox(height: 30),
+                          
+                          buildBackButtonSection(context),
                         ],
                       ),
                     ),
