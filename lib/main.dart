@@ -47,7 +47,7 @@ class SmartDoku extends StatelessWidget {
       routes: {
         '/surat_permohonan': (context) => PermohonanLetterPage(),
         '/surat_keluar': (context) => OutgoingLetterPage(),
-        '/surat_diposisi': (context) => DispositionLetterPage(),
+        '/surat_disposisi': (context) => DispositionLetterPage(),
         '/forms/detail_page': (context) => DetailPage(),
       },
     );

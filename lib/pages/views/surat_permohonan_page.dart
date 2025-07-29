@@ -147,8 +147,6 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
     _backgroundController.repeat(reverse: true);
   }
 
-  
-
   // Function toggle search options
   void _toggleSearchOptions() {
     if (showSearchOptions) {

@@ -749,7 +749,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     Color(0xFF4F46E5),
                                     Color(0xFF7C3AED),
                                   ],
-                                  'route': 'surat_permohonan_page',
+                                  'route': 'surat_permohonan_page.dart',
                                 },
                                 {
                                   'icon': FontAwesomeIcons.envelopeCircleCheck,
@@ -758,7 +758,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     Color(0xFF059669),
                                     Color(0xFF0D9488),
                                   ],
-                                  'route': 'surat_keluar_page',
+                                  'route': 'surat_keluar_page.dart',
                                 },
                                 {
                                   'icon': Icons.assignment_turned_in_rounded,
@@ -767,7 +767,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     Color(0xFFDC2626),
                                     Color(0xFFEA580C),
                                   ],
-                                  'route': 'surat_disposisi_page',
+                                  'route': 'surat_disposisi_page.dart',
                                 },
                                 {
                                   'icon': Icons.upload,
