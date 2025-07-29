@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_doku/pages/forms/detail_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_before_page.dart';
 import 'package:smart_doku/pages/views/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/surat_keluar_page.dart';
@@ -46,7 +47,7 @@ class SmartDoku extends StatelessWidget {
       routes: {
         '/surat_permohonan': (context) => PermohonanLetterPage(),
         '/surat_keluar': (context) => OutgoingLetterPage(),
-        '/surat_disposisi': (context) => DispositionLetterPage(),
+        '/detail_page': (context) => DetailPage(),
       },
     );
   }

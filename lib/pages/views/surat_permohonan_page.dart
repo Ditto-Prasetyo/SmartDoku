@@ -63,6 +63,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
 
   List<Map<String, dynamic>> suratData = [
     {
+      'id' : '1',
       'judul': 'Surat Pemberitahuan Rapat Bulanan',
       'perihal':
           'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
@@ -71,6 +72,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
       'status': 'Proses',
     },
     {
+      'id' : '2',
       'judul': 'Pengajuan Cuti Tahunan',
       'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
       'tanggal': '27 Juli 2025',
@@ -78,6 +80,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
       'status': 'Selesai',
     },
     {
+      'id' : '3',
       'judul': 'Laporan Keuangan Q2 2025',
       'perihal': 'Report keuangan triwulan kedua tahun 2025',
       'tanggal': '26 Juli 2025',
@@ -85,6 +88,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
       'status': 'Proses',
     },
     {
+      'id' : '4',
       'judul': 'Undangan Seminar IT',
       'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
       'tanggal': '25 Juli 2025',
@@ -92,6 +96,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
       'status': 'Selesai',
     },
     {
+      'id' : '5',
       'judul': 'Surat Peringatan Kedisiplinan',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
       'tanggal': '24 Juli 2025',
@@ -166,9 +171,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
     );
   }
 
-  void _action(index) {
-    itemCount:
-    suratData.length;
+  void _action(int index) {;
     final surat = suratData[index];
 
     String perihal = surat['perihal'] ?? '';
@@ -177,12 +180,25 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
         : perihal;
 
     _showModernActionDialog(
+      index,
       '${surat['judul']}',
       'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat['tanggal']}',
       Color(0xFF10B981).withValues(alpha: 0.3),
       Colors.orange,
       Colors.deepOrange,
     );
+  }
+
+  void _viewDetail(int index){
+
+  }
+
+  void _editDokumen(int index){
+
+  }
+
+  void _hapusDokumen(int index){
+
   }
 
   // Function toggle search options
@@ -593,12 +609,14 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
   }
 
   void _showModernActionDialog(
+    int selectedIndex,
     String title,
     String message,
     Color accentColor,
     Color accentColor2,
     Color accentColor3,
   ) {
+    final selectedSurat = suratData[selectedIndex];
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -703,7 +721,10 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                         Container(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () { 
+                              Navigator.pop(context);
+                              _viewDetail(selectedIndex);
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: accentColor,
                               foregroundColor: Colors.white,
@@ -730,6 +751,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop();
+                              _editDokumen(selectedIndex);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: accentColor2,
@@ -757,6 +779,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                           child: ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop();
+                              _hapusDokumen(selectedIndex);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: accentColor3,
@@ -2053,7 +2076,9 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                     print(
                                                       'Surat dipilih: ${surat['judul']}',
                                                     );
-                                                    // Navigator.push ke detail page
+                                                  },
+                                                  onLongPress: () {
+                                                    _action(index);
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
