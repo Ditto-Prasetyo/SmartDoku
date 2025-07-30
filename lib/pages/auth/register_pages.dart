@@ -1,5 +1,4 @@
 import 'package:smart_doku/pages/auth/login_page.dart';
-import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';

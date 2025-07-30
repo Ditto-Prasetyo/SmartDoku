@@ -1,4 +1,3 @@
-import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';

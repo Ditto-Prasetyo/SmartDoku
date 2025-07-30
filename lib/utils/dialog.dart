@@ -3,9 +3,6 @@ import 'dart:ui';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/views/users/home_page.dart';
-import 'package:smart_doku/utils/function.dart';
-import 'package:smart_doku/pages/views/users/surat_permohonan_page.dart';
-import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/utils/widget.dart';
 
 // Auths Section 

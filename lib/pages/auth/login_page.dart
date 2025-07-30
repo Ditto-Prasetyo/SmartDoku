@@ -1,9 +1,9 @@
 import 'package:smart_doku/api/service.dart';
 import 'package:smart_doku/pages/auth/register_pages.dart';
-import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'dart:ui';
 import 'dart:math';
 
@@ -497,7 +497,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                               ],
                                             ),
                                             child: ElevatedButton(
-                                              onPressed: () => handleLogin,
+                                              onPressed: () => handleLogin(context, _usernameController, _passwordController),
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
                                                     Colors.transparent,

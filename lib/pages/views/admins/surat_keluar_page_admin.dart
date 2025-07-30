@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
-import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 
 class OutgoingLetterPageAdmin extends StatefulWidget {

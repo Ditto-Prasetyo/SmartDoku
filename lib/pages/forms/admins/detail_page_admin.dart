@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:smart_doku/pages/auth/login_page.dart';
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:smart_doku/pages/views/users/home_page.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
-import 'package:smart_doku/utils/dialog.dart';
 
 class DetailPageAdmin extends StatefulWidget {
   final Map<String, dynamic>? suratData; // Parameter untuk data surat

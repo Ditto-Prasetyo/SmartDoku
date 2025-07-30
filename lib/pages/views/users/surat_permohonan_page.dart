@@ -739,7 +739,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                     ),
                                   ),
                                   onTap: () {
-                                    logout;
+                                    logout(context);
                                   },
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),

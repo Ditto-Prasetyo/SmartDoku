@@ -440,7 +440,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       ],
                                     ),
                                   ),
-                                  onTap: () => logout,
+                                  onTap: () => logout(context),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
