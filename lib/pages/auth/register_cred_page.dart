@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:smart_doku/utils/formatter.dart';
 import 'package:smart_doku/utils/hover.dart';
+import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/utils/function.dart';
 import 'dart:ui';
 import 'dart:math';
 
@@ -27,16 +29,14 @@ class RegisterCredPageState extends State<RegisterCredPage>
   final _addressController = TextEditingController();
   final _sectionWorkController = TextEditingController();
 
-  final int _maxLengthname = 16;
-  final int _maxLengthphone = 30;
-  final int _maxLengthaddress = 191;
-
   final _nameFocus = FocusNode();
   final _phoneFocus = FocusNode();
   final _addressFocus = FocusNode();
   final _sectionWorkFocus = FocusNode();
 
   String? _selectedWorkField;
+  String? _workFieldError;
+
   final List<String> _workFields = [
     'Sekretariat',
     'Permukiman',
@@ -117,395 +117,6 @@ class RegisterCredPageState extends State<RegisterCredPage>
     _formController.forward();
     _particleController.repeat();
     _pulseController.repeat(reverse: true);
-  }
-
-  void _handleSession() {
-    final NameChecker = _nameController.text.trim();
-    final PhoneChecker = _phoneController.text.trim();
-    final AddressChecker = _addressController.text.trim();
-
-    if (NameChecker.isEmpty && PhoneChecker.isEmpty && AddressChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Login Error',
-        'Name, Phone, dan Address tidak boleh kosong!',
-        Colors.redAccent,
-      );
-      return;
-    } else if (NameChecker.isEmpty && PhoneChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Name and Phone Required',
-        'Nama dan Nomor Telepon tidak boleh kosong!',
-        Colors.orange,
-      );
-      return;
-    } else if (PhoneChecker.isEmpty && AddressChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Phone and Address Required',
-        'Nomor Telepon dan Alamat Rumah tidak boleh kosong!',
-        Colors.orange,
-      );
-      return;
-    } else if (NameChecker.isEmpty && AddressChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Name and Address Required',
-        'Nama dan Alamat Rumah tidak boleh kosong',
-        Colors.orange,
-      );
-      return;
-    } else if (NameChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Name Required',
-        'Nama tidak boleh kosong',
-        Colors.orange,
-      );
-      return;
-    } else if (PhoneChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Phone Required',
-        'Nomor Telepon tidak boleh kosong',
-        Colors.orange,
-      );
-      return;
-    } else if (AddressChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Address Required',
-        'Alamat Rumah tidak boleh kosong',
-        Colors.orange,
-      );
-      return;
-    }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
-  }
-
-  void _checkLengthName(String value) {
-    if (value.length > _maxLengthname) {
-      _nameController.text = value.substring(0, _maxLengthname);
-      _nameController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _nameController.text.length),
-      );
-      _showErrorDialog(
-        '⛔ Error',
-        'Pastikan Bahwa Anda Mengisi Nama Dengan Benar!',
-        Colors.deepOrange,
-        Icons.warning_rounded,
-      );
-    }
-  }
-
-  void _checkLengthPhone(String value) {
-    if (value.length > _maxLengthphone) {
-      _phoneController.text = value.substring(0, _maxLengthphone);
-      _phoneController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _phoneController.text.length),
-      );
-      _showErrorDialog(
-        '⛔ Error',
-        'Pastikan Bahwa Anda Mengisi Nomor Telepon Dengan Benar!',
-        Colors.deepOrange,
-        Icons.warning_rounded,
-      );
-    }
-  }
-
-  void _checkLengthAddress(String value) {
-    if (value.length > _maxLengthaddress) {
-      _addressController.text = value.substring(0, _maxLengthaddress);
-      _addressController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _addressController.text.length),
-      );
-      _showErrorDialog(
-        '⛔ Error',
-        'Pastikan Bahwa Anda Mengisi Alamat Rumah Dengan Benar!',
-        Colors.deepOrange,
-        Icons.warning_rounded,
-      );
-    }
-  }
-
-  void _checkLengthSectionWork(String value) {}
-
-  void _showErrorDialog(
-    String title,
-    String message,
-    Color accentColor,
-    IconData icon,
-  ) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(icon, color: Colors.white, size: 30),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _nameController.clear();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showModernErrorDialog(String title, String message, Color accentColor) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.warning_rounded,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -724,17 +335,22 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                         controller: _nameController,
                                         cursorColor: Colors.white,
                                         onChanged: (value) {
-                                          _checkLengthName(value);
+                                          checkLengthName(
+                                            context,
+                                            value,
+                                            _nameController,
+                                          );
 
                                           int spaceCount = RegExp(
                                             r' ',
                                           ).allMatches(value).length;
                                           if (spaceCount > 5) {
-                                            _showErrorDialog(
+                                            showErrorDialog(
+                                              context,
                                               '⛔ Gunakan Nama Asli Anda',
                                               "Nama Anda Tidak Boleh Lebih Dari Lima Spasi!",
                                               Colors.deepOrange,
-                                              Icons.warning_rounded,
+                                              _nameController,
                                             );
                                           }
 
@@ -745,13 +361,15 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                         focusNode: _nameFocus,
                                         keyboardType: TextInputType.name,
                                         inputFormatters: [
-                                          NoDigitsFormatter(
-                                            onInvalidInput: (msg) =>
-                                                _showModernErrorDialog(
-                                                  '⚠️ Gunakan Nama Asli Anda',
-                                                  'Nama Asli Tidak Mungkin Memiliki Angka!',
-                                                  Colors.orange,
-                                                ),
+                                          FullNameFormatter(
+                                            onInvalidInput: (msg) {
+                                              showModernErrorDialog(
+                                                context,
+                                                '⚠️ Gunakan Nama Asli Anda',
+                                                msg,
+                                                Colors.orange,
+                                              );
+                                            },
                                           ),
                                         ],
                                         textInputAction: TextInputAction.next,
@@ -818,13 +436,20 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                       child: TextFormField(
                                         controller: _phoneController,
                                         cursorColor: Colors.white,
-                                        onChanged: _checkLengthPhone,
+                                        onChanged: (value) {
+                                          checkLengthPhone(
+                                            context,
+                                            value,
+                                            _phoneController,
+                                          );
+                                        },
                                         focusNode: _phoneFocus,
                                         keyboardType: TextInputType.number,
                                         inputFormatters: [
                                           DigitOnlyWithErrorFormatter(
                                             onInvalidInput: (msg) =>
-                                                _showModernErrorDialog(
+                                                showModernErrorDialog(
+                                                  context,
                                                   '⚠️ Gunakan Nomor Asli Anda',
                                                   'Pastikan Anda Hanya Memasukkan Angka Sesuai Nomor Anda!',
                                                   Colors.orange,
@@ -894,23 +519,33 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                       child: TextFormField(
                                         controller: _addressController,
                                         cursorColor: Colors.white,
-                                        onChanged: _checkLengthAddress,
+                                        onChanged: (value) {
+                                          checkLengthAddress(
+                                            context,
+                                            value,
+                                            _addressController,
+                                          );
+                                        },
                                         focusNode: _addressFocus,
                                         keyboardType:
                                             TextInputType.streetAddress,
                                         inputFormatters: [
                                           NormalAddressFormatter(
                                             onInvalidInput: (msg) =>
-                                                _showModernErrorDialog(
+                                                showModernErrorDialog(
+                                                  context,
                                                   '⛔ Error',
                                                   'Pastikan Anda Memasukkan Alamat Sesuai Dengan Lokasi Anda Sebenarnya!',
                                                   Colors.deepOrange,
                                                 ),
                                           ),
                                         ],
-                                        textInputAction: TextInputAction.done,
+
+                                        textInputAction: TextInputAction.next,
                                         onFieldSubmitted: (value) {
-                                          _handleSession();
+                                          FocusScope.of(
+                                            context,
+                                          ).requestFocus(_sectionWorkFocus);
                                         },
                                         style: TextStyle(
                                           fontSize: 16,
@@ -988,10 +623,9 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                                     color: Colors.white
                                                         .withValues(alpha: 0.6),
                                                   ),
-                                                  softWrap:
-                                                      true,
-                                                  overflow: TextOverflow
-                                                      .visible,
+                                                  softWrap: true,
+                                                  overflow:
+                                                      TextOverflow.visible,
                                                 ),
                                               ),
                                             ],
@@ -1014,15 +648,14 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                                     _sectionWorkController
                                                             .text =
                                                         value;
-                                                    _checkLengthSectionWork(
-                                                      value,
-                                                    );
+                                                    _workFieldError = null;
                                                   });
                                                   Navigator.pop(context);
                                                 },
                                               ),
                                             );
                                           }).toList(),
+
                                           dropdownStyleData: DropdownStyleData(
                                             decoration: BoxDecoration(
                                               gradient: LinearGradient(
@@ -1069,15 +702,29 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                               ),
                                           onChanged: (String? newValue) {
                                             setState(() {
-                                              _selectedWorkField = newValue!;
+                                              _selectedWorkField = newValue;
                                               _sectionWorkController.text =
-                                                  newValue;
-                                              _checkLengthSectionWork(newValue);
+                                                  newValue!;
+                                              _workFieldError = null;
                                             });
                                           },
                                         ),
                                       ),
                                     ),
+                                    if (_workFieldError != null)
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 5,
+                                          left: 12,
+                                        ),
+                                        child: Text(
+                                          _workFieldError!,
+                                          style: TextStyle(
+                                            color: Colors.redAccent,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ),
                                     AnimatedBuilder(
                                       animation: _pulseAnimation,
                                       builder: (context, child) {
@@ -1127,7 +774,9 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                               ],
                                             ),
                                             child: ElevatedButton(
-                                              onPressed: _handleSession,
+                                              onPressed: () {
+                                                handleRegister(context, _selectedWorkField, _nameController, _phoneController, _addressController);
+                                              },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
                                                     Colors.transparent,

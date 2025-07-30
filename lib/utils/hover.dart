@@ -22,7 +22,6 @@ class _HoverMenuItemState extends State<HoverMenuItem> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: widget.onTap,
       onHover: (hovering) {
         setState(() => _isHovering = hovering);
       },

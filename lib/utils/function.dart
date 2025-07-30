@@ -1,7 +1,313 @@
 import 'package:flutter/material.dart';
+import 'package:smart_doku/pages/auth/login_page.dart';
+import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
+import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
+import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/dialog.dart';
+
+// Auths Section
+
+// -- Login Page --
+void handleLogin(
+  BuildContext context,
+  TextEditingController usernameController,
+  TextEditingController passwordController,
+) {
+  final usernameChecker = usernameController.text.trim();
+  final passwordChecker = passwordController.text.trim();
+
+  if (usernameChecker.isEmpty && passwordChecker.isEmpty) {
+    showModernErrorDialog(
+      context,
+      '❌ Login Error',
+      'Username dan Password tidak boleh kosong!',
+      Colors.redAccent,
+    );
+    return;
+  } else if (usernameChecker.isEmpty) {
+    showModernErrorDialog(
+      context,
+      '❌ Username Required',
+      'Username tidak boleh kosong!',
+      Colors.orange,
+    );
+    return;
+  } else if (passwordChecker.isEmpty) {
+    showModernErrorDialog(
+      context,
+      '❌ Password Required',
+      'Password tidak boleh kosong!',
+      Colors.orange,
+    );
+    return;
+  }
+
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => Splash()),
+  );
+}
+
+void checkLengthPassword(
+  BuildContext context,
+  String value,
+  TextEditingController passwordController,
+) {
+  final int _maxLengthPassword = 20;
+
+  if (value.contains(' ')) {
+    showErrorDialog(
+      context,
+      '⚠️ Invalid Format',
+      'Password tidak boleh mengandung spasi!',
+      Colors.amber,
+      passwordController,
+    );
+    return;
+  }
+
+  if (value.length > _maxLengthPassword) {
+    passwordController.text = value.substring(0, _maxLengthPassword);
+    passwordController.selection = TextSelection.fromPosition(
+      TextPosition(offset: passwordController.text.length),
+    );
+    showErrorDialog(
+      context,
+      '⛔ Error',
+      'Pastikan Bahwa Anda Mengisi Password Dengan Benar!',
+      Colors.deepOrange,
+      passwordController,
+    );
+  }
+}
+
+void checkLengthUsername(
+  BuildContext context,
+  String value,
+  TextEditingController usernameController,
+) {
+  final int maxLengthUsername = 30;
+  if (value.length > maxLengthUsername) {
+    usernameController.text = value.substring(0, maxLengthUsername);
+    usernameController.selection = TextSelection.fromPosition(
+      TextPosition(offset: usernameController.text.length),
+    );
+    showErrorDialog(
+      context,
+      '⛔ Error',
+      'Pastikan Bahwa Anda Mengisi Username Dengan Benar!',
+      Colors.deepOrange,
+      usernameController,
+    );
+  }
+}
+
+// -- Register Page --
+void handleSession(
+  BuildContext context,
+  TextEditingController usernameController,
+  TextEditingController passwordController,
+  TextEditingController emailController,
+  final List<String> allowedDomains,
+) {
+  final usernameChecker = usernameController.text.trim();
+  final passwordChecker = passwordController.text.trim();
+  final emailChecker = emailController.text
+      .trim(); // Fix: sebelumnya salah, keisi password
+
+  List<String> kosongFields = [];
+
+  if (usernameChecker.isEmpty) kosongFields.add('Username');
+  if (passwordChecker.isEmpty) kosongFields.add('Password');
+  if (emailChecker.isEmpty) kosongFields.add('Email');
+
+  if (kosongFields.isNotEmpty) {
+    String message = '';
+    if (kosongFields.length == 1) {
+      message = '${kosongFields[0]} tidak boleh kosong!';
+    } else if (kosongFields.length == 2) {
+      message = '${kosongFields[0]} dan ${kosongFields[1]} tidak boleh kosong!';
+    } else {
+      message =
+          kosongFields.sublist(0, kosongFields.length - 1).join(', ') +
+          ', dan ${kosongFields.last} tidak boleh kosong!';
+    }
+
+    showModernErrorDialog(context, '❌ Login Error', message, Colors.redAccent);
+    return;
+  }
+
+  // Validasi format email
+  if (!emailChecker.contains('@')) {
+    showErrorDialogEmailFormat(
+      context,
+      '⚠️ Email Tidak Valid',
+      "Email harus mengandung simbol '@'!",
+      Colors.orange,
+    );
+    return;
+  }
+
+  // Validasi domain email
+  bool isAllowedDomain = allowedDomains.any(
+    (domain) => emailChecker.endsWith(domain),
+  );
+  if (!isAllowedDomain) {
+    showErrorDialogEmailFormat(
+      context,
+      '⚠️ Email Tidak Valid',
+      "Email hanya boleh dari domain berikut:\n" + allowedDomains.join(', '),
+      Colors.orange,
+    );
+    return;
+  }
+
+  // Lanjut ke halaman register
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => RegisterCredPage()),
+  );
+}
+
+void checkLengthEmail(
+  BuildContext context,
+  String value,
+  TextEditingController emailController,
+) {
+  final int _maxLengthEmail = 20;
+  if (value.contains(' ')) {
+    showErrorDialogEmailSpaceChecker(
+      context,
+      '⚠️ Invalid Format',
+      'Email Tidak Boleh Mengandung Spasi',
+      Colors.orange,
+      emailController,
+    );
+  }
+  if (value.length > _maxLengthEmail) {
+    emailController.text = value.substring(0, _maxLengthEmail);
+    emailController.selection = TextSelection.fromPosition(
+      TextPosition(offset: emailController.text.length),
+    );
+    showErrorDialogLengthEmail(
+      context,
+      '⛔ Error',
+      'Pastikan Bahwa Anda Mengisi Username Dengan Benar!',
+      Colors.deepOrange,
+      emailController,
+    );
+  }
+}
+
+// -- Register Cred Page --
+void handleRegister(
+  BuildContext context,
+  String? selectedWorkField,
+  TextEditingController _nameController,
+  TextEditingController _phoneController,
+  TextEditingController _addressController,
+) {
+  final NameChecker = _nameController.text.trim();
+  final PhoneChecker = _phoneController.text.trim();
+  final AddressChecker = _addressController.text.trim();
+
+  if (NameChecker.isEmpty ||
+      PhoneChecker.isEmpty ||
+      AddressChecker.isEmpty ||
+      selectedWorkField == null) {
+    List<String> kosongFields = [];
+
+    if (NameChecker.isEmpty) kosongFields.add('Nama');
+    if (PhoneChecker.isEmpty) kosongFields.add('Nomor Telepon');
+    if (AddressChecker.isEmpty) kosongFields.add('Alamat');
+    if (selectedWorkField == null) kosongFields.add('Bidang Pekerjaan');
+
+    String message = '';
+    if (kosongFields.length == 1) {
+      message = '${kosongFields[0]} tidak boleh kosong!';
+    } else if (kosongFields.length == 2) {
+      message = '${kosongFields[0]} dan ${kosongFields[1]} tidak boleh kosong!';
+    } else {
+      message =
+          kosongFields.sublist(0, kosongFields.length - 1).join(', ') +
+          ', dan ${kosongFields.last} tidak boleh kosong!';
+    }
+
+    showModernErrorDialog(context, '❌ Login Error', message, Colors.redAccent);
+    return;
+  }
+
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => LoginPage()),
+  );
+}
+
+void checkLengthName(
+  BuildContext context,
+  String value,
+  TextEditingController _nameController,
+) {
+  final int _maxLengthname = 16;
+  if (value.length > _maxLengthname) {
+    _nameController.text = value.substring(0, _maxLengthname);
+    _nameController.selection = TextSelection.fromPosition(
+      TextPosition(offset: _nameController.text.length),
+    );
+    showErrorDialog(
+      context,
+      '⛔ Error',
+      'Pastikan Bahwa Anda Mengisi Nama Dengan Benar!',
+      Colors.deepOrange,
+      _nameController,
+    );
+  }
+}
+
+void checkLengthPhone(
+  BuildContext context,
+  String value,
+  TextEditingController _phoneController,
+) {
+  final int _maxLengthphone = 30;
+  if (value.length > _maxLengthphone) {
+    _phoneController.text = value.substring(0, _maxLengthphone);
+    _phoneController.selection = TextSelection.fromPosition(
+      TextPosition(offset: _phoneController.text.length),
+    );
+    showErrorDialog(
+      context,
+      '⛔ Error',
+      'Pastikan Bahwa Anda Mengisi Nomor Telepon Dengan Benar!',
+      Colors.deepOrange,
+      _phoneController,
+    );
+  }
+}
+
+void checkLengthAddress(
+  BuildContext context,
+  String value,
+  TextEditingController _addressController,
+) {
+  final int _maxLengthaddress = 191;
+  if (value.length > _maxLengthaddress) {
+    _addressController.text = value.substring(0, _maxLengthaddress);
+    _addressController.selection = TextSelection.fromPosition(
+      TextPosition(offset: _addressController.text.length),
+    );
+    showErrorDialog(
+      context,
+      '⛔ Error',
+      'Pastikan Bahwa Anda Mengisi Alamat Rumah Dengan Benar!',
+      Colors.deepOrange,
+      _addressController,
+    );
+  }
+}
+// Other Functions
 
 void logout(BuildContext context) {
   Navigator.of(context).pop();
@@ -59,22 +365,17 @@ void viewDetail(
   BuildContext context,
   int index,
   List<Map<String, dynamic>> suratData,
-  ) {
+) {
   final surat = suratData[index];
   print('View Detail - ID: ${surat['id']}, Judul: ${surat['judul']}');
 
   Navigator.push(
     context,
-    MaterialPageRoute(
-      builder: (context) => DetailPage(suratData: surat),
-    ),
+    MaterialPageRoute(builder: (context) => DetailPage(suratData: surat)),
   );
 }
 
-void editDokumen(
-  int index,
-  List<Map<String, dynamic>> suratData,
-  ) {
+void editDokumen(int index, List<Map<String, dynamic>> suratData) {
   final surat = suratData[index];
   print('Edit Document - ID: ${surat['id']}, Judul: ${surat['judul']}');
 }

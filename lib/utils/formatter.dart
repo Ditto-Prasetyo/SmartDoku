@@ -108,3 +108,37 @@ class NormalEmailFormatter extends TextInputFormatter {
     return newValue;
   }
 }
+
+class FullNameFormatter extends TextInputFormatter {
+  final void Function(String message)? onInvalidInput;
+  bool _hasShownDialog = false;
+
+  FullNameFormatter({this.onInvalidInput});
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final String newText = newValue.text;
+
+    // Regex: hanya huruf dan spasi
+    final isValid = RegExp(r'^[a-zA-Z\s]*$').hasMatch(newText);
+
+    if (!isValid && !_hasShownDialog) {
+      _hasShownDialog = true;
+
+      // Delay biar dialog muncul setelah TextField selesai proses
+      Future.microtask(() {
+        onInvalidInput?.call(
+          'Nama hanya boleh berisi huruf dan spasi!',
+        );
+        _hasShownDialog = false; // Biar bisa muncul lagi nanti kalo diulangin
+      });
+
+      return oldValue; // Balikin value lama biar input ditolak
+    }
+
+    return newValue; // Valid → input jalan
+  }
+}
