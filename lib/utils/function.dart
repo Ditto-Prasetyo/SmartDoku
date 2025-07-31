@@ -428,3 +428,48 @@ void pickDocument(BuildContext context) async {
     SnackBar(content: Text('Fitur upload dokumen akan segera tersedia')),
   );
 }
+
+// edit Dokumen
+void editDocument(
+  BuildContext context,
+  int index,
+  List<Map<String, dynamic>> suratData,
+
+  ) {
+  final surat = suratData[index];
+  print('Edit Document - ID: ${surat['id']}, Judul: ${surat['judul']}');
+  
+  // Ambil detail data untuk edit
+  final detailData = {
+    'nomor': surat['id']?.toString() ?? '001',
+    'surat_dari': surat['pengirim'] ?? 'HRD Department',
+    'diterima_tgl': '28 Juli 2025',
+    'tgl_surat': surat['tanggal'] ?? '28 Juli 2025',
+    'kode': 'SR-2025-${surat['id']?.toString().padLeft(3, '0') ?? '001'}',
+    'no_urut': '${surat['id']?.toString() ?? '1'}/25',
+    'no_agenda': 'AG-${DateTime.now().year}-${surat['id']?.toString().padLeft(4, '0') ?? '0001'}',
+    'no_surat': 'ST/${DateTime.now().year}/${surat['id']?.toString().padLeft(3, '0') ?? '001'}',
+    'hal': surat['judul'] ?? 'Surat Pemberitahuan',
+    'hari_tanggal': 'Senin, ${surat['tanggal'] ?? '28 Juli 2025'}',
+    'waktu': '09:00 WIB',
+    'tempat': 'Ruang Rapat Utama',
+    'disposisi': 'Segera ditindaklanjuti',
+    'index': 'IDX-${surat['id']?.toString() ?? '1'}',
+    'pengolah': 'Ahmad Santoso',
+    'sifat': surat['status'] == 'Proses' ? 'Urgent' : 'Normal',
+    'link_scan': 'https://drive.google.com/file/scan-${surat['id'] ?? 1}',
+    'disp_1': 'Kepala Bagian - Review dokumen',
+    'disp_2': 'Manager Operasional - Persetujuan',
+    'disp_3': 'Direktur - Final approval',
+    'disp_4': 'Sekretaris - Dokumentasi',
+    'disp_lanjutan': 'Kirim ke semua departemen terkait',
+    'tindak_lanjut_1': 'Koordinasi dengan team',
+    'tindak_lanjut_2': 'Laporan progress mingguan',
+    'status': surat['status'] ?? 'Proses',
+    'dokumen_final': 'Final_Doc_${surat['id'] ?? 1}.pdf',
+    'dokumen_dikirim': surat['status'] == 'Selesai' ? 'Ya' : 'Belum',
+    'tanda_terima': surat['status'] == 'Selesai' ? 'Sudah diterima' : 'Pending',
+  };
+  
+  
+}

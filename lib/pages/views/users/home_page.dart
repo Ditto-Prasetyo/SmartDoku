@@ -770,13 +770,13 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   'route': 'surat_disposisi_page.dart',
                                 },
                                 {
-                                  'icon': Icons.upload,
-                                  'title': 'Upload File',
+                                  'icon': Icons.support_agent,
+                                  'title': 'Support',
                                   'colors': [
                                     Color(0xFF7C2D12),
                                     Color(0xFF9A3412),
                                   ],
-                                  'route': 'upload_file',
+                                  'route': 'support',
                                 },
                               ];
 
@@ -804,8 +804,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       break;
                                     case 3:
                                       // Upload File functionality
-                                      showUploadDialog(context,
-                                      pickDocument, pickImage);
+                                      showSupportDialog(context);
                                       break;
                                   }
                                 },
