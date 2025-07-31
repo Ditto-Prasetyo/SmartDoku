@@ -134,13 +134,20 @@ void showErrorDialog(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -277,13 +284,20 @@ void showModernErrorDialog(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -425,13 +439,20 @@ void showErrorDialogLengthUsername(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -572,13 +593,20 @@ void showErrorDialogLengthPassword(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -719,13 +747,20 @@ void showErrorDialogLengthEmail(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -864,13 +899,20 @@ void showErrorDialogEmailFormat(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1018,13 +1060,20 @@ void showErrorDialogUsernameSpaceChecker(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1172,13 +1221,20 @@ void showErrorDialogPasswordSpaceChecker(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1324,13 +1380,20 @@ void showErrorDialogEmailSpaceChecker(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Got it!',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 14),
+                              Text(
+                                'Got it!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1471,13 +1534,20 @@ void showModernLogoutDialog(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.cancel),
+                              SizedBox(width: 10),
+                              Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1504,13 +1574,20 @@ void showModernLogoutDialog(
                             elevation: 8,
                             shadowColor: accentColor2.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Yes',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 10),
+                              Text(
+                                'Yes',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1648,13 +1725,20 @@ void showModernHomeDialog(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.cancel),
+                              SizedBox(width: 10),
+                              Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1681,13 +1765,20 @@ void showModernHomeDialog(
                             elevation: 8,
                             shadowColor: accentColor2.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Yes',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 10),
+                              Text(
+                                'Yes',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -2092,20 +2183,20 @@ void showModernActionErrorDialog(
                           shape: BoxShape.circle,
                           gradient: LinearGradient(
                             colors: [
-                              Color(0xFF10B981).withValues(alpha: 0.3),
-                              Color(0xFF059669).withValues(alpha: 0.2),
+                              Colors.orange.withValues(alpha: 0.7),
+                              Colors.orange.withValues(alpha: 0.6),
                             ],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Color(0xFF10B981).withValues(alpha: 0.3),
+                              color: Colors.orange.withValues(alpha: 0.9),
                               blurRadius: 15,
                               spreadRadius: 2,
                             ),
                           ],
                         ),
                         child: Icon(
-                          LineIcons.envelopeOpen,
+                          Icons.warning,
                           color: Colors.white,
                           size: 30,
                         ),
@@ -2605,13 +2696,20 @@ void showModernHapusDialog(
                             elevation: 8,
                             shadowColor: accentColor.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.cancel),
+                              SizedBox(width: 10),
+                              Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -2633,13 +2731,20 @@ void showModernHapusDialog(
                             elevation: 8,
                             shadowColor: accentColor2.withValues(alpha: 0.4),
                           ),
-                          child: Text(
-                            'Yes',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 10),
+                              Text(
+                                'Yes',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
