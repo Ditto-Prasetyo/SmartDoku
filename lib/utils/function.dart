@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/auth/register_cred_page.dart';
+import 'package:smart_doku/pages/forms/admins/detail_page_admin.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/utils/dialog.dart';
@@ -343,19 +344,53 @@ void action(
   String perihalPendek = perihal.length > 30
       ? '${perihal.substring(0, 30)}...'
       : perihal;
-
-  showModernActionDialog(
+  print('Anda Menggunakan User');
+  showModernActionUserDialog(
     index,
     '${surat['judul']}',
     'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat['tanggal']}',
-    Color(0xFF10B981).withValues(alpha: 0.3),
+    Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
+    Color(0xFF10B981).withValues(alpha: 0.4),
     context,
     suratData,
     editDokumen,
     viewDetail,
     hapusDokumen,
+  );
+}
+
+void actionAdmin(
+  int index,
+  BuildContext context,
+  List<Map<String, dynamic>> suratData,
+  void Function(int) editDokumen,
+  void Function(int) viewDetailAdmin,
+  void Function(int) hapusDokumen,
+) {
+  final surat = suratData[index];
+
+  String perihal = surat['perihal'] ?? '';
+  String perihalPendek = perihal.length > 30
+      ? '${perihal.substring(0, 30)}...'
+      : perihal;
+  print('Anda Menggunakan Admin');
+  showModernActionAdminDialog(
+    index,
+    '${surat['judul']}',
+    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat['tanggal']}',
+    Colors.indigo.withValues(alpha: 0.9),
+    Colors.orange,
+    Colors.deepOrange,
+    Color(0xFF10B981).withValues(alpha: 0.4),
+    context,
+    suratData,
+    editDokumen,
+    viewDetailAdmin,
+    hapusDokumen,
+    pickDocument,
+    pickImage,
   );
 }
 
@@ -370,6 +405,20 @@ void viewDetail(
   Navigator.push(
     context,
     MaterialPageRoute(builder: (context) => DetailPage(suratData: surat)),
+  );
+}
+
+void viewDetailAdmin(
+  BuildContext context,
+  int index,
+  List<Map<String, dynamic>> suratData,
+) {
+  final surat = suratData[index];
+  print('View Detail - ID: ${surat['id']}, Judul: ${surat['judul']}');
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => DetailPageAdmin(suratData: surat)),
   );
 }
 
@@ -434,11 +483,10 @@ void editDocument(
   BuildContext context,
   int index,
   List<Map<String, dynamic>> suratData,
-
-  ) {
+) {
   final surat = suratData[index];
   print('Edit Document - ID: ${surat['id']}, Judul: ${surat['judul']}');
-  
+
   // Ambil detail data untuk edit
   final detailData = {
     'nomor': surat['id']?.toString() ?? '001',
@@ -447,8 +495,10 @@ void editDocument(
     'tgl_surat': surat['tanggal'] ?? '28 Juli 2025',
     'kode': 'SR-2025-${surat['id']?.toString().padLeft(3, '0') ?? '001'}',
     'no_urut': '${surat['id']?.toString() ?? '1'}/25',
-    'no_agenda': 'AG-${DateTime.now().year}-${surat['id']?.toString().padLeft(4, '0') ?? '0001'}',
-    'no_surat': 'ST/${DateTime.now().year}/${surat['id']?.toString().padLeft(3, '0') ?? '001'}',
+    'no_agenda':
+        'AG-${DateTime.now().year}-${surat['id']?.toString().padLeft(4, '0') ?? '0001'}',
+    'no_surat':
+        'ST/${DateTime.now().year}/${surat['id']?.toString().padLeft(3, '0') ?? '001'}',
     'hal': surat['judul'] ?? 'Surat Pemberitahuan',
     'hari_tanggal': 'Senin, ${surat['tanggal'] ?? '28 Juli 2025'}',
     'waktu': '09:00 WIB',
@@ -470,6 +520,4 @@ void editDocument(
     'dokumen_dikirim': surat['status'] == 'Selesai' ? 'Ya' : 'Belum',
     'tanda_terima': surat['status'] == 'Selesai' ? 'Sudah diterima' : 'Pending',
   };
-  
-  
 }

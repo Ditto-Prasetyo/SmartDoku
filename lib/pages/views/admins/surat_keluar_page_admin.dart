@@ -1442,7 +1442,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    action(
+                                                    actionAdmin(
                                                       index,
                                                       context,
                                                       suratData,
@@ -1450,7 +1450,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                         index,
                                                         suratData,
                                                       ),
-                                                      (i) => viewDetail(
+                                                      (i) => viewDetailAdmin(
                                                         context,
                                                         index,
                                                         suratData,

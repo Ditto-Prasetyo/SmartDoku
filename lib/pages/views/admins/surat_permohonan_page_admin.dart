@@ -1449,7 +1449,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    action(
+                                                    actionAdmin(
                                                       index,
                                                       context,
                                                       suratData,
@@ -1457,7 +1457,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                         index,
                                                         suratData,
                                                       ),
-                                                      (i) => viewDetail(
+                                                      (i) => viewDetailAdmin(
                                                         context,
                                                         index,
                                                         suratData,

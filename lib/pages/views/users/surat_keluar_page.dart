@@ -1467,7 +1467,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    action(
+                                                    actionAdmin(
                                                       index,
                                                       context,
                                                       suratData,
@@ -1497,13 +1497,11 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        // Header dengan status badge
                                                         Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
                                                                   .spaceBetween,
                                                           children: [
-                                                            // Status Badge
                                                             Container(
                                                               padding:
                                                                   EdgeInsets.symmetric(
