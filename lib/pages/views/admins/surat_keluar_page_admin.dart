@@ -1467,7 +1467,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    action(
+                                                    actionAdmin(
                                                       index,
                                                       context,
                                                       suratData,
@@ -1475,7 +1475,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                         index,
                                                         suratData,
                                                       ),
-                                                      (i) => viewDetail(
+                                                      (i) => viewDetailAdmin(
                                                         context,
                                                         index,
                                                         suratData,

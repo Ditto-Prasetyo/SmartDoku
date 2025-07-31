@@ -1474,7 +1474,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    action(
+                                                    actionAdmin(
                                                       index,
                                                       context,
                                                       suratData,
@@ -1482,7 +1482,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                         index,
                                                         suratData,
                                                       ),
-                                                      (i) => viewDetail(
+                                                      (i) => viewDetailAdmin(
                                                         context,
                                                         index,
                                                         suratData,
