@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/manajemen_pengguna_page.dart';
+import 'package:smart_doku/pages/views/admins/desktop/setting_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/surat_disposisi_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/surat_keluar_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/surat_permohonan_page_admin_desktop.dart';
@@ -66,6 +67,8 @@ class SmartDoku extends StatelessWidget {
             DispositionLetterAdminDesktop(),
         '/admin/desktop/manajemen_pengguna_page': (context) =>
             UsersManagementPage(),
+        '/admin/desktop/setting_page': (context) =>
+            SettingPage(),
       },
     );
   }

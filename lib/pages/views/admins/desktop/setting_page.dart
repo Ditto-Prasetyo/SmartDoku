@@ -8,16 +8,16 @@ import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
-class UsersManagementPage extends StatefulWidget {
-  const UsersManagementPage({super.key});
+class SettingPage extends StatefulWidget {
+  const SettingPage({super.key});
 
   @override
-  State<UsersManagementPage> createState() =>
-      _UsersManagementPageState();
+  State<SettingPage> createState() =>
+      _SettingPageState();
 }
 
-class _UsersManagementPageState
-    extends State<UsersManagementPage>
+class _SettingPageState
+    extends State<SettingPage>
     with TickerProviderStateMixin {
   var height, width;
 
@@ -29,7 +29,7 @@ class _UsersManagementPageState
   late Animation<double> _cardAnimation;
 
   // Selected sidebar item
-  int _selectedIndex = 4;
+  int _selectedIndex = 5;
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -568,7 +568,7 @@ class _UsersManagementPageState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Manajemen Pengguna',
+                                  'Setting',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -578,7 +578,7 @@ class _UsersManagementPageState
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Anda Dapat Mengatur Data Akun Pengguna dari Berbagai Bidang di Sini!',
+                                  'Anda Dapat Mengatur Pengaturan Aplikasi di Sini!',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -608,7 +608,7 @@ class _UsersManagementPageState
                                 ],
                               ),
                               child: Icon(
-                                Icons.people_outline_rounded,
+                                Icons.settings_outlined,
                                 color: Colors.white,
                                 size: 24,
                               ),
