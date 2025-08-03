@@ -8,486 +8,592 @@ import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
-class HomePageAdmin extends StatefulWidget {
-  const HomePageAdmin({super.key});
+class AdminDashboard extends StatefulWidget {
+  const AdminDashboard({super.key});
 
   @override
-  State<HomePageAdmin> createState() => _HomePageAdmin();
+  State<AdminDashboard> createState() => _AdminDashboardState();
 }
 
-class _HomePageAdmin extends State<HomePageAdmin> with TickerProviderStateMixin {
+class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStateMixin {
   var height, width;
-
-  // Animation controllers and animations
+  
+  // Animation controllers
   late AnimationController _backgroundController;
   late Animation<double> _backgroundAnimation;
+  
+  late AnimationController _cardController;
+  late Animation<double> _cardAnimation;
+  
+  // Selected sidebar item
+  int _selectedIndex = 0;
+  
+  // Sample data for dashboard
+  final List<Map<String, dynamic>> _statsData = [
+    {
+      'title': 'Total Surat Masuk',
+      'value': '245',
+      'icon': LineIcons.envelopeOpen,
+      'color': Color(0xFF4F46E5),
+      'change': '+12%',
+      'isPositive': true,
+    },
+    {
+      'title': 'Surat Keluar',
+      'value': '189',
+      'icon': FontAwesomeIcons.envelopeCircleCheck,
+      'color': Color(0xFF059669),
+      'change': '+8%',
+      'isPositive': true,
+    },
+    {
+      'title': 'Total Users',
+      'value': '156',
+      'icon': Icons.people_outline_rounded,
+      'color': Color(0xFF7C2D12),
+      'change': '+3%',
+      'isPositive': true,
+    },
+  ];
 
-  // Profile expansion animation
-  late AnimationController _profileController;
-  late Animation<double> _profileAnimation;
-  late Animation<double> _profileOpacityAnimation;
-  late Animation<double> _arrowRotationAnimation;
-  late Animation<double> _dashboardOpacityAnimation;
-
-  bool _showProfileContent = false;
-  bool _isProfileExpanded = false;
+  final List<Map<String, dynamic>> _sidebarItems = [
+    {'icon': Icons.dashboard_rounded, 'title': 'Dashboard', 'route': '/admin/dashboard'},
+    {'icon': LineIcons.envelopeOpen, 'title': 'Surat Masuk', 'route': '/admin/surat_masuk'},
+    {'icon': FontAwesomeIcons.envelopeCircleCheck, 'title': 'Surat Keluar', 'route': '/admin/surat_keluar'},
+    {'icon': Icons.assignment_turned_in_rounded, 'title': 'Disposisi', 'route': '/admin/disposisi'},
+    {'icon': Icons.people_outline_rounded, 'title': 'Manajemen User', 'route': '/admin/users'},
+    {'icon': Icons.analytics_outlined, 'title': 'Laporan', 'route': '/admin/laporan'},
+    {'icon': Icons.settings_outlined, 'title': 'Pengaturan', 'route': '/admin/settings'},
+  ];
 
   @override
   void initState() {
     super.initState();
-
-    // Initialize background animation
+    
+    // Initialize animations
     _backgroundController = AnimationController(
-      duration: Duration(seconds: 5),
+      duration: Duration(seconds: 6),
       vsync: this,
     );
     _backgroundAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _backgroundController,
-        curve: Curves.easeInOutCubic,
-      ),
+      CurvedAnimation(parent: _backgroundController, curve: Curves.easeInOutSine),
     );
-
-    // Initialize profile expansion animation
-    _profileController = AnimationController(
-      duration: Duration(milliseconds: 800),
+    
+    _cardController = AnimationController(
+      duration: Duration(milliseconds: 1200),
       vsync: this,
     );
-
-    _profileAnimation = Tween<double>(begin: 0.25, end: 0.80).animate(
-      CurvedAnimation(parent: _profileController, curve: Curves.easeInOutCubic),
+    _cardAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
-
-    _profileOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _profileController,
-        curve: Interval(0.3, 1.0, curve: Curves.easeOut),
-      ),
-    );
-
-    _arrowRotationAnimation = Tween<double>(begin: 0.0, end: 0.5).animate(
-      CurvedAnimation(parent: _profileController, curve: Curves.easeInOutCubic),
-    );
-
-    _dashboardOpacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _profileController,
-        curve: Interval(0.0, 0.5, curve: Curves.easeOut),
-      ),
-    );
-
-    _profileController.addStatusListener((status) {
-      if (status == AnimationStatus.forward) {
-        setState(() {
-          _showProfileContent = true;
-        });
-      } else if (status == AnimationStatus.dismissed) {
-        setState(() {
-          _showProfileContent = false;
-        });
-      }
-    });
-
+    
     _backgroundController.repeat(reverse: true);
+    _cardController.forward();
   }
 
   @override
   void dispose() {
     _backgroundController.dispose();
-    _profileController.dispose();
+    _cardController.dispose();
     super.dispose();
   }
 
-  void _toggleProfile() {
-    setState(() {
-      _isProfileExpanded = !_isProfileExpanded;
-    });
-
-    if (_isProfileExpanded) {
-      _profileController.forward();
-    } else {
-      _profileController.reverse();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    height = MediaQuery.of(context).size.height;
-    width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      drawer: SizedBox(
-        width: 250,
-        child: Drawer(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF1A1A2E),
-                  Color(0xFF16213E),
-                  Color(0xFF0F3460),
-                ],
-              ),
-            ),
-            child: Column(
+  Widget _buildSidebar() {
+    return Container(
+      width: 280,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xFF1A1A2E),
+            Color(0xFF16213E),
+            Color(0xFF0F3460),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: Offset(5, 0),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header with logo
+          Container(
+            height: 120,
+            padding: EdgeInsets.all(20),
+            child: Row(
               children: [
-                // Header Drawer
                 Container(
-                  height: 275,
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    top: 15,
-                    left: 10,
-                    right: 10,
-                    bottom: 10,
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                    ),
+                    borderRadius: BorderRadius.circular(15),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
                   ),
+                  child: Icon(
+                    Icons.admin_panel_settings_rounded,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+                SizedBox(width: 15),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Smart Doku',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      Text(
+                        'Admin Panel',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.7),
+                          fontSize: 14,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          Divider(
+            color: Colors.white.withValues(alpha: 0.2),
+            thickness: 1,
+            indent: 20,
+            endIndent: 20,
+          ),
+          
+          // Menu items
+          Expanded(
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              itemCount: _sidebarItems.length,
+              itemBuilder: (context, index) {
+                final item = _sidebarItems[index];
+                final isSelected = _selectedIndex == index;
+                
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 4),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isSelected 
+                              ? [
+                                  Color(0xFF4F46E5).withValues(alpha: 0.3),
+                                  Color(0xFF7C3AED).withValues(alpha: 0.2),
+                                ]
+                              : [
+                                  Colors.white.withValues(alpha: 0.05),
+                                  Colors.white.withValues(alpha: 0.02),
+                                ],
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(
+                            color: isSelected 
+                              ? Color(0xFF4F46E5).withValues(alpha: 0.5)
+                              : Colors.white.withValues(alpha: 0.1),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: ListTile(
+                          leading: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              gradient: isSelected
+                                ? LinearGradient(
+                                    colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                                  )
+                                : null,
+                              color: isSelected ? null : Colors.white.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Icon(
+                              item['icon'],
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                          title: Text(
+                            item['title'],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                              fontSize: 15,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              _selectedIndex = index;
+                            });
+                            // Navigate to respective page
+                            Navigator.pushNamed(context, item['route']);
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          
+          // Logout button
+          Container(
+            padding: EdgeInsets.all(20),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFF4F46E5).withValues(alpha: 0.6),
-                        Color(0xFF7C3AED).withValues(alpha: 0.4),
+                        Color(0xFFDC2626).withValues(alpha: 0.2),
+                        Color(0xFFEA580C).withValues(alpha: 0.1),
                       ],
                     ),
+                    borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: Color(0xFFDC2626).withValues(alpha: 0.4),
+                      width: 1.5,
+                    ),
                   ),
-                  child: Stack(
+                  child: ListTile(
+                    leading: Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFFDC2626), Color(0xFFEA580C)],
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(
+                        Icons.logout_rounded,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    title: Text(
+                      'Logout',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                    onTap: () => logout(context),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStatsCard(Map<String, dynamic> data, int index) {
+    return AnimatedBuilder(
+      animation: _cardAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, 50 * (1 - _cardAnimation.value)),
+          child: Opacity(
+            opacity: _cardAnimation.value,
+            child: Container(
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white,
+                    Color.fromRGBO(248, 250, 252, 0.9),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white.withValues(alpha: 0.6),
+                    blurRadius: 12,
+                    spreadRadius: -4,
+                    offset: Offset(-3, -8),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    blurRadius: 20,
+                    spreadRadius: -5,
+                    offset: Offset(5, 8),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                            child: Container(
-                              padding: EdgeInsets.all(0.1),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Colors.white.withValues(alpha: 0.25),
-                                    Colors.white.withValues(alpha: 0.1),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  width: 1.5,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
-                                    blurRadius: 10,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.arrow_back_ios_new_rounded,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
+                      Container(
+                        padding: EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              data['color'],
+                              data['color'].withValues(alpha: 0.7),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: data['color'].withValues(alpha: 0.4),
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
                             ),
+                          ],
+                        ),
+                        child: Icon(
+                          data['icon'],
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: data['isPositive'] 
+                            ? Colors.green.withValues(alpha: 0.1)
+                            : Colors.red.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          data['change'],
+                          style: TextStyle(
+                            color: data['isPositive'] ? Colors.green[700] : Colors.red[700],
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                            fontFamily: 'Roboto',
                           ),
                         ),
                       ),
-                      // App Icon and Title with Glassmorphism
-                      Align(
-                        alignment: Alignment.center,
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    data['value'],
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1F2937),
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    data['title'],
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF6B7280),
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRecentActivity() {
+    final recentActivities = [
+      {'title': 'Surat permohonan dari PT. ABC', 'time': '2 jam lalu', 'type': 'masuk'},
+      {'title': 'Disposisi surat ke bagian HRD', 'time': '4 jam lalu', 'type': 'disposisi'},
+      {'title': 'Surat keluar ke vendor', 'time': '6 jam lalu', 'type': 'keluar'},
+      {'title': 'User baru mendaftar', 'time': '1 hari lalu', 'type': 'user'},
+      {'title': 'Backup data berhasil', 'time': '2 hari lalu', 'type': 'system'},
+    ];
+
+    return Container(
+      padding: EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Color.fromRGBO(248, 250, 252, 0.9),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.6),
+            blurRadius: 12,
+            spreadRadius: -4,
+            offset: Offset(-3, -8),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 20,
+            spreadRadius: -5,
+            offset: Offset(5, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            'Aktivitas Terbaru',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1F2937),
+              fontFamily: 'Roboto',
+            ),
+          ),
+          SizedBox(height: 20),
+          Expanded(
+            child: ListView.builder(
+              itemCount: recentActivities.length,
+              itemBuilder: (context, index) {
+                final activity = recentActivities[index];
+                IconData icon;
+                Color color;
+                
+                switch (activity['type']) {
+                  case 'masuk':
+                    icon = LineIcons.envelopeOpen;
+                    color = Color(0xFF4F46E5);
+                    break;
+                  case 'keluar':
+                    icon = FontAwesomeIcons.envelopeCircleCheck;
+                    color = Color(0xFF059669);
+                    break;
+                  case 'disposisi':
+                    icon = Icons.assignment_turned_in_rounded;
+                    color = Color(0xFFDC2626);
+                    break;
+                  case 'user':
+                    icon = Icons.person_add_rounded;
+                    color = Color(0xFF7C2D12);
+                    break;
+                  default:
+                    icon = Icons.info_outline_rounded;
+                    color = Color(0xFF6B7280);
+                }
+                
+                return Container(
+                  margin: EdgeInsets.only(bottom: 12),
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.grey[200]!,
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: color.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          icon,
+                          color: color,
+                          size: 18,
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      Expanded(
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(height: 50),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 15,
-                                  sigmaY: 15,
-                                ),
-                                child: Container(                               
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Image.asset(
-                                      'images/Icon_App.png',
-                                      width: 180,
-                                      height: 180,
-                                      fit: BoxFit.cover,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
+                            Text(
+                              activity['title']!,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF1F2937),
+                                fontFamily: 'Roboto',
                               ),
                             ),
-                            SizedBox(height: 15),
-                            ShaderMask(
-                              shaderCallback: (bounds) => LinearGradient(
-                                colors: [Colors.white, Colors.grey.shade400],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ).createShader(bounds),
+                            SizedBox(height: 4),
+                            Text(
+                              activity['time']!,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF6B7280),
+                                fontFamily: 'Roboto',
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ],
                   ),
-                ),
-
-                // Menu Items
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 8,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xFF4F46E5).withValues(alpha: 0.2),
-                                      Color(0xFF7C3AED).withValues(alpha: 0.1),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
-                                    color: Color(
-                                      0xFF4F46E5,
-                                    ).withValues(alpha: 0.4),
-                                    width: 1.5,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(
-                                        0xFF4F46E5,
-                                      ).withValues(alpha: 0.2),
-                                      blurRadius: 15,
-                                      offset: Offset(0, 5),
-                                    ),
-                                    BoxShadow(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      blurRadius: 5,
-                                      offset: Offset(0, -1),
-                                    ),
-                                  ],
-                                ),
-                                child: ListTile(
-                                  leading: Container(
-                                    padding: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Color(0xFF4F46E5),
-                                          Color(0xFF7C3AED),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(
-                                            0xFF4F46E5,
-                                          ).withValues(alpha: 0.5),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Icon(
-                                      Icons.home_rounded,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    'Home',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      fontFamily: 'Roboto',
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                          blurRadius: 5,
-                                          offset: Offset(0, 1),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(height: 10),
-
-                        Container(
-                          margin: EdgeInsets.symmetric(
-                            horizontal: 15,
-                            vertical: 5,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Color(0xFFDC2626).withValues(alpha: 0.2),
-                                      Color(0xFFEA580C).withValues(alpha: 0.1),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  border: Border.all(
-                                    color: Color(
-                                      0xFFDC2626,
-                                    ).withValues(alpha: 0.4),
-                                    width: 1.5,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(
-                                        0xFFDC2626,
-                                      ).withValues(alpha: 0.2),
-                                      blurRadius: 15,
-                                      offset: Offset(0, 5),
-                                    ),
-                                    BoxShadow(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.1,
-                                      ),
-                                      blurRadius: 5,
-                                      offset: Offset(0, -1),
-                                    ),
-                                  ],
-                                ),
-                                child: ListTile(
-                                  leading: Container(
-                                    padding: EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Color(0xFFDC2626),
-                                          Color(0xFFEA580C),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(
-                                            0xFFDC2626,
-                                          ).withValues(alpha: 0.5),
-                                          blurRadius: 8,
-                                          offset: Offset(0, 3),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Icon(
-                                      Icons.logout_rounded,
-                                      color: Colors.white,
-                                      size: 20,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    'Logout',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      fontFamily: 'Roboto',
-                                      shadows: [
-                                        Shadow(
-                                          color: Colors.black.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                          blurRadius: 5,
-                                          offset: Offset(0, 1),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () => logout,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Footer
-                Container(
-                  padding: EdgeInsets.all(20),
-                  child: FutureBuilder<PackageInfo>(
-                    future: PackageInfo.fromPlatform(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return SizedBox();
-                      final version = snapshot.data!.version;
-                      final buildNumber = snapshot.data!.buildNumber;
-                      return Column(
-                        children: [
-                          Divider(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            thickness: 1,
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'Version $version+$buildNumber',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.6),
-                              fontSize: 12,
-                              fontFamily: 'Roboto',
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ),
-        ),
+        ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+    
+    return Scaffold(
       body: AnimatedBuilder(
         animation: _backgroundAnimation,
         builder: (context, child) {
@@ -499,398 +605,109 @@ class _HomePageAdmin extends State<HomePageAdmin> with TickerProviderStateMixin 
                 end: Alignment.bottomRight,
                 colors: [
                   Color.lerp(
-                    Color(0xFF1A1A2E),
-                    Color(0xFF16213E),
+                    Color(0xFFF8FAFC),
+                    Color(0xFFE2E8F0),
                     _backgroundAnimation.value,
                   )!,
                   Color.lerp(
-                    Color(0xFF0F3460),
-                    Color(0xFF533483),
+                    Color(0xFFE2E8F0),
+                    Color(0xFFCBD5E1),
                     _backgroundAnimation.value,
                   )!,
                   Color.lerp(
-                    Color(0xFF16213E),
-                    Color(0xFF0F0F0F),
+                    Color(0xFFF1F5F9),
+                    Color(0xFFE2E8F0),
                     _backgroundAnimation.value,
                   )!,
                 ],
               ),
             ),
-            child: Column(
+            child: Row(
               children: [
-                AnimatedBuilder(
-                  animation: _profileAnimation,
-                  builder: (context, child) {
-                    return Container(
-                      decoration: BoxDecoration(),
-                      height: height * _profileAnimation.value,
-                      width: width,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Top Navigation Bar
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: 30,
-                              left: 15,
-                              right: 15,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Builder(
-                                  builder: (context) => InkWell(
-                                    onTap: () {
-                                      Scaffold.of(context).openDrawer();
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      padding: EdgeInsets.all(4.5),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.menu_rounded,
-                                        color: Color.fromRGBO(255, 255, 255, 1),
-                                        size: 24,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.all(4.5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withValues(alpha: 0.1),
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: InkWell(
-                                    onTap: () {},
-                                    child: Icon(
-                                      Icons.people_outline_rounded,
-                                      color: Color.fromRGBO(255, 255, 255, 1),
-                                      size: 24,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // Dashboard Title
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: 35,
-                              left: 15,
-                              right: 15,
-                            ),
-                            child: Column(
-                              children: [
-                                AnimatedBuilder(
-                                  animation: _dashboardOpacityAnimation,
-                                  builder: (context, child) {
-                                    return Opacity(
-                                      opacity: _dashboardOpacityAnimation.value,
-                                      child: Text(
-                                        "Dashboard",
-                                        style: TextStyle(
-                                          fontSize: 30,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 1,
-                                          fontFamily: 'Roboto',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          if (_showProfileContent)
-                            Flexible(child: buildProfileSection(_profileOpacityAnimation)),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-
-                // Main Content Container
+                // Sidebar
+                _buildSidebar(),
+                
+                // Main content
                 Expanded(
                   child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color.fromRGBO(255, 255, 255, 0.7),
-                          Color.fromRGBO(248, 250, 252, 0.4),
-                          Color.fromRGBO(241, 245, 249, 0.4),
-                          Color.fromRGBO(255, 255, 255, 0.7),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(30),
-                        topRight: Radius.circular(30),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          blurRadius: 100,
-                          spreadRadius: -5,
-                          offset: Offset(0, -10),
-                        ),
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 15,
-                          spreadRadius: -8,
-                          offset: Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    width: width,
-                    padding: EdgeInsets.only(bottom: 30),
+                    padding: EdgeInsets.all(30),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GestureDetector(
-                          onTap: _toggleProfile,
-                          onPanUpdate: (details) {
-                            if (details.delta.dy > 2) {
-                              if (!_isProfileExpanded) {
-                                _toggleProfile();
-                              }
-                            } else if (details.delta.dy < -2) {
-                              if (_isProfileExpanded) {
-                                _toggleProfile();
-                              }
-                            }
-                          },
-                          child: AnimatedBuilder(
-                            animation: _arrowRotationAnimation,
-                            builder: (context, child) {
-                              return Container(
-                                margin: EdgeInsets.only(top: 12, bottom: 16),
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.grey[700]!,
-                                      Colors.grey[500]!,
-                                      Colors.grey[700]!,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.8,
-                                      ),
-                                      blurRadius: 4,
-                                      offset: Offset(0, -5),
-                                    ),
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                      blurRadius: 6,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Transform.rotate(
-                                  angle: _arrowRotationAnimation.value * 2 * pi,
-                                  child: Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    color: Colors.white,
-                                    size: 18,
+                        // Header
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Dashboard Admin',
+                                  style: TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF1F2937),
+                                    fontFamily: 'Roboto',
                                   ),
                                 ),
-                              );
-                            },
-                          ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Selamat datang kembali, Admin!',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(0xFF6B7280),
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(0xFF4F46E5).withValues(alpha: 0.3),
+                                    blurRadius: 10,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.notifications_outlined,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                          ],
                         ),
-
-                        SizedBox(height: 25),
-
-                        Flexible(
-                          child: GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 1.1,
-                                  mainAxisSpacing: 25,
-                                  crossAxisSpacing: 0,
-                                ),
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: 4,
-                            itemBuilder: (context, index) {
-                              List<Map<String, dynamic>> boxData = [
-                                {
-                                  'icon': LineIcons.envelopeOpen,
-                                  'title': 'Surat Masuk',
-                                  'colors': [
-                                    Color(0xFF4F46E5),
-                                    Color(0xFF7C3AED),
-                                  ],
-                                  'route': 'surat_permohonan_page_admin.dart',
-                                },
-                                {
-                                  'icon': FontAwesomeIcons.envelopeCircleCheck,
-                                  'title': 'Surat Keluar',
-                                  'colors': [
-                                    Color(0xFF059669),
-                                    Color(0xFF0D9488),
-                                  ],
-                                  'route': 'surat_keluar_page_admin.dart',
-                                },
-                                {
-                                  'icon': Icons.assignment_turned_in_rounded,
-                                  'title': 'Surat Disposisi',
-                                  'colors': [
-                                    Color(0xFFDC2626),
-                                    Color(0xFFEA580C),
-                                  ],
-                                  'route': 'surat_disposisi_page_admin.dart',
-                                },
-                                {
-                                  'icon': Icons.upload,
-                                  'title': 'Upload File',
-                                  'colors': [
-                                    Color(0xFF7C2D12),
-                                    Color(0xFF9A3412),
-                                  ],
-                                  'route': 'upload_file',
-                                },
-                              ];
-
-                              return InkWell(
-                                onTap: () {
-                                  switch (index) {
-                                    case 0:
-                                      // Navigate ke Surat Permohonan Page
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/admin/surat_permohonan',
-                                      );
-                                      break;
-                                    case 1:
-                                      // Navigate ke Surat Keluar Page
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/admin/surat_keluar',
-                                      );
-                                      break;
-                                    case 2:
-                                      // Navigate ke Surat Disposisi Page                                  
-                                      Navigator.pushNamed(context, 
-                                      '/admin/surat_disposisi',);
-                                      break;
-                                    case 3:
-                                      // Upload File functionality
-                                      showUploadDialog(context,
-                                      pickDocument, pickImage);
-                                      break;
-                                  }
-                                },
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(
-                                    vertical: 8,
-                                    horizontal: 20,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                      colors: [
-                                        Colors.white,
-                                        Color.fromRGBO(248, 250, 252, 0.8),
-                                      ],
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                        blurRadius: 8,
-                                        spreadRadius: -2,
-                                        offset: Offset(-2, -6),
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.8,
-                                        ),
-                                        blurRadius: 12,
-                                        spreadRadius: -3,
-                                        offset: Offset(3, 5),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: boxData[index]['colors'],
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: boxData[index]['colors'][0]
-                                                  .withValues(alpha: 0.8),
-                                              blurRadius: 8,
-                                              offset: Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Icon(
-                                          boxData[index]['icon'],
-                                          color: Colors.white,
-                                          size: 32,
-                                        ),
-                                      ),
-                                      SizedBox(height: 12),
-                                      Text(
-                                        boxData[index]['title'],
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xFF374151),
-                                          fontFamily: 'Roboto',
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
+                        
+                        SizedBox(height: 40),
+                        
+                        // Stats cards
+                        GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 4,
+                            childAspectRatio: 1.2,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
                           ),
+                          itemCount: _statsData.length,
+                          itemBuilder: (context, index) {
+                            return _buildStatsCard(_statsData[index], index);
+                          },
+                        ),
+                        
+                        SizedBox(height: 40),
+                        
+                        // Recent activity
+                        Expanded(
+                          child: _buildRecentActivity(),
                         ),
                       ],
                     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
+import 'package:smart_doku/pages/views/admins/home_page_admin.dart';
 import 'package:smart_doku/pages/views/users/home_page.dart';
 import 'package:smart_doku/pages/views/users/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/users/surat_keluar_page.dart';
@@ -42,7 +43,7 @@ class SmartDoku extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage(),
+      home: AdminDashboard(),
       debugShowCheckedModeBanner: false,
       routes: {
         '/users/surat_permohonan': (context) => PermohonanLetterPage(),
