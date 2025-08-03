@@ -5,7 +5,7 @@ import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
 class DetailPage extends StatefulWidget {
-  final Map<String, dynamic>? suratData; // Parameter untuk data surat
+  final Map<String, dynamic>? suratData;
 
   const DetailPage({super.key, this.suratData});
 

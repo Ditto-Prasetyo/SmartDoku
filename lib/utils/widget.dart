@@ -2,7 +2,125 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/dialog.dart';
 
-// Widget DetailPage
+// Widget Surat Disposisi
+Widget buildSuratDisposisi(
+  BuildContext context,
+  Map<String, dynamic> getDisposisiData(),
+) {
+  final data = getDisposisiData();
+
+  return Container(
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Logo Kabupaten Malang
+        Container(
+          width: 80,
+          height: 100,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              'images/LogoKabupatenMalang.png',
+              width: 80,
+              height: 100,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback jika gambar ga bisa load
+                return Container(
+                  width: 80,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.red, width: 2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.image_not_supported,
+                        color: Colors.grey,
+                        size: 24,
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Logo\nTidak\nDitemukan',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey, fontSize: 8),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+
+        const SizedBox(width: 20),
+
+        // Informasi Dinas
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Judul Dinas
+              Text(
+                data['judul'] ?? '',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  height: 1.2,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              // Alamat
+              Text(
+                data['alamat'] ?? '',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 8,
+                  color: Colors.white,
+                  height: 1.3,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Telepon dan Laman
+              Text(
+                data['telepon/laman'] ?? '',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 8,
+                  color: Colors.white,
+                  height: 1.3,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              // Pos-el dan Kode Pos
+              Text(
+                data['pos/kode'] ?? '',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 8,
+                  color: Colors.white,
+                  height: 1.3,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 Widget buildBackButtonSection(BuildContext context) {
   return Container(
     width: double.infinity,
@@ -137,6 +255,86 @@ Widget buildBackButtonSection(BuildContext context) {
           ),
         ),
       ],
+    ),
+  );
+}
+
+// Widget Menu Disposisi Page
+Widget buildMenuActionDisposisi(BuildContext context) {
+  return Row(
+    mainAxisSize: MainAxisSize.min, // biar lebarnya sesuai konten
+    children: [
+      ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withValues(alpha: 0.2),
+                  Colors.white.withValues(alpha: 0.1),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 15,
+                  offset: Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  showDetailActionMenuDisposisi(
+                    context,
+                    () => showDeleteConfirmationDisposisi,
+                  );
+                },
+                borderRadius: BorderRadius.circular(4),
+                child: Container(
+                  padding: EdgeInsets.all(8),
+                  child: Icon(
+                    Icons.more_vert_rounded,
+                    color: Colors.white,
+                    size: 14,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget buildBorderedText(String text) {
+  return Container(
+    width: double.infinity, // penuh sesuai Expanded
+    padding: EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      border: Border(
+        left: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+        right: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+        bottom: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+      ),
+    ),
+    child: Text(
+      text,
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 10,
+      ),
     ),
   );
 }
@@ -505,6 +703,36 @@ Widget buildSectionTitle(String title) {
   );
 }
 
+Widget buildSectionTitleDisposisi(String title) {
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+    child: Row(
+      children: [
+        Container(
+          width: 4,
+          height: 20,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+            ),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'Roboto',
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
 // Widget untuk Info Card
 Widget buildInfoCard(List<Widget> children) {
   return Container(
@@ -614,7 +842,7 @@ Widget buildDetailRow(
                       color: Colors.white.withValues(alpha: 0.8),
                       fontFamily: 'Roboto',
                       decoration: TextDecoration.underline,
-                      decorationColor: Colors.white.withValues(alpha: 0.5)
+                      decorationColor: Colors.white.withValues(alpha: 0.5),
                     ),
                   ),
                 )
