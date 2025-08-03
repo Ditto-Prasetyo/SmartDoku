@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/auth/register_cred_page.dart';
-import 'package:smart_doku/pages/forms/admins/detail_page_admin.dart';
+import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_phones.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/utils/dialog.dart';

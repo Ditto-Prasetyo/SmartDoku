@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
-import 'package:smart_doku/pages/views/admins/home_page_admin.dart';
-import 'package:smart_doku/pages/views/users/home_page.dart';
-import 'package:smart_doku/pages/views/users/surat_disposisi_page.dart';
-import 'package:smart_doku/pages/views/users/surat_keluar_page.dart';
-import 'package:smart_doku/pages/views/users/surat_permohonan_page.dart';
+import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/users/phones/home_page.dart';
+import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
+import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
+import 'package:smart_doku/pages/views/users/phones/surat_permohonan_page.dart';
 import 'dart:io' show Platform;
 import 'package:window_size/window_size.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_doku/pages/views/users/home_page.dart';
+import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'dart:math';
 
 class Splash extends StatefulWidget {

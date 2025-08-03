@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/api/service.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
-import 'package:smart_doku/pages/views/users/home_page.dart';
+import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/icon.dart';
 
