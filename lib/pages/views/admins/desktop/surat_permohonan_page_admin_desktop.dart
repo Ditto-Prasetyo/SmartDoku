@@ -8,14 +8,16 @@ import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
-class AdminDashboard extends StatefulWidget {
-  const AdminDashboard({super.key});
+class PermohonanLettersPageAdminDesktop extends StatefulWidget {
+  const PermohonanLettersPageAdminDesktop({super.key});
 
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  State<PermohonanLettersPageAdminDesktop> createState() =>
+      _PermohonanLettersPageAdminDesktopState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard>
+class _PermohonanLettersPageAdminDesktopState
+    extends State<PermohonanLettersPageAdminDesktop>
     with TickerProviderStateMixin {
   var height, width;
 
@@ -27,39 +29,7 @@ class _AdminDashboardState extends State<AdminDashboard>
   late Animation<double> _cardAnimation;
 
   // Selected sidebar item
-  int _selectedIndex = 0;
-
-  // Sample data for dashboard
-  final List<Map<String, dynamic>> _statsData = [
-    {
-      'title': 'Total Surat Masuk',
-      'value': '245',
-      'icon': LineIcons.envelopeOpen,
-      'color': Color(0xFF4F46E5),
-      'isPositive': true,
-    },
-    {
-      'title': 'Surat Keluar',
-      'value': '189',
-      'icon': FontAwesomeIcons.envelopeCircleCheck,
-      'color': Color(0xFF059669),
-      'isPositive': true,
-    },
-    {
-      'title': 'Total Pengguna',
-      'value': '156',
-      'icon': Icons.people_outline_rounded,
-      'color': Color(0xFF7C2D12),
-      'isPositive': true,
-    },
-    {
-      'title': 'Total Bidang',
-      'value': '6',
-      'icon': Icons.work_rounded,
-      'color': Colors.lightBlue,
-      'isPositive': true,
-    },
-  ];
+  int _selectedIndex = 1;
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -374,102 +344,6 @@ class _AdminDashboardState extends State<AdminDashboard>
     );
   }
 
-  Widget _buildStatsCard(Map<String, dynamic> data, int index) {
-    return AnimatedBuilder(
-      animation: _cardAnimation,
-      builder: (context, child) {
-        return Transform.translate(
-          offset: Offset(0, 50 * (1 - _cardAnimation.value)),
-          child: Opacity(
-            opacity: _cardAnimation.value.clamp(0.0, 1.0),
-            child: Container(
-              padding: EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: 0.25),
-                    Colors.white.withValues(alpha: 0.1),
-                    Colors.white.withValues(alpha: 0.05),
-                  ],
-                ),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    spreadRadius: 1,
-                    offset: Offset(0, -4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              data['color'],
-                              data['color'].withValues(alpha: 0.7),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: data['color'].withValues(alpha: 0.7),
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          data['icon'],
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      data['value'],
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontFamily: 'Roboto',
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Center(
-                    child: Text(
-                      data['title'],
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white.withValues(alpha: 0.8),
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Roboto',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   Widget _buildRecentActivity(Animation<double> _cardAnimation) {
     final recentActivities = [
       {
@@ -694,7 +568,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Dashboard Admin',
+                                  'Surat Masuk',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -704,7 +578,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Selamat datang kembali, Admin!',
+                                  'Anda Dapat Mengatur Surat Masuk di Sini!',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -734,31 +608,12 @@ class _AdminDashboardState extends State<AdminDashboard>
                                 ],
                               ),
                               child: Icon(
-                                Icons.notifications_outlined,
+                                LineIcons.envelopeOpen,
                                 color: Colors.white,
                                 size: 24,
                               ),
                             ),
                           ],
-                        ),
-
-                        SizedBox(height: 40),
-
-                        // Stats cards
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4,
-                                childAspectRatio: 1.2,
-                                mainAxisSpacing: 20,
-                                crossAxisSpacing: 20,
-                              ),
-                          itemCount: _statsData.length,
-                          itemBuilder: (context, index) {
-                            return _buildStatsCard(_statsData[index], index);
-                          },
                         ),
 
                         SizedBox(height: 40),

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/admins/desktop/surat_permohonan_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
@@ -43,13 +44,23 @@ class SmartDoku extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: AdminDashboard(),
+      home: PermohonanLettersPageAdminDesktop(),
       debugShowCheckedModeBanner: false,
       routes: {
         '/users/surat_permohonan': (context) => PermohonanLetterPage(),
         '/users/surat_keluar': (context) => OutgoingLetterPage(),
         '/users/surat_disposisi': (context) => DispositionLetterPage(),
         '/forms/users/detail_page': (context) => DetailPage(),
+
+        // admins desktop
+        '/admin/desktop/home_page_admin_desktop': (context) =>
+            AdminDashboard(),
+        '/admin/desktop/surat_permohonan_page_admin_desktop': (context) =>
+            PermohonanLettersPageAdminDesktop(),
+        // '/admin/desktop/surat_keluar_page_admin_desktop': (context) =>
+        //     SuratKeluarPageAdminDesktop(),
+        // '/admin/desktop/surat_disposisi_page_admin_desktop': (context) =>
+        //     SuratDisposisiPageAdminDesktop(),
       },
     );
   }
