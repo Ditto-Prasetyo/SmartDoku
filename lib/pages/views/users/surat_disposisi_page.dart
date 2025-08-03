@@ -1590,297 +1590,229 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Kolom 1: Diteruskan ke
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            left: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                            top: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                            bottom: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Column(
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      // Bagian 3 Checkbox
+                                      IntrinsicHeight(
+                                        // Biar semua tinggi kolom sejajar
+                                        child: Row(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                              CrossAxisAlignment.stretch,
                                           children: [
-                                            Text(
-                                              'Diteruskan ke :',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
+                                            Expanded(
+                                              child: Container(
+                                                padding: EdgeInsets.all(12),
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.3,
+                                                          ),
+                                                      width: 1.5,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Diteruskan ke :',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    ...buildCheckboxList([
+                                                      'A. Sekretariat',
+                                                      'B. Bidang Permukiman',
+                                                      'C. Bidang Perumahan',
+                                                      'D. Bidang Penataan Ruang dan PB',
+                                                      'E. UPT Air Limbah Domestik',
+                                                      'F. UPT Pertamanan',
+                                                    ], 'diteruskan'),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                            SizedBox(height: 8),
-                                            ...buildCheckboxList([
-                                              'A. Sekretariat',
-                                              'B. Bidang Permukiman',
-                                              'C. Bidang Perumahan',
-                                              'D. Bidang Penataan Ruang dan PB',
-                                              'E. UPT Air Limbah Domestik',
-                                              'F. UPT Pertamanan',
-                                            ], 'diteruskan'),
+                                            Expanded(
+                                              child: Container(
+                                                padding: EdgeInsets.all(12),
+                                                decoration: BoxDecoration(
+                                                  border: Border(
+                                                    right: BorderSide(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.3,
+                                                          ),
+                                                      width: 1.5,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Dengan hormat harap :',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    ...buildCheckboxList([
+                                                      'Tanggapan dan Saran',
+                                                      'Proses lebih lanjut',
+                                                      'Koordinasi/Konfirmasi',
+                                                      'Untuk Ditindaklanjuti',
+                                                      'Untuk Menjadi Perhatian',
+                                                      'Hadir Sekdir/ Kabid/ JFT/EsIV/ Staf/ Tim',
+                                                    ], 'hormat'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Container(
+                                                padding: EdgeInsets.all(12),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    SizedBox(height: 29),
+                                                    ...buildCheckboxList([
+                                                      'Agenda Rapat',
+                                                      'Proses Sesuai Aturan',
+                                                      'Inventarisir',
+                                                      'Arsip',
+                                                      'Untuk Dikaji',
+                                                    ], 'lainnya'),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ),
-                                    ),
 
-                                    // Kolom 2: Dengan hormat harap
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            left: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                            top: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                            bottom: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'Dengan hormat harap :',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(height: 8),
-                                            ...buildCheckboxList([
-                                              'Tanggapan dan Saran',
-                                              'Proses lebih lanjut',
-                                              'Koordinasi/Konfirmasi',
-                                              'Untuk Ditindaklanjuti',
-                                              'Untuk Menjadi Perhatian',
-                                              'Hadir Sekdir/ Kabid/ JFT/EsIV/ Staf/ Tim',
-                                            ], 'hormat'),
-                                          ],
+                                      Divider(
+                                        height: 0,
+                                        thickness: 1.5,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.3,
                                         ),
                                       ),
-                                    ),
 
-                                    // Kolom 3: (Kosong di gambar, tapi ada checkbox)
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            left: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                            right: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                            top: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                            bottom: BorderSide(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              width: 1.5,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              '',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            SizedBox(height: 29),
-                                            ...buildCheckboxList([
-                                              'Agenda Rapat',
-                                              'Proses Sesuai Aturan',
-                                              'Inventarisir',
-                                              'Arsip',
-                                              'Untuk Dikaji',
-                                            ], 'lainnya'),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  children: [
-                                    Container(
-                                      width: double.infinity,
-                                      height: 150,
-                                      padding: EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                          width: 1.5,
-                                        ),
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                      Column(
                                         children: [
-                                          Padding(
-                                            padding: EdgeInsetsGeometry.only(bottom: 80),
-                                            child: Text(
-                                              'DISPOSISI KEPALA DINAS',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10,
-                                                fontWeight: FontWeight.bold,
+                                          Container(
+                                            width: double.infinity,
+                                            constraints: BoxConstraints(
+                                              minHeight: 80,
+                                              maxHeight: 150,
+                                            ),
+                                            padding: EdgeInsets.only(bottom: 100, left: 12, right: 12),
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.3),
+                                                  width: 1.5,
+                                                ),
                                               ),
-                                              textAlign: TextAlign.center,
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                'DISPOSISI KEPALA DINAS',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                          SizedBox(height: 20),
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  constraints: BoxConstraints(
+                                                    minHeight: 100,
+                                                    maxHeight: 150,
+                                                  ),
+                                                  padding: EdgeInsets.only(bottom: 80, left: 12, right: 12),
+                                                  decoration: BoxDecoration(
+                                                    border: Border(
+                                                      right: BorderSide(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.3,
+                                                            ),
+                                                        width: 1.5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      'DISPOSISI SEKRETARIS DINAS',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Container(
+                                                  constraints: BoxConstraints(
+                                                    minHeight: 100,
+                                                    maxHeight: 150,
+                                                  ),
+                                                  padding: EdgeInsets.only(bottom: 80, left: 12, right: 12),
+                                                  child: Center(
+                                                    child: Text(
+                                                      'DISPOSISI KEPALA BIDANG / UPT',
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ],
                                       ),
-                                    ),
-
-                                    // Bagian bawah: 2 kolom
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          child: Container(
-                                            height:
-                                                150,
-                                            padding: EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                left: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.3),
-                                                  width: 1.5,
-                                                ),
-                                                right: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.3),
-                                                  width: 1.5,
-                                                ),
-                                                bottom: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.3),
-                                                  width: 1.5,
-                                                ),
-                                              ),
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  'DISPOSISI SEKRETARIS DINAS',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                SizedBox(height: 10),
-                                                // Space kosong untuk disposisi
-                                                Expanded(child: Container()),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-
-                                        Expanded(
-                                          child: Container(
-                                            height:
-                                                150,
-                                            padding: EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              border: Border(
-                                                right: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.3),
-                                                  width: 1.5,
-                                                ),
-                                                bottom: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.3),
-                                                  width: 1.5,
-                                                ),
-                                              ),
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  'DISPOSISI KEPALA BIDANG / UPT',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 10,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                                SizedBox(height: 10),
-                                                Expanded(child: Container()),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
