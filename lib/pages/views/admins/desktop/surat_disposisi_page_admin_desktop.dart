@@ -8,16 +8,16 @@ import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
-class OutgoingLetterPageAdminDesktop extends StatefulWidget {
-  const OutgoingLetterPageAdminDesktop({super.key});
+class DispositionLetterAdminDesktop extends StatefulWidget {
+  const DispositionLetterAdminDesktop({super.key});
 
   @override
-  State<OutgoingLetterPageAdminDesktop> createState() =>
-      _OutgoingLetterPageAdminDesktopState();
+  State<DispositionLetterAdminDesktop> createState() =>
+      _DispositionLetterAdminDesktopState();
 }
 
-class _OutgoingLetterPageAdminDesktopState
-    extends State<OutgoingLetterPageAdminDesktop>
+class _DispositionLetterAdminDesktopState
+    extends State<DispositionLetterAdminDesktop>
     with TickerProviderStateMixin {
   var height, width;
 
@@ -29,7 +29,7 @@ class _OutgoingLetterPageAdminDesktopState
   late Animation<double> _cardAnimation;
 
   // Selected sidebar item
-  int _selectedIndex = 2;
+  int _selectedIndex = 3;
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -568,7 +568,7 @@ class _OutgoingLetterPageAdminDesktopState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Surat Keluar',
+                                  'Surat Disposisi',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -578,7 +578,7 @@ class _OutgoingLetterPageAdminDesktopState
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Anda Dapat Mengatur Surat Keluar di Sini!',
+                                  'Anda Dapat Mengatur Surat Disposisi di Sini!',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -608,7 +608,7 @@ class _OutgoingLetterPageAdminDesktopState
                                 ],
                               ),
                               child: Icon(
-                                FontAwesomeIcons.envelopeCircleCheck,
+                                Icons.assignment_turned_in_rounded,
                                 color: Colors.white,
                                 size: 24,
                               ),

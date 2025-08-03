@@ -85,12 +85,12 @@ class _AdminDashboardState extends State<AdminDashboard>
     {
       'icon': Icons.people_outline_rounded,
       'title': 'Manajemen User',
-      'route': '/admin/users',
+      'route': '/admin/desktop/manajemen_pengguna_page',
     },
     {
       'icon': Icons.settings_outlined,
       'title': 'Pengaturan',
-      'route': '/admin/settings',
+      'route': '/admin/desktop/setting_page',
     },
   ];
 
