@@ -784,26 +784,22 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                 onTap: () {
                                   switch (index) {
                                     case 0:
-                                      // Navigate ke Surat Permohonan Page
                                       Navigator.pushNamed(
                                         context,
                                         '/users/surat_permohonan',
                                       );
                                       break;
                                     case 1:
-                                      // Navigate ke Surat Keluar Page
                                       Navigator.pushNamed(
                                         context,
                                         '/users/surat_keluar',
                                       );
                                       break;
-                                    case 2:
-                                      // Navigate ke Surat Disposisi Page                                  
+                                    case 2:                                  
                                       Navigator.pushNamed(context, 
                                       '/users/surat_disposisi',);
                                       break;
                                     case 3:
-                                      // Upload File functionality
                                       showSupportDialog(context);
                                       break;
                                   }

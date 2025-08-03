@@ -15,19 +15,20 @@ class AdminDashboard extends StatefulWidget {
   State<AdminDashboard> createState() => _AdminDashboardState();
 }
 
-class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStateMixin {
+class _AdminDashboardState extends State<AdminDashboard>
+    with TickerProviderStateMixin {
   var height, width;
-  
+
   // Animation controllers
   late AnimationController _backgroundController;
   late Animation<double> _backgroundAnimation;
-  
+
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
-  
+
   // Selected sidebar item
   int _selectedIndex = 0;
-  
+
   // Sample data for dashboard
   final List<Map<String, dynamic>> _statsData = [
     {
@@ -35,7 +36,6 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
       'value': '245',
       'icon': LineIcons.envelopeOpen,
       'color': Color(0xFF4F46E5),
-      'change': '+12%',
       'isPositive': true,
     },
     {
@@ -43,42 +43,73 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
       'value': '189',
       'icon': FontAwesomeIcons.envelopeCircleCheck,
       'color': Color(0xFF059669),
-      'change': '+8%',
       'isPositive': true,
     },
     {
-      'title': 'Total Users',
+      'title': 'Total Pengguna',
       'value': '156',
       'icon': Icons.people_outline_rounded,
       'color': Color(0xFF7C2D12),
-      'change': '+3%',
+      'isPositive': true,
+    },
+    {
+      'title': 'Total Bidang',
+      'value': '6',
+      'icon': Icons.work_rounded,
+      'color': Colors.lightBlue,
       'isPositive': true,
     },
   ];
 
   final List<Map<String, dynamic>> _sidebarItems = [
-    {'icon': Icons.dashboard_rounded, 'title': 'Dashboard', 'route': '/admin/dashboard'},
-    {'icon': LineIcons.envelopeOpen, 'title': 'Surat Masuk', 'route': '/admin/surat_masuk'},
-    {'icon': FontAwesomeIcons.envelopeCircleCheck, 'title': 'Surat Keluar', 'route': '/admin/surat_keluar'},
-    {'icon': Icons.assignment_turned_in_rounded, 'title': 'Disposisi', 'route': '/admin/disposisi'},
-    {'icon': Icons.people_outline_rounded, 'title': 'Manajemen User', 'route': '/admin/users'},
-    {'icon': Icons.analytics_outlined, 'title': 'Laporan', 'route': '/admin/laporan'},
-    {'icon': Icons.settings_outlined, 'title': 'Pengaturan', 'route': '/admin/settings'},
+    {
+      'icon': Icons.dashboard_rounded,
+      'title': 'Dashboard',
+      'route': '/admin/dashboard',
+    },
+    {
+      'icon': LineIcons.envelopeOpen,
+      'title': 'Surat Masuk',
+      'route': '/admin/surat_masuk',
+    },
+    {
+      'icon': FontAwesomeIcons.envelopeCircleCheck,
+      'title': 'Surat Keluar',
+      'route': '/admin/surat_keluar',
+    },
+    {
+      'icon': Icons.assignment_turned_in_rounded,
+      'title': 'Disposisi',
+      'route': '/admin/disposisi',
+    },
+    {
+      'icon': Icons.people_outline_rounded,
+      'title': 'Manajemen User',
+      'route': '/admin/users',
+    },
+    {
+      'icon': Icons.settings_outlined,
+      'title': 'Pengaturan',
+      'route': '/admin/settings',
+    },
   ];
 
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize animations
     _backgroundController = AnimationController(
       duration: Duration(seconds: 6),
       vsync: this,
     );
     _backgroundAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _backgroundController, curve: Curves.easeInOutSine),
+      CurvedAnimation(
+        parent: _backgroundController,
+        curve: Curves.easeInOutSine,
+      ),
     );
-    
+
     _cardController = AnimationController(
       duration: Duration(milliseconds: 1200),
       vsync: this,
@@ -86,7 +117,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
     _cardAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
-    
+
     _backgroundController.repeat(reverse: true);
     _cardController.forward();
   }
@@ -105,11 +136,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF1A1A2E),
-            Color(0xFF16213E),
-            Color(0xFF0F3460),
-          ],
+          colors: [Color(0xFF1A1A2E), Color(0xFF16213E), Color(0xFF0F3460)],
         ),
         boxShadow: [
           BoxShadow(
@@ -118,6 +145,9 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
             offset: Offset(5, 0),
           ),
         ],
+        border: Border(
+          right: BorderSide(color: Colors.white.withValues(alpha: 0.2)),
+        ),
       ),
       child: Column(
         children: [
@@ -142,6 +172,11 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                         offset: Offset(0, 4),
                       ),
                     ],
+                    border: Border(
+                      right: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.8),
+                      ),
+                    ),
                   ),
                   child: Icon(
                     Icons.admin_panel_settings_rounded,
@@ -178,14 +213,14 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
               ],
             ),
           ),
-          
+
           Divider(
             color: Colors.white.withValues(alpha: 0.2),
             thickness: 1,
             indent: 20,
             endIndent: 20,
           ),
-          
+
           // Menu items
           Expanded(
             child: ListView.builder(
@@ -194,7 +229,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
               itemBuilder: (context, index) {
                 final item = _sidebarItems[index];
                 final isSelected = _selectedIndex == index;
-                
+
                 return Container(
                   margin: EdgeInsets.symmetric(vertical: 4),
                   child: ClipRRect(
@@ -207,21 +242,21 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                           gradient: LinearGradient(
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
-                            colors: isSelected 
-                              ? [
-                                  Color(0xFF4F46E5).withValues(alpha: 0.3),
-                                  Color(0xFF7C3AED).withValues(alpha: 0.2),
-                                ]
-                              : [
-                                  Colors.white.withValues(alpha: 0.05),
-                                  Colors.white.withValues(alpha: 0.02),
-                                ],
+                            colors: isSelected
+                                ? [
+                                    Color(0xFF4F46E5).withValues(alpha: 0.3),
+                                    Color(0xFF7C3AED).withValues(alpha: 0.2),
+                                  ]
+                                : [
+                                    Colors.white.withValues(alpha: 0.05),
+                                    Colors.white.withValues(alpha: 0.02),
+                                  ],
                           ),
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(
-                            color: isSelected 
-                              ? Color(0xFF4F46E5).withValues(alpha: 0.5)
-                              : Colors.white.withValues(alpha: 0.1),
+                            color: isSelected
+                                ? Color(0xFF4F46E5).withValues(alpha: 0.5)
+                                : Colors.white.withValues(alpha: 0.1),
                             width: 1.5,
                           ),
                         ),
@@ -230,11 +265,16 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                             padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               gradient: isSelected
-                                ? LinearGradient(
-                                    colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
-                                  )
-                                : null,
-                              color: isSelected ? null : Colors.white.withValues(alpha: 0.1),
+                                  ? LinearGradient(
+                                      colors: [
+                                        Color(0xFF4F46E5),
+                                        Color(0xFF7C3AED),
+                                      ],
+                                    )
+                                  : null,
+                              color: isSelected
+                                  ? null
+                                  : Colors.white.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Icon(
@@ -247,7 +287,9 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                             item['title'],
                             style: TextStyle(
                               color: Colors.white,
-                              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                              fontWeight: isSelected
+                                  ? FontWeight.w600
+                                  : FontWeight.w400,
                               fontSize: 15,
                               fontFamily: 'Roboto',
                             ),
@@ -270,7 +312,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
               },
             ),
           ),
-          
+
           // Logout button
           Container(
             padding: EdgeInsets.all(20),
@@ -339,7 +381,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
         return Transform.translate(
           offset: Offset(0, 50 * (1 - _cardAnimation.value)),
           child: Opacity(
-            opacity: _cardAnimation.value,
+            opacity: _cardAnimation.value.clamp(0.0, 1.0),
             child: Container(
               padding: EdgeInsets.all(24),
               decoration: BoxDecoration(
@@ -347,31 +389,27 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Colors.white,
-                    Color.fromRGBO(248, 250, 252, 0.9),
+                    Colors.white.withValues(alpha: 0.25),
+                    Colors.white.withValues(alpha: 0.1),
+                    Colors.white.withValues(alpha: 0.05),
                   ],
                 ),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.6),
-                    blurRadius: 12,
-                    spreadRadius: -4,
-                    offset: Offset(-3, -8),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 20,
-                    spreadRadius: -5,
-                    offset: Offset(5, 8),
+                    color: Colors.white.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    spreadRadius: 1,
+                    offset: Offset(0, -4),
                   ),
                 ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         padding: EdgeInsets.all(12),
@@ -385,7 +423,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                           borderRadius: BorderRadius.circular(15),
                           boxShadow: [
                             BoxShadow(
-                              color: data['color'].withValues(alpha: 0.4),
+                              color: data['color'].withValues(alpha: 0.7),
                               blurRadius: 8,
                               offset: Offset(0, 4),
                             ),
@@ -397,44 +435,30 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                           size: 28,
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: data['isPositive'] 
-                            ? Colors.green.withValues(alpha: 0.1)
-                            : Colors.red.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          data['change'],
-                          style: TextStyle(
-                            color: data['isPositive'] ? Colors.green[700] : Colors.red[700],
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    data['value'],
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1F2937),
-                      fontFamily: 'Roboto',
+                  Center(
+                    child: Text(
+                      data['value'],
+                      style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'Roboto',
+                      ),
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text(
-                    data['title'],
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF6B7280),
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Roboto',
+                  Center(
+                    child: Text(
+                      data['title'],
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white.withValues(alpha: 0.8),
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Roboto',
+                      ),
                     ),
                   ),
                 ],
@@ -446,144 +470,172 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
     );
   }
 
-  Widget _buildRecentActivity() {
+  Widget _buildRecentActivity(Animation<double> _cardAnimation) {
     final recentActivities = [
-      {'title': 'Surat permohonan dari PT. ABC', 'time': '2 jam lalu', 'type': 'masuk'},
-      {'title': 'Disposisi surat ke bagian HRD', 'time': '4 jam lalu', 'type': 'disposisi'},
-      {'title': 'Surat keluar ke vendor', 'time': '6 jam lalu', 'type': 'keluar'},
+      {
+        'title': 'Surat permohonan dari PT. ABC',
+        'time': '2 jam lalu',
+        'type': 'masuk',
+      },
+      {
+        'title': 'Disposisi surat ke bagian HRD',
+        'time': '4 jam lalu',
+        'type': 'disposisi',
+      },
+      {
+        'title': 'Surat keluar ke vendor',
+        'time': '6 jam lalu',
+        'type': 'keluar',
+      },
       {'title': 'User baru mendaftar', 'time': '1 hari lalu', 'type': 'user'},
-      {'title': 'Backup data berhasil', 'time': '2 hari lalu', 'type': 'system'},
+      {
+        'title': 'Backup data berhasil',
+        'time': '2 hari lalu',
+        'type': 'system',
+      },
     ];
 
-    return Container(
-      padding: EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            Color.fromRGBO(248, 250, 252, 0.9),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.6),
-            blurRadius: 12,
-            spreadRadius: -4,
-            offset: Offset(-3, -8),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 20,
-            spreadRadius: -5,
-            offset: Offset(5, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Aktivitas Terbaru',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1F2937),
-              fontFamily: 'Roboto',
+    return Transform.translate(
+      offset: Offset(0, 50 * (1 - _cardAnimation.value)),
+      child: Opacity(
+        opacity: _cardAnimation.value.clamp(0.0, 1.0),
+        child: Container(
+          padding: EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromRGBO(255, 255, 255, 0.3),
+                Color.fromRGBO(248, 250, 252, 0.1),
+                Color.fromRGBO(241, 245, 249, 0.1),
+                Color.fromRGBO(255, 255, 255, 0.3),
+              ],
             ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withAlpha(150)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withAlpha(25),
+                blurRadius: 8,
+                spreadRadius: 1,
+                offset: Offset(0, -4),
+              ),
+            ],
           ),
-          SizedBox(height: 20),
-          Expanded(
-            child: ListView.builder(
-              itemCount: recentActivities.length,
-              itemBuilder: (context, index) {
-                final activity = recentActivities[index];
-                IconData icon;
-                Color color;
-                
-                switch (activity['type']) {
-                  case 'masuk':
-                    icon = LineIcons.envelopeOpen;
-                    color = Color(0xFF4F46E5);
-                    break;
-                  case 'keluar':
-                    icon = FontAwesomeIcons.envelopeCircleCheck;
-                    color = Color(0xFF059669);
-                    break;
-                  case 'disposisi':
-                    icon = Icons.assignment_turned_in_rounded;
-                    color = Color(0xFFDC2626);
-                    break;
-                  case 'user':
-                    icon = Icons.person_add_rounded;
-                    color = Color(0xFF7C2D12);
-                    break;
-                  default:
-                    icon = Icons.info_outline_rounded;
-                    color = Color(0xFF6B7280);
-                }
-                
-                return Container(
-                  margin: EdgeInsets.only(bottom: 12),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[50],
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: Colors.grey[200]!,
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: color.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          icon,
-                          color: color,
-                          size: 18,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              activity['title']!,
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF1F2937),
-                                fontFamily: 'Roboto',
-                              ),
-                            ),
-                            SizedBox(height: 4),
-                            Text(
-                              activity['time']!,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF6B7280),
-                                fontFamily: 'Roboto',
-                              ),
-                            ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Aktivitas Terbaru',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontFamily: 'Roboto',
+                ),
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: recentActivities.length,
+                  itemBuilder: (context, index) {
+                    final activity = recentActivities[index];
+                    IconData icon;
+                    Color color;
+
+                    switch (activity['type']) {
+                      case 'masuk':
+                        icon = LineIcons.envelopeOpen;
+                        color = Color(0xFF4F46E5);
+                        break;
+                      case 'keluar':
+                        icon = FontAwesomeIcons.envelopeCircleCheck;
+                        color = Color(0xFF059669);
+                        break;
+                      case 'disposisi':
+                        icon = Icons.assignment_turned_in_rounded;
+                        color = Color(0xFFDC2626);
+                        break;
+                      case 'user':
+                        icon = Icons.person_add_rounded;
+                        color = Color(0xFF7C2D12);
+                        break;
+                      default:
+                        icon = Icons.info_outline_rounded;
+                        color = Color(0xFF6B7280);
+                    }
+
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 12),
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withAlpha(64),
+                            Colors.white.withAlpha(25),
+                            Colors.white.withAlpha(12),
                           ],
                         ),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey[200]!, width: 1),
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: color.withAlpha(200),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: color.withAlpha(150),
+                                  blurRadius: 6,
+                                  spreadRadius: 1,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Icon(icon, color: Colors.white, size: 18),
+                          ),
+                          SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  activity['title']!,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  activity['time']!,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.white,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -592,7 +644,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    
+
     return Scaffold(
       body: AnimatedBuilder(
         animation: _backgroundAnimation,
@@ -605,18 +657,18 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                 end: Alignment.bottomRight,
                 colors: [
                   Color.lerp(
-                    Color(0xFFF8FAFC),
-                    Color(0xFFE2E8F0),
+                    Color(0xFF1A1A2E),
+                    Color(0xFF16213E),
                     _backgroundAnimation.value,
                   )!,
                   Color.lerp(
-                    Color(0xFFE2E8F0),
-                    Color(0xFFCBD5E1),
+                    Color(0xFF0F3460),
+                    Color(0xFF533483),
                     _backgroundAnimation.value,
                   )!,
                   Color.lerp(
-                    Color(0xFFF1F5F9),
-                    Color(0xFFE2E8F0),
+                    Color(0xFF16213E),
+                    Color(0xFF0F0F0F),
                     _backgroundAnimation.value,
                   )!,
                 ],
@@ -626,7 +678,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
               children: [
                 // Sidebar
                 _buildSidebar(),
-                
+
                 // Main content
                 Expanded(
                   child: Container(
@@ -646,7 +698,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1F2937),
+                                    color: Colors.white,
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
@@ -655,7 +707,7 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                                   'Selamat datang kembali, Admin!',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Color(0xFF6B7280),
+                                    color: Colors.white,
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
@@ -665,12 +717,17 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                               padding: EdgeInsets.all(12),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                                  colors: [
+                                    Color(0xFF4F46E5),
+                                    Color(0xFF7C3AED),
+                                  ],
                                 ),
                                 borderRadius: BorderRadius.circular(15),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Color(0xFF4F46E5).withValues(alpha: 0.3),
+                                    color: Color(
+                                      0xFF4F46E5,
+                                    ).withValues(alpha: 0.3),
                                     blurRadius: 10,
                                     offset: Offset(0, 4),
                                   ),
@@ -684,31 +741,30 @@ class _AdminDashboardState extends State<AdminDashboard> with TickerProviderStat
                             ),
                           ],
                         ),
-                        
+
                         SizedBox(height: 40),
-                        
+
                         // Stats cards
                         GridView.builder(
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            childAspectRatio: 1.2,
-                            mainAxisSpacing: 20,
-                            crossAxisSpacing: 20,
-                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 4,
+                                childAspectRatio: 1.2,
+                                mainAxisSpacing: 20,
+                                crossAxisSpacing: 20,
+                              ),
                           itemCount: _statsData.length,
                           itemBuilder: (context, index) {
                             return _buildStatsCard(_statsData[index], index);
                           },
                         ),
-                        
+
                         SizedBox(height: 40),
-                        
+
                         // Recent activity
-                        Expanded(
-                          child: _buildRecentActivity(),
-                        ),
+                        Expanded(child: _buildRecentActivity(_cardAnimation)),
                       ],
                     ),
                   ),
