@@ -341,30 +341,6 @@ class _DispositionLetterAdminDesktopState
   }
 
   Widget _buildRecentActivity(Animation<double> _cardAnimation) {
-    final recentActivities = [
-      {
-        'title': 'Surat permohonan dari PT. ABC',
-        'time': '2 jam lalu',
-        'type': 'masuk',
-      },
-      {
-        'title': 'Disposisi surat ke bagian HRD',
-        'time': '4 jam lalu',
-        'type': 'disposisi',
-      },
-      {
-        'title': 'Surat keluar ke vendor',
-        'time': '6 jam lalu',
-        'type': 'keluar',
-      },
-      {'title': 'User baru mendaftar', 'time': '1 hari lalu', 'type': 'user'},
-      {
-        'title': 'Backup data berhasil',
-        'time': '2 hari lalu',
-        'type': 'system',
-      },
-    ];
-
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -408,99 +384,23 @@ class _DispositionLetterAdminDesktopState
               ),
               SizedBox(height: 20),
               Expanded(
-                child: ListView.builder(
-                  itemCount: recentActivities.length,
-                  itemBuilder: (context, index) {
-                    final activity = recentActivities[index];
-                    IconData icon;
-                    Color color;
-
-                    switch (activity['type']) {
-                      case 'masuk':
-                        icon = LineIcons.envelopeOpen;
-                        color = Color(0xFF4F46E5);
-                        break;
-                      case 'keluar':
-                        icon = FontAwesomeIcons.envelopeCircleCheck;
-                        color = Color(0xFF059669);
-                        break;
-                      case 'disposisi':
-                        icon = Icons.assignment_turned_in_rounded;
-                        color = Color(0xFFDC2626);
-                        break;
-                      case 'user':
-                        icon = Icons.person_add_rounded;
-                        color = Color(0xFF7C2D12);
-                        break;
-                      default:
-                        icon = Icons.info_outline_rounded;
-                        color = Color(0xFF6B7280);
-                    }
-
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 12),
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withAlpha(64),
-                            Colors.white.withAlpha(25),
-                            Colors.white.withAlpha(12),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey[200]!, width: 1),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: color.withAlpha(200),
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: color.withAlpha(150),
-                                  blurRadius: 6,
-                                  spreadRadius: 1,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Icon(icon, color: Colors.white, size: 18),
-                          ),
-                          SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  activity['title']!,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  activity['time']!,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 12),
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withAlpha(64),
+                        Colors.white.withAlpha(25),
+                        Colors.white.withAlpha(12),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[200]!, width: 1),
+                  ),
+                  child: Row(),
                 ),
               ),
             ],
