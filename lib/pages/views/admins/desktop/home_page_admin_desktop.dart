@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
-import 'dart:math';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
 class AdminDashboard extends StatefulWidget {
@@ -382,86 +378,106 @@ class _AdminDashboardState extends State<AdminDashboard>
           offset: Offset(0, 50 * (1 - _cardAnimation.value)),
           child: Opacity(
             opacity: _cardAnimation.value.clamp(0.0, 1.0),
-            child: Container(
-              padding: EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: 0.25),
-                    Colors.white.withValues(alpha: 0.1),
-                    Colors.white.withValues(alpha: 0.05),
-                  ],
-                ),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.white.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    spreadRadius: 1,
-                    offset: Offset(0, -4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              data['color'],
-                              data['color'].withValues(alpha: 0.7),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(15),
-                          boxShadow: [
-                            BoxShadow(
-                              color: data['color'].withValues(alpha: 0.7),
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          data['icon'],
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ),
+            child: InkWell(
+              onTap: () {
+                switch (index) {
+                case 0:
+                  Navigator.pushNamed(context, '/admin/desktop/surat_permohonan_page_admin_desktop');
+                  break;
+                case 1:
+                  Navigator.pushNamed(context, '/admin/desktop/surat_keluar_page_admin_desktop');
+                  break;
+                case 2:
+                  Navigator.pushNamed(context, '/admin/desktop/manajemen_pengguna_page');
+                  break;
+                case 3:
+                  Navigator.pushNamed(context, '/admin/desktop/manajemen_pengguna_page');
+                  break;
+                default:
+                  Navigator.pushNamed(context, '/admin/desktop/home_page_admin_desktop');
+              }
+              },
+              child: Container(
+                padding: EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white.withValues(alpha: 0.25),
+                      Colors.white.withValues(alpha: 0.1),
+                      Colors.white.withValues(alpha: 0.05),
                     ],
                   ),
-                  SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      data['value'],
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontFamily: 'Roboto',
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white.withValues(alpha: 0.1),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                      offset: Offset(0, -4),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                data['color'],
+                                data['color'].withValues(alpha: 0.7),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: data['color'].withValues(alpha: 0.7),
+                                blurRadius: 8,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            data['icon'],
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child: Text(
+                        data['value'],
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Center(
-                    child: Text(
-                      data['title'],
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white.withValues(alpha: 0.8),
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Roboto',
+                    SizedBox(height: 8),
+                    Center(
+                      child: Text(
+                        data['title'],
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.8),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

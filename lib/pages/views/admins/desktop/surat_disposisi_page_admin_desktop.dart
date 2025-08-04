@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:ui';
-import 'dart:math';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
 class DispositionLetterAdminDesktop extends StatefulWidget {
