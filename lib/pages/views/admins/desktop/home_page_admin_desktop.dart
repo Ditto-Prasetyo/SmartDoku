@@ -90,6 +90,18 @@ class _AdminDashboardState extends State<AdminDashboard>
     },
   ];
 
+  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    Navigator.pushNamedAndRemoveUntil(
+      context, 
+      item['route'], 
+      (route) => false, 
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -290,13 +302,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                               fontFamily: 'Roboto',
                             ),
                           ),
-                          onTap: () {
-                            setState(() {
-                              _selectedIndex = index;
-                            });
-                            // Navigate to respective page
-                            Navigator.pushNamed(context, item['route']);
-                          },
+                          onTap: () => _navigateToPage(context, item, index),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -369,6 +375,7 @@ class _AdminDashboardState extends State<AdminDashboard>
       ),
     );
   }
+  
 
   Widget _buildStatsCard(Map<String, dynamic> data, int index) {
     return AnimatedBuilder(
@@ -522,10 +529,10 @@ class _AdminDashboardState extends State<AdminDashboard>
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.fromRGBO(255, 255, 255, 0.3),
-                Color.fromRGBO(248, 250, 252, 0.1),
-                Color.fromRGBO(241, 245, 249, 0.1),
-                Color.fromRGBO(255, 255, 255, 0.3),
+                Color.fromRGBO(255, 255, 255, 0.2),
+                Color.fromRGBO(248, 250, 252, 0.05),
+                Color.fromRGBO(241, 245, 249, 0.05),
+                Color.fromRGBO(255, 255, 255, 0.2),
               ],
             ),
             borderRadius: BorderRadius.circular(20),

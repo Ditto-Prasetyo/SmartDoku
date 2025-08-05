@@ -8,14 +8,14 @@ import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePageAdminPhones extends StatefulWidget {
+  const HomePageAdminPhones({super.key});
 
   @override
-  State<HomePage> createState() => _HomePage();
+  State<HomePageAdminPhones> createState() => _HomePageAdminPhones();
 }
 
-class _HomePage extends State<HomePage> with TickerProviderStateMixin {
+class _HomePageAdminPhones extends State<HomePageAdminPhones> with TickerProviderStateMixin {
   var height, width;
 
   // Animation controllers and animations

@@ -60,6 +60,109 @@ class _OutgoingLetterPageAdminDesktopState
     },
   ];
 
+  List<Map<String, dynamic>> suratData = [
+    {
+      'id': '1',
+      'judul': 'Surat Pemberitahuan Rapat Bulanan',
+      'perihal':
+          'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
+      'tanggal': '28 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Proses',
+    },
+    {
+      'id': '2',
+      'judul': 'Pengajuan Cuti Tahunan',
+      'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
+      'tanggal': '27 Juli 2025',
+      'pengirim': 'Karyawan - Ahmad Rizki',
+      'status': 'Selesai',
+    },
+    {
+      'id': '3',
+      'judul': 'Laporan Keuangan Q2 2025',
+      'perihal': 'Report keuangan triwulan kedua tahun 2025',
+      'tanggal': '26 Juli 2025',
+      'pengirim': 'Finance Department',
+      'status': 'Proses',
+    },
+    {
+      'id': '4',
+      'judul': 'Undangan Seminar IT',
+      'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
+      'tanggal': '25 Juli 2025',
+      'pengirim': 'IT Department',
+      'status': 'Selesai',
+    },
+    {
+      'id': '5',
+      'judul': 'Surat Peringatan Kedisiplinan',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
+    },{
+      'id': '6',
+      'judul': 'Surat Peringatan Kedisiplinan',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
+    },{
+      'id': '7',
+      'judul': 'Surat Peringatan Kedisiplinan',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
+    },{
+      'id': '8',
+      'judul': 'Surat Peringatan Kedisiplinan',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
+    },
+  ];
+
+  void actionSetState(int index) {
+    setState(() {
+      suratData.removeAt(index);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Dokumen berhasil dihapus'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
+  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    Navigator.pushNamedAndRemoveUntil(
+      context, 
+      item['route'], 
+      (route) => false, 
+    );
+  }
+
+  // Helper function untuk warna status (pastikan ini ada di class lu)
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'selesai':
+        return Color(0xFF10B981); // Green
+      case 'proses':
+        return Color(0xFFF59E0B); // Orange
+      case 'ditolak':
+        return Color(0xFFEF4444); // Red
+      default:
+        return Color(0xFF6B7280); // Gray
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -260,13 +363,7 @@ class _OutgoingLetterPageAdminDesktopState
                               fontFamily: 'Roboto',
                             ),
                           ),
-                          onTap: () {
-                            setState(() {
-                              _selectedIndex = index;
-                            });
-                            // Navigate to respective page
-                            Navigator.pushNamed(context, item['route']);
-                          },
+                          onTap: () => _navigateToPage(context, item, index),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -339,8 +436,7 @@ class _OutgoingLetterPageAdminDesktopState
       ),
     );
   }
-
-  Widget _buildRecentActivity(Animation<double> _cardAnimation) {
+  Widget _buildTableDataLetters(Animation<double> _cardAnimation) {
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -352,10 +448,10 @@ class _OutgoingLetterPageAdminDesktopState
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.fromRGBO(255, 255, 255, 0.3),
-                Color.fromRGBO(248, 250, 252, 0.1),
-                Color.fromRGBO(241, 245, 249, 0.1),
-                Color.fromRGBO(255, 255, 255, 0.3),
+                Color.fromRGBO(255, 255, 255, 0.2),
+                Color.fromRGBO(248, 250, 252, 0.05),
+                Color.fromRGBO(241, 245, 249, 0.05),
+                Color.fromRGBO(255, 255, 255, 0.2),
               ],
             ),
             borderRadius: BorderRadius.circular(20),
@@ -373,34 +469,640 @@ class _OutgoingLetterPageAdminDesktopState
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Aktivitas Terbaru',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              SizedBox(height: 20),
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 12),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withAlpha(64),
-                        Colors.white.withAlpha(25),
-                        Colors.white.withAlpha(12),
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Aktivitas Terbaru',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Color(0xFF10B981).withValues(alpha: 0.3),
+                          Color(0xFF059669).withValues(alpha: 0.2),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.table_chart_rounded,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                        SizedBox(width: 6),
+                        Text(
+                          '${suratData.length} Data',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!, width: 1),
                   ),
-                  child: Row(),
+                ],
+              ),
+
+              SizedBox(height: 20),
+
+              // Table Container
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.2),
+                            Colors.white.withValues(alpha: 0.1),
+                            Colors.white.withValues(alpha: 0.1),
+                            Colors.white.withValues(alpha: 0.2),
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.25),
+                          width: 1,
+                        ),
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minWidth:
+                                MediaQuery.of(context).size.width -
+                                48, // 48 = padding * 2
+                          ),
+                          child: IntrinsicWidth(
+                            child: Column(
+                              children: [
+                                // Table Header
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.white.withValues(alpha: 0.15),
+                                        Colors.white.withValues(alpha: 0.08),
+                                      ],
+                                    ),
+                                    border: Border(
+                                      bottom: BorderSide(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      // No
+                                      SizedBox(
+                                        width: 40,
+                                        child: Text(
+                                          'No',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                      // Judul
+                                      SizedBox(width: 20),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Text(
+                                          'Judul Surat',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                      // Pengirim
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          'Pengirim',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                      // Tanggal
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Tanggal',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                      // Status
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Status',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                      // Actions
+                                      SizedBox(
+                                        width: 80,
+                                        child: Text(
+                                          'Aksi',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Table Body
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      children: List.generate(suratData.length, (
+                                        index,
+                                      ) {
+                                        final surat = suratData[index];
+
+                                        return Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                                width: 0.5,
+                                              ),
+                                            ),
+                                          ),
+                                          child: InkWell(
+                                            onTap: () {
+                                              // Handle row tap
+                                              print(
+                                                'Row tapped: ${surat['judul']}',
+                                              );
+                                            },
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 4,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  // No
+                                                  SizedBox(
+                                                    width: 40,
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            horizontal: 6,
+                                                            vertical: 2,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xFF4F46E5,
+                                                                ).withValues(
+                                                                  alpha: 0.3,
+                                                                ),
+                                                                Color(
+                                                                  0xFF7C3AED,
+                                                                ).withValues(
+                                                                  alpha: 0.2,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              6,
+                                                            ),
+                                                      ),
+                                                      child: Text(
+                                                        '${index + 1}',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // Judul
+                                                  SizedBox(width: 20),
+                                                  Expanded(
+                                                    flex: 3,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          surat['judul'],
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 13,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontFamily:
+                                                                'Roboto',
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                        SizedBox(height: 2),
+                                                        Text(
+                                                          surat['perihal'],
+                                                          style: TextStyle(
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.7,
+                                                                ),
+                                                            fontSize: 11,
+                                                            fontFamily:
+                                                                'Roboto',
+                                                          ),
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                  // Pengirim
+                                                  SizedBox(width: 80),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.all(4),
+                                                          decoration: BoxDecoration(
+                                                            gradient:
+                                                                LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                      0xFF10B981,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.3,
+                                                                    ),
+                                                                    Color(
+                                                                      0xFF059669,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  6,
+                                                                ),
+                                                          ),
+                                                          child: Icon(
+                                                            Icons
+                                                                .person_outline_rounded,
+                                                            color: Colors.white,
+                                                            size: 12,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 6),
+                                                        Expanded(
+                                                          child: Text(
+                                                            surat['pengirim'],
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.8,
+                                                                  ),
+                                                              fontSize: 12,
+                                                              fontFamily:
+                                                                  'Roboto',
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+
+                                                  // Tanggal
+                                                  SizedBox(width: 80),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['tanggal'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // Status
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            horizontal: 8,
+                                                            vertical: 4,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                          colors: [
+                                                            getStatusColor(
+                                                              surat['status'],
+                                                            ),
+                                                            getStatusColor(
+                                                              surat['status'],
+                                                            ).withValues(
+                                                              alpha: 0.8,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              12,
+                                                            ),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color:
+                                                                getStatusColor(
+                                                                  surat['status'],
+                                                                ).withValues(
+                                                                  alpha: 0.3,
+                                                                ),
+                                                            blurRadius: 4,
+                                                            offset: Offset(
+                                                              0,
+                                                              1,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: Text(
+                                                        surat['status'],
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // Actions
+                                                  SizedBox(width: 40),
+                                                  SizedBox(
+                                                    width: 100,
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        // View button
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                right: 4,
+                                                              ),
+                                                          padding:
+                                                              EdgeInsets.all(6),
+                                                          decoration: BoxDecoration(
+                                                            gradient:
+                                                                LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                      0xFF3B82F6,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.3,
+                                                                    ),
+                                                                    Color(
+                                                                      0xFF1D4ED8,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  6,
+                                                                ),
+                                                          ),
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              // Handle view action
+                                                              viewDetail(
+                                                                context,
+                                                                index,
+                                                                suratData,
+                                                              );
+                                                            },
+                                                            child: Icon(
+                                                              Icons
+                                                                  .visibility_outlined,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 14,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        // Edit button
+                                                        Container(
+                                                          margin:
+                                                              EdgeInsets.only(
+                                                                right: 4,
+                                                              ),
+                                                          padding:
+                                                              EdgeInsets.all(6),
+                                                          decoration: BoxDecoration(
+                                                            gradient:
+                                                                LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                      0xFFF59E0B,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.3,
+                                                                    ),
+                                                                    Color(
+                                                                      0xFFD97706,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  6,
+                                                                ),
+                                                          ),
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              // Handle edit action
+                                                              editDokumen(
+                                                                index,
+                                                                suratData,
+                                                              );
+                                                            },
+                                                            child: Icon(
+                                                              Icons
+                                                                  .edit_outlined,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 14,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        // Delete button
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.all(6),
+                                                          decoration: BoxDecoration(
+                                                            gradient:
+                                                                LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                      0xFFEF4444,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.3,
+                                                                    ),
+                                                                    Color(
+                                                                      0xFFDC2626,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  6,
+                                                                ),
+                                                          ),
+                                                          child: InkWell(
+                                                            onTap: () {
+                                                              // Handle delete action
+                                                              hapusDokumen(
+                                                                context,
+                                                                index,
+                                                                suratData,
+                                                                actionSetState,
+                                                              );
+                                                            },
+                                                            child: Icon(
+                                                              Icons
+                                                                  .delete_outline,
+                                                              color:
+                                                                  Colors.white,
+                                                              size: 14,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -515,7 +1217,7 @@ class _OutgoingLetterPageAdminDesktopState
                         SizedBox(height: 40),
 
                         // Recent activity
-                        Expanded(child: _buildRecentActivity(_cardAnimation)),
+                        Expanded(child: _buildTableDataLetters(_cardAnimation)),
                       ],
                     ),
                   ),

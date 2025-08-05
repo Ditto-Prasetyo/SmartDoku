@@ -101,6 +101,27 @@ class _PermohonanLettersPageAdminDesktopState
       'tanggal': '24 Juli 2025',
       'pengirim': 'HRD Department',
       'status': 'Selesai',
+    },{
+      'id': '6',
+      'judul': 'Surat Peringatan Kedisiplinan',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
+    },{
+      'id': '7',
+      'judul': 'Surat Peringatan Kedisiplinan',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
+    },{
+      'id': '8',
+      'judul': 'Surat Peringatan Kedisiplinan',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
     },
   ];
 
@@ -113,6 +134,18 @@ class _PermohonanLettersPageAdminDesktopState
         content: Text('Dokumen berhasil dihapus'),
         backgroundColor: Colors.red,
       ),
+    );
+  }
+
+  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    Navigator.pushNamedAndRemoveUntil(
+      context, 
+      item['route'], 
+      (route) => false, 
     );
   }
 
@@ -316,13 +349,7 @@ class _PermohonanLettersPageAdminDesktopState
                               fontFamily: 'Roboto',
                             ),
                           ),
-                          onTap: () {
-                            setState(() {
-                              _selectedIndex = index;
-                            });
-                            // Navigate to respective page
-                            Navigator.pushNamed(context, item['route']);
-                          },
+                          onTap: () => _navigateToPage(context, item, index),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -408,10 +435,10 @@ class _PermohonanLettersPageAdminDesktopState
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.fromRGBO(255, 255, 255, 0.3),
-                Color.fromRGBO(248, 250, 252, 0.1),
-                Color.fromRGBO(241, 245, 249, 0.1),
-                Color.fromRGBO(255, 255, 255, 0.3),
+                Color.fromRGBO(255, 255, 255, 0.2),
+                Color.fromRGBO(248, 250, 252, 0.05),
+                Color.fromRGBO(241, 245, 249, 0.05),
+                Color.fromRGBO(255, 255, 255, 0.2),
               ],
             ),
             borderRadius: BorderRadius.circular(20),
@@ -497,7 +524,8 @@ class _PermohonanLettersPageAdminDesktopState
                           colors: [
                             Colors.white.withValues(alpha: 0.2),
                             Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.05),
+                            Colors.white.withValues(alpha: 0.1),
+                            Colors.white.withValues(alpha: 0.2),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(16),

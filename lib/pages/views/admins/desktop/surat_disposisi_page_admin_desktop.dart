@@ -60,6 +60,18 @@ class _DispositionLetterAdminDesktopState
     },
   ];
 
+  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    Navigator.pushNamedAndRemoveUntil(
+      context, 
+      item['route'], 
+      (route) => false, 
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -260,13 +272,7 @@ class _DispositionLetterAdminDesktopState
                               fontFamily: 'Roboto',
                             ),
                           ),
-                          onTap: () {
-                            setState(() {
-                              _selectedIndex = index;
-                            });
-                            // Navigate to respective page
-                            Navigator.pushNamed(context, item['route']);
-                          },
+                          onTap: () => _navigateToPage(context, item, index),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
@@ -339,6 +345,7 @@ class _DispositionLetterAdminDesktopState
       ),
     );
   }
+  
 
   Widget _buildRecentActivity(Animation<double> _cardAnimation) {
     return Transform.translate(
@@ -352,10 +359,10 @@ class _DispositionLetterAdminDesktopState
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Color.fromRGBO(255, 255, 255, 0.3),
-                Color.fromRGBO(248, 250, 252, 0.1),
-                Color.fromRGBO(241, 245, 249, 0.1),
-                Color.fromRGBO(255, 255, 255, 0.3),
+                Color.fromRGBO(255, 255, 255, 0.2),
+                Color.fromRGBO(248, 250, 252, 0.05),
+                Color.fromRGBO(241, 245, 249, 0.05),
+                Color.fromRGBO(255, 255, 255, 0.2),
               ],
             ),
             borderRadius: BorderRadius.circular(20),
@@ -392,10 +399,11 @@ class _DispositionLetterAdminDesktopState
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Colors.white.withAlpha(64),
-                        Colors.white.withAlpha(25),
-                        Colors.white.withAlpha(12),
-                      ],
+                            Colors.white.withValues(alpha: 0.2),
+                            Colors.white.withValues(alpha: 0.1),
+                            Colors.white.withValues(alpha: 0.1),
+                            Colors.white.withValues(alpha: 0.2),
+                          ],
                     ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.grey[200]!, width: 1),
