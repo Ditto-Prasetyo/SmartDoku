@@ -1,3 +1,4 @@
+import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/services/service.dart';
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final WhatsappService _whatsAppService =
       WhatsappService(); 
+
+  final AuthService _auth = AuthService();
 
   bool _isPasswordVisible = false;
   bool _isHovered = false;
@@ -495,7 +498,10 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                               ],
                                             ),
                                             child: ElevatedButton(
-                                              onPressed: () => handleLogin(context, _usernameController, _passwordController),
+                                              onPressed: () async {
+                                                handleLogin(context, _usernameController, _passwordController);
+                                                await _auth.login(_usernameController.text, _passwordController.text);
+                                              },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
                                                     Colors.transparent,
