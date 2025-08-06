@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/manajemen_pengguna_page.dart';
@@ -39,6 +40,8 @@ void main() async {
       Size(size.width * 2.0, size.height * 1.5),
     ); // Maximum window size
   }
+
+  await dotenv.load(fileName: ".config/.env");
 
   runApp(const SmartDoku());
 }

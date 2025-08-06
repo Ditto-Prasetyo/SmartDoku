@@ -1,4 +1,4 @@
-import 'package:smart_doku/api/service.dart';
+import 'package:smart_doku/services/service.dart';
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_doku/utils/function.dart';
