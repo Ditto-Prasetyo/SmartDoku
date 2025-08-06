@@ -629,7 +629,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                     ),
                                   ),
                                   onTap: () {
-                                    home(context);
+                                    homeAdmin(context);
                                   },
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
@@ -1110,7 +1110,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "Surat Keluar",
+                                    "Surat Keluar Admin",
                                     style: TextStyle(
                                       fontSize:
                                           30 - (8 * _searchAnimation.value),

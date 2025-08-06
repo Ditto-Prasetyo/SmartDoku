@@ -1169,7 +1169,7 @@ class _PermohonanLettersPageAdminDesktopState
                                             border: Border(
                                               bottom: BorderSide(
                                                 color: Colors.white.withValues(
-                                                  alpha: 0.1,
+                                                  alpha: 1,
                                                 ),
                                                 width: 0.5,
                                               ),
