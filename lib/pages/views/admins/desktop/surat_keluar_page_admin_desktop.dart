@@ -63,227 +63,68 @@ class _OutgoingLetterPageAdminDesktopState
   List<Map<String, dynamic>> suratData = [
     {
       'id': '1',
-      'surat_dari': 'Surat Pemberitahuan Rapat Bulanan',
-      'diterima_tgl': '28 Juli 2025',
+      'judul': 'Surat Pemberitahuan Rapat Bulanan',
       'perihal':
           'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
       'tanggal': '28 Juli 2025',
       'pengirim': 'HRD Department',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat' : '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
       'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
     },
     {
       'id': '2',
-      'surat_dari': 'Pengajuan Cuti Tahunan',
-      'diterima_tgl': '28 Juli 2025',
+      'judul': 'Pengajuan Cuti Tahunan',
       'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat' : '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
+      'tanggal': '27 Juli 2025',
+      'pengirim': 'Karyawan - Ahmad Rizki',
       'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
     },
     {
       'id': '3',
-      'surat_dari': 'Laporan Keuangan Q2 2025',
-      'diterima_tgl': '28 Juli 2025',
+      'judul': 'Laporan Keuangan Q2 2025',
       'perihal': 'Report keuangan triwulan kedua tahun 2025',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat' : '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
+      'tanggal': '26 Juli 2025',
+      'pengirim': 'Finance Department',
       'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
     },
     {
       'id': '4',
-      'surat_dari': 'Undangan Seminar IT',
-      'diterima_tgl': '28 Juli 2025',
+      'judul': 'Undangan Seminar IT',
       'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat' : '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
+      'tanggal': '25 Juli 2025',
+      'pengirim': 'IT Department',
       'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
     },
     {
       'id': '5',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
+      'judul': 'Surat Peringatan Kedisiplinan',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat' : '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
       'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },{
+    },
+    {
       'id': '6',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
+      'judul': 'Surat Peringatan Kedisiplinan',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat' : '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
       'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },{
+    },
+    {
       'id': '7',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
+      'judul': 'Surat Peringatan Kedisiplinan',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat' : '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },{
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
+    },
+    {
       'id': '8',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
+      'judul': 'Surat Peringatan Kedisiplinan',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat' : '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
+      'tanggal': '24 Juli 2025',
+      'pengirim': 'HRD Department',
+      'status': 'Selesai',
     },
   ];
 
@@ -299,16 +140,16 @@ class _OutgoingLetterPageAdminDesktopState
     );
   }
 
-  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+  void _navigateToPage(
+    BuildContext context,
+    Map<String, dynamic> item,
+    int index,
+  ) {
     setState(() {
       _selectedIndex = index;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      item['route'], 
-      (route) => false, 
-    );
+    Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
   // Helper function untuk warna status (pastikan ini ada di class lu)
@@ -758,12 +599,25 @@ class _OutgoingLetterPageAdminDesktopState
                                           ),
                                         ),
                                       ),
-                                      // Surat dari
-                                      SizedBox(width: 40),
+                                      // Judul
+                                      SizedBox(width: 20),
+                                      Expanded(
+                                        flex: 3,
+                                        child: Text(
+                                          'Judul Surat',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                      // Pengirim
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          'Surat Dari',
+                                          'Pengirim',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -772,72 +626,11 @@ class _OutgoingLetterPageAdminDesktopState
                                           ),
                                         ),
                                       ),
-                                      // Diterima TGL
+                                      // Tanggal
                                       Expanded(
                                         flex: 1,
                                         child: Text(
-                                          'Diterima TGL',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // Tanggal Surat
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          'TGL Surat',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          'Kode',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          'No Urut',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          'No Agenda',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          'No Surat',
+                                          'Tanggal',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -963,17 +756,17 @@ class _OutgoingLetterPageAdminDesktopState
                                                     ),
                                                   ),
 
-                                                  // Surat dari
-                                                  SizedBox(width: 40),
+                                                  // Judul
+                                                  SizedBox(width: 20),
                                                   Expanded(
-                                                    flex: 2,
+                                                    flex: 3,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          surat['surat_dari'],
+                                                          surat['judul'],
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 13,
@@ -1006,28 +799,75 @@ class _OutgoingLetterPageAdminDesktopState
                                                     ),
                                                   ),
 
-                                                  // Diterima tgl
-                                                  SizedBox(width: 40),
+                                                  // Pengirim
+                                                  SizedBox(width: 80),
                                                   Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                      surat['diterima_tgl'] ?? '',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
+                                                    flex: 2,
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.all(4),
+                                                          decoration: BoxDecoration(
+                                                            gradient:
+                                                                LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                      0xFF10B981,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.3,
+                                                                    ),
+                                                                    Color(
+                                                                      0xFF059669,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  6,
+                                                                ),
+                                                          ),
+                                                          child: Icon(
+                                                            Icons
+                                                                .person_outline_rounded,
+                                                            color: Colors.white,
+                                                            size: 12,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 6),
+                                                        Expanded(
+                                                          child: Text(
+                                                            surat['pengirim'],
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.8,
+                                                                  ),
+                                                              fontSize: 12,
+                                                              fontFamily:
+                                                                  'Roboto',
                                                             ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
+
                                                   // Tanggal
-                                                  SizedBox(width: 10),
+                                                  SizedBox(width: 80),
                                                   Expanded(
                                                     flex: 1,
                                                     child: Text(
-                                                      surat['tgl_surat'] ?? '',
+                                                      surat['tanggal'],
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1038,69 +878,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                       ),
                                                     ),
                                                   ),
-                                                  // kode
-                                                  SizedBox(width: 10),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                      surat['kode'] ?? '',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // no_urut
-                                                  SizedBox(width: 10),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                      surat['no_urut'] ?? '',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // no_agenda
-                                                  SizedBox(width: 10),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                      surat['kode'] == null ? '404 Not Found' : surat['kode'] + "/" + surat['no_urut'] + "/" + '35.07.303/2025',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 10),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: Text(
-                                                      surat['no_surat'] ?? '',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
+
                                                   // Status
                                                   Expanded(
                                                     flex: 1,
@@ -1456,4 +1234,3 @@ class _OutgoingLetterPageAdminDesktopState
     );
   }
 }
- 

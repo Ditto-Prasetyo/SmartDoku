@@ -63,65 +63,238 @@ class _PermohonanLettersPageAdminDesktopState
   List<Map<String, dynamic>> suratData = [
     {
       'id': '1',
-      'judul': 'Surat Pemberitahuan Rapat Bulanan',
+      'surat_dari': 'Surat Pemberitahuan Rapat Bulanan',
+      'diterima_tgl': '28 Juli 2025',
       'perihal':
           'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
       'tanggal': '28 Juli 2025',
       'pengirim': 'HRD Department',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
       'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '2',
-      'judul': 'Pengajuan Cuti Tahunan',
+      'surat_dari': 'Pengajuan Cuti Tahunan',
+      'diterima_tgl': '28 Juli 2025',
       'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
-      'tanggal': '27 Juli 2025',
-      'pengirim': 'Karyawan - Ahmad Rizki',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
       'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '3',
-      'judul': 'Laporan Keuangan Q2 2025',
+      'surat_dari': 'Laporan Keuangan Q2 2025',
+      'diterima_tgl': '28 Juli 2025',
       'perihal': 'Report keuangan triwulan kedua tahun 2025',
-      'tanggal': '26 Juli 2025',
-      'pengirim': 'Finance Department',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
       'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '4',
-      'judul': 'Undangan Seminar IT',
+      'surat_dari': 'Undangan Seminar IT',
+      'diterima_tgl': '28 Juli 2025',
       'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
-      'tanggal': '25 Juli 2025',
-      'pengirim': 'IT Department',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
       'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '5',
-      'judul': 'Surat Peringatan Kedisiplinan',
+      'surat_dari': 'Surat Peringatan Kedisiplinan',
+      'diterima_tgl': '28 Juli 2025',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tanggal': '24 Juli 2025',
-      'pengirim': 'HRD Department',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
       'status': 'Selesai',
-    },{
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
       'id': '6',
-      'judul': 'Surat Peringatan Kedisiplinan',
+      'surat_dari': 'Surat Peringatan Kedisiplinan',
+      'diterima_tgl': '28 Juli 2025',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tanggal': '24 Juli 2025',
-      'pengirim': 'HRD Department',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
       'status': 'Selesai',
-    },{
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
       'id': '7',
-      'judul': 'Surat Peringatan Kedisiplinan',
+      'surat_dari': 'Surat Peringatan Kedisiplinan',
+      'diterima_tgl': '28 Juli 2025',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tanggal': '24 Juli 2025',
-      'pengirim': 'HRD Department',
-      'status': 'Selesai',
-    },{
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
       'id': '8',
-      'judul': 'Surat Peringatan Kedisiplinan',
+      'surat_dari': 'Surat Peringatan Kedisiplinan',
+      'diterima_tgl': '28 Juli 2025',
       'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tanggal': '24 Juli 2025',
-      'pengirim': 'HRD Department',
-      'status': 'Selesai',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
   ];
 
@@ -137,16 +310,16 @@ class _PermohonanLettersPageAdminDesktopState
     );
   }
 
-  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+  void _navigateToPage(
+    BuildContext context,
+    Map<String, dynamic> item,
+    int index,
+  ) {
     setState(() {
       _selectedIndex = index;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      item['route'], 
-      (route) => false, 
-    );
+    Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
   @override
@@ -545,11 +718,11 @@ class _PermohonanLettersPageAdminDesktopState
                           child: IntrinsicWidth(
                             child: Column(
                               children: [
-                                // Table Header
+                                // Header Row
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 20,
-                                    vertical: 16,
+                                    vertical: 2,
                                   ),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -569,7 +742,7 @@ class _PermohonanLettersPageAdminDesktopState
                                   ),
                                   child: Row(
                                     children: [
-                                      // No
+                                      // 1. No - flex: 1
                                       SizedBox(
                                         width: 40,
                                         child: Text(
@@ -582,25 +755,13 @@ class _PermohonanLettersPageAdminDesktopState
                                           ),
                                         ),
                                       ),
-                                      // Judul
+
+                                      // 2. Surat dari - flex: 2
                                       SizedBox(width: 20),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Text(
-                                          'Judul Surat',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // Pengirim
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          'Pengirim',
+                                          'Surat Dari',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -609,11 +770,13 @@ class _PermohonanLettersPageAdminDesktopState
                                           ),
                                         ),
                                       ),
-                                      // Tanggal
+
+                                      // 3. Diterima TGL - flex: 1
+                                      SizedBox(width: 8),
                                       Expanded(
                                         flex: 1,
                                         child: Text(
-                                          'Tanggal',
+                                          'Diterima TGL',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -622,7 +785,338 @@ class _PermohonanLettersPageAdminDesktopState
                                           ),
                                         ),
                                       ),
-                                      // Status
+
+                                      // 4. Tanggal Surat - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'TGL Surat',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 5. Kode - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Kode',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 6. No Urut - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'No Urut',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 7. No Agenda - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'No Agenda',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 8. No Surat - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'No Surat',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 9. Perihal - flex: 2
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          'Perihal',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 10. Hari/Tanggal - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8.0),
+                                          child: Text(
+                                            'Hari/Tanggal',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 11. Waktu - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(right: 8),
+                                          child: Text(
+                                            'Waktu',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 12. Tempat - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            'Tempat',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 13. Disposisi - flex: 1
+                                      SizedBox(width: 5),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            'Disposisi',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 14. Index - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            'Index',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 15. Pengolah - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            'Pengolah',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 16. Sifat - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            'Sifat',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 17. Link Scan - flex: 1
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          'Link Scan',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 18. Disposisi Kadin - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Text(
+                                            'Disposisi \nKadin',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 19. Disposisi Sekdin - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Disposisi \nSekdin',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 20. Disposisi Kabid - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Disposisi\nKabid/KaUPT',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 21. Disposisi Kasubag - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Disposisi \nKasubag/Kasi',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                          softWrap: true,
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                      ),
+
+                                      // 22. Disposisi Lanjutan - flex: 1
+                                      Expanded(
+                                        flex: 2,
+                                        child: Text(
+                                          'Disposisi \nLanjutan',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 23. Tindak Lanjut 1 - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Tindak Lanjut 1',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 24. Tindak Lanjut 2 - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Tindak Lanjut 2',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 25. Status - flex: 1
                                       Expanded(
                                         flex: 1,
                                         child: Text(
@@ -635,9 +1129,53 @@ class _PermohonanLettersPageAdminDesktopState
                                           ),
                                         ),
                                       ),
-                                      // Actions
+
+                                      // 26. Dokumen Final - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Dokumen Final',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 27. Dokumen Dikirim - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Dokumen Dikirim \nTanggal',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // 28. Tanda Terima - flex: 1
+                                      Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          'Tanda Terima \nPengiriman',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+
+                                      // Actions - width: 100 (fixed)
+                                      SizedBox(width: 8),
                                       SizedBox(
-                                        width: 80,
+                                        width: 100,
                                         child: Text(
                                           'Aksi',
                                           textAlign: TextAlign.center,
@@ -666,7 +1204,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         return Container(
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 20,
-                                            vertical: 12,
+                                            vertical: 10,
                                           ),
                                           decoration: BoxDecoration(
                                             border: Border(
@@ -680,7 +1218,6 @@ class _PermohonanLettersPageAdminDesktopState
                                           ),
                                           child: InkWell(
                                             onTap: () {
-                                              // Handle row tap
                                               print(
                                                 'Row tapped: ${surat['judul']}',
                                               );
@@ -694,7 +1231,7 @@ class _PermohonanLettersPageAdminDesktopState
                                               ),
                                               child: Row(
                                                 children: [
-                                                  // No
+                                                  // 1. No - width: 40 (sama kayak header)
                                                   SizedBox(
                                                     width: 40,
                                                     child: Container(
@@ -739,17 +1276,17 @@ class _PermohonanLettersPageAdminDesktopState
                                                     ),
                                                   ),
 
-                                                  // Judul
+                                                  // 2. Surat dari - flex: 2
                                                   SizedBox(width: 20),
                                                   Expanded(
-                                                    flex: 3,
+                                                    flex: 2,
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          surat['judul'],
+                                                          surat['surat_dari'],
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 13,
@@ -782,75 +1319,13 @@ class _PermohonanLettersPageAdminDesktopState
                                                     ),
                                                   ),
 
-                                                  // Pengirim
-                                                  SizedBox(width: 80),
-                                                  Expanded(
-                                                    flex: 2,
-                                                    child: Row(
-                                                      children: [
-                                                        Container(
-                                                          padding:
-                                                              EdgeInsets.all(4),
-                                                          decoration: BoxDecoration(
-                                                            gradient:
-                                                                LinearGradient(
-                                                                  colors: [
-                                                                    Color(
-                                                                      0xFF10B981,
-                                                                    ).withValues(
-                                                                      alpha:
-                                                                          0.3,
-                                                                    ),
-                                                                    Color(
-                                                                      0xFF059669,
-                                                                    ).withValues(
-                                                                      alpha:
-                                                                          0.2,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  6,
-                                                                ),
-                                                          ),
-                                                          child: Icon(
-                                                            Icons
-                                                                .person_outline_rounded,
-                                                            color: Colors.white,
-                                                            size: 12,
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 6),
-                                                        Expanded(
-                                                          child: Text(
-                                                            surat['pengirim'],
-                                                            style: TextStyle(
-                                                              color: Colors
-                                                                  .white
-                                                                  .withValues(
-                                                                    alpha: 0.8,
-                                                                  ),
-                                                              fontSize: 12,
-                                                              fontFamily:
-                                                                  'Roboto',
-                                                            ),
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-
-                                                  // Tanggal
-                                                  SizedBox(width: 80),
+                                                  // 3. Diterima tgl - flex: 1
+                                                  SizedBox(width: 8),
                                                   Expanded(
                                                     flex: 1,
                                                     child: Text(
-                                                      surat['tanggal'],
+                                                      surat['diterima_tgl'] ??
+                                                          '',
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -862,7 +1337,474 @@ class _PermohonanLettersPageAdminDesktopState
                                                     ),
                                                   ),
 
-                                                  // Status
+                                                  // 4. Tanggal - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['tgl_surat'] ?? '',
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 5. Kode - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['kode'] ?? '',
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 6. No_urut - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['no_urut'] ?? '',
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 7. No_agenda - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['kode'] == null
+                                                          ? '404 Not Found'
+                                                          : surat['kode'] +
+                                                                "/" +
+                                                                surat['no_urut'] +
+                                                                "/" +
+                                                                '35.07.303/2025',
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 8. No surat - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['no_surat'] ?? '',
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 9. Perihal - flex: 2
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      surat['perihal'] == null
+                                                          ? '404 Not Found'
+                                                          : surat['perihal'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                      softWrap: true,
+                                                    ),
+                                                  ),
+
+                                                  // 10. Hari/tanggal - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: 8.0,
+                                                      ),
+                                                      child: Text(
+                                                        surat['hari_tanggal'] ==
+                                                                null
+                                                            ? '404 Not Found'
+                                                            : surat['hari_tanggal'],
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                          fontSize: 11,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                        overflow: TextOverflow
+                                                            .visible,
+                                                        softWrap: true,
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 11. Waktu - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                        right: 8,
+                                                      ),
+                                                      child: Text(
+                                                        surat['waktu'] == null
+                                                            ? '404 Not Found'
+                                                            : surat['waktu'],
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                          fontSize: 11,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 12. Tempat - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: 8,
+                                                      ),
+                                                      child: Text(
+                                                        surat['tempat'] == null
+                                                            ? '404 Not Found'
+                                                            : surat['tempat'],
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                          fontSize: 11,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 13. Disposisi - flex: 1
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: 8,
+                                                      ),
+                                                      child: Text(
+                                                        surat['disposisi'] ==
+                                                                null
+                                                            ? '404 Not Found'
+                                                            : surat['disposisi'],
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                          fontSize: 11,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 14. Index - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: 8,
+                                                      ),
+                                                      child: Text(
+                                                        surat['index'] == null
+                                                            ? '404 Not Found'
+                                                            : surat['index'],
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                          fontSize: 11,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 15. Pengolah - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: 8,
+                                                      ),
+                                                      child: Text(
+                                                        surat['pengolah'] ==
+                                                                null
+                                                            ? '404 Not Found'
+                                                            : surat['pengolah'],
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                          fontSize: 11,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .visible,
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 16. Sifat - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: 8,
+                                                      ),
+                                                      child: Text(
+                                                        surat['sifat'] == null
+                                                            ? '404 Not Found'
+                                                            : surat['sifat'],
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                          fontSize: 11,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 17. Link scan - flex: 1
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      surat['link_scan'] == null
+                                                          ? '404 Not Found'
+                                                          : surat['link_scan'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+
+                                                  // 18. Disposisi kadin - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: 8,
+                                                      ),
+                                                      child: Text(
+                                                        surat['disposisi_kadin'] ==
+                                                                null
+                                                            ? '404 Not Found'
+                                                            : surat['disposisi_kadin'],
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.7,
+                                                              ),
+                                                          fontSize: 11,
+                                                          fontFamily: 'Roboto',
+                                                        ),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .visible,
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                  // 19. Disposisi Sekdin - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['disposisi_sekdin'] ==
+                                                              null
+                                                          ? '404 Not Found'
+                                                          : surat['disposisi_sekdin'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // 20. Disposisi Kabid - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['disposisi_kabid'] ==
+                                                              null
+                                                          ? '404 Not Found'
+                                                          : surat['disposisi_kabid'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // 21. Disposisi Kasubag - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['disposisi_kasubag'] ==
+                                                              null
+                                                          ? '404 Not Found'
+                                                          : surat['disposisi_kasubag'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // 22. Disposisi Lanjutan - flex: 1
+                                                  Expanded(
+                                                    flex: 2,
+                                                    child: Text(
+                                                      surat['disposisi_lanjutan'] ==
+                                                              null
+                                                          ? '404 Not Found'
+                                                          : surat['disposisi_lanjutan'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // 23. Tindak lanjut 1 - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['tindak_lanjut_1'] ==
+                                                              null
+                                                          ? '404 Not Found'
+                                                          : surat['tindak_lanjut_1'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // 24. Tindak lanjut 2 - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['tindak_lanjut_2'] ==
+                                                              null
+                                                          ? '404 Not Found'
+                                                          : surat['tindak_lanjut_2'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // 25. Status - flex: 1
                                                   Expanded(
                                                     flex: 1,
                                                     child: Container(
@@ -919,8 +1861,73 @@ class _PermohonanLettersPageAdminDesktopState
                                                     ),
                                                   ),
 
-                                                  // Actions
-                                                  SizedBox(width: 40),
+                                                  // 26. Dok_final - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['dok_final'] == null
+                                                          ? '404 Not Found'
+                                                          : surat['dok_final'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // 27. Dokumen dikirim - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['dok_dikirim_tgl'] ==
+                                                              null
+                                                          ? '404 Not Found'
+                                                          : surat['dok_dikirim_tgl'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // 28. Tanda terima - flex: 1
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Text(
+                                                      surat['tanda_terima'] ==
+                                                              null
+                                                          ? '404 Not Found'
+                                                          : surat['tanda_terima'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      softWrap: true,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  ),
+
+                                                  // Actions - width: 100 (sama kayak header)
+                                                  SizedBox(width: 8),
                                                   SizedBox(
                                                     width: 100,
                                                     child: Row(
@@ -961,7 +1968,6 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              // Handle view action
                                                               viewDetail(
                                                                 context,
                                                                 index,
@@ -1010,7 +2016,6 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              // Handle edit action
                                                               editDokumen(
                                                                 index,
                                                                 suratData,
@@ -1054,7 +2059,6 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              // Handle delete action
                                                               hapusDokumen(
                                                                 context,
                                                                 index,
