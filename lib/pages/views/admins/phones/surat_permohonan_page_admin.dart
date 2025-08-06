@@ -635,7 +635,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                     ),
                                   ),
                                   onTap: () {
-                                    home(context);
+                                    homeAdmin(context);
                                   },
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
@@ -1117,7 +1117,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "Surat Masuk",
+                                    "Surat Masuk Admin",
                                     style: TextStyle(
                                       fontSize:
                                           30 - (8 * _searchAnimation.value),

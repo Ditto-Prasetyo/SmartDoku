@@ -606,7 +606,7 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones> with TickerProvide
                                     return Opacity(
                                       opacity: _dashboardOpacityAnimation.value,
                                       child: Text(
-                                        "Dashboard",
+                                        "Dashboard Admin",
                                         style: TextStyle(
                                           fontSize: 30,
                                           color: Colors.white,
@@ -749,7 +749,7 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones> with TickerProvide
                                     Color(0xFF4F46E5),
                                     Color(0xFF7C3AED),
                                   ],
-                                  'route': 'surat_permohonan_page.dart',
+                                  'route': 'surat_permohonan_page_admin_phones.dart',
                                 },
                                 {
                                   'icon': FontAwesomeIcons.envelopeCircleCheck,
@@ -758,7 +758,7 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones> with TickerProvide
                                     Color(0xFF059669),
                                     Color(0xFF0D9488),
                                   ],
-                                  'route': 'surat_keluar_page.dart',
+                                  'route': 'surat_keluar_page_admin_phones.dart',
                                 },
                                 {
                                   'icon': Icons.assignment_turned_in_rounded,
@@ -767,7 +767,7 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones> with TickerProvide
                                     Color(0xFFDC2626),
                                     Color(0xFFEA580C),
                                   ],
-                                  'route': 'surat_disposisi_page.dart',
+                                  'route': 'surat_disposisi_page_admin_phones.dart',
                                 },
                                 {
                                   'icon': Icons.support_agent,
@@ -786,18 +786,18 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones> with TickerProvide
                                     case 0:
                                       Navigator.pushNamed(
                                         context,
-                                        '/users/surat_permohonan',
+                                        '/admin/phones/surat_permohonan_page_admin',
                                       );
                                       break;
                                     case 1:
                                       Navigator.pushNamed(
                                         context,
-                                        '/users/surat_keluar',
+                                        '/admin/phones/surat_keluar_page_admin',
                                       );
                                       break;
                                     case 2:                                  
                                       Navigator.pushNamed(context, 
-                                      '/users/surat_disposisi',);
+                                      '/admin/phones/surat_disposisi_page_admin',);
                                       break;
                                     case 3:
                                       showSupportDialog(context);

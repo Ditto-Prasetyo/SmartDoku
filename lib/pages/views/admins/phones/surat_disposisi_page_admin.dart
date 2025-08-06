@@ -270,7 +270,7 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                     ),
                                   ),
                                   onTap: () {
-                                    home(context);
+                                    homeAdmin(context);
                                   },
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
@@ -517,7 +517,7 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                         padding: EdgeInsets.only(top: 35, left: 15, right: 15),
                         child: Center(
                           child: Text(
-                            "Surat Disposisi",
+                            "Surat Disposisi Admin",
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,

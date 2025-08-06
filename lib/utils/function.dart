@@ -330,6 +330,17 @@ void home(BuildContext context) {
   );
 }
 
+void homeAdmin(BuildContext context) {
+  Navigator.of(context).pop();
+  showModernHomeAdminDialog(
+    '⚠️ Go Home',
+    'Apakah Anda Yakin Ingin Kembali ke Halaman Dashboard?',
+    Colors.orange,
+    Colors.deepOrange,
+    context,
+  );
+}
+
 void action(
   int index,
   BuildContext context,
