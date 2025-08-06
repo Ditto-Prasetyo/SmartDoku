@@ -645,7 +645,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                   'Lembar Disposisi',
                                 ),
                               ),
-                              buildMenuActionDisposisi(context),
+                              buildMenuActionDisposisiAdmin(context),
                             ],
                           ),
                           SizedBox(height: 16),
@@ -911,7 +911,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Nomor Surat: ${surat['nomor_surat'] ?? '404 Not Found'}',
+                                                'Nomor Urut: ${surat['nomor_surat'] ?? '404 Not Found'}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -1829,4 +1829,5 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
       ),
     );
   }
+
 }
