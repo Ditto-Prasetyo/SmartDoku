@@ -387,12 +387,8 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                         obscureText: !_isPasswordVisible,
                                         textInputAction: TextInputAction.done,
                                         cursorColor: Colors.white,
-                                        onFieldSubmitted: (value) {
-                                          handleLogin(
-                                            context,
-                                            _usernameController,
-                                            _passwordController,
-                                          );
+                                        onFieldSubmitted: (value) async {
+                                          handleLogin(context, _usernameController, _passwordController,);
                                         },
                                         style: TextStyle(
                                           fontSize: 16,
@@ -499,8 +495,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                                             ),
                                             child: ElevatedButton(
                                               onPressed: () async {
-                                                handleLogin(context, _usernameController, _passwordController);
-                                                await _auth.login(_usernameController.text, _passwordController.text);
+                                                handleLogin(context, _usernameController, _passwordController,);
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:

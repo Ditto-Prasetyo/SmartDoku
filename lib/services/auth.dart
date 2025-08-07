@@ -18,9 +18,12 @@ class AuthService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final token = data['token'];
+      final user = UserModel.fromJson(data["user"]);
 
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('jwt_token', token);
+      await prefs.setString('user', jsonEncode(user.toJson()));
+      
       return true;
     } else {
       print('Login failed: ${response.body}');
@@ -53,7 +56,7 @@ class AuthService {
       }),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       return true;
     } else {
       print('Register failed: ${response.body}');
@@ -64,6 +67,7 @@ class AuthService {
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('jwt_token');
+    await prefs.remove('user');
   }
 
   Future<String?> getToken() async {

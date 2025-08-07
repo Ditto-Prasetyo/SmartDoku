@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'dart:math';
+
+import 'package:smart_doku/services/user.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -33,9 +36,22 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
   bool _showLoadingDots = false;
   int _dotCount = 0;
 
+  // User Services
+  UserService _userService = UserService();
+  UserModel? _user;
+
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+    setState(() {
+      _user = user;
+      print(_user?.name);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadUser();
 
     // Initialize animation controllers
     _fadeOutController = AnimationController(
@@ -558,7 +574,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                       child: Container(
                         padding: EdgeInsets.all(20),
                         child: Text(
-                          "Hello",
+                          "Hello ${_user?.name}",
                           style: TextStyle(
                             fontSize: 45.0,
                             fontWeight: FontWeight.w900,

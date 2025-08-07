@@ -4,6 +4,7 @@ import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_phones.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
+import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/utils/dialog.dart';
 
 // Auths Section
@@ -13,9 +14,12 @@ void handleLogin(
   BuildContext context,
   TextEditingController usernameController,
   TextEditingController passwordController,
-) {
+) async {
   final usernameChecker = usernameController.text.trim();
   final passwordChecker = passwordController.text.trim();
+
+  AuthService _auth = AuthService();
+  final session = await _auth.login(usernameController.text, passwordController.text);
 
   if (usernameChecker.isEmpty && passwordChecker.isEmpty) {
     showModernErrorDialog(
@@ -39,6 +43,14 @@ void handleLogin(
       '❌ Password Required',
       'Password tidak boleh kosong!',
       Colors.orange,
+    );
+    return;
+  } else if (!session) {
+    showModernErrorDialog(
+      context,
+      '❌ Auth Error',
+      'Username atau password anda salah!',
+      Colors.redAccent,
     );
     return;
   }
@@ -166,7 +178,7 @@ void handleSession(
   // Lanjut ke halaman register
   Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) => RegisterCredPage()),
+    MaterialPageRoute(builder: (context) => RegisterCredPage(username: usernameController.text, password: passwordController.text, email: emailController.text)),
   );
 }
 
@@ -175,7 +187,7 @@ void checkLengthEmail(
   String value,
   TextEditingController emailController,
 ) {
-  final int _maxLengthEmail = 20;
+  final int _maxLengthEmail = 191;
   if (value.contains(' ')) {
     showErrorDialogEmailSpaceChecker(
       context,
@@ -193,7 +205,7 @@ void checkLengthEmail(
     showErrorDialogLengthEmail(
       context,
       '⛔ Error',
-      'Pastikan Bahwa Anda Mengisi Username Dengan Benar!',
+      'Pastikan Bahwa Anda Mengisi Email Dengan Benar!',
       Colors.deepOrange,
       emailController,
     );
@@ -204,13 +216,18 @@ void checkLengthEmail(
 void handleRegister(
   BuildContext context,
   String? selectedWorkField,
+  String? username,
+  String? email,
+  String? password,
   TextEditingController _nameController,
   TextEditingController _phoneController,
   TextEditingController _addressController,
-) {
+) async {
   final NameChecker = _nameController.text.trim();
   final PhoneChecker = _phoneController.text.trim();
   final AddressChecker = _addressController.text.trim();
+
+  AuthService _auth = AuthService();
 
   if (NameChecker.isEmpty ||
       PhoneChecker.isEmpty ||
@@ -235,6 +252,14 @@ void handleRegister(
     }
 
     showModernErrorDialog(context, '❌ Login Error', message, Colors.redAccent);
+    return;
+  }
+
+  final session = await _auth.register(_nameController.text, username!, email!, password!, selectedWorkField, _addressController.text, _phoneController.text);
+
+  if (!session) {
+    showModernErrorDialog(context, '❌ Register Error', "Ada masalah dalam server, mohon tunggu beberapa saat!", Colors.redAccent);
+    
     return;
   }
 

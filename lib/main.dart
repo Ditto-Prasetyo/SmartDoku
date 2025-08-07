@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/manajemen_pengguna_page.dart';
@@ -55,7 +56,7 @@ class SmartDoku extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePageAdminPhones(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone

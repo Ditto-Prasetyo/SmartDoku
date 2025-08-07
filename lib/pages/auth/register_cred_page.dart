@@ -9,7 +9,16 @@ import 'dart:ui';
 import 'dart:math';
 
 class RegisterCredPage extends StatefulWidget {
-  const RegisterCredPage({super.key});
+  final String? username;
+  final String? password;
+  final String? email;
+
+  const RegisterCredPage({
+    Key? key,
+    required this.username,
+    required this.password,
+    required this.email,
+  }) : super(key: key);
 
   @override
   State<RegisterCredPage> createState() => RegisterCredPageState();
@@ -36,14 +45,14 @@ class RegisterCredPageState extends State<RegisterCredPage>
   String? _selectedWorkField;
   String? _workFieldError;
 
-  final List<String> _workFields = [
-    'Sekretariat',
-    'Permukiman',
-    'Perumahan',
-    'Penataan Ruang dan PB',
-    'UPT Air Limbah Domestik',
-    'UPT Pertamanan',
-  ];
+  final Map<String, String> _workFields = {
+    'Penataan Ruang dan PB': 'PRPB',
+    'Perumahan': 'Perumahan',
+    'Permukiman': 'Permukiman',
+    'Sekretariat': 'Sekretariat',
+    'UPT Pengelolaan Air Limbah Domestik': 'UPT_PALD',
+    'UPT Pertamanan': 'UPT_Taman',
+  };
 
   final List<IconData> _workFieldIcons = [
     Icons.admin_panel_settings,
@@ -629,31 +638,41 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                               ),
                                             ],
                                           ),
-                                          items: _workFields.asMap().entries.map((
-                                            entry,
-                                          ) {
-                                            int index = entry.key;
-                                            String value = entry.value;
+                                          items: _workFields.entries
+                                              .toList()
+                                              .asMap()
+                                              .entries
+                                              .map((indexedEntry) {
+                                                final index = indexedEntry.key;
+                                                final entry =
+                                                    indexedEntry.value;
 
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              // Gunakan widget HoverMenuItem sebagai child
-                                              child: HoverMenuItem(
-                                                label: value,
-                                                icon: _workFieldIcons[index],
-                                                onTap: () {
-                                                  setState(() {
-                                                    _selectedWorkField = value;
-                                                    _sectionWorkController
-                                                            .text =
-                                                        value;
-                                                    _workFieldError = null;
-                                                  });
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            );
-                                          }).toList(),
+                                                final label = entry
+                                                    .key; // "Penataan Ruang dan PB"
+                                                final value =
+                                                    entry.value; // "PRPB"
+
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: HoverMenuItem(
+                                                    label: label,
+                                                    icon:
+                                                        _workFieldIcons[index],
+                                                    onTap: () {
+                                                      setState(() {
+                                                        _selectedWorkField =
+                                                            value;
+                                                        _sectionWorkController
+                                                                .text =
+                                                            value;
+                                                        _workFieldError = null;
+                                                      });
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                );
+                                              })
+                                              .toList(),
 
                                           dropdownStyleData: DropdownStyleData(
                                             decoration: BoxDecoration(
@@ -774,7 +793,16 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                             ),
                                             child: ElevatedButton(
                                               onPressed: () {
-                                                handleRegister(context, _selectedWorkField, _nameController, _phoneController, _addressController);
+                                                handleRegister(
+                                                  context,
+                                                  _selectedWorkField,
+                                                  widget.username,
+                                                  widget.email,
+                                                  widget.password,
+                                                  _nameController,
+                                                  _phoneController,
+                                                  _addressController,
+                                                );
                                               },
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor:
