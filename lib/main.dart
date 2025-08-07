@@ -13,7 +13,6 @@ import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart
 import 'package:smart_doku/pages/views/admins/phones/surat_disposisi_page_admin.dart';
 import 'package:smart_doku/pages/views/admins/phones/surat_keluar_page_admin.dart';
 import 'package:smart_doku/pages/views/admins/phones/surat_permohonan_page_admin.dart';
-import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_permohonan_page.dart';

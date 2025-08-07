@@ -43,7 +43,7 @@ class SupportServiceLettersData {
     if (issue == null || issue.isEmpty) return false;
 
     final message =
-        "$greeting Admin, mohon maaf mengganggu waktunya. Saya memiliki masalah sebagai berikut:\n\n$issue";
+        "$greeting Mas Dani, mohon maaf mengganggu waktunya. Saya memiliki masalah sebagai berikut:\n\n$issue\n\nTolong dibantu yak, makasih";
     final url =
         "https://wa.me/$adminNumber?text=${Uri.encodeComponent(message)}";
 

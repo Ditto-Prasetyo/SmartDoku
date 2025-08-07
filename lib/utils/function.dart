@@ -481,13 +481,14 @@ void tambahSuratMasuk(BuildContext context, Function(Map<String, dynamic>) onSur
   );
 }
 
-void tambahSuratKeluar(BuildContext context) {
+void tambahSuratKeluar(BuildContext context, Function(Map<String, dynamic>) onSuratKeluarAdded) {
   showModernTambahSuratKeluarDialog(
     'Tambah Surat Keluar',
     'Pilih metode untuk menambahkan surat keluar baru',
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
+    onSuratKeluarAdded
   );
 }
 

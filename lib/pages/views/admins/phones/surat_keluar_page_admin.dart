@@ -1807,7 +1807,12 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
         child: FloatingActionButton.extended(
           onPressed: () {
             // Fungsi untuk tambah surat masuk
-           tambahSuratKeluar(context);
+            tambahSuratKeluar(context, (newSurat) {
+              setState(() {
+                // Tambahin ke list suratData lu
+                suratData.add(newSurat);
+              });
+            });
           },
           backgroundColor: Colors.transparent,
           elevation: 0,
