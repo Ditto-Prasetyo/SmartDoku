@@ -56,7 +56,7 @@ class SmartDoku extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: AdminDashboard(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone
