@@ -8,7 +8,8 @@ class PermohonanLetterPageAdmin extends StatefulWidget {
   const PermohonanLetterPageAdmin({super.key, this.onSuratAdded});
 
   @override
-  State<PermohonanLetterPageAdmin> createState() => _PermohonanLetterPageAdmin();
+  State<PermohonanLetterPageAdmin> createState() =>
+      _PermohonanLetterPageAdmin();
 }
 
 class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
@@ -455,11 +456,11 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   }
 
   void refreshEditState() {
-  setState(() {
-    // Refresh ListView setelah edit data
-    // Data suratData udah diupdate di modal
-  });
-}
+    setState(() {
+      // Refresh ListView setelah edit data
+      // Data suratData udah diupdate di modal
+    });
+  }
 
   OverlayEntry _createOverlayEntry() {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
@@ -1704,7 +1705,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                         context,
                                                         index,
                                                         suratData1,
-                                                        refreshEditState
+                                                        refreshEditState,
                                                       ),
                                                       (i) => viewDetailAdmin(
                                                         context,
@@ -2001,7 +2002,6 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                     ),
                                   ),
                                 ),
-                              
                               ],
                             ),
                           ),
@@ -2016,84 +2016,76 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
         },
       ),
       floatingActionButton: Container(
-      margin: EdgeInsets.only(bottom: 10), // Jarak dari bawah
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF10B981),
-            Color(0xFF059669),
-            Color(0xFF047857),
+        margin: EdgeInsets.only(bottom: 10), // Jarak dari bawah
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF10B981), Color(0xFF059669), Color(0xFF047857)],
+          ),
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFF10B981).withValues(alpha: 0.4),
+              blurRadius: 20,
+              offset: Offset(0, 10),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 15,
+              offset: Offset(0, 5),
+            ),
+            // Inner glow effect sesuai theme lu
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.1),
+              blurRadius: 3,
+              offset: Offset(0, -1),
+            ),
           ],
         ),
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.2),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xFF10B981).withValues(alpha: 0.4),
-            blurRadius: 20,
-            offset: Offset(0, 10),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            // Option 1: Bikin method handle sendiri
+            tambahSuratMasuk(context, (newSurat) {
+              setState(() {
+                // Tambahin ke list suratData lu
+                suratData.add(newSurat);
+              });
+              // Logic tambahan kalo ada
+            });
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          // Ini yang ngilangin efek gelap pas hover/tap
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightElevation: 1,
+          icon: Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(Icons.add_rounded, color: Colors.white, size: 20),
           ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
-            blurRadius: 15,
-            offset: Offset(0, 5),
-          ),
-          // Inner glow effect sesuai theme lu
-          BoxShadow(
-            color: Colors.white.withValues(alpha: 0.1),
-            blurRadius: 3,
-            offset: Offset(0, -1),
-          ),
-        ],
-      ),
-      child: FloatingActionButton.extended(
-        onPressed: () {
-  // Option 1: Bikin method handle sendiri
-  tambahSuratMasuk(context, (newSurat) {
-    setState(() {
-      // Tambahin ke list suratData lu
-      suratData.add(newSurat);
-    });
-    // Logic tambahan kalo ada
-  });
-},
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        // Ini yang ngilangin efek gelap pas hover/tap
-        splashColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        highlightElevation: 1,
-        icon: Container(
-          padding: EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(
-            Icons.add_rounded,
-            color: Colors.white,
-            size: 20,
-          ),
-        ),
-        label: Text(
-          'Tambah Surat Masuk',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Roboto',
-            letterSpacing: 0.3,
+          label: Text(
+            'Tambah Surat Masuk',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Roboto',
+              letterSpacing: 0.3,
+            ),
           ),
         ),
       ),
-    ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

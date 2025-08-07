@@ -5,11 +5,9 @@ import 'package:smart_doku/pages/forms/admins/phones/forms_dialog.dart';
 import 'package:smart_doku/services/service.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
-import 'package:smart_doku/pages/views/admins/phones/surat_disposisi_page_admin.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/icon.dart';
-import 'package:smart_doku/utils/function.dart';
 
 // Auths Section
 
@@ -2985,6 +2983,7 @@ void showModernTambahSuratKeluarDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
+  Function(Map<String, dynamic>) onSuratAdded,
 ) {
   showGeneralDialog(
     context: context,
@@ -3099,13 +3098,19 @@ void showModernTambahSuratKeluarDialog(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Navigate ke form input manual
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => TambahSuratManualPage(),
-                            //   ),
-                            // );
+                             showModernTambahSuratFormDialog(
+                              context,
+                              accentColor,
+                              accentColor2,
+                              onSuratAdded == null
+                                  ? (data) {
+                                      // Default behavior if no callback provided
+                                      print(
+                                        'Surat baru ditambahkan: ${data['surat_dari']}',
+                                      );
+                                    }
+                                  : onSuratAdded,
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor,
