@@ -9,7 +9,8 @@ class DispositionLetterPageAdmin extends StatefulWidget {
   const DispositionLetterPageAdmin({super.key, this.suratData});
 
   @override
-  State<DispositionLetterPageAdmin> createState() => _DispositionLetterPageAdmin();
+  State<DispositionLetterPageAdmin> createState() =>
+      _DispositionLetterPageAdmin();
 }
 
 class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
@@ -18,6 +19,7 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
   bool isCheckedSangatSegera = false;
   bool isCheckedSegera = false;
   bool isCheckedRahasia = false;
+  final TextEditingController nomorUrutController = TextEditingController();
 
   // Animation controllers and animations
   late AnimationController _backgroundController;
@@ -35,7 +37,7 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
       'judulsurat': 'LEMBAR DISPOSISI',
       'surat_dari': dataBase['pengi rim'] ?? 'HRD Department',
       'diterima_tgl': '28 Juli 2025',
-      'nomor_surat': dataBase['id']?.toString() ?? '001',
+      'nomor_surat': '001',
       'nomor_agenda':
           'AG-${DateTime.now().year}-${dataBase['id']?.toString().padLeft(4, '0') ?? '0001'}',
       'tgl_surat': dataBase['tanggal'] ?? '28 Juli 2025',
@@ -49,7 +51,7 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
     };
   }
 
-    List<Widget> buildCheckboxList(List<String> items, String category) {
+  List<Widget> buildCheckboxList(List<String> items, String category) {
     return items.map((item) {
       String key = '${category}_${items.indexOf(item)}'; // unique key
       bool isChecked = checkboxStates[key] ?? false;
@@ -97,7 +99,25 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
   }
 
   Map<String, bool> checkboxStates = {};
+ late Map<String, dynamic> disposisiData;
 
+  // Widget untuk menampilkan nomor urut yang akan ter-update
+  Widget buildNomorUrutDisplay() {
+    final surat = getDisposisiData();
+    return Text(
+      'Nomor Urut: ${surat['nomor_surat'] == null ? '404 Not Found' : surat['nomor_surat']}',
+      style: TextStyle(color: Colors.white, fontSize: 10),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  // Method untuk update nomor urut
+   void updateNomorUrut(String newValue) {
+    setState(() {
+      disposisiData['nomor_surat'] = newValue; // Update ke disposisiData, bukan surat
+    });
+    print('Updated nomor urut: $newValue');
+  }
 
   @override
   void initState() {
@@ -116,11 +136,13 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
     );
 
     _backgroundController.repeat(reverse: true);
+    disposisiData = getDisposisiData();
   }
 
   @override
   void dispose() {
     _backgroundController.dispose();
+    nomorUrutController.dispose();
     super.dispose();
   }
 
@@ -646,7 +668,18 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                   'Lembar Disposisi',
                                 ),
                               ),
-                              buildMenuActionDisposisiAdmin(context),
+                              buildMenuActionDisposisiAdmin(
+                                context,
+                                nomorUrutController,
+                                onDelete: () {
+                                  // Handle delete
+                                  print('Delete action');
+                                },
+                                onEditSave:
+                                    updateNomorUrut, // Pass callback untuk save
+                                currentNomorUrut:
+                                    surat['nomor_surat'], // Pass current value
+                              ),
                             ],
                           ),
                           SizedBox(height: 16),
@@ -911,13 +944,18 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                                   width: 1.5,
                                                 ),
                                               ),
-                                              child: Text(
-                                                'Nomor Urut: ${surat['nomor_surat'] ?? '404 Not Found'}',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
-                                                ),
-                                                textAlign: TextAlign.center,
+                                              child: Column(
+                                                children: [
+                                                  Text(
+                                                    'Nomor Urut: ${disposisiData['nomor_surat'] == null ? '404 Not Found' : disposisiData['nomor_surat']}',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 10,
+                                                    ),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  
+                                                ],
                                               ),
                                             ),
                                             Container(
@@ -1728,7 +1766,11 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                               minHeight: 80,
                                               maxHeight: 150,
                                             ),
-                                            padding: EdgeInsets.only(bottom: 100, left: 12, right: 12),
+                                            padding: EdgeInsets.only(
+                                              bottom: 100,
+                                              left: 12,
+                                              right: 12,
+                                            ),
                                             decoration: BoxDecoration(
                                               border: Border(
                                                 bottom: BorderSide(
@@ -1759,7 +1801,11 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                                     minHeight: 100,
                                                     maxHeight: 150,
                                                   ),
-                                                  padding: EdgeInsets.only(bottom: 80, left: 12, right: 12),
+                                                  padding: EdgeInsets.only(
+                                                    bottom: 80,
+                                                    left: 12,
+                                                    right: 12,
+                                                  ),
                                                   decoration: BoxDecoration(
                                                     border: Border(
                                                       right: BorderSide(
@@ -1792,7 +1838,11 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                                     minHeight: 100,
                                                     maxHeight: 150,
                                                   ),
-                                                  padding: EdgeInsets.only(bottom: 80, left: 12, right: 12),
+                                                  padding: EdgeInsets.only(
+                                                    bottom: 80,
+                                                    left: 12,
+                                                    right: 12,
+                                                  ),
                                                   child: Center(
                                                     child: Text(
                                                       'DISPOSISI KEPALA BIDANG / UPT',
@@ -1830,5 +1880,4 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
       ),
     );
   }
-
 }

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/pages/forms/admins/phones/forms_dialog.dart';
 import 'package:smart_doku/services/service.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
+import 'package:smart_doku/pages/views/admins/phones/surat_disposisi_page_admin.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/icon.dart';
+import 'package:smart_doku/utils/function.dart';
 
 // Auths Section
 
@@ -2765,6 +2768,821 @@ void showModernActionAdminDialog(
   );
 }
 
+// Surat Masuk dan Keluar
+
+void showModernTambahSuratDialog(
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+  Function(Map<String, dynamic>) onSuratAdded,
+) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Tambah Surat Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon container
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              accentColor.withValues(alpha: 0.8),
+                              accentColor.withValues(alpha: 0.6),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentColor.withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.add_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Title
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+
+                      // Message
+                      Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.4,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 25),
+
+                      // Button Input Manual
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            showModernTambahSuratFormDialog(
+                              context,
+                              accentColor,
+                              accentColor2,
+                              onSuratAdded == null
+                                  ? (data) {
+                                      // Default behavior if no callback provided
+                                      print(
+                                        'Surat baru ditambahkan: ${data['surat_dari']}',
+                                      );
+                                    }
+                                  : onSuratAdded,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.edit_rounded),
+                              SizedBox(width: 10),
+                              Text(
+                                'Input Manual',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Button Cancel
+                      Container(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.close),
+                              SizedBox(width: 14),
+                              Text(
+                                'Batal',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernTambahSuratKeluarDialog(
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Tambah Surat Keluar Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon container
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              accentColor.withValues(alpha: 0.8),
+                              accentColor.withValues(alpha: 0.6),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentColor.withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.add_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Title
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+
+                      // Message
+                      Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.4,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 25),
+
+                      // Button Input Manual
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            // Navigate ke form input manual
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => TambahSuratManualPage(),
+                            //   ),
+                            // );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.edit_rounded),
+                              SizedBox(width: 10),
+                              Text(
+                                'Input Manual',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Button Cancel
+                      Container(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.close),
+                              SizedBox(width: 14),
+                              Text(
+                                'Batal',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showEditSuratDialog(
+  BuildContext context,
+  int index,
+  List<Map<String, dynamic>> suratData,
+  void Function() refreshState,
+) {
+  final selectedSurat = suratData[index];
+
+  // Controllers untuk form
+  final TextEditingController judulController = TextEditingController(
+    text: selectedSurat['judul'],
+  );
+  final TextEditingController perihalController = TextEditingController(
+    text: selectedSurat['perihal'],
+  );
+  final TextEditingController tanggalController = TextEditingController(
+    text: selectedSurat['tanggal'],
+  );
+  final TextEditingController pengirimController = TextEditingController(
+    text: selectedSurat['pengirim'],
+  );
+
+  String selectedStatus = selectedSurat['status'];
+  List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Edit Surat Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.9,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: Offset(0, 15),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        padding: EdgeInsets.all(25),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withValues(alpha: 0.2),
+                              Colors.white.withValues(alpha: 0.1),
+                            ],
+                          ),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Header
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(
+                                            0xFF4F46E5,
+                                          ).withValues(alpha: 0.3),
+                                          Color(
+                                            0xFF7C3AED,
+                                          ).withValues(alpha: 0.2),
+                                        ],
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(
+                                            0xFF4F46E5,
+                                          ).withValues(alpha: 0.3),
+                                          blurRadius: 15,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.edit_document,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Expanded(
+                                    child: Text(
+                                      'Edit Surat',
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => Navigator.pop(context),
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.8,
+                                        ),
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 25),
+
+                              // Form Fields
+                              buildInputField(
+                                'Judul Surat',
+                                judulController,
+                                Icons.title_rounded,
+                                maxLines: 2,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Perihal',
+                                perihalController,
+                                Icons.description_outlined,
+                                maxLines: 3,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Pengirim',
+                                pengirimController,
+                                Icons.person_outline_rounded,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Tanggal',
+                                tanggalController,
+                                Icons.calendar_today_rounded,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              // Status Dropdown
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Status',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: selectedStatus,
+                                        isExpanded: true,
+                                        dropdownColor: Color(0xFF1F2937),
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontFamily: 'Roboto',
+                                        ),
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down_rounded,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.7,
+                                          ),
+                                        ),
+                                        items: statusOptions.map((
+                                          String status,
+                                        ) {
+                                          return DropdownMenuItem<String>(
+                                            value: status,
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 10,
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: getStatusColor(
+                                                      status,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 10),
+                                                Text(status),
+                                              ],
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            selectedStatus = newValue!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 30),
+
+                              // Action Buttons
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: OutlinedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        side: BorderSide(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Batal',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Expanded(
+                                    flex: 2,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // Update data
+                                        suratData[index] = {
+                                          'id': selectedSurat['id'],
+                                          'judul': judulController.text,
+                                          'perihal': perihalController.text,
+                                          'tanggal': tanggalController.text,
+                                          'pengirim': pengirimController.text,
+                                          'status': selectedStatus,
+                                        };
+
+                                        // Refresh state
+                                        refreshState();
+
+                                        // Close dialog
+                                        Navigator.pop(context);
+
+                                        // Show success message
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Surat berhasil diperbarui!',
+                                            ),
+                                            backgroundColor: Color(0xFF10B981),
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF10B981),
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        elevation: 8,
+                                        shadowColor: Color(
+                                          0xFF10B981,
+                                        ).withValues(alpha: 0.4),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.save_rounded, size: 20),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            'Simpan Perubahan',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 void showModernHapusDialog(
   String title,
   String message,
@@ -3006,19 +3824,6 @@ void showDetailActionMenu(BuildContext context, VoidCallback onDelete) {
                         fontFamily: 'Roboto',
                       ),
                     ),
-                    SizedBox(height: 20),
-
-                    // Edit Button
-                    buildActionMenuItem(
-                      icon: Icons.edit_rounded,
-                      title: 'Edit Dokumen',
-                      subtitle: 'Ubah informasi dokumen',
-                      color: Color(0xFF3B82F6),
-                      onTap: () {
-                        Navigator.pop(context);
-                        // Handle edit action
-                      },
-                    ),
 
                     SizedBox(height: 15),
 
@@ -3030,7 +3835,7 @@ void showDetailActionMenu(BuildContext context, VoidCallback onDelete) {
                       color: Color(0xFF10B981),
                       onTap: () {
                         Navigator.pop(context);
-                        // Handle download action
+                        showDownloadDialog(context);
                       },
                     ),
 
@@ -3044,7 +3849,7 @@ void showDetailActionMenu(BuildContext context, VoidCallback onDelete) {
                       color: Color(0xFF8B5CF6),
                       onTap: () {
                         Navigator.pop(context);
-                        // Handle share action
+                        showShareDownloadDialog(context);
                       },
                     ),
 
@@ -3709,7 +4514,10 @@ void showDetailActionMenuDisposisi(
 void showDetailActionMenuDisposisiAdmin(
   BuildContext context,
   VoidCallback onDelete,
-) {
+  TextEditingController nomorUrutController, {
+  Function(String)? onEditSave, // Tambahin parameter callback
+  String? currentNomorUrut, // Tambahin current value
+}) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -3752,7 +4560,6 @@ void showDetailActionMenuDisposisiAdmin(
                         ),
                       ),
                       SizedBox(height: 20),
-
                       Text(
                         'Menu',
                         style: TextStyle(
@@ -3764,7 +4571,7 @@ void showDetailActionMenuDisposisiAdmin(
                       ),
                       SizedBox(height: 20),
 
-                      // Edit Button
+                      // Edit Button - MODIFIKASI YANG PENTING DI SINI
                       buildActionMenuItem(
                         icon: Icons.edit_rounded,
                         title: 'Edit Isi Disposisi',
@@ -3772,7 +4579,15 @@ void showDetailActionMenuDisposisiAdmin(
                         color: Color(0xFF3B82F6),
                         onTap: () {
                           Navigator.pop(context);
-                          showEditDisposisi(context);
+
+                          // Panggil dialog edit dengan callback
+                          showEditDisposisi(
+                            context,
+                            nomorUrutController,
+                            onSave: onEditSave, // Pass callback dari parameter
+                            currentValue:
+                                currentNomorUrut, // Pass current value
+                          );
                         },
                       ),
 
@@ -3802,7 +4617,17 @@ void showDetailActionMenuDisposisiAdmin(
   );
 }
 
-void showEditDisposisi(BuildContext context) {
+void showEditDisposisi(
+  BuildContext context,
+  TextEditingController controller, {
+  Function(String)? onSave, // Tambahin callback parameter
+  String? currentValue, // Tambahin current value
+}) {
+  // Set nilai awal ke controller
+  if (currentValue != null) {
+    controller.text = currentValue;
+  }
+
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -3941,13 +4766,15 @@ void showEditDisposisi(BuildContext context) {
                               child: Material(
                                 color: Colors.transparent,
                                 child: TextField(
+                                  controller:
+                                      controller, // Pake controller yang dipass
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
                                     decoration: TextDecoration.none,
                                   ),
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.text,
                                   cursorColor: Colors.white,
                                   decoration: InputDecoration(
                                     hintText: 'Masukkan nomor urut...',
@@ -4028,8 +4855,37 @@ void showEditDisposisi(BuildContext context) {
                                     ),
                                     child: ElevatedButton(
                                       onPressed: () {
-                                        // Handle simpan disini
+                                        if (controller.text.trim().isEmpty) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Nomor urut tidak boleh kosong!',
+                                              ),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // BAGIAN PENTING: Panggil callback kalo ada
+                                        if (onSave != null) {
+                                          onSave(controller.text.trim());
+                                        }
+
                                         Navigator.pop(context);
+
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Nomor urut berhasil diperbarui!',
+                                            ),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.transparent,
@@ -4172,7 +5028,7 @@ void showPrintDialog(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            showImageFormat(context);
+                            showPrintImageFormat(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF059669),
@@ -4209,7 +5065,7 @@ void showPrintDialog(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            showDocumentFormat(context);
+                            showPrintDocumentFormat(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF2962FF),
@@ -5420,6 +6276,399 @@ void showDocumentFormat(BuildContext context) {
   );
 }
 
+// Share Dialog
+void showShareDownloadDialog(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "ShareDialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFF7C2D12).withValues(alpha: 0.8),
+                              Color(0xFF9A3412).withValues(alpha: 0.6),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.download,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Download File',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        'Pilih format file apa yang anda inginkan',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.4,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 25),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            showShareDocumentFormat(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF2962FF),
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: Color(
+                              0xFF2962FF,
+                            ).withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.document_scanner, size: 20),
+                              SizedBox(width: 8),
+                              Text(
+                                'Download Dokumen',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Text(
+                            'Batal',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showShareDocumentFormat(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "DokumenFormat",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFF7C2D12).withValues(alpha: 0.8),
+                              Color(0xFF9A3412).withValues(alpha: 0.6),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.document_scanner,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Format Dokumen',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        'Pilih jenis format dokumen yang anda inginkan',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.4,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 25),
+                      // PDF Button dengan custom icon
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            // Handle PDF selection
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFDC2626),
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: Color(
+                              0xFFDC2626,
+                            ).withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              PdfIcon(size: 20, color: Colors.white),
+                              SizedBox(width: 8),
+                              Text(
+                                'PDF',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      // Docs Button dengan custom icon
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            // Handle Docs selection
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF2563EB),
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: Color(
+                              0xFF2563EB,
+                            ).withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              DocsIcon(size: 20, color: Colors.white),
+                              SizedBox(width: 8),
+                              Text(
+                                'Docs',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Text(
+                            'Batal',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+// Delete Confirmation (Not Used Yet)
 void showDeleteConfirmationDisposisi(BuildContext context) {
   showDialog(
     context: context,

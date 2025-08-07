@@ -2,6 +2,68 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/dialog.dart';
 
+// Widget Surat Masuk dan Keluar
+Widget buildInputField(
+  String label,
+  TextEditingController controller,
+  IconData icon, {
+  int maxLines = 1,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.9),
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          decoration: TextDecoration.none,
+        ),
+      ),
+      SizedBox(height: 8),
+      Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white.withValues(alpha: 0.1),
+              Colors.white.withValues(alpha: 0.05),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        child: TextField(
+          controller: controller,
+          maxLines: maxLines,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontFamily: 'Roboto',
+          ),
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              icon,
+              color: Colors.white.withValues(alpha: 0.7),
+              size: 20,
+            ),
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            hintText: 'Masukkan $label',
+            hintStyle: TextStyle(
+              color: Colors.white.withValues(alpha: 0.5),
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
 // Widget Surat Disposisi
 Widget buildSuratDisposisi(
   BuildContext context,
@@ -318,9 +380,15 @@ Widget buildMenuActionDisposisi(BuildContext context) {
   );
 }
 
-Widget buildMenuActionDisposisiAdmin(BuildContext context) {
+Widget buildMenuActionDisposisiAdmin(
+  BuildContext context,
+  TextEditingController nomorUrutController, {
+  VoidCallback? onDelete,
+  Function(String)? onEditSave, // Tambahin callback untuk save edit
+  String? currentNomorUrut, // Tambahin current value
+}) {
   return Row(
-    mainAxisSize: MainAxisSize.min, // biar lebarnya sesuai konten
+    mainAxisSize: MainAxisSize.min,
     children: [
       ClipRRect(
         borderRadius: BorderRadius.circular(8),
@@ -355,7 +423,10 @@ Widget buildMenuActionDisposisiAdmin(BuildContext context) {
                 onTap: () {
                   showDetailActionMenuDisposisiAdmin(
                     context,
-                    () => showDeleteConfirmationDisposisiAdmin,
+                    onDelete ?? () => showDeleteConfirmationDisposisiAdmin,
+                    nomorUrutController,
+                    onEditSave: onEditSave, // Pass callback ke dialog
+                    currentNomorUrut: currentNomorUrut, // Pass current value
                   );
                 },
                 borderRadius: BorderRadius.circular(4),
@@ -382,18 +453,21 @@ Widget buildBorderedText(String text) {
     padding: EdgeInsets.all(12),
     decoration: BoxDecoration(
       border: Border(
-        left: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
-        right: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
-        bottom: BorderSide(color: Colors.white.withValues(alpha: 0.3), width: 1.5),
+        left: BorderSide(
+          color: Colors.white.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+        right: BorderSide(
+          color: Colors.white.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+        bottom: BorderSide(
+          color: Colors.white.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
       ),
     ),
-    child: Text(
-      text,
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 10,
-      ),
-    ),
+    child: Text(text, style: TextStyle(color: Colors.white, fontSize: 10)),
   );
 }
 
@@ -540,9 +614,9 @@ Widget buildProfileSection(Animation<double> profileOpacityAnimation) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildStatItem('Dokumen', '12', Icons.description),
-                  _buildStatItem('Proses', '5', Icons.hourglass_empty),
-                  _buildStatItem('Selesai', '7', Icons.check_circle),
+                  buildStatItem('Dokumen', '12', Icons.description),
+                  buildStatItem('Proses', '5', Icons.hourglass_empty),
+                  buildStatItem('Selesai', '7', Icons.check_circle),
                 ],
               ),
             ],
@@ -553,7 +627,7 @@ Widget buildProfileSection(Animation<double> profileOpacityAnimation) {
   );
 }
 
-Widget _buildStatItem(String label, String value, IconData icon) {
+Widget buildStatItem(String label, String value, IconData icon) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     decoration: BoxDecoration(

@@ -214,6 +214,13 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
     );
   }
 
+  void refreshEditState() {
+  setState(() {
+    // Refresh ListView setelah edit data
+    // Data suratData udah diupdate di modal
+  });
+}
+
   OverlayEntry _createOverlayEntry() {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
     var size = renderBox.size;
@@ -1454,8 +1461,10 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                       context,
                                                       suratData,
                                                       (i) => editDokumen(
+                                                        context,
                                                         index,
                                                         suratData,
+                                                        refreshEditState
                                                       ),
                                                       (i) => viewDetail(
                                                         context,
@@ -1479,8 +1488,10 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                       context,
                                                       suratData,
                                                       (i) => editDokumen(
+                                                        context,
                                                         index,
                                                         suratData,
+                                                        refreshEditState
                                                       ),
                                                       (i) => viewDetail(
                                                         context,

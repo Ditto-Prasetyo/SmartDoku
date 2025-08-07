@@ -140,6 +140,13 @@ class _OutgoingLetterPageAdminDesktopState
     );
   }
 
+  void refreshEditState() {
+  setState(() {
+    // Refresh ListView setelah edit data
+    // Data suratData udah diupdate di modal
+  });
+}
+
   void _navigateToPage(
     BuildContext context,
     Map<String, dynamic> item,
@@ -1029,8 +1036,10 @@ class _OutgoingLetterPageAdminDesktopState
                                                             onTap: () {
                                                               // Handle edit action
                                                               editDokumen(
+                                                                context,
                                                                 index,
                                                                 suratData,
+                                                                refreshEditState
                                                               );
                                                             },
                                                             child: Icon(

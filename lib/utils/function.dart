@@ -433,9 +433,37 @@ void viewDetailAdmin(
   );
 }
 
-void editDokumen(int index, List<Map<String, dynamic>> suratData) {
-  final surat = suratData[index];
-  print('Edit Document - ID: ${surat['id']}, Judul: ${surat['judul']}');
+  void editDokumen(
+    BuildContext context,
+    int index, 
+    List<Map<String, dynamic>> suratData,
+    void Function() refreshEditState
+    ) {
+    final surat = suratData[index];
+    print('Edit Document - ID: ${surat['id']}, Judul: ${surat['judul']}');
+    showEditSuratDialog(context, index, suratData, refreshEditState);
+  }
+
+  
+void tambahSuratMasuk(BuildContext context, Function(Map<String, dynamic>) onSuratAdded) {
+  showModernTambahSuratDialog(
+    'Tambah Surat Masuk',
+    'Pilih metode untuk menambahkan surat masuk baru',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    onSuratAdded
+  );
+}
+
+void tambahSuratKeluar(BuildContext context) {
+  showModernTambahSuratKeluarDialog(
+    'Tambah Surat Keluar',
+    'Pilih metode untuk menambahkan surat keluar baru',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+  );
 }
 
 void hapusDokumen(

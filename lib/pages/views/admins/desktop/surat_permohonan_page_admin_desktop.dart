@@ -310,6 +310,13 @@ class _PermohonanLettersPageAdminDesktopState
     );
   }
 
+  void refreshEditState() {
+  setState(() {
+    // Refresh ListView setelah edit data
+    // Data suratData udah diupdate di modal
+  });
+}
+
   void _navigateToPage(
     BuildContext context,
     Map<String, dynamic> item,
@@ -1916,8 +1923,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               editDokumen(
+                                                                context,
                                                                 index,
                                                                 suratData,
+                                                                refreshEditState
                                                               );
                                                             },
                                                             child: Icon(

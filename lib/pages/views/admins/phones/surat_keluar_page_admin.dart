@@ -49,7 +49,11 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
 
   List<Map<String, dynamic>> searchOptions = [
     {'value': 'judul', 'label': 'Judul Surat', 'icon': Icons.title_rounded},
-    {'value': 'klasifikasi', 'label': 'Klasifikasi', 'icon': Icons.description_rounded},
+    {
+      'value': 'klasifikasi',
+      'label': 'Klasifikasi',
+      'icon': Icons.description_rounded,
+    },
     {
       'value': 'tanggal',
       'label': 'Tanggal',
@@ -207,6 +211,13 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
         backgroundColor: Colors.red,
       ),
     );
+  }
+
+  void refreshEditState() {
+    setState(() {
+      // Refresh ListView setelah edit data
+      // Data suratData udah diupdate di modal
+    });
   }
 
   OverlayEntry _createOverlayEntry() {
@@ -1447,8 +1458,10 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                       context,
                                                       suratData,
                                                       (i) => editDokumen(
+                                                        context,
                                                         index,
                                                         suratData,
+                                                        refreshEditState,
                                                       ),
                                                       (i) => viewDetailAdmin(
                                                         context,
@@ -1472,8 +1485,10 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                       context,
                                                       suratData,
                                                       (i) => editDokumen(
+                                                        context,
                                                         index,
                                                         suratData,
+                                                        refreshEditState,
                                                       ),
                                                       (i) => viewDetailAdmin(
                                                         context,
@@ -1757,6 +1772,66 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
           );
         },
       ),
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(bottom: 10), // Jarak dari bawah
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF10B981), Color(0xFF059669), Color(0xFF047857)],
+          ),
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFF10B981).withValues(alpha: 0.4),
+              blurRadius: 20,
+              offset: Offset(0, 10),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 15,
+              offset: Offset(0, 5),
+            ),
+            // Inner glow effect sesuai theme lu
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.1),
+              blurRadius: 3,
+              offset: Offset(0, -1),
+            ),
+          ],
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            // Fungsi untuk tambah surat masuk
+           tambahSuratKeluar(context);
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          icon: Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(Icons.add_rounded, color: Colors.white, size: 20),
+          ),
+          label: Text(
+            'Tambah Surat Keluar',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Roboto',
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

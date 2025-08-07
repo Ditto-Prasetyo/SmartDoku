@@ -4,7 +4,8 @@ import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 
 class PermohonanLetterPageAdmin extends StatefulWidget {
-  const PermohonanLetterPageAdmin({super.key});
+  final Function(Map<String, dynamic>)? onSuratAdded;
+  const PermohonanLetterPageAdmin({super.key, this.onSuratAdded});
 
   @override
   State<PermohonanLetterPageAdmin> createState() => _PermohonanLetterPageAdmin();
@@ -19,6 +20,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   bool isSearchActive = false;
   bool showSearchOptions = false;
   String selectedSearchType = 'judul';
+  late Function(Map<String, dynamic>) onSuratAdded;
 
   TextEditingController searchController = TextEditingController();
 
@@ -59,7 +61,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
     {'value': 'status', 'label': 'Status', 'icon': Icons.flag_rounded},
   ];
 
-  List<Map<String, dynamic>> suratData = [
+  List<Map<String, dynamic>> suratData1 = [
     {
       'id': '1',
       'judul': 'Surat Pemberitahuan Rapat Bulanan',
@@ -100,6 +102,244 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
       'tanggal': '24 Juli 2025',
       'pengirim': 'HRD Department',
       'status': 'Selesai',
+    },
+  ];
+
+  List<Map<String, dynamic>> suratData = [
+    {
+      'id': '1',
+      'surat_dari': 'Surat Pemberitahuan Rapat Bulanan',
+      'diterima_tgl': '28 Juli 2025',
+      'perihal':
+          'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
+      'tanggal': '28 Juli 2025',
+      'pengirim': 'HRD Department',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
+      'id': '2',
+      'surat_dari': 'Pengajuan Cuti Tahunan',
+      'diterima_tgl': '28 Juli 2025',
+      'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
+      'id': '3',
+      'surat_dari': 'Laporan Keuangan Q2 2025',
+      'diterima_tgl': '28 Juli 2025',
+      'perihal': 'Report keuangan triwulan kedua tahun 2025',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
+      'id': '4',
+      'surat_dari': 'Undangan Seminar IT',
+      'diterima_tgl': '28 Juli 2025',
+      'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
+      'id': '5',
+      'surat_dari': 'Surat Peringatan Kedisiplinan',
+      'diterima_tgl': '28 Juli 2025',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
+      'id': '6',
+      'surat_dari': 'Surat Peringatan Kedisiplinan',
+      'diterima_tgl': '28 Juli 2025',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
+      'id': '7',
+      'surat_dari': 'Surat Peringatan Kedisiplinan',
+      'diterima_tgl': '28 Juli 2025',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
+    },
+    {
+      'id': '8',
+      'surat_dari': 'Surat Peringatan Kedisiplinan',
+      'diterima_tgl': '28 Juli 2025',
+      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
+      'tgl_surat': '28 Juli 2025',
+      'kode': '600.3.3.2',
+      'no_urut': '0001',
+      'no_surat': '1001',
+      'hari_tanggal': 'Selasa, 28 Juli 2025',
+      'waktu': '09:00 WIB',
+      'tempat': 'Ruang Rapat Paripurna',
+      'disposisi': 'PRPB',
+      'index': 'MC',
+      'pengolah': 'Kominfo',
+      'sifat': 'terbatas',
+      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
+      'disposisi_kadin': '06/01/2025',
+      'disposisi_sekdin': '07/01/2025',
+      'disposisi_kabid': '08/01/2025',
+      'disposisi_kasubag': '08/01/2025',
+      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'tindak_lanjut_1': '08/01/2025',
+      'tindak_lanjut_2': '30/01/2025',
+      'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
   ];
 
@@ -204,7 +444,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
   void actionSetState(int index) {
     setState(() {
-      suratData.removeAt(index);
+      suratData1.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -213,6 +453,13 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
       ),
     );
   }
+
+  void refreshEditState() {
+  setState(() {
+    // Refresh ListView setelah edit data
+    // Data suratData udah diupdate di modal
+  });
+}
 
   OverlayEntry _createOverlayEntry() {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
@@ -1388,10 +1635,10 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                       physics: AlwaysScrollableScrollPhysics(
                                         parent: BouncingScrollPhysics(),
                                       ), // Enable pull to refresh even when list is short
-                                      itemCount: suratData.length,
+                                      itemCount: suratData1.length,
                                       padding: EdgeInsets.only(bottom: 20),
                                       itemBuilder: (context, index) {
-                                        final surat = suratData[index];
+                                        final surat = suratData1[index];
 
                                         return Container(
                                           margin: EdgeInsets.only(bottom: 15),
@@ -1452,20 +1699,22 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                     actionAdmin(
                                                       index,
                                                       context,
-                                                      suratData,
+                                                      suratData1,
                                                       (i) => editDokumen(
+                                                        context,
                                                         index,
-                                                        suratData,
+                                                        suratData1,
+                                                        refreshEditState
                                                       ),
                                                       (i) => viewDetailAdmin(
                                                         context,
                                                         index,
-                                                        suratData,
+                                                        suratData1,
                                                       ),
                                                       (i) => hapusDokumen(
                                                         context,
                                                         index,
-                                                        suratData,
+                                                        suratData1,
                                                         actionSetState,
                                                       ),
                                                     );
@@ -1477,20 +1726,22 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                     actionAdmin(
                                                       index,
                                                       context,
-                                                      suratData,
+                                                      suratData1,
                                                       (i) => editDokumen(
+                                                        context,
                                                         index,
-                                                        suratData,
+                                                        suratData1,
+                                                        refreshEditState,
                                                       ),
                                                       (i) => viewDetailAdmin(
                                                         context,
                                                         index,
-                                                        suratData,
+                                                        suratData1,
                                                       ),
                                                       (i) => hapusDokumen(
                                                         context,
                                                         index,
-                                                        suratData,
+                                                        suratData1,
                                                         actionSetState,
                                                       ),
                                                     );
@@ -1750,6 +2001,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                     ),
                                   ),
                                 ),
+                              
                               ],
                             ),
                           ),
@@ -1763,6 +2015,85 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
           );
         },
       ),
+      floatingActionButton: Container(
+      margin: EdgeInsets.only(bottom: 10), // Jarak dari bawah
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF10B981),
+            Color(0xFF059669),
+            Color(0xFF047857),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF10B981).withValues(alpha: 0.4),
+            blurRadius: 20,
+            offset: Offset(0, 10),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 15,
+            offset: Offset(0, 5),
+          ),
+          // Inner glow effect sesuai theme lu
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.1),
+            blurRadius: 3,
+            offset: Offset(0, -1),
+          ),
+        ],
+      ),
+      child: FloatingActionButton.extended(
+        onPressed: () {
+  // Option 1: Bikin method handle sendiri
+  tambahSuratMasuk(context, (newSurat) {
+    setState(() {
+      // Tambahin ke list suratData lu
+      suratData.add(newSurat);
+    });
+    // Logic tambahan kalo ada
+  });
+},
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        // Ini yang ngilangin efek gelap pas hover/tap
+        splashColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        highlightElevation: 1,
+        icon: Container(
+          padding: EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            Icons.add_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
+        ),
+        label: Text(
+          'Tambah Surat Masuk',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Roboto',
+            letterSpacing: 0.3,
+          ),
+        ),
+      ),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }

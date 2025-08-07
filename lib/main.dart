@@ -59,10 +59,16 @@ class SmartDoku extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone
-        '/users/surat_permohonan': (context) => PermohonanLetterPage(),
-        '/users/surat_keluar': (context) => OutgoingLetterPage(),
-        '/users/surat_disposisi': (context) => DispositionLetterPage(),
-        '/forms/users/detail_page': (context) => DetailPage(),
+        '/users/phone/surat_permohonan': (context) => PermohonanLetterPage(),
+        '/users/phone/surat_keluar': (context) => OutgoingLetterPage(),
+        '/users/phone/surat_disposisi': (context) => DispositionLetterPage(),
+        '/forms/phone/users/detail_page': (context) => DetailPage(),
+
+        // users desktop
+        // '/users/desktop/surat_permohonan': (context) => PermohonanLetterPageDesktop(),
+        // '/users/desktop/surat_keluar': (context) => OutgoingLetterPageDesktop(),
+        // '/users/desktop/surat_disposisi': (context) => DispositionLetterPageDesktop(),
+        // '/users/desktop/home_page': (context) => HomePageDesktop(),
 
         // admins and superadmins phone
         '/admin/phones/home_page_admin_phones' : (context) => HomePageAdminPhones(),

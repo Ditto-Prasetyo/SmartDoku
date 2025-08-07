@@ -18,6 +18,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
   bool isCheckedSangatSegera = false;
   bool isCheckedSegera = false;
   bool isCheckedRahasia = false;
+  final TextEditingController nomorUrutController = TextEditingController();
 
   // Animation controllers and animations
   late AnimationController _backgroundController;
@@ -645,7 +646,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                   'Lembar Disposisi',
                                 ),
                               ),
-                              buildMenuActionDisposisiAdmin(context),
+                              buildMenuActionDisposisiAdmin(context, nomorUrutController),
                             ],
                           ),
                           SizedBox(height: 16),
