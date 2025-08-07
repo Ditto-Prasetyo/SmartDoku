@@ -465,7 +465,7 @@ void viewDetailAdmin(
     void Function() refreshEditState
     ) {
     final surat = suratData[index];
-    print('Edit Document - ID: ${surat['id']}, Judul: ${surat['judul']}');
+    print('Edit Document - ID: ${surat['id']}, Judul: ${surat['surat_dari']}, \nPengirim : ${surat['pengirim']}');
     showEditSuratDialog(context, index, suratData, refreshEditState);
   }
 

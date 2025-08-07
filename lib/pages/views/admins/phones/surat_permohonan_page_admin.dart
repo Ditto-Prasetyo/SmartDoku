@@ -62,50 +62,6 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
     {'value': 'status', 'label': 'Status', 'icon': Icons.flag_rounded},
   ];
 
-  List<Map<String, dynamic>> suratData1 = [
-    {
-      'id': '1',
-      'judul': 'Surat Pemberitahuan Rapat Bulanan',
-      'perihal':
-          'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
-      'tanggal': '28 Juli 2025',
-      'pengirim': 'HRD Department',
-      'status': 'Proses',
-    },
-    {
-      'id': '2',
-      'judul': 'Pengajuan Cuti Tahunan',
-      'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
-      'tanggal': '27 Juli 2025',
-      'pengirim': 'Karyawan - Ahmad Rizki',
-      'status': 'Selesai',
-    },
-    {
-      'id': '3',
-      'judul': 'Laporan Keuangan Q2 2025',
-      'perihal': 'Report keuangan triwulan kedua tahun 2025',
-      'tanggal': '26 Juli 2025',
-      'pengirim': 'Finance Department',
-      'status': 'Proses',
-    },
-    {
-      'id': '4',
-      'judul': 'Undangan Seminar IT',
-      'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
-      'tanggal': '25 Juli 2025',
-      'pengirim': 'IT Department',
-      'status': 'Selesai',
-    },
-    {
-      'id': '5',
-      'judul': 'Surat Peringatan Kedisiplinan',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tanggal': '24 Juli 2025',
-      'pengirim': 'HRD Department',
-      'status': 'Selesai',
-    },
-  ];
-
   List<Map<String, dynamic>> suratData = [
     {
       'id': '1',
@@ -445,7 +401,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
   void actionSetState(int index) {
     setState(() {
-      suratData1.removeAt(index);
+      suratData.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -1636,10 +1592,10 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                       physics: AlwaysScrollableScrollPhysics(
                                         parent: BouncingScrollPhysics(),
                                       ), // Enable pull to refresh even when list is short
-                                      itemCount: suratData1.length,
+                                      itemCount: suratData.length,
                                       padding: EdgeInsets.only(bottom: 20),
                                       itemBuilder: (context, index) {
-                                        final surat = suratData1[index];
+                                        final surat = suratData[index];
 
                                         return Container(
                                           margin: EdgeInsets.only(bottom: 15),
@@ -1700,49 +1656,49 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                     actionAdmin(
                                                       index,
                                                       context,
-                                                      suratData1,
+                                                      suratData,
                                                       (i) => editDokumen(
                                                         context,
                                                         index,
-                                                        suratData1,
+                                                        suratData,
                                                         refreshEditState,
                                                       ),
                                                       (i) => viewDetailAdmin(
                                                         context,
                                                         index,
-                                                        suratData1,
+                                                        suratData,
                                                       ),
                                                       (i) => hapusDokumen(
                                                         context,
                                                         index,
-                                                        suratData1,
+                                                        suratData,
                                                         actionSetState,
                                                       ),
                                                     );
                                                     print(
-                                                      'Surat dipilih: ${surat['judul']}',
+                                                      'Surat dipilih: ${surat['surat_dari']}',
                                                     );
                                                   },
                                                   onLongPress: () {
                                                     actionAdmin(
                                                       index,
                                                       context,
-                                                      suratData1,
+                                                      suratData,
                                                       (i) => editDokumen(
                                                         context,
                                                         index,
-                                                        suratData1,
+                                                        suratData,
                                                         refreshEditState,
                                                       ),
                                                       (i) => viewDetailAdmin(
                                                         context,
                                                         index,
-                                                        suratData1,
+                                                        suratData,
                                                       ),
                                                       (i) => hapusDokumen(
                                                         context,
                                                         index,
-                                                        suratData1,
+                                                        suratData,
                                                         actionSetState,
                                                       ),
                                                     );
@@ -1822,7 +1778,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat['tanggal'],
+                                                              surat['diterima_tgl'],
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1842,7 +1798,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
                                                         // Judul Surat
                                                         Text(
-                                                          surat['judul'],
+                                                          surat['surat_dari'],
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 18,
@@ -1929,7 +1885,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      surat['pengirim'],
+                                                                      surat['pengirim'] == null ? '404 Not Found': surat['pengirim'],
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white

@@ -13,7 +13,8 @@ class DetailPageAdmin extends StatefulWidget {
   State<DetailPageAdmin> createState() => _DetailPageAdmin();
 }
 
-class _DetailPageAdmin extends State<DetailPageAdmin> with TickerProviderStateMixin {
+class _DetailPageAdmin extends State<DetailPageAdmin>
+    with TickerProviderStateMixin {
   var height, width;
 
   bool isRefreshing = false;
@@ -37,36 +38,33 @@ class _DetailPageAdmin extends State<DetailPageAdmin> with TickerProviderStateMi
     return {
       'nomor': baseData['id']?.toString() ?? '001',
       'surat_dari': baseData['pengirim'] ?? 'HRD Department',
-      'diterima_tgl': '28 Juli 2025',
-      'tgl_surat': baseData['tanggal'] ?? '28 Juli 2025',
+      'diterima_tgl':
+          baseData['diterima_tgl'] ??
+          (DateTime.now().day).toString() + '/' +
+              (DateTime.now().month).toString() + '/' +
+              (DateTime.now().year).toString(),
+      'tgl_surat': baseData['tgl_surat'] ?? '28 Juli 2025',
       'kode': 'SR-2025-${baseData['id']?.toString().padLeft(3, '0') ?? '001'}',
-      'no_urut': '${baseData['id']?.toString() ?? '1'}/25',
-      'no_agenda':
-          'AG-${DateTime.now().year}-${baseData['id']?.toString().padLeft(4, '0') ?? '0001'}',
-      'no_surat':
-          'ST/${DateTime.now().year}/${baseData['id']?.toString().padLeft(3, '0') ?? '001'}',
-      'hal': baseData['judul'] ?? 'Surat Pemberitahuan',
-      'hari_tanggal': 'Senin, ${baseData['tanggal'] ?? '28 Juli 2025'}',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Utama',
-      'disposisi': 'Permukiman',
-      'index': 'IDX-${baseData['id']?.toString() ?? '1'}',
-      'pengolah': 'Ahmad Santoso',
-      'sifat': baseData['status'] == 'Proses' ? 'Urgent' : 'Normal',
-      'link_scan': 'https://drive.google.com/file/scan-${baseData['id'] ?? 1}',
-      'disp_1': 'Kepala Bagian - Review dokumen',
-      'disp_2': 'Manager Operasional - Persetujuan',
-      'disp_3': 'Direktur - Final approval',
-      'disp_4': 'Sekretaris - Dokumentasi',
-      'disp_lanjutan': 'Kirim ke semua departemen terkait',
-      'tindak_lanjut_1': 'Koordinasi dengan team',
-      'tindak_lanjut_2': 'Laporan progress mingguan',
-      'status': baseData['status'] ?? 'Proses',
-      'dokumen_final': 'Final_Doc_${baseData['id'] ?? 1}.pdf',
-      'dokumen_dikirim': baseData['status'] == 'Selesai' ? 'Ya' : 'Belum',
-      'tanda_terima': baseData['status'] == 'Selesai'
-          ? 'Sudah diterima'
-          : 'Pending',
+      'no_urut': '${baseData['no_urut']?.toString() ?? '1'}/25',
+      'no_agenda': baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025' == null ? '404 Not Found' :  baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025',
+      'no_surat': baseData['no_surat'] == null ? '404 Not Found' : baseData['no_surat'],
+      'hal': baseData['perihal'] == null ? '404 Not Found' : baseData['perihal'],
+      'hari_tanggal': baseData['hari_tanggal'] == null ? '404 Not Found' : baseData['hari_tanggal'],
+      'waktu': baseData['waktu'] == null ? '404 Not Found' : baseData['waktu'],
+      'tempat': baseData['tempat'] == null ? '404 Not Found' : baseData['tempat'],
+      'disposisi': baseData['disposisi'] == null ? '404 Not Found' : baseData['disposisi'],
+      'index': 'IDX-${baseData['index']?.toString() == null ? '404 Not Found' : baseData['index']}',
+      'pengolah': baseData['pengolah'] == null ? '404 Not Found' : baseData['pengolah'],
+      'sifat': baseData['sifat'] == null ? '404 Not Found' : baseData['sifat'],
+      'link_scan': baseData['link_scan'] == null ? '404 Not Found' : baseData['link_scan'],
+      'disp_1': baseData['disposisi_kadin'] == null ? '404 Not Found' : baseData['disposisi_kadin'],
+      'disp_2': baseData['disposisi_sekdin'] == null ? '404 Not Found' : baseData['disposisi_sekdin'],
+      'disp_3': baseData['disposisi_kabid'] == null ? '404 Not Found' : baseData['disposisi_kabid'],
+      'disp_4': baseData['disposisi_kasubag'] == null ? '404 Not Found' : baseData['disposisi_kasubag'],
+      'disp_lanjutan': baseData['disposisi_lanjutan'] == null ? '404 Not Found' : baseData['disposisi_lanjutan'],
+      'tindak_lanjut_1': baseData['tindak_lanjut_1'] == null ? '404 Not Found' : baseData['tindak_lanjut_1'],
+      'tindak_lanjut_2': baseData['tindak_lanjut_2'] == null ? '404 Not Found' : baseData['tindak_lanjut_2'],
+      'status': baseData['status'] == null ? '404 Not Found' : baseData['status'],
     };
   }
 
@@ -617,89 +615,155 @@ class _DetailPageAdmin extends State<DetailPageAdmin> with TickerProviderStateMi
                         children: [
                           // Header Info Card
                           buildHeaderCard(detailData),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Basic Information Section
                           buildSectionTitle('Informasi Dasar'),
                           SizedBox(height: 15),
                           buildInfoCard([
                             buildDetailRow('Nomor', detailData['nomor']),
-                            buildDetailRow('Surat Dari', detailData['surat_dari']),
-                            buildDetailRow('Diterima Tanggal', detailData['diterima_tgl']),
-                            buildDetailRow('Tanggal Surat', detailData['tgl_surat']),
+                            buildDetailRow(
+                              'Surat Dari',
+                              detailData['surat_dari'],
+                            ),
+                            buildDetailRow(
+                              'Diterima Tanggal',
+                              detailData['diterima_tgl'],
+                            ),
+                            buildDetailRow(
+                              'Tanggal Surat',
+                              detailData['tgl_surat'],
+                            ),
                             buildDetailRow('Kode', detailData['kode']),
                             buildDetailRow('No. Urut', detailData['no_urut']),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Document Information Section
                           buildSectionTitle('Informasi Dokumen'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('No. Agenda', detailData['no_agenda']),
+                            buildDetailRow(
+                              'No. Agenda',
+                              detailData['no_agenda'],
+                            ),
                             buildDetailRow('No. Surat', detailData['no_surat']),
                             buildDetailRow('Hal', detailData['hal']),
-                            buildDetailRow('Hari/Tanggal', detailData['hari_tanggal']),
+                            buildDetailRow(
+                              'Hari/Tanggal',
+                              detailData['hari_tanggal'] ?? '',
+                            ),
                             buildDetailRow('Waktu', detailData['waktu']),
                             buildDetailRow('Tempat', detailData['tempat']),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Processing Information Section
                           buildSectionTitle('Informasi Pemrosesan'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Disposisi', detailData['disposisi']),
+                            buildDetailRow(
+                              'Disposisi',
+                              detailData['disposisi'] ?? '404 Not Found',
+                            ),
                             buildDetailRow('Index', detailData['index']),
                             buildDetailRow('Pengolah', detailData['pengolah']),
-                            buildDetailRow('Sifat', detailData['sifat'], 
-                                isStatus: true, statusColor: getSifatColor(detailData['sifat'])),
-                            buildDetailRow('Link Scan', detailData['link_scan'], isLink: true),
+                            buildDetailRow(
+                              'Sifat',
+                              detailData['sifat'],
+                              isStatus: true,
+                              statusColor: getSifatColor(detailData['sifat']),
+                            ),
+                            buildDetailRow(
+                              'Link Scan',
+                              detailData['link_scan'],
+                              isLink: true,
+                            ),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Disposition Section
                           buildSectionTitle('Disposisi'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Disposisi Kadin', detailData['disp_1']),
-                            buildDetailRow('Disposisi Sekdin', detailData['disp_2']),
-                            buildDetailRow('Disposisi Kabid / KaUPT', detailData['disp_3']),
-                            buildDetailRow('Disposisi Kasubag / Kasi', detailData['disp_4']),
-                            buildDetailRow('Disposisi Lanjutan', detailData['disp_lanjutan']),
+                            buildDetailRow(
+                              'Disposisi Kadin',
+                              detailData['disp_1'],
+                            ),
+                            buildDetailRow(
+                              'Disposisi Sekdin',
+                              detailData['disp_2'],
+                            ),
+                            buildDetailRow(
+                              'Disposisi Kabid / KaUPT',
+                              detailData['disp_3'],
+                            ),
+                            buildDetailRow(
+                              'Disposisi Kasubag / Kasi',
+                              detailData['disp_4'],
+                            ),
+                            buildDetailRow(
+                              'Disposisi Lanjutan',
+                              detailData['disp_lanjutan'],
+                            ),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Follow Up Section
                           buildSectionTitle('Tindak Lanjut'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Tindak Lanjut 1', detailData['tindak_lanjut_1']),
-                            buildDetailRow('Tindak Lanjut 2', detailData['tindak_lanjut_2']),
-                            buildDetailRow('Status', detailData['status'], 
-                                isStatus: true, statusColor: getStatusColor(detailData['status'])),
+                            buildDetailRow(
+                              'Tindak Lanjut 1',
+                              detailData['tindak_lanjut_1'],
+                            ),
+                            buildDetailRow(
+                              'Tindak Lanjut 2',
+                              detailData['tindak_lanjut_2'],
+                            ),
+                            buildDetailRow(
+                              'Status',
+                              detailData['status'],
+                              isStatus: true,
+                              statusColor: getStatusColor(detailData['status']),
+                            ),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Final Documents Section
                           buildSectionTitle('Dokumen Final'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Dokumen Final', detailData['dokumen_final']),
-                            buildDetailRow('Dokumen Dikirim', detailData['dokumen_dikirim'], 
-                                isStatus: true, statusColor: getYesNoColor(detailData['dokumen_dikirim'])),
-                            buildDetailRow('Tanda Terima', detailData['tanda_terima'], 
-                                isStatus: true, statusColor: getTandaTerimaColor(detailData['tanda_terima'])),
+                            buildDetailRow(
+                              'Dokumen Final',
+                              detailData['dokumen_final'],
+                            ),
+                            buildDetailRow(
+                              'Dokumen Dikirim',
+                              detailData['dokumen_dikirim'],
+                              isStatus: true,
+                              statusColor: getYesNoColor(
+                                detailData['dokumen_dikirim'],
+                              ),
+                            ),
+                            buildDetailRow(
+                              'Tanda Terima',
+                              detailData['tanda_terima'],
+                              isStatus: true,
+                              statusColor: getTandaTerimaColor(
+                                detailData['tanda_terima'],
+                              ),
+                            ),
                           ]),
-                          
+
                           SizedBox(height: 30),
-                          
+
                           buildBackButtonSection(context),
                         ],
                       ),

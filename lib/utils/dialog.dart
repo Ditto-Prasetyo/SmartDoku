@@ -3196,16 +3196,73 @@ void showEditSuratDialog(
 
   // Controllers untuk form
   final TextEditingController judulController = TextEditingController(
-    text: selectedSurat['judul'],
+    text: selectedSurat['surat_dari'],
   );
   final TextEditingController perihalController = TextEditingController(
     text: selectedSurat['perihal'],
   );
   final TextEditingController tanggalController = TextEditingController(
-    text: selectedSurat['tanggal'],
+    text: selectedSurat['diterima_tgl'],
   );
   final TextEditingController pengirimController = TextEditingController(
     text: selectedSurat['pengirim'],
+  );
+  final TextEditingController tanggalSuratController = TextEditingController(
+    text: selectedSurat['tanggal_surat'],
+  );
+  final TextEditingController kodeController = TextEditingController(
+    text: selectedSurat['kode'],
+  );
+  final TextEditingController nourutController = TextEditingController(
+    text: selectedSurat['no_urut'],
+  );
+  final TextEditingController nosuratController = TextEditingController(
+    text: selectedSurat['no_surat'],
+  );
+  final TextEditingController haritanggalController = TextEditingController(
+    text: selectedSurat['hari_tanggal'],
+  );
+  final TextEditingController waktuController = TextEditingController(
+    text: selectedSurat['waktu'],
+  );
+  final TextEditingController tempatController = TextEditingController(
+    text: selectedSurat['tempat'],
+  );
+  final TextEditingController disposisiController = TextEditingController(
+    text: selectedSurat['disposisi'],
+  );
+  final TextEditingController indexController = TextEditingController(
+    text: selectedSurat['index'],
+  );
+  final TextEditingController pengolahController = TextEditingController(
+    text: selectedSurat['pengolah'],
+  );
+  final TextEditingController sifatController = TextEditingController(
+    text: selectedSurat['sifat'],
+  );
+  final TextEditingController linkscanController = TextEditingController(
+    text: selectedSurat['link_scan'],
+  );
+  final TextEditingController disposisikadinController = TextEditingController(
+    text: selectedSurat['disposisi_kadin'],
+  );
+  final TextEditingController disposisisekdinController = TextEditingController(
+    text: selectedSurat['disposisi_sekdin'],
+  );
+  final TextEditingController disposisikabidController = TextEditingController(
+    text: selectedSurat['disposisi_kabid'],
+  );
+  final TextEditingController disposisikasubagController = TextEditingController(
+    text: selectedSurat['disposisi_kasubag'],
+  );
+  final TextEditingController disposisilanjutanController = TextEditingController(
+    text: selectedSurat['disposisi_lanjutan'],
+  );
+  final TextEditingController tindaklanjut1Controller = TextEditingController(
+    text: selectedSurat['tindak_lanjut_1'],
+  );
+  final TextEditingController tindaklanjut2Controller = TextEditingController(
+    text: selectedSurat['tindak_lanjut_2'],
   );
 
   String selectedStatus = selectedSurat['status'];
@@ -3508,7 +3565,7 @@ void showEditSuratDialog(
                                           'id': selectedSurat['id'],
                                           'judul': judulController.text,
                                           'perihal': perihalController.text,
-                                          'tanggal': tanggalController.text,
+                                          'diterima_tgl': tanggalController.text,
                                           'pengirim': pengirimController.text,
                                           'status': selectedStatus,
                                         };

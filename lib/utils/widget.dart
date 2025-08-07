@@ -999,6 +999,12 @@ Color getStatusColor(String status) {
       return Color(0xFF10B981);
     case 'proses':
       return Color(0xFF3B82F6);
+    case 'terbatas':
+      return Colors.orange;
+    case 'ditolak':
+      return Colors.red;
+      case 'pending' :
+      return Colors.yellow;
     default:
       return Color(0xFF6B7280);
   }
@@ -1010,7 +1016,7 @@ Color getSifatColor(String sifat) {
       return Color(0xFFEF4444);
     case 'normal':
       return Color(0xFF10B981);
-    case 'rahasia':
+    case 'terbatas':
       return Color(0xFF8B5CF6);
     default:
       return Color(0xFF6B7280);
