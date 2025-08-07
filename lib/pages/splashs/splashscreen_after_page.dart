@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/users/desktop/home_page_desktop.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'dart:math';
 
@@ -169,7 +170,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     if (Platform.isWindows || Platform.isLinux) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => AdminDashboard()),
+        MaterialPageRoute(builder: (context) => UserDashboard()),
       );
     } else if (Platform.isAndroid || Platform.isIOS) {
       Navigator.pushReplacement(
