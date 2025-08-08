@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
 import 'package:smart_doku/pages/views/users/desktop/home_page_desktop.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'dart:math';
@@ -167,21 +168,42 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     // Detik ke-6: Navigate ke HomePage
     await Future.delayed(Duration(seconds: 2));
 
-    if (Platform.isWindows || Platform.isLinux) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => UserDashboard()),
-      );
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      if (_user?.role == "USER") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => UserDashboard()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AdminDashboard()),
+        );
+      }
     } else if (Platform.isAndroid || Platform.isIOS) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      if (_user?.role == "USER") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePageAdminPhones()),
+        );
+      }
     } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      if (_user?.role == "USER") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePageAdminPhones()),
+        );
+      }
     }
   }
 
