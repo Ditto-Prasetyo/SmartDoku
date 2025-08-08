@@ -88,6 +88,10 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
       'disposisi_kabid': '08/01/2025',
       'disposisi_kasubag': '08/01/2025',
       'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
+      'notes_disposisi_kadin' : 'Lanjutkan!',
+      'notes_disposisi_sekdin' : 'Lanjutkan!',
+      'notes_disposisi_kabid' : 'Lanjutkan!',
+      'notes_disposisi_kasubag' : 'Lanjutkan!',
       'tindak_lanjut_1': '08/01/2025',
       'tindak_lanjut_2': '30/01/2025',
       'status': 'Proses',
@@ -1657,7 +1661,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                       index,
                                                       context,
                                                       suratData,
-                                                      (i) => editDokumen(
+                                                      (i) => editDokumenAdmin(
                                                         context,
                                                         index,
                                                         suratData,
@@ -1676,7 +1680,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                       ),
                                                     );
                                                     print(
-                                                      'Surat dipilih: ${surat['surat_dari']}',
+                                                      'Surat dipilih: ${surat['surat_dari']} \ntanggal : ${surat['tgl_surat']}',
                                                     );
                                                   },
                                                   onLongPress: () {

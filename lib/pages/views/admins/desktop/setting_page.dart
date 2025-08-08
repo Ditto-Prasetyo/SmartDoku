@@ -48,7 +48,7 @@ class _SettingPageState extends State<SettingPage>
     },
     {
       'icon': Icons.people_outline_rounded,
-      'title': 'Manajemen User',
+      'title': 'Manajemen Pengguna',
       'route': '/admin/desktop/manajemen_pengguna_page',
     },
     {

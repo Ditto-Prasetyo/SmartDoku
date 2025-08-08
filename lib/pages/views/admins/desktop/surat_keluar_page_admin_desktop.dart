@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/widget.dart';
 
 class OutgoingLetterPageAdminDesktop extends StatefulWidget {
   const OutgoingLetterPageAdminDesktop({super.key});
@@ -50,7 +51,7 @@ class _OutgoingLetterPageAdminDesktopState
     },
     {
       'icon': Icons.people_outline_rounded,
-      'title': 'Manajemen User',
+      'title': 'Manajemen Pengguna',
       'route': '/admin/desktop/manajemen_pengguna_page',
     },
     {
@@ -88,6 +89,9 @@ class _OutgoingLetterPageAdminDesktopState
       'koreksi_1': '',
       'koreksi_2': '',
       'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '2',
@@ -105,6 +109,9 @@ class _OutgoingLetterPageAdminDesktopState
       'koreksi_1': '',
       'koreksi_2': '',
       'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '3',
@@ -122,6 +129,9 @@ class _OutgoingLetterPageAdminDesktopState
       'koreksi_1': '',
       'koreksi_2': '',
       'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '4',
@@ -139,6 +149,9 @@ class _OutgoingLetterPageAdminDesktopState
       'koreksi_1': '',
       'koreksi_2': '',
       'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '5',
@@ -156,6 +169,9 @@ class _OutgoingLetterPageAdminDesktopState
       'koreksi_1': '',
       'koreksi_2': '',
       'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '6',
@@ -173,6 +189,9 @@ class _OutgoingLetterPageAdminDesktopState
       'koreksi_1': '',
       'koreksi_2': '',
       'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '7',
@@ -190,6 +209,9 @@ class _OutgoingLetterPageAdminDesktopState
       'koreksi_1': '',
       'koreksi_2': '',
       'status': 'Selesai',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
     {
       'id': '8',
@@ -207,6 +229,9 @@ class _OutgoingLetterPageAdminDesktopState
       'koreksi_1': '',
       'koreksi_2': '',
       'status': 'Proses',
+      'dok_final': '',
+      'dok_dikirim_tgl': '',
+      'tanda_terima': '',
     },
   ];
 
@@ -564,14 +589,6 @@ class _OutgoingLetterPageAdminDesktopState
             ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: Colors.white.withAlpha(150)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withAlpha(25),
-                blurRadius: 8,
-                spreadRadius: 1,
-                offset: Offset(0, -4),
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -581,15 +598,7 @@ class _OutgoingLetterPageAdminDesktopState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Aktivitas Terbaru',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontFamily: 'Roboto',
-                    ),
-                  ),
+                  buildSectionTitleDisposisiDesktop('Data Surat Keluar'),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -644,8 +653,8 @@ class _OutgoingLetterPageAdminDesktopState
                           end: Alignment.bottomRight,
                           colors: [
                             Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.1),
+                            Colors.white.withValues(alpha: 0.05),
+                            Colors.white.withValues(alpha: 0.05),
                             Colors.white.withValues(alpha: 0.2),
                           ],
                         ),
@@ -676,8 +685,8 @@ class _OutgoingLetterPageAdminDesktopState
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
-                                        Colors.white.withValues(alpha: 0.15),
-                                        Colors.white.withValues(alpha: 0.08),
+                                        Colors.white.withValues(alpha: 0.20),
+                                        Colors.white.withValues(alpha: 0.10),
                                       ],
                                     ),
                                     border: Border(
@@ -734,7 +743,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // No Register
                                       Expanded(
-                                        flex: 40,
+                                        flex: 45,
                                         child: Text(
                                           'NO REGISTER',
                                           style: TextStyle(
@@ -747,7 +756,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // Tujuan Surat
                                       Expanded(
-                                        flex: 50,
+                                        flex: 55,
                                         child: Text(
                                           'TUJUAN SURAT',
                                           style: TextStyle(
@@ -760,7 +769,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // Perihal
                                       Expanded(
-                                        flex: 60,
+                                        flex: 45,
                                         child: Text(
                                           'PERIHAL',
                                           style: TextStyle(
@@ -769,11 +778,12 @@ class _OutgoingLetterPageAdminDesktopState
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                       // Tanggal Surat
                                       Expanded(
-                                        flex: 40,
+                                        flex: 30,
                                         child: Text(
                                           'TGL\nSURAT',
                                           style: TextStyle(
@@ -782,11 +792,12 @@ class _OutgoingLetterPageAdminDesktopState
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                       // Klasifikasi
                                       Expanded(
-                                        flex: 65,
+                                        flex: 90,
                                         child: Text(
                                           'KET.KLASIFIKASI \nKEAMANAN & AKSES ARSIP',
                                           style: TextStyle(
@@ -795,6 +806,7 @@ class _OutgoingLetterPageAdminDesktopState
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                       // Pengolah
@@ -812,7 +824,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // PEMBUAT
                                       Expanded(
-                                        flex: 40,
+                                        flex: 38,
                                         child: Text(
                                           'PEMBUAT',
                                           style: TextStyle(
@@ -825,7 +837,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // Catatan
                                       Expanded(
-                                        flex: 40,
+                                        flex: 22,
                                         child: Text(
                                           'CATATAN',
                                           style: TextStyle(
@@ -838,7 +850,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // link surat
                                       Expanded(
-                                        flex: 50,
+                                        flex: 70,
                                         child: Text(
                                           'link SURAT \nMASUK (JIKA ADA)',
                                           style: TextStyle(
@@ -847,6 +859,7 @@ class _OutgoingLetterPageAdminDesktopState
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
                                       // Koreksi 1

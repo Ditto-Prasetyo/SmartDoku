@@ -3098,7 +3098,7 @@ void showModernTambahSuratKeluarDialog(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                             showModernTambahSuratFormDialog(
+                            showModernTambahSuratFormDialog(
                               context,
                               accentColor,
                               accentColor2,
@@ -3208,10 +3208,13 @@ void showEditSuratDialog(
     text: selectedSurat['pengirim'],
   );
   final TextEditingController tanggalSuratController = TextEditingController(
-    text: selectedSurat['tanggal_surat'],
+    text: selectedSurat['tgl_surat'],
   );
   final TextEditingController kodeController = TextEditingController(
     text: selectedSurat['kode'],
+  );
+  final TextEditingController noagendaController = TextEditingController(
+    text: selectedSurat['no_agenda'],
   );
   final TextEditingController nourutController = TextEditingController(
     text: selectedSurat['no_urut'],
@@ -3252,18 +3255,25 @@ void showEditSuratDialog(
   final TextEditingController disposisikabidController = TextEditingController(
     text: selectedSurat['disposisi_kabid'],
   );
-  final TextEditingController disposisikasubagController = TextEditingController(
-    text: selectedSurat['disposisi_kasubag'],
-  );
-  final TextEditingController disposisilanjutanController = TextEditingController(
-    text: selectedSurat['disposisi_lanjutan'],
-  );
+  final TextEditingController disposisikasubagController =
+      TextEditingController(text: selectedSurat['disposisi_kasubag']);
+  final TextEditingController disposisilanjutanController =
+      TextEditingController(text: selectedSurat['disposisi_lanjutan']);
   final TextEditingController tindaklanjut1Controller = TextEditingController(
     text: selectedSurat['tindak_lanjut_1'],
   );
   final TextEditingController tindaklanjut2Controller = TextEditingController(
     text: selectedSurat['tindak_lanjut_2'],
   );
+
+  final TextEditingController notesDisposisiKadinController =
+      TextEditingController(text: selectedSurat['notes_disposisi_kadin']);
+  final TextEditingController notesDisposisiSekdinController =
+      TextEditingController(text: selectedSurat['notes_disposisi_sekdin']);
+  final TextEditingController notesDisposisiKabidController =
+      TextEditingController(text: selectedSurat['notes_disposisi_kabid']);
+  final TextEditingController notesDisposisiKasubagController =
+      TextEditingController(text: selectedSurat['notes_disposisi_kasubag']);
 
   String selectedStatus = selectedSurat['status'];
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
@@ -3411,26 +3421,208 @@ void showEditSuratDialog(
                               SizedBox(height: 20),
 
                               buildInputField(
-                                'Perihal',
-                                perihalController,
-                                Icons.description_outlined,
-                                maxLines: 3,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Pengirim',
-                                pengirimController,
-                                Icons.person_outline_rounded,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Tanggal',
+                                'Diterima Tanggal',
                                 tanggalController,
-                                Icons.calendar_today_rounded,
+                                Icons.event_available_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Tanggal Surat',
+                                tanggalSuratController,
+                                Icons.event_note_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Kode',
+                                kodeController,
+                                Icons.qr_code_2_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'No Urut',
+                                nourutController,
+                                Icons.format_list_numbered_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'No Agenda',
+                                noagendaController,
+                                Icons.assignment_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'No Surat',
+                                nosuratController,
+                                Icons.markunread_mailbox_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Hal',
+                                perihalController,
+                                Icons.subject_rounded,
+                                maxLines: 2,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Hari / Tanggal',
+                                haritanggalController,
+                                Icons.today_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Waktu',
+                                waktuController,
+                                Icons.access_time_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Tempat',
+                                tempatController,
+                                Icons.location_on_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Disposisi',
+                                disposisiController,
+                                Icons.send_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Index',
+                                indexController,
+                                Icons.people_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Pengolah',
+                                pengolahController,
+                                Icons.manage_accounts_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Sifat',
+                                sifatController,
+                                Icons.priority_high_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Link Scan',
+                                linkscanController,
+                                Icons.link_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Disposisi Kadin',
+                                disposisikadinController,
+                                Icons.people_alt_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Catatan Disposisi Kadin',
+                                notesDisposisiKadinController,
+                                Icons.sticky_note_2_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Disposisi Sekdin',
+                                disposisisekdinController,
+                                Icons.people_alt_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Catatan Disposisi Sekdin',
+                                notesDisposisiSekdinController,
+                                Icons.sticky_note_2_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Disposisi Kabid',
+                                disposisikabidController,
+                                Icons.people_alt_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Catatan Disposisi Kabid',
+                                notesDisposisiKabidController,
+                                Icons.sticky_note_2_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Disposisi Kasubag',
+                                judulController,
+                                Icons.people_alt_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Catatan Disposisi Kasubag',
+                                notesDisposisiKasubagController,
+                                Icons.sticky_note_2_rounded,
+                                maxLines: 1,
                               ),
 
                               SizedBox(height: 20),
@@ -3565,8 +3757,536 @@ void showEditSuratDialog(
                                           'id': selectedSurat['id'],
                                           'judul': judulController.text,
                                           'perihal': perihalController.text,
-                                          'diterima_tgl': tanggalController.text,
+                                          'diterima_tgl':
+                                              tanggalController.text,
                                           'pengirim': pengirimController.text,
+                                          'status': selectedStatus,
+                                        };
+
+                                        // Refresh state
+                                        refreshState();
+
+                                        // Close dialog
+                                        Navigator.pop(context);
+
+                                        // Show success message
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Surat berhasil diperbarui!',
+                                            ),
+                                            backgroundColor: Color(0xFF10B981),
+                                            behavior: SnackBarBehavior.floating,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF10B981),
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        elevation: 8,
+                                        shadowColor: Color(
+                                          0xFF10B981,
+                                        ).withValues(alpha: 0.4),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.save_rounded, size: 20),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            'Simpan Perubahan',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+void showEditSuratKeluarDialog(
+  BuildContext context,
+  int index,
+  List<Map<String, dynamic>> suratData,
+  void Function() refreshState,
+) {
+  final selectedSurat = suratData[index];
+
+  // Controllers untuk form
+  final TextEditingController klasifikasiController = TextEditingController(
+    text: selectedSurat['klasifikasi'],
+  );
+  final TextEditingController kodeController = TextEditingController(
+    text: selectedSurat['kode'],
+  );
+  final TextEditingController noregisterController = TextEditingController(
+    text: selectedSurat['no_register'],
+  );
+  final TextEditingController tujuansuratController = TextEditingController(
+    text: selectedSurat['tujuan_surat'],
+  );
+  final TextEditingController perihalController = TextEditingController(
+    text: selectedSurat['perihal'],
+  );
+  final TextEditingController tglsuratController = TextEditingController(
+    text: selectedSurat['tgl_surat'],
+  );
+  final TextEditingController klasifikasiarsipController =
+      TextEditingController(text: selectedSurat['klasifikasi_arsip']);
+  final TextEditingController pengolahController = TextEditingController(
+    text: (() {
+      final pengolah = selectedSurat['pengolah'];
+
+      if (pengolah == null) return '';
+      if (pengolah is String) return pengolah;
+      if (pengolah is List<String>) return pengolah.join(', ');
+      return pengolah.toString();
+    })(),
+  );
+  final TextEditingController pembuatController = TextEditingController(
+    text: selectedSurat['pembuat'],
+  );
+  final TextEditingController catatanController = TextEditingController(
+    text: selectedSurat['catatan'],
+  );
+  final TextEditingController linksuratController = TextEditingController(
+    text: selectedSurat['link_surat'],
+  );
+  final TextEditingController koreksi1Controller = TextEditingController(
+    text: selectedSurat['koreksi_1'],
+  );
+  final TextEditingController koreksi2Controller = TextEditingController(
+    text: selectedSurat['koreksi_2'],
+  );
+  final TextEditingController dokfinalController = TextEditingController(
+    text: selectedSurat['dok_final'],
+  );
+  final TextEditingController dokdikirimtglController = TextEditingController(
+    text: selectedSurat['dok_dikirim_tgl'],
+  );
+  final TextEditingController tandaterimaController = TextEditingController(
+    text: selectedSurat['tanda_terima'],
+  );
+
+  String selectedStatus = selectedSurat['status'];
+  List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Edit Surat Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.9,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: Offset(0, 15),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        padding: EdgeInsets.all(25),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withValues(alpha: 0.2),
+                              Colors.white.withValues(alpha: 0.1),
+                            ],
+                          ),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Header
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(
+                                            0xFF4F46E5,
+                                          ).withValues(alpha: 0.3),
+                                          Color(
+                                            0xFF7C3AED,
+                                          ).withValues(alpha: 0.2),
+                                        ],
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(
+                                            0xFF4F46E5,
+                                          ).withValues(alpha: 0.3),
+                                          blurRadius: 15,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.edit_document,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Expanded(
+                                    child: Text(
+                                      'Edit Surat',
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => Navigator.pop(context),
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.8,
+                                        ),
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 25),
+
+                              // Form Fields
+                              buildInputField(
+                                'Kode',
+                                kodeController,
+                                Icons.qr_code_2_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+                              buildInputField(
+                                'Klasifikasi',
+                                klasifikasiController,
+                                Icons.category_rounded,
+                                maxLines: 2,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Nomor Register',
+                                noregisterController,
+                                Icons.receipt_long_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Tujuan Surat',
+                                tujuansuratController,
+                                Icons.send_rounded,
+                                maxLines: 2,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Perihal',
+                                perihalController,
+                                Icons.subject_rounded,
+                                maxLines: 2,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Tanggal Surat',
+                                tglsuratController,
+                                Icons.date_range_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Ket. Klasifikasi Keamanan \n& Akses Arsip',
+                                klasifikasiarsipController,
+                                Icons.lock_clock_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Pengolah',
+                                pengolahController,
+                                Icons.manage_accounts_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Pembuat',
+                                pembuatController,
+                                Icons.edit_note_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Catatan',
+                                catatanController,
+                                Icons.notes_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Koreksi 1',
+                                koreksi1Controller,
+                                Icons.notes_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Koreksi 2',
+                                koreksi2Controller,
+                                Icons.notes_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              // Status Dropdown
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Status',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: selectedStatus,
+                                        isExpanded: true,
+                                        dropdownColor: Color(0xFF1F2937),
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontFamily: 'Roboto',
+                                        ),
+                                        icon: Icon(
+                                          Icons.keyboard_arrow_down_rounded,
+                                          color: Colors.white.withValues(
+                                            alpha: 0.7,
+                                          ),
+                                        ),
+                                        items: statusOptions.map((
+                                          String status,
+                                        ) {
+                                          return DropdownMenuItem<String>(
+                                            value: status,
+                                            child: Row(
+                                              children: [
+                                                Container(
+                                                  width: 10,
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: getStatusColor(
+                                                      status,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 10),
+                                                Text(status),
+                                              ],
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            selectedStatus = newValue!;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 30),
+
+                              // Action Buttons
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: OutlinedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        side: BorderSide(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Batal',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Expanded(
+                                    flex: 2,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // Update data
+                                        suratData[index] = {
+                                          'id': selectedSurat['id'],
+                                          'kode': kodeController.text,
+                                          'klasifikasi':
+                                              klasifikasiController.text,
+                                          'no_register':
+                                              noregisterController.text,
+                                          'tujuan_surat':
+                                              tujuansuratController.text,
+                                          'perihal': perihalController.text,
+                                          'tgl_surat': tglsuratController,
+                                          'klasifikasi_arsip':
+                                              klasifikasiarsipController,
+                                          'pengolah': pengolahController,
+                                          'pembuat': pembuatController,
+                                          'catatan': catatanController,
                                           'status': selectedStatus,
                                         };
 

@@ -44,6 +44,7 @@ Widget buildInputField(
             fontSize: 16,
             fontFamily: 'Roboto',
           ),
+          cursorColor: Colors.white,
           decoration: InputDecoration(
             prefixIcon: Icon(
               icon,
@@ -73,11 +74,11 @@ Widget buildSuratDisposisi(
 
   return Container(
     child: Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Logo Kabupaten Malang
         Container(
-          width: 80,
+          width: 120,
           height: 100,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
           child: ClipRRect(
@@ -117,9 +118,6 @@ Widget buildSuratDisposisi(
             ),
           ),
         ),
-
-        const SizedBox(width: 20),
-
         // Informasi Dinas
         Expanded(
           child: Column(
@@ -130,7 +128,7 @@ Widget buildSuratDisposisi(
                 data['judul'] ?? '',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   height: 1.2,
@@ -144,7 +142,7 @@ Widget buildSuratDisposisi(
                 data['alamat'] ?? '',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 8,
+                  fontSize: 12,
                   color: Colors.white,
                   height: 1.3,
                 ),
@@ -157,7 +155,7 @@ Widget buildSuratDisposisi(
                 data['telepon/laman'] ?? '',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 8,
+                  fontSize: 12,
                   color: Colors.white,
                   height: 1.3,
                 ),
@@ -170,7 +168,7 @@ Widget buildSuratDisposisi(
                 data['pos/kode'] ?? '',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  fontSize: 8,
+                  fontSize: 12,
                   color: Colors.white,
                   height: 1.3,
                 ),
@@ -804,6 +802,146 @@ Widget buildHeaderCard(Map<String, dynamic> data) {
   );
 }
 
+Widget buildHeaderCardKeluar(Map<String, dynamic> data) {
+  return Container(
+    width: double.infinity,
+    margin: EdgeInsets.only(bottom: 10),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        child: Container(
+          padding: EdgeInsets.all(25),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withValues(alpha: 0.25),
+                Colors.white.withValues(alpha: 0.1),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.3),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFF4F46E5).withValues(alpha: 0.4),
+                          blurRadius: 10,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.description_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data['klasifikasi'] ?? 'Judul Surat',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontFamily: 'Roboto',
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'No: ${data['nomor']}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withValues(alpha: 0.8),
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          getStatusColor(data['status']),
+                          getStatusColor(data['status']).withValues(alpha: 0.8),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: getStatusColor(
+                            data['status'],
+                          ).withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      data['status'],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ),
+                  Text(
+                    data['tgl_surat'],
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 14,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
 // Widget untuk Section Title
 Widget buildSectionTitle(String title) {
   return Container(
@@ -855,6 +993,36 @@ Widget buildSectionTitleDisposisi(String title) {
           title,
           style: TextStyle(
             fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+            fontFamily: 'Roboto',
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget buildSectionTitleDisposisiDesktop(String title) {
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+    child: Row(
+      children: [
+        Container(
+          width: 4,
+          height: 20,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+            ),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        SizedBox(width: 10),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.white,
             fontFamily: 'Roboto',

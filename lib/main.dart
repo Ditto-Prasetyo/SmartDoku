@@ -57,8 +57,15 @@ class SmartDoku extends StatelessWidget {
       title: 'SmartDoku',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        scrollbarTheme: ScrollbarThemeData(
+          thumbColor: WidgetStateProperty.all(Colors.white.withValues(alpha: 0.6)),
+          trackColor: WidgetStateProperty.all(Colors.white.withValues(alpha: 0.1)), 
+          trackBorderColor: WidgetStateProperty.all(Colors.transparent),
+          thickness: WidgetStateProperty.all(8  ), 
+          radius: Radius.circular(8),
+        ),
       ),
-      home: LoginPage(),
+      home: AdminDashboard(),
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone
@@ -70,18 +77,22 @@ class SmartDoku extends StatelessWidget {
         // users desktop
         // '/users/desktop/surat_permohonan': (context) => PermohonanLetterPageDesktop(),
         // '/users/desktop/surat_keluar': (context) => OutgoingLetterPageDesktop(),
-        '/users/desktop/surat_disposisi': (context) => DispositionLetterUserDesktop(),
+        '/users/desktop/surat_disposisi': (context) =>
+            DispositionLetterUserDesktop(),
         '/users/desktop/home_page': (context) => UserDashboard(),
 
         // admins and superadmins phone
-        '/admin/phones/home_page_admin_phones' : (context) => HomePageAdminPhones(),
-        '/admin/phones/surat_permohonan_page_admin' : (context) => PermohonanLetterPageAdmin(),
-        '/admin/phones/surat_keluar_page_admin' : (context) => OutgoingLetterPageAdmin(),
-        '/admin/phones/surat_disposisi_page_admin' : (context) => DispositionLetterPageAdmin(),
+        '/admin/phones/home_page_admin_phones': (context) =>
+            HomePageAdminPhones(),
+        '/admin/phones/surat_permohonan_page_admin': (context) =>
+            PermohonanLetterPageAdmin(),
+        '/admin/phones/surat_keluar_page_admin': (context) =>
+            OutgoingLetterPageAdmin(),
+        '/admin/phones/surat_disposisi_page_admin': (context) =>
+            DispositionLetterPageAdmin(),
 
         // admins and superadmins desktop
-        '/admin/desktop/home_page_admin_desktop': (context) =>
-            AdminDashboard(),
+        '/admin/desktop/home_page_admin_desktop': (context) => AdminDashboard(),
         '/admin/desktop/surat_permohonan_page_admin_desktop': (context) =>
             PermohonanLettersPageAdminDesktop(),
         '/admin/desktop/surat_keluar_page_admin_desktop': (context) =>
@@ -90,8 +101,7 @@ class SmartDoku extends StatelessWidget {
             DispositionLetterAdminDesktop(),
         '/admin/desktop/manajemen_pengguna_page': (context) =>
             UsersManagementPage(),
-        '/admin/desktop/setting_page': (context) =>
-            SettingPage(),
+        '/admin/desktop/setting_page': (context) => SettingPage(),
       },
     );
   }
