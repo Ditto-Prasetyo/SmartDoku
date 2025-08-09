@@ -538,7 +538,7 @@ Widget buildActionMenuItem({
 }
 
 // Widget HomePage
-Widget buildProfileSection(Animation<double> profileOpacityAnimation) {
+Widget buildProfileSection(Animation<double> profileOpacityAnimation, String? name, String? role) {
   return AnimatedBuilder(
     animation: profileOpacityAnimation,
     builder: (context, child) {
@@ -587,7 +587,7 @@ Widget buildProfileSection(Animation<double> profileOpacityAnimation) {
               SizedBox(height: 20),
 
               Text(
-                'Bintar The Real Sepuh',
+                name!,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -599,7 +599,7 @@ Widget buildProfileSection(Animation<double> profileOpacityAnimation) {
               SizedBox(height: 8),
 
               Text(
-                'Super User',
+                role!.toLowerCase(),
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.8),
                   fontSize: 16,

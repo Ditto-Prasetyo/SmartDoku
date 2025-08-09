@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/services/user.dart';
+import 'package:smart_doku/models/user.dart';
 import 'dart:ui';
 import 'dart:math';
 import 'package:smart_doku/utils/dialog.dart';
@@ -36,6 +38,7 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
   @override
   void initState() {
     super.initState();
+    _loadUser();
 
     // Initialize background animation
     _backgroundController = AnimationController(
@@ -109,6 +112,17 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
     } else {
       _profileController.reverse();
     }
+  }
+
+  UserService _userService = UserService();
+  UserModel? _user;
+
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+
+    setState(() {
+      _user = user;
+    });
   }
 
   @override
@@ -627,6 +641,8 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                             Flexible(
                               child: buildProfileSection(
                                 _profileOpacityAnimation,
+                                _user?.name,
+                                _user?.role
                               ),
                             ),
                         ],

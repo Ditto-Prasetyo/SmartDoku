@@ -65,6 +65,7 @@ class AuthService {
 
   Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
+    print("[DEBUG] -> [STATE] Logging out ... ");
     await prefs.remove('jwt_token');
     await prefs.remove('user');
   }

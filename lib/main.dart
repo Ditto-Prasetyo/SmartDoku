@@ -65,7 +65,7 @@ class SmartDoku extends StatelessWidget {
           radius: Radius.circular(8),
         ),
       ),
-      home: AdminDashboard(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone

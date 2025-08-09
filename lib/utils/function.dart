@@ -6,6 +6,7 @@ import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_phones.da
 import 'package:smart_doku/pages/forms/users/detail_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/services/auth.dart';
+import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/dialog.dart';
 
 // Auths Section

@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/pages/forms/admins/phones/forms_dialog.dart';
 import 'package:smart_doku/services/service.dart';
+import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
@@ -196,6 +197,7 @@ void showModernErrorDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1785,7 +1787,11 @@ void showModernLogoutDialog(
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            AuthService auth = AuthService();
+
+                            await auth.logout();
+
                             Navigator.of(context).pop();
                             Navigator.pushReplacement(
                               context,
