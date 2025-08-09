@@ -10,7 +10,7 @@ class SuratMasukModel {
   final String hal;
   final DateTime tanggal_waktu;
   final String tempat;
-  final List<dynamic> disposisi;
+  final List<dynamic> disposisi; // Bisa diganti model khusus
   final String? index;
   final String pengolah;
   final String? sifat;
@@ -62,7 +62,7 @@ class SuratMasukModel {
     required this.tl_notes_1,
     required this.tl_notes_2,
     required this.status,
-    required this.timestamp
+    required this.timestamp,
   });
 
   factory SuratMasukModel.fromJson(Map<String, dynamic> json) {
@@ -70,34 +70,34 @@ class SuratMasukModel {
       id: json['id'],
       nomor_urut: json['nomor_urut'],
       nama_surat: json['nama_surat'],
-      tanggal_diterima: json['tanggal_diterima'],
-      tanggal_surat: json['tanggal_surat'],
+      tanggal_diterima: DateTime.parse(json['tanggal_diterima']),
+      tanggal_surat: DateTime.parse(json['tanggal_surat']),
       kode: json['kode'],
       no_agenda: json['no_agenda'],
       no_surat: json['no_surat'],
       hal: json['hal'],
-      tanggal_waktu: json['tanggal_waktu'],
+      tanggal_waktu: DateTime.parse(json['tanggal_waktu']),
       tempat: json['tempat'],
       disposisi: json['disposisi'],
       index: json['index'],
       pengolah: json['pengolah'],
       sifat: json['sifat'],
       link_scan: json['link_scan'],
-      disp_1: json['disp_1'],
-      disp_2: json['disp_2'],
-      disp_3: json['disp_3'],
-      disp_4: json['disp_4'],
+      disp_1: DateTime.parse(json['disp_1']),
+      disp_2: DateTime.parse(json['disp_2']),
+      disp_3: json['disp_3'] != null ? DateTime.parse(json['disp_3']) : null,
+      disp_4: json['disp_4'] != null ? DateTime.parse(json['disp_4']) : null,
       disp_1_notes: json['disp_1_notes'],
       disp_2_notes: json['disp_2_notes'],
       disp_3_notes: json['disp_3_notes'],
       disp_4_notes: json['disp_4_notes'],
       disp_lanjut: json['disp_lanjut'],
-      tindak_lanjut_1: json['tindak_lanjut_1'],
-      tindak_lanjut_2: json['tindak_lanjut_2'],
+      tindak_lanjut_1: json['tindak_lanjut_1'] != null ? DateTime.parse(json['tindak_lanjut_1']) : null,
+      tindak_lanjut_2: json['tindak_lanjut_2'] != null ? DateTime.parse(json['tindak_lanjut_2']) : null,
       tl_notes_1: json['tl_notes_1'],
       tl_notes_2: json['tl_notes_2'],
       status: json['status'],
-      timestamp: json['timestamp']
+      timestamp: DateTime.parse(json['timestamp']),
     );
   }
 
@@ -106,34 +106,34 @@ class SuratMasukModel {
       'id': id,
       'nomor_urut': nomor_urut,
       'nama_surat': nama_surat,
-      'tanggal_diterima': tanggal_diterima,
-      'tanggal_surat': tanggal_surat,
+      'tanggal_diterima': tanggal_diterima.toIso8601String(),
+      'tanggal_surat': tanggal_surat.toIso8601String(),
       'kode': kode,
       'no_agenda': no_agenda,
       'no_surat': no_surat,
       'hal': hal,
-      'tanggal_waktu': tanggal_waktu,
+      'tanggal_waktu': tanggal_waktu.toIso8601String(),
       'tempat': tempat,
       'disposisi': disposisi,
       'index': index,
       'pengolah': pengolah,
       'sifat': sifat,
       'link_scan': link_scan,
-      'disp_1': disp_1,
-      'disp_2': disp_2,
-      'disp_3': disp_3,
-      'disp_4': disp_4,
+      'disp_1': disp_1.toIso8601String(),
+      'disp_2': disp_2.toIso8601String(),
+      'disp_3': disp_3?.toIso8601String(),
+      'disp_4': disp_4?.toIso8601String(),
       'disp_1_notes': disp_1_notes,
       'disp_2_notes': disp_2_notes,
       'disp_3_notes': disp_3_notes,
       'disp_4_notes': disp_4_notes,
       'disp_lanjut': disp_lanjut,
-      'tindak_lanjut_1': tindak_lanjut_1,
-      'tindak_lanjut_2': tindak_lanjut_2,
+      'tindak_lanjut_1': tindak_lanjut_1?.toIso8601String(),
+      'tindak_lanjut_2': tindak_lanjut_2?.toIso8601String(),
       'tl_notes_1': tl_notes_1,
       'tl_notes_2': tl_notes_2,
       'status': status,
-      'timestamp': timestamp
+      'timestamp': timestamp.toIso8601String(),
     };
   }
 }

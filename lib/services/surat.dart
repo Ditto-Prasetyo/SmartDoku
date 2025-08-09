@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
 
 class SuratMasuk {
-  Future<SuratMasukModel?> listSurat() async {
+  Future<List<SuratMasukModel>> listSurat() async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk');
     final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = prefs.getString('jwt_token');
 
     final response = await http.get(
       url,
@@ -20,11 +20,10 @@ class SuratMasuk {
     );
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      return SuratMasukModel.fromJson(data);
+      final List<dynamic> data = jsonDecode(response.body);
+      return data.map((e) => SuratMasukModel.fromJson(e)).toList();
     } else {
-      return null;
+      throw Exception('Gagal mengambil data surat masuk');
     }
   }
 
@@ -52,7 +51,7 @@ class SuratMasuk {
 }
 
 class SuratKeluar {
-  Future<SuratKeluarModel?> listSurat() async {
+  Future<List<SuratKeluarModel>> listSurat() async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/keluar');
     final prefs = await SharedPreferences.getInstance();
     final token = await prefs.getString('jwt_token');
@@ -66,11 +65,11 @@ class SuratKeluar {
     );
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      final List<dynamic> data = jsonDecode(response.body);
 
-      return SuratKeluarModel.fromJson(data);
+      return data.map((e) => SuratKeluarModel.fromJson(e)).toList();
     } else {
-      return null;
+      throw Exception('Gagal mengambil data surat keluar');
     }
   }
 
