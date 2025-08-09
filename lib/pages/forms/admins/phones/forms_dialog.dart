@@ -352,7 +352,8 @@ void showModernTambahSuratFormDialog(
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kadin']!,
                                                 label: 'Disposisi Kadin',
@@ -362,7 +363,8 @@ void showModernTambahSuratFormDialog(
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_sekdin']!,
                                                 label: 'Disposisi Sekdin',
@@ -375,7 +377,8 @@ void showModernTambahSuratFormDialog(
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kabid']!,
                                                 label: 'Disposisi Kabid',
@@ -384,7 +387,8 @@ void showModernTambahSuratFormDialog(
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kasubag']!,
                                                 label: 'Disposisi Kasubag',
@@ -1490,7 +1494,8 @@ void showModernTambahSuratMasukFormDialog(
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kadin']!,
                                                 label: 'Disposisi Kadin',
@@ -1500,7 +1505,8 @@ void showModernTambahSuratMasukFormDialog(
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_sekdin']!,
                                                 label: 'Disposisi Sekdin',
@@ -1513,7 +1519,8 @@ void showModernTambahSuratMasukFormDialog(
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kabid']!,
                                                 label: 'Disposisi Kabid',
@@ -1522,7 +1529,8 @@ void showModernTambahSuratMasukFormDialog(
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kasubag']!,
                                                 label: 'Disposisi Kasubag',
