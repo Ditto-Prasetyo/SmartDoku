@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:line_icons/line_icons.dart';
@@ -32,6 +34,8 @@ void showErrorDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
@@ -53,6 +57,7 @@ void showErrorDialog(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
+                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -185,6 +190,8 @@ void showModernErrorDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+      
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
@@ -206,6 +213,7 @@ void showModernErrorDialog(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
+                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -337,10 +345,13 @@ void showErrorDialogLengthUsername(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -491,10 +502,13 @@ void showErrorDialogLengthPassword(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -645,10 +659,13 @@ void showErrorDialogLengthEmail(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -798,10 +815,13 @@ void showErrorDialogEmailFormat(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -951,10 +971,13 @@ void showErrorDialogUsernameSpaceChecker(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1112,10 +1135,13 @@ void showErrorDialogPasswordSpaceChecker(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1273,10 +1299,13 @@ void showErrorDialogEmailSpaceChecker(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1435,10 +1464,13 @@ void showModernHomeAdminDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1627,10 +1659,13 @@ void showModernLogoutDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1818,10 +1853,13 @@ void showModernHomeDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2017,10 +2055,13 @@ void showModernActionUserDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2332,10 +2373,13 @@ void showModernActionErrorDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
