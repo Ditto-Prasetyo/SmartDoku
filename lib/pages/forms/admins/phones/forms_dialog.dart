@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:io' show Platform;
+import 'package:intl/intl.dart';
 
 void showModernTambahSuratFormDialog(
   BuildContext context,
@@ -32,6 +33,10 @@ void showModernTambahSuratFormDialog(
     'disposisi_kabid': TextEditingController(),
     'disposisi_kasubag': TextEditingController(),
     'disposisi_lanjutan': TextEditingController(),
+    'notes_disposisi_kadin': TextEditingController(),
+    'notes_disposisi_sekdin': TextEditingController(),
+    'notes_disposisi_kabid': TextEditingController(),
+    'notes_disposisi_kasubag': TextEditingController(),
     'tindak_lanjut_1': TextEditingController(),
     'tindak_lanjut_2': TextEditingController(),
     'status': TextEditingController(),
@@ -111,7 +116,9 @@ void showModernTambahSuratFormDialog(
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: accentColor.withValues(alpha: 0.4),
+                                        color: accentColor.withValues(
+                                          alpha: 0.4,
+                                        ),
                                         blurRadius: 15,
                                         spreadRadius: 2,
                                       ),
@@ -124,7 +131,7 @@ void showModernTambahSuratFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 15),
-        
+
                                 // Title
                                 Text(
                                   'Form Tambah Surat Masuk',
@@ -138,7 +145,7 @@ void showModernTambahSuratFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 8),
-        
+
                                 Text(
                                   'Lengkapi data surat masuk di bawah ini',
                                   textAlign: TextAlign.center,
@@ -180,30 +187,28 @@ void showModernTambahSuratFormDialog(
                               key: _formKey,
                               child: ScrollbarTheme(
                                 data: ScrollbarThemeData(
-                                  thumbColor: WidgetStateProperty.all(Colors.white),
+                                  thumbColor: WidgetStateProperty.all(
+                                    Colors.white,
+                                  ),
                                   thickness: WidgetStateProperty.all(6),
                                 ),
                                 child: Scrollbar(
-                                  thumbVisibility:
-                                      true, 
+                                  thumbVisibility: true,
                                   controller: _scrollController,
                                   child: SingleChildScrollView(
                                     controller: _scrollController,
-                                    padding: EdgeInsets.symmetric(horizontal: 25),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 25,
+                                    ),
                                     child: Column(
                                       children: [
                                         // Basic Info Section
                                         _buildSectionTitle('Informasi Dasar'),
                                         _buildModernTextField(
-                                          controller: controllers['surat_dari']!,
+                                          controller:
+                                              controllers['surat_dari']!,
                                           label: 'Surat Dari',
                                           icon: Icons.mail_outline_rounded,
-                                          required: true,
-                                        ),
-                                        _buildModernTextField(
-                                          controller: controllers['pengirim']!,
-                                          label: 'Pengirim',
-                                          icon: Icons.person_outline_rounded,
                                           required: true,
                                         ),
                                         _buildModernTextField(
@@ -213,25 +218,28 @@ void showModernTambahSuratFormDialog(
                                           required: true,
                                           maxLines: 2,
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Date & Time Section
                                         _buildSectionTitle('Tanggal & Waktu'),
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['diterima_tgl']!,
                                                 label: 'Tanggal Diterima',
-                                                icon: Icons.calendar_today_rounded,
+                                                icon: Icons
+                                                    .calendar_today_rounded,
                                                 required: true,
                                               ),
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['tgl_surat']!,
                                                 label: 'Tanggal Surat',
@@ -241,31 +249,31 @@ void showModernTambahSuratFormDialog(
                                             ),
                                           ],
                                         ),
-                                        _buildModernTextField(
-                                          controller: controllers['hari_tanggal']!,
-                                          label: 'Hari, Tanggal',
+                                        buildDayDateTimePickerField(
+                                          context: context,
+                                          controller:
+                                              controllers['hari_tanggal']!,
+                                          label: 'Hari, Tanggal, Waktu',
                                           icon: Icons.event_note_rounded,
-                                        ),
-                                        _buildModernTextField(
-                                          controller: controllers['waktu']!,
-                                          label: 'Waktu',
-                                          icon: Icons.access_time_rounded,
+                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['tempat']!,
                                           label: 'Tempat',
                                           icon: Icons.location_on_outlined,
+                                          required: true,
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Document Info Section
                                         _buildSectionTitle('Informasi Dokumen'),
                                         Row(
                                           children: [
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['kode']!,
+                                                controller:
+                                                    controllers['kode']!,
                                                 label: 'Kode',
                                                 icon: Icons.code_rounded,
                                                 required: true,
@@ -274,7 +282,8 @@ void showModernTambahSuratFormDialog(
                                             SizedBox(width: 15),
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['no_urut']!,
+                                                controller:
+                                                    controllers['no_urut']!,
                                                 label: 'No. Urut',
                                                 icon: Icons
                                                     .format_list_numbered_rounded,
@@ -286,71 +295,81 @@ void showModernTambahSuratFormDialog(
                                         _buildModernTextField(
                                           controller: controllers['no_surat']!,
                                           label: 'No. Surat',
-                                          icon: Icons.confirmation_number_rounded,
+                                          icon:
+                                              Icons.confirmation_number_rounded,
                                           required: true,
                                         ),
                                         Row(
                                           children: [
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['index']!,
+                                                controller:
+                                                    controllers['index']!,
                                                 label: 'Index',
-                                                icon:
-                                                    Icons.bookmark_outline_rounded,
+                                                icon: Icons
+                                                    .bookmark_outline_rounded,
                                               ),
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['sifat']!,
+                                                controller:
+                                                    controllers['sifat']!,
                                                 label: 'Sifat',
                                                 icon: Icons.security_rounded,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Process Info Section
                                         _buildSectionTitle('Informasi Proses'),
                                         _buildModernTextField(
                                           controller: controllers['disposisi']!,
                                           label: 'Disposisi',
-                                          icon: Icons.assignment_turned_in_rounded,
+                                          icon: Icons
+                                              .assignment_turned_in_rounded,
+                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['pengolah']!,
                                           label: 'Pengolah',
-                                          icon: Icons.admin_panel_settings_rounded,
+                                          icon: Icons
+                                              .admin_panel_settings_rounded,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['status']!,
                                           label: 'Status',
                                           icon: Icons.info_outline_rounded,
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Disposisi Dates Section
                                         _buildSectionTitle('Tanggal Disposisi'),
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kadin']!,
                                                 label: 'Disposisi Kadin',
                                                 icon: Icons.person_rounded,
+                                                required: true,
                                               ),
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_sekdin']!,
                                                 label: 'Disposisi Sekdin',
                                                 icon: Icons.person_2_rounded,
+                                                required: true,
                                               ),
                                             ),
                                           ],
@@ -358,7 +377,8 @@ void showModernTambahSuratFormDialog(
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kabid']!,
                                                 label: 'Disposisi Kabid',
@@ -367,7 +387,8 @@ void showModernTambahSuratFormDialog(
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kasubag']!,
                                                 label: 'Disposisi Kasubag',
@@ -376,11 +397,41 @@ void showModernTambahSuratFormDialog(
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
+                                        _buildSectionTitle('Catatan Disposisi'),
+                                        _buildModernTextField(
+                                          controller:
+                                              controllers['notes_disposisi_kadin']!,
+                                          label: 'Catatan Disposisi Kadin',
+                                          icon: Icons.sticky_note_2_rounded,
+                                        ),
+                                        _buildModernTextField(
+                                          controller:
+                                              controllers['notes_disposisi_sekdin']!,
+                                          label: 'Catatan Disposisi Sekdin',
+                                          icon: Icons.sticky_note_2_rounded,
+                                        ),
+                                        _buildModernTextField(
+                                          controller:
+                                              controllers['notes_disposisi_kabid']!,
+                                          label: 'Catatan Disposisi Kabid',
+                                          icon: Icons.sticky_note_2_rounded,
+                                        ),
+                                        _buildModernTextField(
+                                          controller:
+                                              controllers['notes_disposisi_kasubag']!,
+                                          label: 'Catatan Disposisi Kasubag',
+                                          icon: Icons.sticky_note_2_rounded,
+                                        ),
+
+                                        SizedBox(height: 20),
+
                                         // Additional Info Section
-                                        _buildSectionTitle('Informasi Tambahan'),
+                                        _buildSectionTitle(
+                                          'Informasi Tambahan',
+                                        ),
                                         _buildModernTextField(
                                           controller:
                                               controllers['disposisi_lanjutan']!,
@@ -411,9 +462,9 @@ void showModernTambahSuratFormDialog(
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Document Links Section
                                         _buildSectionTitle('Dokumen & Link'),
                                         _buildModernTextField(
@@ -421,7 +472,7 @@ void showModernTambahSuratFormDialog(
                                           label: 'Link Scan',
                                           icon: Icons.link_rounded,
                                         ),
-                                        
+
                                         SizedBox(height: 30),
                                       ],
                                     ),
@@ -430,7 +481,7 @@ void showModernTambahSuratFormDialog(
                               ),
                             ),
                           ),
-        
+
                           SizedBox(height: 10),
                           Container(
                             decoration: BoxDecoration(
@@ -459,17 +510,17 @@ void showModernTambahSuratFormDialog(
                                               .millisecondsSinceEpoch
                                               .toString(),
                                         };
-        
+
                                         // Add all controller values to the map
                                         controllers.forEach((key, controller) {
                                           newSurat[key] = controller.text;
                                         });
-        
+
                                         // Call the callback function
                                         onSuratAdded(newSurat);
-        
+
                                         Navigator.pop(context);
-        
+
                                         // Show success message
                                         ScaffoldMessenger.of(
                                           context,
@@ -481,9 +532,8 @@ void showModernTambahSuratFormDialog(
                                             backgroundColor: accentColor,
                                             behavior: SnackBarBehavior.floating,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(
-                                                10,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
                                           ),
                                         );
@@ -492,7 +542,9 @@ void showModernTambahSuratFormDialog(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: accentColor,
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -502,7 +554,8 @@ void showModernTambahSuratFormDialog(
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(Icons.save_rounded),
                                         SizedBox(width: 10),
@@ -519,7 +572,7 @@ void showModernTambahSuratFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 10),
-        
+
                                 // Cancel Button
                                 Container(
                                   width: double.infinity,
@@ -527,7 +580,9 @@ void showModernTambahSuratFormDialog(
                                     onPressed: () => Navigator.pop(context),
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -539,7 +594,8 @@ void showModernTambahSuratFormDialog(
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(Icons.close_rounded),
                                         SizedBox(width: 10),
@@ -673,7 +729,9 @@ void showModernTambahSuratKeluarFormDialog(
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: accentColor.withValues(alpha: 0.4),
+                                        color: accentColor.withValues(
+                                          alpha: 0.4,
+                                        ),
                                         blurRadius: 15,
                                         spreadRadius: 2,
                                       ),
@@ -686,7 +744,7 @@ void showModernTambahSuratKeluarFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 15),
-        
+
                                 // Title
                                 Text(
                                   'Form Tambah Surat Keluar',
@@ -700,7 +758,7 @@ void showModernTambahSuratKeluarFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 8),
-        
+
                                 Text(
                                   'Lengkapi data surat keluar di bawah ini',
                                   textAlign: TextAlign.center,
@@ -742,26 +800,29 @@ void showModernTambahSuratKeluarFormDialog(
                               key: _formKey,
                               child: ScrollbarTheme(
                                 data: ScrollbarThemeData(
-                                  thumbColor: WidgetStateProperty.all(Colors.white),
+                                  thumbColor: WidgetStateProperty.all(
+                                    Colors.white,
+                                  ),
                                   thickness: WidgetStateProperty.all(6),
                                 ),
                                 child: Scrollbar(
-                                  thumbVisibility:
-                                      true, 
+                                  thumbVisibility: true,
                                   controller: _scrollController,
                                   child: SingleChildScrollView(
                                     controller: _scrollController,
-                                    padding: EdgeInsets.symmetric(horizontal: 25),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 25,
+                                    ),
                                     child: Column(
                                       children: [
-
                                         // Document Info Section
                                         _buildSectionTitle('Informasi Dokumen'),
                                         Row(
                                           children: [
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['kode']!,
+                                                controller:
+                                                    controllers['kode']!,
                                                 label: 'Kode',
                                                 icon: Icons.qr_code_2_rounded,
                                                 required: true,
@@ -770,10 +831,11 @@ void showModernTambahSuratKeluarFormDialog(
                                             SizedBox(width: 15),
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['no_register']!,
+                                                controller:
+                                                    controllers['no_register']!,
                                                 label: 'No. Register',
-                                                icon: Icons
-                                                    .receipt_long_rounded,
+                                                icon:
+                                                    Icons.receipt_long_rounded,
                                                 required: true,
                                               ),
                                             ),
@@ -784,16 +846,17 @@ void showModernTambahSuratKeluarFormDialog(
                                         // Basic Info Section
                                         _buildSectionTitle('Informasi Dasar'),
                                         _buildModernTextField(
-                                          controller: controllers['klasifikasi']!,
+                                          controller:
+                                              controllers['klasifikasi']!,
                                           label: 'Klasifikasi',
                                           icon: Icons.category_rounded,
                                           required: true,
                                         ),
                                         _buildModernTextField(
-                                          controller: controllers['tujuan_surat']!,
+                                          controller:
+                                              controllers['tujuan_surat']!,
                                           label: 'Tujuan Surat',
                                           icon: Icons.send_rounded,
-                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['perihal']!,
@@ -802,56 +865,65 @@ void showModernTambahSuratKeluarFormDialog(
                                           required: true,
                                           maxLines: 2,
                                         ),
-                                        
+
                                         // Date & Time Section
                                         _buildSectionTitle('Tanggal & Waktu'),
-                                        _buildModernTextField(
+                                        buildDatePickerField(
+                                          context: context,
                                           controller: controllers['tgl_surat']!,
                                           label: 'Tanggal Surat',
                                           icon: Icons.date_range_rounded,
+                                          required: true,
                                         ),
                                         SizedBox(height: 20),
-                                        
+
                                         _buildSectionTitle('Sifat'),
                                         Row(
                                           children: [
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['klasifikasi_arsip']!,
-                                                label: 'Ket. Klasifikasi Keamanan \n& Akses Arsip',
+                                                controller:
+                                                    controllers['klasifikasi_arsip']!,
+                                                label:
+                                                    'Ket. Klasifikasi Keamanan \n& Akses Arsip',
                                                 icon: Icons.security_rounded,
+                                                required: true,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Process Info Section
                                         _buildSectionTitle('Informasi Proses'),
                                         _buildModernTextField(
                                           controller: controllers['pengolah']!,
                                           label: 'Pengolah',
-                                          icon: Icons.admin_panel_settings_rounded,
+                                          icon: Icons
+                                              .admin_panel_settings_rounded,
+                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['pembuat']!,
                                           label: 'Pembuat',
-                                          icon: Icons.admin_panel_settings_rounded,
+                                          icon: Icons
+                                              .admin_panel_settings_rounded,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['status']!,
                                           label: 'Status',
                                           icon: Icons.info_outline_rounded,
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Additional Info Section
-                                        _buildSectionTitle('Informasi Tambahan'),
+                                        _buildSectionTitle(
+                                          'Informasi Tambahan',
+                                        ),
                                         _buildModernTextField(
-                                          controller:
-                                              controllers['catatan']!,
+                                          controller: controllers['catatan']!,
                                           label: 'Catatan',
                                           icon: Icons.next_plan_rounded,
                                           maxLines: 2,
@@ -879,9 +951,9 @@ void showModernTambahSuratKeluarFormDialog(
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Document Links Section
                                         _buildSectionTitle('Dokumen & Link'),
                                         _buildModernTextField(
@@ -895,7 +967,8 @@ void showModernTambahSuratKeluarFormDialog(
                                               child: _buildModernTextField(
                                                 controller:
                                                     controllers['dok_dikirim_tgl']!,
-                                                label: 'Tanggal Dokumen Dikirim',
+                                                label:
+                                                    'Tanggal Dokumen Dikirim',
                                                 icon: Icons.send_rounded,
                                               ),
                                             ),
@@ -905,12 +978,13 @@ void showModernTambahSuratKeluarFormDialog(
                                                 controller:
                                                     controllers['tanda_terima']!,
                                                 label: 'Tanda Terima',
-                                                icon: Icons.receipt_long_rounded,
+                                                icon:
+                                                    Icons.receipt_long_rounded,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 30),
                                       ],
                                     ),
@@ -919,7 +993,7 @@ void showModernTambahSuratKeluarFormDialog(
                               ),
                             ),
                           ),
-        
+
                           SizedBox(height: 10),
                           Container(
                             decoration: BoxDecoration(
@@ -948,17 +1022,17 @@ void showModernTambahSuratKeluarFormDialog(
                                               .millisecondsSinceEpoch
                                               .toString(),
                                         };
-        
+
                                         // Add all controller values to the map
                                         controllers.forEach((key, controller) {
                                           newSurat[key] = controller.text;
                                         });
-        
+
                                         // Call the callback function
                                         onSuratKeluarAdded(newSurat);
-        
+
                                         Navigator.pop(context);
-        
+
                                         // Show success message
                                         ScaffoldMessenger.of(
                                           context,
@@ -970,9 +1044,8 @@ void showModernTambahSuratKeluarFormDialog(
                                             backgroundColor: accentColor,
                                             behavior: SnackBarBehavior.floating,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(
-                                                10,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
                                           ),
                                         );
@@ -981,7 +1054,9 @@ void showModernTambahSuratKeluarFormDialog(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: accentColor,
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -991,7 +1066,8 @@ void showModernTambahSuratKeluarFormDialog(
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(Icons.save_rounded),
                                         SizedBox(width: 10),
@@ -1008,7 +1084,7 @@ void showModernTambahSuratKeluarFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 10),
-        
+
                                 // Cancel Button
                                 Container(
                                   width: double.infinity,
@@ -1016,7 +1092,9 @@ void showModernTambahSuratKeluarFormDialog(
                                     onPressed: () => Navigator.pop(context),
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -1028,7 +1106,8 @@ void showModernTambahSuratKeluarFormDialog(
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(Icons.close_rounded),
                                         SizedBox(width: 10),
@@ -1091,6 +1170,10 @@ void showModernTambahSuratMasukFormDialog(
     'disposisi_kabid': TextEditingController(),
     'disposisi_kasubag': TextEditingController(),
     'disposisi_lanjutan': TextEditingController(),
+    'notes_disposisi_kadin': TextEditingController(),
+    'notes_disposisi_sekdin': TextEditingController(),
+    'notes_disposisi_kabid': TextEditingController(),
+    'notes_disposisi_kasubag': TextEditingController(),
     'tindak_lanjut_1': TextEditingController(),
     'tindak_lanjut_2': TextEditingController(),
     'status': TextEditingController(),
@@ -1117,7 +1200,10 @@ void showModernTambahSuratMasukFormDialog(
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               height: MediaQuery.of(context).size.height * 0.9,
-              width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2:size.width,
+              width:
+                  (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                  ? size.width / 2
+                  : size.width,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
@@ -1171,7 +1257,9 @@ void showModernTambahSuratMasukFormDialog(
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: accentColor.withValues(alpha: 0.4),
+                                        color: accentColor.withValues(
+                                          alpha: 0.4,
+                                        ),
                                         blurRadius: 15,
                                         spreadRadius: 2,
                                       ),
@@ -1184,7 +1272,7 @@ void showModernTambahSuratMasukFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 15),
-        
+
                                 // Title
                                 Text(
                                   'Form Tambah Surat Masuk',
@@ -1198,7 +1286,7 @@ void showModernTambahSuratMasukFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 8),
-        
+
                                 Text(
                                   'Lengkapi data surat masuk di bawah ini',
                                   textAlign: TextAlign.center,
@@ -1240,30 +1328,28 @@ void showModernTambahSuratMasukFormDialog(
                               key: _formKey,
                               child: ScrollbarTheme(
                                 data: ScrollbarThemeData(
-                                  thumbColor: WidgetStateProperty.all(Colors.white),
+                                  thumbColor: WidgetStateProperty.all(
+                                    Colors.white,
+                                  ),
                                   thickness: WidgetStateProperty.all(6),
                                 ),
                                 child: Scrollbar(
-                                  thumbVisibility:
-                                      true, 
+                                  thumbVisibility: true,
                                   controller: _scrollController,
                                   child: SingleChildScrollView(
                                     controller: _scrollController,
-                                    padding: EdgeInsets.symmetric(horizontal: 25),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 25,
+                                    ),
                                     child: Column(
                                       children: [
                                         // Basic Info Section
                                         _buildSectionTitle('Informasi Dasar'),
                                         _buildModernTextField(
-                                          controller: controllers['surat_dari']!,
+                                          controller:
+                                              controllers['surat_dari']!,
                                           label: 'Surat Dari',
                                           icon: Icons.mail_outline_rounded,
-                                          required: true,
-                                        ),
-                                        _buildModernTextField(
-                                          controller: controllers['pengirim']!,
-                                          label: 'Pengirim',
-                                          icon: Icons.person_outline_rounded,
                                           required: true,
                                         ),
                                         _buildModernTextField(
@@ -1273,25 +1359,28 @@ void showModernTambahSuratMasukFormDialog(
                                           required: true,
                                           maxLines: 2,
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Date & Time Section
                                         _buildSectionTitle('Tanggal & Waktu'),
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['diterima_tgl']!,
                                                 label: 'Tanggal Diterima',
-                                                icon: Icons.calendar_today_rounded,
+                                                icon: Icons
+                                                    .calendar_today_rounded,
                                                 required: true,
                                               ),
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['tgl_surat']!,
                                                 label: 'Tanggal Surat',
@@ -1301,31 +1390,31 @@ void showModernTambahSuratMasukFormDialog(
                                             ),
                                           ],
                                         ),
-                                        _buildModernTextField(
-                                          controller: controllers['hari_tanggal']!,
+                                        buildDayDateTimePickerField(
+                                          context: context,
+                                          controller:
+                                              controllers['hari_tanggal']!,
                                           label: 'Hari, Tanggal',
                                           icon: Icons.event_note_rounded,
-                                        ),
-                                        _buildModernTextField(
-                                          controller: controllers['waktu']!,
-                                          label: 'Waktu',
-                                          icon: Icons.access_time_rounded,
+                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['tempat']!,
                                           label: 'Tempat',
                                           icon: Icons.location_on_outlined,
+                                          required: true,
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Document Info Section
                                         _buildSectionTitle('Informasi Dokumen'),
                                         Row(
                                           children: [
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['kode']!,
+                                                controller:
+                                                    controllers['kode']!,
                                                 label: 'Kode',
                                                 icon: Icons.code_rounded,
                                                 required: true,
@@ -1334,7 +1423,8 @@ void showModernTambahSuratMasukFormDialog(
                                             SizedBox(width: 15),
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['no_urut']!,
+                                                controller:
+                                                    controllers['no_urut']!,
                                                 label: 'No. Urut',
                                                 icon: Icons
                                                     .format_list_numbered_rounded,
@@ -1346,71 +1436,82 @@ void showModernTambahSuratMasukFormDialog(
                                         _buildModernTextField(
                                           controller: controllers['no_surat']!,
                                           label: 'No. Surat',
-                                          icon: Icons.confirmation_number_rounded,
+                                          icon:
+                                              Icons.confirmation_number_rounded,
                                           required: true,
                                         ),
                                         Row(
                                           children: [
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['index']!,
+                                                controller:
+                                                    controllers['index']!,
                                                 label: 'Index',
-                                                icon:
-                                                    Icons.bookmark_outline_rounded,
+                                                icon: Icons
+                                                    .bookmark_outline_rounded,
                                               ),
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['sifat']!,
+                                                controller:
+                                                    controllers['sifat']!,
                                                 label: 'Sifat',
                                                 icon: Icons.security_rounded,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Process Info Section
                                         _buildSectionTitle('Informasi Proses'),
                                         _buildModernTextField(
                                           controller: controllers['disposisi']!,
                                           label: 'Disposisi',
-                                          icon: Icons.assignment_turned_in_rounded,
+                                          icon: Icons
+                                              .assignment_turned_in_rounded,
+                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['pengolah']!,
                                           label: 'Pengolah',
-                                          icon: Icons.admin_panel_settings_rounded,
+                                          icon: Icons
+                                              .admin_panel_settings_rounded,
+                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['status']!,
                                           label: 'Status',
                                           icon: Icons.info_outline_rounded,
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Disposisi Dates Section
                                         _buildSectionTitle('Tanggal Disposisi'),
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kadin']!,
                                                 label: 'Disposisi Kadin',
                                                 icon: Icons.person_rounded,
+                                                required: true,
                                               ),
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_sekdin']!,
                                                 label: 'Disposisi Sekdin',
                                                 icon: Icons.person_2_rounded,
+                                                required: true,
                                               ),
                                             ),
                                           ],
@@ -1418,7 +1519,8 @@ void showModernTambahSuratMasukFormDialog(
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kabid']!,
                                                 label: 'Disposisi Kabid',
@@ -1427,7 +1529,8 @@ void showModernTambahSuratMasukFormDialog(
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['disposisi_kasubag']!,
                                                 label: 'Disposisi Kasubag',
@@ -1436,11 +1539,40 @@ void showModernTambahSuratMasukFormDialog(
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
+                                        _buildSectionTitle('Catatan Disposisi'),
+                                        _buildModernTextField(
+                                          controller:
+                                              controllers['notes_disposisi_kadin']!,
+                                          label: 'Catatan Disposisi Kadin',
+                                          icon: Icons.sticky_note_2_rounded,
+                                        ),
+                                        _buildModernTextField(
+                                          controller:
+                                              controllers['notes_disposisi_sekdin']!,
+                                          label: 'Catatan Disposisi Sekdin',
+                                          icon: Icons.sticky_note_2_rounded,
+                                        ),
+                                        _buildModernTextField(
+                                          controller:
+                                              controllers['notes_disposisi_kabid']!,
+                                          label: 'Catatan Disposisi Kabid',
+                                          icon: Icons.sticky_note_2_rounded,
+                                        ),
+                                        _buildModernTextField(
+                                          controller:
+                                              controllers['notes_disposisi_kasubag']!,
+                                          label: 'Catatan Disposisi Kasubag',
+                                          icon: Icons.sticky_note_2_rounded,
+                                        ),
+                                        SizedBox(height: 20),
+
                                         // Additional Info Section
-                                        _buildSectionTitle('Informasi Tambahan'),
+                                        _buildSectionTitle(
+                                          'Informasi Tambahan',
+                                        ),
                                         _buildModernTextField(
                                           controller:
                                               controllers['disposisi_lanjutan']!,
@@ -1471,9 +1603,9 @@ void showModernTambahSuratMasukFormDialog(
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Document Links Section
                                         _buildSectionTitle('Dokumen & Link'),
                                         _buildModernTextField(
@@ -1481,7 +1613,7 @@ void showModernTambahSuratMasukFormDialog(
                                           label: 'Link Scan',
                                           icon: Icons.link_rounded,
                                         ),
-                                        
+
                                         SizedBox(height: 30),
                                       ],
                                     ),
@@ -1490,7 +1622,7 @@ void showModernTambahSuratMasukFormDialog(
                               ),
                             ),
                           ),
-        
+
                           SizedBox(height: 10),
                           Container(
                             decoration: BoxDecoration(
@@ -1519,17 +1651,17 @@ void showModernTambahSuratMasukFormDialog(
                                               .millisecondsSinceEpoch
                                               .toString(),
                                         };
-        
+
                                         // Add all controller values to the map
                                         controllers.forEach((key, controller) {
                                           newSurat[key] = controller.text;
                                         });
-        
+
                                         // Call the callback function
                                         onSuratAdded(newSurat);
-        
+
                                         Navigator.pop(context);
-        
+
                                         // Show success message
                                         ScaffoldMessenger.of(
                                           context,
@@ -1541,9 +1673,8 @@ void showModernTambahSuratMasukFormDialog(
                                             backgroundColor: accentColor,
                                             behavior: SnackBarBehavior.floating,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(
-                                                10,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
                                           ),
                                         );
@@ -1552,7 +1683,9 @@ void showModernTambahSuratMasukFormDialog(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: accentColor,
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -1562,7 +1695,8 @@ void showModernTambahSuratMasukFormDialog(
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(Icons.save_rounded),
                                         SizedBox(width: 10),
@@ -1579,7 +1713,7 @@ void showModernTambahSuratMasukFormDialog(
                                   ),
                                 ),
                                 SizedBox(height: 10),
-        
+
                                 // Cancel Button
                                 Container(
                                   width: double.infinity,
@@ -1587,7 +1721,9 @@ void showModernTambahSuratMasukFormDialog(
                                     onPressed: () => Navigator.pop(context),
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -1599,7 +1735,8 @@ void showModernTambahSuratMasukFormDialog(
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(Icons.close_rounded),
                                         SizedBox(width: 10),
@@ -1680,7 +1817,10 @@ void showModernTambahSuratKeluarFormDesktopDialog(
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
               height: MediaQuery.of(context).size.height * 0.9,
-              width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2:size.width,
+              width:
+                  (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                  ? size.width / 2
+                  : size.width,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
@@ -1734,7 +1874,9 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: accentColor.withValues(alpha: 0.4),
+                                        color: accentColor.withValues(
+                                          alpha: 0.4,
+                                        ),
                                         blurRadius: 15,
                                         spreadRadius: 2,
                                       ),
@@ -1747,7 +1889,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                   ),
                                 ),
                                 SizedBox(height: 15),
-        
+
                                 // Title
                                 Text(
                                   'Form Tambah Surat Keluar',
@@ -1761,7 +1903,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                   ),
                                 ),
                                 SizedBox(height: 8),
-        
+
                                 Text(
                                   'Lengkapi data surat keluar di bawah ini',
                                   textAlign: TextAlign.center,
@@ -1803,26 +1945,29 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                               key: _formKey,
                               child: ScrollbarTheme(
                                 data: ScrollbarThemeData(
-                                  thumbColor: WidgetStateProperty.all(Colors.white),
+                                  thumbColor: WidgetStateProperty.all(
+                                    Colors.white,
+                                  ),
                                   thickness: WidgetStateProperty.all(6),
                                 ),
                                 child: Scrollbar(
-                                  thumbVisibility:
-                                      true, 
+                                  thumbVisibility: true,
                                   controller: _scrollController,
                                   child: SingleChildScrollView(
                                     controller: _scrollController,
-                                    padding: EdgeInsets.symmetric(horizontal: 25),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 25,
+                                    ),
                                     child: Column(
                                       children: [
-
                                         // Document Info Section
                                         _buildSectionTitle('Informasi Dokumen'),
                                         Row(
                                           children: [
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['kode']!,
+                                                controller:
+                                                    controllers['kode']!,
                                                 label: 'Kode',
                                                 icon: Icons.qr_code_2_rounded,
                                                 required: true,
@@ -1831,10 +1976,11 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                             SizedBox(width: 15),
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['no_register']!,
+                                                controller:
+                                                    controllers['no_register']!,
                                                 label: 'No. Register',
-                                                icon: Icons
-                                                    .receipt_long_rounded,
+                                                icon:
+                                                    Icons.receipt_long_rounded,
                                                 required: true,
                                               ),
                                             ),
@@ -1845,16 +1991,17 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                         // Basic Info Section
                                         _buildSectionTitle('Informasi Dasar'),
                                         _buildModernTextField(
-                                          controller: controllers['klasifikasi']!,
+                                          controller:
+                                              controllers['klasifikasi']!,
                                           label: 'Klasifikasi',
                                           icon: Icons.category_rounded,
                                           required: true,
                                         ),
                                         _buildModernTextField(
-                                          controller: controllers['tujuan_surat']!,
+                                          controller:
+                                              controllers['tujuan_surat']!,
                                           label: 'Tujuan Surat',
                                           icon: Icons.send_rounded,
-                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['perihal']!,
@@ -1863,56 +2010,64 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                           required: true,
                                           maxLines: 2,
                                         ),
-                                        
+
                                         // Date & Time Section
                                         _buildSectionTitle('Tanggal & Waktu'),
-                                        _buildModernTextField(
+                                        buildDatePickerField(
+                                          context: context,
                                           controller: controllers['tgl_surat']!,
                                           label: 'Tanggal Surat',
                                           icon: Icons.date_range_rounded,
+                                          required: true,
                                         ),
                                         SizedBox(height: 20),
-                                        
+
                                         _buildSectionTitle('Sifat'),
                                         Row(
                                           children: [
                                             Expanded(
                                               child: _buildModernTextField(
-                                                controller: controllers['klasifikasi_arsip']!,
-                                                label: 'Ket. Klasifikasi Keamanan \n& Akses Arsip',
+                                                controller:
+                                                    controllers['klasifikasi_arsip']!,
+                                                label:
+                                                    'Ket. Klasifikasi Keamanan \n& Akses Arsip',
                                                 icon: Icons.security_rounded,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Process Info Section
                                         _buildSectionTitle('Informasi Proses'),
                                         _buildModernTextField(
                                           controller: controllers['pengolah']!,
                                           label: 'Pengolah',
-                                          icon: Icons.admin_panel_settings_rounded,
+                                          icon: Icons
+                                              .admin_panel_settings_rounded,
+                                          required: true,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['pembuat']!,
                                           label: 'Pembuat',
-                                          icon: Icons.admin_panel_settings_rounded,
+                                          icon: Icons
+                                              .admin_panel_settings_rounded,
                                         ),
                                         _buildModernTextField(
                                           controller: controllers['status']!,
                                           label: 'Status',
                                           icon: Icons.info_outline_rounded,
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Additional Info Section
-                                        _buildSectionTitle('Informasi Tambahan'),
+                                        _buildSectionTitle(
+                                          'Informasi Tambahan',
+                                        ),
                                         _buildModernTextField(
-                                          controller:
-                                              controllers['catatan']!,
+                                          controller: controllers['catatan']!,
                                           label: 'Catatan',
                                           icon: Icons.next_plan_rounded,
                                           maxLines: 2,
@@ -1940,9 +2095,9 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 20),
-                                        
+
                                         // Document Links Section
                                         _buildSectionTitle('Dokumen & Link'),
                                         _buildModernTextField(
@@ -1956,7 +2111,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                               child: _buildModernTextField(
                                                 controller:
                                                     controllers['dok_dikirim_tgl']!,
-                                                label: 'Tanggal Dokumen Dikirim',
+                                                label:
+                                                    'Tanggal Dokumen Dikirim',
                                                 icon: Icons.send_rounded,
                                               ),
                                             ),
@@ -1966,12 +2122,13 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                                 controller:
                                                     controllers['tanda_terima']!,
                                                 label: 'Tanda Terima',
-                                                icon: Icons.receipt_long_rounded,
+                                                icon:
+                                                    Icons.receipt_long_rounded,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        
+
                                         SizedBox(height: 30),
                                       ],
                                     ),
@@ -1980,7 +2137,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                               ),
                             ),
                           ),
-        
+
                           SizedBox(height: 10),
                           Container(
                             decoration: BoxDecoration(
@@ -2009,17 +2166,17 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                               .millisecondsSinceEpoch
                                               .toString(),
                                         };
-        
+
                                         // Add all controller values to the map
                                         controllers.forEach((key, controller) {
                                           newSurat[key] = controller.text;
                                         });
-        
+
                                         // Call the callback function
                                         onSuratKeluarAdded(newSurat);
-        
+
                                         Navigator.pop(context);
-        
+
                                         // Show success message
                                         ScaffoldMessenger.of(
                                           context,
@@ -2031,9 +2188,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                             backgroundColor: accentColor,
                                             behavior: SnackBarBehavior.floating,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(
-                                                10,
-                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
                                           ),
                                         );
@@ -2042,7 +2198,9 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: accentColor,
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -2052,7 +2210,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(Icons.save_rounded),
                                         SizedBox(width: 10),
@@ -2069,7 +2228,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                   ),
                                 ),
                                 SizedBox(height: 10),
-        
+
                                 // Cancel Button
                                 Container(
                                   width: double.infinity,
@@ -2077,7 +2236,9 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                     onPressed: () => Navigator.pop(context),
                                     style: OutlinedButton.styleFrom(
                                       foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(vertical: 15),
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(15),
                                       ),
@@ -2089,7 +2250,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                       ),
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(Icons.close_rounded),
                                         SizedBox(width: 10),
@@ -2121,7 +2283,6 @@ void showModernTambahSuratKeluarFormDesktopDialog(
     },
   );
 }
-
 
 Widget _buildSectionTitle(String title) {
   return Container(
@@ -2199,5 +2360,243 @@ Widget _buildModernTextField({
             }
           : null,
     ),
+  );
+}
+
+Widget buildDatePickerField({
+  required BuildContext context,
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  bool required = false,
+}) {
+  return Container(
+    margin: EdgeInsets.only(bottom: 15),
+    child: TextFormField(
+      controller: controller,
+      readOnly: true, // Biar ga bisa ketik manual
+      style: TextStyle(color: Colors.white, fontSize: 14),
+      decoration: _modernDecoration(label, icon, required),
+      onTap: () async {
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100),
+        );
+
+        if (pickedDate != null) {
+          String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+          controller.text = formattedDate;
+        }
+      },
+      validator: required
+          ? (value) {
+              if (value == null || value.isEmpty) {
+                return '$label wajib diisi';
+              }
+              return null;
+            }
+          : null,
+    ),
+  );
+}
+
+Widget buildTimePickerField({
+  required BuildContext context,
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  bool required = false,
+}) {
+  return Container(
+    margin: EdgeInsets.only(bottom: 15),
+    child: TextFormField(
+      controller: controller,
+      readOnly: true,
+      style: TextStyle(color: Colors.white, fontSize: 14),
+      decoration: _modernDecoration(label, icon, required),
+      onTap: () async {
+        TimeOfDay? pickedTime = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.now(),
+        );
+
+        if (pickedTime != null) {
+          final now = DateTime.now();
+          final selectedTime = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+
+          String formattedTime = DateFormat('HH:mm').format(selectedTime);
+          controller.text = formattedTime;
+        }
+      },
+      validator: required
+          ? (value) {
+              if (value == null || value.isEmpty) {
+                return '$label wajib diisi';
+              }
+              return null;
+            }
+          : null,
+    ),
+  );
+}
+
+Widget buildDayDatePickerField({
+  required BuildContext context,
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  bool required = false,
+}) {
+  return Container(
+    margin: EdgeInsets.only(bottom: 15),
+    child: TextFormField(
+      controller: controller,
+      readOnly: true,
+      style: TextStyle(color: Colors.white, fontSize: 14),
+      decoration: _modernDecoration(label, icon, required),
+      onTap: () async {
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100),
+          locale: const Locale('id', 'ID'), // Biar bahasa Indonesia
+        );
+
+        if (pickedDate != null) {
+          String formattedDay = DateFormat(
+            'EEEE',
+            'id_ID',
+          ).format(pickedDate); // Hari
+          String formattedDate = DateFormat(
+            'dd MMMM yyyy',
+            'id_ID',
+          ).format(pickedDate); // Tanggal
+          controller.text = '$formattedDay, $formattedDate';
+        }
+      },
+      validator: required
+          ? (value) {
+              if (value == null || value.isEmpty) {
+                return '$label wajib diisi';
+              }
+              return null;
+            }
+          : null,
+    ),
+  );
+}
+
+Widget buildDayDateTimePickerField({
+  required BuildContext context,
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  bool required = false,
+}) {
+  return Container(
+    margin: EdgeInsets.only(bottom: 15),
+    child: TextFormField(
+      controller: controller,
+      readOnly: true,
+      style: TextStyle(color: Colors.white, fontSize: 14),
+      decoration: _modernDecoration(label, icon, required),
+      onTap: () async {
+        // Pilih Tanggal
+        DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now(),
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100),
+          locale: const Locale('id', 'ID'),
+        );
+
+        if (pickedDate != null) {
+          // Pilih Jam
+          TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.now(),
+          );
+
+          if (pickedTime != null) {
+            final combinedDateTime = DateTime(
+              pickedDate.year,
+              pickedDate.month,
+              pickedDate.day,
+              pickedTime.hour,
+              pickedTime.minute,
+            );
+
+            String dayName = DateFormat(
+              'EEEE',
+              'id_ID',
+            ).format(combinedDateTime);
+            String datePart = DateFormat(
+              'dd MMMM yyyy',
+              'id_ID',
+            ).format(combinedDateTime);
+            String timePart = DateFormat('HH:mm').format(combinedDateTime);
+
+            controller.text = "$dayName, $datePart - $timePart";
+          }
+        }
+      },
+      validator: required
+          ? (value) {
+              if (value == null || value.isEmpty) {
+                return '$label wajib diisi';
+              }
+              return null;
+            }
+          : null,
+    ),
+  );
+}
+
+InputDecoration _modernDecoration(String label, IconData icon, bool required) {
+  return InputDecoration(
+    labelText: label + (required ? ' *' : ''),
+    labelStyle: TextStyle(
+      color: Colors.white.withValues(alpha: 0.8),
+      fontSize: 14,
+    ),
+    prefixIcon: Icon(
+      icon,
+      color: Colors.white.withValues(alpha: 0.8),
+      size: 20,
+    ),
+    filled: true,
+    fillColor: Colors.white.withValues(alpha: 0.1),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(
+        color: Colors.white.withValues(alpha: 0.3),
+        width: 1.5,
+      ),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(
+        color: Colors.white.withValues(alpha: 0.3),
+        width: 1.5,
+      ),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.white, width: 2),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.red, width: 1.5),
+    ),
+    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
   );
 }

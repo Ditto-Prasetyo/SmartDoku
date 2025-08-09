@@ -333,7 +333,7 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                         fontFamily: 'Roboto',
                       ),
                     ),
-                    onTap: () => logout(context),
+                    onTap: () => logoutDesktop(context),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),

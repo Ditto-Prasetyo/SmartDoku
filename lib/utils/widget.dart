@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/dialog.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 // Widget Surat Masuk dan Keluar
 Widget buildInputField(
@@ -64,6 +66,183 @@ Widget buildInputField(
     ],
   );
 }
+
+Widget buildDateInputField(
+  String label,
+  TextEditingController controller,
+  IconData icon,
+  BuildContext context, {
+  int maxLines = 1,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.9),
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          decoration: TextDecoration.none,
+        ),
+      ),
+      SizedBox(height: 8),
+      Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white.withValues(alpha: 0.1),
+              Colors.white.withValues(alpha: 0.05),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        child: TextField(
+          controller: controller,
+          maxLines: maxLines,
+          readOnly: true,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontFamily: 'Roboto',
+          ),
+          cursorColor: Colors.white,
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+              locale: const Locale('id', 'ID'),
+            );
+
+            if (pickedDate != null) {
+              controller.text = DateFormat(
+                'dd MMMM yyyy',
+                'id_ID',
+              ).format(pickedDate);
+            }
+          },
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              icon,
+              color: Colors.white.withValues(alpha: 0.7),
+              size: 20,
+            ),
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            hintText: 'Pilih $label',
+            hintStyle: TextStyle(
+              color: Colors.white.withValues(alpha: 0.5),
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget buildDayDateTimeInputField(
+  String label,
+  TextEditingController controller,
+  IconData icon,
+  BuildContext context, {
+  int maxLines = 1,
+}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.9),
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          decoration: TextDecoration.none,
+        ),
+      ),
+      SizedBox(height: 8),
+      Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white.withValues(alpha: 0.1),
+              Colors.white.withValues(alpha: 0.05),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        child: TextField(
+          controller: controller,
+          maxLines: maxLines,
+          readOnly: true,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontFamily: 'Roboto',
+          ),
+          cursorColor: Colors.white,
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+              locale: const Locale('id', 'ID'),
+            );
+
+            if (pickedDate != null) {
+              TimeOfDay? pickedTime = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.now(),
+              );
+
+              if (pickedTime != null) {
+                final dateTime = DateTime(
+                  pickedDate.year,
+                  pickedDate.month,
+                  pickedDate.day,
+                  pickedTime.hour,
+                  pickedTime.minute,
+                );
+
+                String dayName = DateFormat('EEEE', 'id_ID').format(dateTime);
+                String datePart = DateFormat('dd MMMM yyyy', 'id_ID').format(dateTime);
+                String timePart = DateFormat('HH:mm').format(dateTime);
+
+                controller.text = "$dayName, $datePart - $timePart";
+              }
+            }
+          },
+          decoration: InputDecoration(
+            prefixIcon: Icon(
+              icon,
+              color: Colors.white.withValues(alpha: 0.7),
+              size: 20,
+            ),
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            hintText: 'Pilih $label',
+            hintStyle: TextStyle(
+              color: Colors.white.withValues(alpha: 0.5),
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
 
 // Widget Surat Disposisi
 Widget buildSuratDisposisi(
@@ -538,7 +717,11 @@ Widget buildActionMenuItem({
 }
 
 // Widget HomePage
-Widget buildProfileSection(Animation<double> profileOpacityAnimation, String? name, String? role) {
+Widget buildProfileSection(
+  Animation<double> profileOpacityAnimation,
+  String? name,
+  String? role,
+) {
   return AnimatedBuilder(
     animation: profileOpacityAnimation,
     builder: (context, child) {
@@ -1171,7 +1354,7 @@ Color getStatusColor(String status) {
       return Colors.orange;
     case 'ditolak':
       return Colors.red;
-      case 'pending' :
+    case 'pending':
       return Colors.yellow;
     default:
       return Color(0xFF6B7280);

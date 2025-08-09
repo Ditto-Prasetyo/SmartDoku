@@ -878,7 +878,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                       ],
                                     ),
                                   ),
-                                  onTap: () => logout,
+                                  onTap: () => logout(context),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
                                   ),

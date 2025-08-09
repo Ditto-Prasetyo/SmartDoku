@@ -346,6 +346,17 @@ void logout(BuildContext context) {
   );
 }
 
+void logoutDesktop(BuildContext context) {
+  Navigator.of(context).pop();
+  showModernLogoutDesktopDialog(
+    '⚠️ Logout',
+    'Apakah Anda Yakin Ingin Keluar?',
+    Colors.orange,
+    Colors.deepOrange,
+    context,
+  );
+}
+
 void home(BuildContext context) {
   Navigator.of(context).pop();
   showModernHomeDialog(
