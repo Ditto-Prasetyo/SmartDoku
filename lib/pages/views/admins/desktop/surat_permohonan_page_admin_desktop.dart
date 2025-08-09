@@ -4,6 +4,7 @@ import 'package:line_icons/line_icons.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class PermohonanLettersPageAdminDesktop extends StatefulWidget {
   const PermohonanLettersPageAdminDesktop({super.key});
@@ -312,11 +313,11 @@ class _PermohonanLettersPageAdminDesktopState
   }
 
   void refreshEditState() {
-  setState(() {
-    // Refresh ListView setelah edit data
-    // Data suratData udah diupdate di modal
-  });
-}
+    setState(() {
+      // Refresh ListView setelah edit data
+      // Data suratData udah diupdate di modal
+    });
+  }
 
   void _navigateToPage(
     BuildContext context,
@@ -599,6 +600,36 @@ class _PermohonanLettersPageAdminDesktopState
               ),
             ),
           ),
+          
+          // Build Number items
+          Container(
+            padding: EdgeInsets.all(20),
+            child: FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return SizedBox();
+                final version = snapshot.data!.version;
+                final buildNumber = snapshot.data!.buildNumber;
+                return Column(
+                  children: [
+                    Divider(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      thickness: 1,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Version $version+$buildNumber',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 12,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -635,42 +666,90 @@ class _PermohonanLettersPageAdminDesktopState
                 children: [
                   buildSectionTitleDisposisiDesktop('Data Surat Masuk'),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFF10B981).withValues(alpha: 0.3),
-                          Color(0xFF059669).withValues(alpha: 0.2),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
-                    ),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.table_chart_rounded,
-                          color: Colors.white,
-                          size: 14,
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF10B981).withValues(alpha: 0.3),
+                                Color(0xFF059669).withValues(alpha: 0.2),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.table_chart_rounded,
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                '${suratData.length} Data',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(width: 6),
-                        Text(
-                          '${suratData.length} Data',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Roboto',
+                        SizedBox(width: 10),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF10B981).withValues(alpha: 0.3),
+                                Color(0xFF059669).withValues(alpha: 0.2),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  tambahSuratMasukDesktop(context, (newSurat) {
+                                    setState(() {
+                                      // Tambahin ke list suratData lu
+                                      suratData.add(newSurat);
+                                    });
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                
                 ],
               ),
 
@@ -707,7 +786,9 @@ class _PermohonanLettersPageAdminDesktopState
                             minWidth:
                                 MediaQuery.of(context).size.width -
                                 48, // 48 = padding * 2
-                            maxWidth: MediaQuery.of(context).size.width + (MediaQuery.of(context).size.width - 48)
+                            maxWidth:
+                                MediaQuery.of(context).size.width +
+                                (MediaQuery.of(context).size.width - 48),
                           ),
                           child: IntrinsicWidth(
                             child: Column(
@@ -1770,7 +1851,8 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 120,
                                                     child: Align(
-                                                      alignment: Alignment.centerLeft,
+                                                      alignment:
+                                                          Alignment.centerLeft,
                                                       widthFactor: 1,
                                                       child: Container(
                                                         padding:
@@ -1821,7 +1903,8 @@ class _PermohonanLettersPageAdminDesktopState
                                                             fontSize: 10,
                                                             fontWeight:
                                                                 FontWeight.w600,
-                                                            fontFamily: 'Roboto',
+                                                            fontFamily:
+                                                                'Roboto',
                                                           ),
                                                         ),
                                                       ),
@@ -1922,7 +2005,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                 context,
                                                                 index,
                                                                 suratData,
-                                                                refreshEditState
+                                                                refreshEditState,
                                                               );
                                                             },
                                                             child: Icon(

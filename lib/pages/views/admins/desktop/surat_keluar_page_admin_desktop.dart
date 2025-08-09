@@ -4,6 +4,7 @@ import 'package:line_icons/line_icons.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class OutgoingLetterPageAdminDesktop extends StatefulWidget {
   const OutgoingLetterPageAdminDesktop({super.key});
@@ -564,6 +565,36 @@ class _OutgoingLetterPageAdminDesktopState
               ),
             ),
           ),
+        
+          // Build Number items
+          Container(
+            padding: EdgeInsets.all(20),
+            child: FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return SizedBox();
+                final version = snapshot.data!.version;
+                final buildNumber = snapshot.data!.buildNumber;
+                return Column(
+                  children: [
+                    Divider(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      thickness: 1,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Version $version+$buildNumber',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 12,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -600,36 +631,82 @@ class _OutgoingLetterPageAdminDesktopState
                 children: [
                   buildSectionTitleDisposisiDesktop('Data Surat Keluar'),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFF10B981).withValues(alpha: 0.3),
-                          Color(0xFF059669).withValues(alpha: 0.2),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3),
-                        width: 1,
-                      ),
-                    ),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.table_chart_rounded,
-                          color: Colors.white,
-                          size: 14,
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                            ),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.table_chart_rounded,
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                '${suratData.length} Data',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(width: 6),
-                        Text(
-                          '${suratData.length} Data',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Roboto',
+                        SizedBox(width: 10),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF10B981).withValues(alpha: 0.3),
+                                Color(0xFF059669).withValues(alpha: 0.2),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  tambahSuratKeluarDesktop(context, (newSurat) {
+                                    setState(() {
+                                      // Tambahin ke list suratData lu
+                                      suratData.add(newSurat);
+                                    });
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -671,7 +748,9 @@ class _OutgoingLetterPageAdminDesktopState
                             minWidth:
                                 MediaQuery.of(context).size.width -
                                 48, // 48 = padding * 2
-                                maxWidth: MediaQuery.of(context).size.width + (MediaQuery.of(context).size.width - 48)
+                            maxWidth:
+                                MediaQuery.of(context).size.width +
+                                (MediaQuery.of(context).size.width - 48),
                           ),
                           child: IntrinsicWidth(
                             child: Column(
@@ -1117,8 +1196,10 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 46,
                                                     child: Text(
-                                                      surat['tujuan_surat'].isEmpty ?
-                                                          'Tidak Ada' : surat['tujuan_surat'],
+                                                      surat['tujuan_surat']
+                                                              .isEmpty
+                                                          ? 'Tidak Ada'
+                                                          : surat['tujuan_surat'],
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1144,7 +1225,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                         fontFamily: 'Roboto',
                                                       ),
                                                       softWrap: true,
-                                                      overflow: TextOverflow.clip,
+                                                      overflow:
+                                                          TextOverflow.clip,
                                                     ),
                                                   ),
                                                   // tanggal surat
@@ -1227,7 +1309,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 43,
                                                     child: Text(
-                                                      surat['catatan'].isEmpty ? 'kosong' : surat['catatan'],
+                                                      surat['catatan'].isEmpty
+                                                          ? 'kosong'
+                                                          : surat['catatan'],
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1243,7 +1327,10 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 40,
                                                     child: Text(
-                                                      surat['link_surat'].isEmpty ? 'kosong' : surat['link_surat'],
+                                                      surat['link_surat']
+                                                              .isEmpty
+                                                          ? 'kosong'
+                                                          : surat['link_surat'],
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1259,7 +1346,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 27,
                                                     child: Text(
-                                                      surat['koreksi_1'].isEmpty ? 'kosong' : surat['koreksi_1'],
+                                                      surat['koreksi_1'].isEmpty
+                                                          ? 'kosong'
+                                                          : surat['koreksi_1'],
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1275,7 +1364,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 28,
                                                     child: Text(
-                                                      surat['koreksi_2'].isEmpty ? 'kosong' : surat['koreksi_2'],
+                                                      surat['koreksi_2'].isEmpty
+                                                          ? 'kosong'
+                                                          : surat['koreksi_2'],
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1290,7 +1381,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 15,
                                                     child: Align(
-                                                      alignment: Alignment.centerLeft,
+                                                      alignment:
+                                                          Alignment.centerLeft,
                                                       widthFactor: 1,
                                                       child: Container(
                                                         padding:
@@ -1341,7 +1433,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                             fontSize: 10,
                                                             fontWeight:
                                                                 FontWeight.w600,
-                                                            fontFamily: 'Roboto',
+                                                            fontFamily:
+                                                                'Roboto',
                                                           ),
                                                         ),
                                                       ),

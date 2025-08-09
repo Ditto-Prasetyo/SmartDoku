@@ -4,6 +4,7 @@ import 'package:line_icons/line_icons.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 
 class DispositionLetterAdminDesktop extends StatefulWidget {
@@ -444,6 +445,36 @@ class _DispositionLetterAdminDesktopState
                   ),
                 ),
               ),
+            ),
+          ),
+        
+          // Build Number items
+          Container(
+            padding: EdgeInsets.all(20),
+            child: FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return SizedBox();
+                final version = snapshot.data!.version;
+                final buildNumber = snapshot.data!.buildNumber;
+                return Column(
+                  children: [
+                    Divider(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      thickness: 1,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Version $version+$buildNumber',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 12,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ],
