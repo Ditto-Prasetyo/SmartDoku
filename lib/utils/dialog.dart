@@ -1467,13 +1467,11 @@ void showModernHomeAdminDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
-      Size size = MediaQuery.of(context).size;
 
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1643,6 +1641,202 @@ void showModernHomeAdminDialog(
 
 // Every Pages Use This
 void showModernLogoutDialog(
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Error Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              accentColor.withValues(alpha: 0.8),
+                              accentColor.withValues(alpha: 0.6),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentColor.withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.warning_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.4,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 25),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.cancel),
+                              SizedBox(width: 10),
+                              Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            AuthService auth = AuthService();
+
+                            await auth.logout();
+
+                            Navigator.of(context).pop();
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginPage(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor2,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor2.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 10),
+                              Text(
+                                'Yes',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernLogoutDesktopDialog(
   String title,
   String message,
   Color accentColor,
@@ -3698,6 +3892,7 @@ void showEditSuratDialog(
   final TextEditingController haritanggalController = TextEditingController(
     text: selectedSurat['hari_tanggal'],
   );
+  final TextEditingController hariTanggalWaktuController = TextEditingController();
   final TextEditingController waktuController = TextEditingController(
     text: selectedSurat['waktu'],
   );
@@ -3893,19 +4088,21 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
+                              buildDateInputField(
                                 'Diterima Tanggal',
                                 tanggalController,
                                 Icons.event_available_rounded,
+                                context,
                                 maxLines: 1,
                               ),
 
                               SizedBox(height: 20),
 
-                              buildInputField(
+                              buildDateInputField(
                                 'Tanggal Surat',
                                 tanggalSuratController,
                                 Icons.event_note_rounded,
+                                context,
                                 maxLines: 1,
                               ),
 
@@ -3956,19 +4153,11 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
-                                'Hari / Tanggal',
-                                haritanggalController,
+                              buildDayDateTimeInputField(
+                                'Hari - Tanggal - Waktu',
+                                hariTanggalWaktuController,
                                 Icons.today_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Waktu',
-                                waktuController,
-                                Icons.access_time_rounded,
+                                context,
                                 maxLines: 1,
                               ),
 
@@ -4028,10 +4217,11 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
+                              buildDateInputField(
                                 'Disposisi Kadin',
                                 disposisikadinController,
                                 Icons.people_alt_rounded,
+                                context,
                                 maxLines: 1,
                               ),
 
@@ -4046,10 +4236,11 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
+                              buildDateInputField(
                                 'Disposisi Sekdin',
                                 disposisisekdinController,
                                 Icons.people_alt_rounded,
+                                context,
                                 maxLines: 1,
                               ),
 
@@ -4064,10 +4255,11 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
+                              buildDateInputField(
                                 'Disposisi Kabid',
                                 disposisikabidController,
                                 Icons.people_alt_rounded,
+                                context,
                                 maxLines: 1,
                               ),
 
@@ -4082,10 +4274,11 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
+                              buildDateInputField(
                                 'Disposisi Kasubag',
                                 judulController,
                                 Icons.people_alt_rounded,
+                                context,
                                 maxLines: 1,
                               ),
 
@@ -4555,10 +4748,11 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
+                              buildDateInputField(
                                 'Tanggal Surat',
                                 tglsuratController,
                                 Icons.date_range_rounded,
+                                context,
                                 maxLines: 1,
                               ),
 

@@ -363,7 +363,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                         fontFamily: 'Roboto',
                       ),
                     ),
-                    onTap: () => logout(context),
+                    onTap: () => logoutDesktop(context),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),

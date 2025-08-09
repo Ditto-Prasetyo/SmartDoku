@@ -947,7 +947,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                     ),
                                   ),
                                   onTap: () {
-                                    logout;
+                                    logout(context);
                                   },
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),

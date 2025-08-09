@@ -556,7 +556,7 @@ class _OutgoingLetterPageAdminDesktopState
                         fontFamily: 'Roboto',
                       ),
                     ),
-                    onTap: () => logout(context),
+                    onTap: () => logoutDesktop(context),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
