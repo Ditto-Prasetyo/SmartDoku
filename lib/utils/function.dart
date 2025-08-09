@@ -578,6 +578,28 @@ void tambahSuratKeluar(BuildContext context, Function(Map<String, dynamic>) onSu
   );
 }
 
+void tambahSuratMasukDesktop(BuildContext context, Function(Map<String, dynamic>) onSuratKeluarAdded) {
+  showModernTambahSuratMasukDesktopDialog(
+    'Tambah Surat Masuk',
+    'Pilih metode untuk menambahkan surat masuk baru',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    onSuratKeluarAdded
+  );
+}
+
+void tambahSuratKeluarDesktop(BuildContext context, Function(Map<String, dynamic>) onSuratKeluarAdded) {
+  showModernTambahSuratKeluarDesktopDialog(
+    'Tambah Surat Keluar',
+    'Pilih metode untuk menambahkan surat keluar baru',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    onSuratKeluarAdded
+  );
+}
+
 void hapusDokumen(
   BuildContext context,
   int index,
