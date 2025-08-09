@@ -759,7 +759,7 @@ class _OutgoingLetterPageAdminDesktopState
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 20,
-                                    vertical: 16,
+                                    vertical: 10,
                                   ),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -1721,7 +1721,7 @@ class _OutgoingLetterPageAdminDesktopState
                                 ],
                               ),
                               child: Icon(
-                                FontAwesomeIcons.envelopeCircleCheck,
+                                Icons.search,
                                 color: Colors.white,
                                 size: 24,
                               ),

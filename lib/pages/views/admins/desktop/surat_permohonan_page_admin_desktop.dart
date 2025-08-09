@@ -2202,7 +2202,7 @@ class _PermohonanLettersPageAdminDesktopState
                                 ],
                               ),
                               child: Icon(
-                                LineIcons.envelopeOpen,
+                                Icons.search,
                                 color: Colors.white,
                                 size: 24,
                               ),
