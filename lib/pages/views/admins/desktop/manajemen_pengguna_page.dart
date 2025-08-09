@@ -450,7 +450,7 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                                   Color(0xFF2563EB),
                                 ],
                                 'route':
-                                    'surat_permohonan_page_admin_phones.dart',
+                                    'tables_page_admin.dart',
                               },
                               {
                                 'icon': Icons.location_city,
@@ -459,7 +459,7 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                                   Color(0xFF10B981),
                                   Color(0xFF059669),
                                 ],
-                                'route': 'surat_keluar_page_admin_phones.dart',
+                                'route': 'tables_page_admin.dart',
                               },
                               {
                                 'icon': Icons.house_rounded,
@@ -469,7 +469,7 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                                   Color(0xFFEF4444),
                                 ],
                                 'route':
-                                    'surat_disposisi_page_admin_phones.dart',
+                                    'tables_page_admin.dart',
                               },
                               {
                                 'icon': Icons.map_outlined,
@@ -478,7 +478,7 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                                   Color(0xFF06B6D4),
                                   Color(0xFF0EA5E9),
                                 ],
-                                'route': 'support',
+                                'route': 'tables_page_admin.dart',
                               },
                               {
                                 'icon': Icons.water_drop_outlined,
@@ -487,7 +487,7 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                                   Color(0xFF22C55E),
                                   Color(0xFF16A34A),
                                 ],
-                                'route': 'support',
+                                'route': 'tables_page_admin.dart',
                               },
                               {
                                 'icon': Icons.park_rounded,
@@ -496,7 +496,7 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                                   Color(0xFF7C2D12),
                                   Color(0xFF9A3412),
                                 ],
-                                'route': 'support',
+                                'route': 'tables_page_admin.dart',
                               },
                             ];
 
@@ -506,23 +506,44 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                                   case 0:
                                     Navigator.pushNamed(
                                       context,
-                                      '/admin/phones/surat_permohonan_page_admin',
+                                      '/forms/admins/desktop/tables_page_admin',
                                     );
                                     break;
                                   case 1:
                                     Navigator.pushNamed(
                                       context,
-                                      '/admin/phones/surat_keluar_page_admin',
+                                      '/forms/admins/desktop/tables_page_admin',
                                     );
                                     break;
                                   case 2:
                                     Navigator.pushNamed(
                                       context,
-                                      '/admin/phones/surat_disposisi_page_admin',
+                                      '/forms/admins/desktop/tables_page_admin',
                                     );
                                     break;
                                   case 3:
-                                    showSupportDialog(context);
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/forms/admins/desktop/tables_page_admin',
+                                    );
+                                    break;
+                                  case 4:
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/forms/admins/desktop/tables_page_admin',
+                                    );
+                                    break;
+                                  case 5:
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/forms/admins/desktop/tables_page_admin',
+                                    );
+                                    break;
+                                  case 6:
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/forms/admins/desktop/tables_page_admin',
+                                    );
                                     break;
                                 }
                               },

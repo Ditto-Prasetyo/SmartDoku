@@ -1303,6 +1303,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                             BorderRadius.circular(
                                                               6,
                                                             ),
+                                                            border: Border.all(
+                                                              color: Colors.white,
+                                                              width: 0.2
+                                                            )
                                                       ),
                                                       child: Text(
                                                         '${index + 1}',

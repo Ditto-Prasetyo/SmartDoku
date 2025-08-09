@@ -6,16 +6,14 @@ import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-class OutgoingLetterPageAdminDesktop extends StatefulWidget {
-  const OutgoingLetterPageAdminDesktop({super.key});
+class TablesPageAdmin extends StatefulWidget {
+  const TablesPageAdmin({super.key});
 
   @override
-  State<OutgoingLetterPageAdminDesktop> createState() =>
-      _OutgoingLetterPageAdminDesktopState();
+  State<TablesPageAdmin> createState() => _TablesPageAdminState();
 }
 
-class _OutgoingLetterPageAdminDesktopState
-    extends State<OutgoingLetterPageAdminDesktop>
+class _TablesPageAdminState extends State<TablesPageAdmin>
     with TickerProviderStateMixin {
   var height, width;
 
@@ -27,7 +25,7 @@ class _OutgoingLetterPageAdminDesktopState
   late Animation<double> _cardAnimation;
 
   // Selected sidebar item
-  int _selectedIndex = 2;
+  int _selectedIndex = 4;
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -62,177 +60,34 @@ class _OutgoingLetterPageAdminDesktopState
     },
   ];
 
-  List<Map<String, dynamic>> listPengolah = [
-    {'id': 'p1', 'nama_pengolah': 'PRPB'},
-    {'id': 'p2', 'nama_pengolah': 'Perumahan'},
-    {'id': 'p3', 'nama_pengolah': 'Permukiman'},
-    {'id': 'p4', 'nama_pengolah': 'Sekretariat'},
-    {'id': 'p5', 'nama_pengolah': 'UPT Taman'},
-    {'id': 'p6', 'nama_pengolah': 'UPT PALD'},
-    {'id': 'p7', 'nama_pengolah': 'Renvapor'},
-    {'id': 'p8', 'nama_pengolah': 'UKP'},
-  ];
-
   List<Map<String, dynamic>> suratData = [
     {
       'id': '1',
-      'kode': '100.1.2',
-      'klasifikasi': 'Penyelenggaraan pemerintah daerah',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Kepala DPPKB Kab.Malang',
-      'perihal': 'Permintaan data RTLH yang telah dilakukan pada DPPKB',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'yaziq',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
+      'name': 'Muhammad Annas Bintar Putra',
+      'username': 'BintarKun123',
+      'email': '220605110105@student.uin-malang.ac.id',
+      'role': 'user',
     },
     {
       'id': '2',
-      'kode': '600.3.3.2',
-      'klasifikasi': 'Ijin Pemanfaatan Ruang',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Anita Megawati',
-      'perihal': 'KKPR Pembibitan dan Budidaya  itik/ Bebek',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'yaziq',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
+      'name': 'Moch. Minanur Rahman',
+      'username': 'Nanimz123',
+      'email': '220605110112@student.uin-malang.ac.id',
+      'role': 'user',
     },
     {
       'id': '3',
-      'kode': '600.1.15',
-      'klasifikasi': 'Pembinaan penataan bangunan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Direktur RSU Pindad',
-      'perihal': 'Surat keterangan dalam proses pengurusan SLF',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'sela',
-      'catatan': 'belum scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
+      'name': 'Muhamad Radiyudin',
+      'username': 'RadiKun123',
+      'email': '220605110120@student.uin-malang.ac.id',
+      'role': 'user',
     },
     {
       'id': '4',
-      'kode': '900.1.3',
-      'klasifikasi': 'Pelaksanaan Anggaran',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Bapak Bupati Malang',
-      'perihal': 'Usulan Rekening Perangkat Daerah',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'eko',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '5',
-      'kode': '700.1.2.5',
-      'klasifikasi': 'Data tindak lanjut temuan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Bapak Bupati Malang',
-      'perihal': 'Usulan Rekening Perangkat Daerah',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'eko',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '6',
-      'kode': '800.1.11.1',
-      'klasifikasi': 'Surat Tugas',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': '',
-      'perihal': 'Surtug melaksanakan survey KKPR',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'riski',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '7',
-      'kode': '000.3',
-      'klasifikasi': 'Pengadaan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Plh.Sekda',
-      'perihal': 'Permohonan bantuan pejabat pengadaan barang / jasa',
-      'tgl_surat': '7 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'jumik',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '8',
-      'kode': '900',
-      'klasifikasi': 'Keuangan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Plt.BKAD',
-      'perihal': 'Surat pengantar SPP dan SPM 2 (berkas)',
-      'tgl_surat': '7 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'jumik',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
+      'name': 'Anonim',
+      'username': 'Anonim123',
+      'email': 'anonim123@gmail.com',
+      'role': 'user',
     },
   ];
 
@@ -246,21 +101,6 @@ class _OutgoingLetterPageAdminDesktopState
         backgroundColor: Colors.red,
       ),
     );
-  }
-
-  String? getNamaPengolah(
-    List<String> ids,
-    List<Map<String, dynamic>> listPengolah,
-  ) {
-    if (ids.isEmpty) return null;
-
-    final idPertama = ids.first;
-    final match = listPengolah.firstWhere(
-      (e) => e['id'] == idPertama,
-      orElse: () => {},
-    );
-
-    return match['nama_pengolah'];
   }
 
   void refreshEditState() {
@@ -280,20 +120,6 @@ class _OutgoingLetterPageAdminDesktopState
     });
 
     Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
-  }
-
-  // Helper function untuk warna status (pastikan ini ada di class lu)
-  Color getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'selesai':
-        return Color(0xFF10B981); // Green
-      case 'proses':
-        return Color(0xFFF59E0B); // Orange
-      case 'ditolak':
-        return Color(0xFFEF4444); // Red
-      default:
-        return Color(0xFF6B7280); // Gray
-    }
   }
 
   @override
@@ -565,7 +391,7 @@ class _OutgoingLetterPageAdminDesktopState
               ),
             ),
           ),
-        
+
           // Build Number items
           Container(
             padding: EdgeInsets.all(20),
@@ -629,7 +455,7 @@ class _OutgoingLetterPageAdminDesktopState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  buildSectionTitleDisposisiDesktop('Data Surat Keluar'),
+                  buildSectionTitleDisposisiDesktop('Data Surat Masuk'),
                   Container(
                     child: Row(
                       children: [
@@ -640,7 +466,10 @@ class _OutgoingLetterPageAdminDesktopState
                           ),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                              colors: [
+                                Color(0xFF10B981).withValues(alpha: 0.3),
+                                Color(0xFF059669).withValues(alpha: 0.2),
+                              ],
                             ),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
@@ -664,46 +493,6 @@ class _OutgoingLetterPageAdminDesktopState
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Roboto',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 10),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(0xFF10B981).withValues(alpha: 0.3),
-                                Color(0xFF059669).withValues(alpha: 0.2),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  tambahSuratKeluarDesktop(context, (newSurat) {
-                                    setState(() {
-                                      // Tambahin ke list suratData lu
-                                      suratData.add(newSurat);
-                                    });
-                                  });
-                                },
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 24,
                                 ),
                               ),
                             ],
@@ -746,20 +535,18 @@ class _OutgoingLetterPageAdminDesktopState
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
                             minWidth:
-                                MediaQuery.of(context).size.width -
-                                48, // 48 = padding * 2
+                                MediaQuery.of(context).size.width / 2, // 240 = padding * 10
                             maxWidth:
-                                MediaQuery.of(context).size.width +
-                                (MediaQuery.of(context).size.width - 48),
+                                MediaQuery.of(context).size.width / 1.2,
                           ),
                           child: IntrinsicWidth(
                             child: Column(
                               children: [
-                                // Table Header
+                                // Header Row
                                 Container(
                                   padding: EdgeInsets.symmetric(
                                     horizontal: 20,
-                                    vertical: 16,
+                                    vertical: 10,
                                   ),
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -779,11 +566,12 @@ class _OutgoingLetterPageAdminDesktopState
                                   ),
                                   child: Row(
                                     children: [
-                                      // No
+                                      // 1. No - flex: 1
+                                      SizedBox(width: 10),
                                       SizedBox(
                                         width: 40,
                                         child: Text(
-                                          'NO',
+                                          'No',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -792,65 +580,13 @@ class _OutgoingLetterPageAdminDesktopState
                                           ),
                                         ),
                                       ),
-                                      // Kode
-                                      SizedBox(width: 20),
+
+                                      // 2. Name - flex: 200
+                                      SizedBox(width: 10),
                                       Expanded(
-                                        flex: 30,
+                                        flex: 130,
                                         child: Text(
-                                          'KODE',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // Klasifikasi
-                                      SizedBox(width: 25),
-                                      Expanded(
-                                        flex: 60,
-                                        child: Text(
-                                          'KLASIFIKASI',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // No Register
-                                      Expanded(
-                                        flex: 45,
-                                        child: Text(
-                                          'NO REGISTER',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // Tujuan Surat
-                                      Expanded(
-                                        flex: 55,
-                                        child: Text(
-                                          'TUJUAN SURAT',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // Perihal
-                                      Expanded(
-                                        flex: 45,
-                                        child: Text(
-                                          'PERIHAL',
+                                          'Name',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -860,25 +596,13 @@ class _OutgoingLetterPageAdminDesktopState
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
-                                      // Tanggal Surat
-                                      Expanded(
-                                        flex: 30,
-                                        child: Text(
-                                          'TGL\nSURAT',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                      // Klasifikasi
+
+                                      // 3. Username - flex: 100
+                                      
                                       Expanded(
                                         flex: 90,
                                         child: Text(
-                                          'KET.KLASIFIKASI \nKEAMANAN & AKSES ARSIP',
+                                          'Username',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -888,50 +612,13 @@ class _OutgoingLetterPageAdminDesktopState
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
-                                      // Pengolah
+
+                                      // 4. Email - flex: 100
+                                      SizedBox(width: 5),
                                       Expanded(
-                                        flex: 40,
+                                        flex: 120,
                                         child: Text(
-                                          'PENGOLAH',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // PEMBUAT
-                                      Expanded(
-                                        flex: 38,
-                                        child: Text(
-                                          'PEMBUAT',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // Catatan
-                                      Expanded(
-                                        flex: 22,
-                                        child: Text(
-                                          'CATATAN',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // link surat
-                                      Expanded(
-                                        flex: 70,
-                                        child: Text(
-                                          'link SURAT \nMASUK (JIKA ADA)',
+                                          'Email',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -941,48 +628,27 @@ class _OutgoingLetterPageAdminDesktopState
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
-                                      // Koreksi 1
+
+                                      // 5. Role - flex: 100
+                                      SizedBox(width: 5),
                                       Expanded(
-                                        flex: 30,
+                                        flex: 60,
                                         child: Text(
-                                          'KOREKSI 1',
+                                          'Role',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
-                                      // Koreksi 2
-                                      Expanded(
-                                        flex: 35,
-                                        child: Text(
-                                          'KOREKSI 2',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // Status
-                                      Expanded(
-                                        flex: 30,
-                                        child: Text(
-                                          'Status',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      // Actions
+
+                                      // Actions - width: 100 (fixed)
+                                      SizedBox(width: 8),
                                       SizedBox(
-                                        width: 80,
+                                        width: 100,
                                         child: Text(
                                           'Aksi',
                                           textAlign: TextAlign.center,
@@ -1011,13 +677,13 @@ class _OutgoingLetterPageAdminDesktopState
                                         return Container(
                                           padding: EdgeInsets.symmetric(
                                             horizontal: 20,
-                                            vertical: 12,
+                                            vertical: 10,
                                           ),
                                           decoration: BoxDecoration(
                                             border: Border(
                                               bottom: BorderSide(
                                                 color: Colors.white.withValues(
-                                                  alpha: 0.1,
+                                                  alpha: 1,
                                                 ),
                                                 width: 0.5,
                                               ),
@@ -1025,9 +691,8 @@ class _OutgoingLetterPageAdminDesktopState
                                           ),
                                           child: InkWell(
                                             onTap: () {
-                                              // Handle row tap
                                               print(
-                                                'Row tapped: ${surat['kode']}',
+                                                'Row tapped: ${surat['name']}',
                                               );
                                             },
                                             borderRadius: BorderRadius.circular(
@@ -1039,7 +704,7 @@ class _OutgoingLetterPageAdminDesktopState
                                               ),
                                               child: Row(
                                                 children: [
-                                                  // No
+                                                  // 1. No - width: 40 (sama kayak header)
                                                   SizedBox(
                                                     width: 40,
                                                     child: Container(
@@ -1055,12 +720,12 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 Color(
                                                                   0xFF4F46E5,
                                                                 ).withValues(
-                                                                  alpha: 0.3,
+                                                                  alpha: 0.5,
                                                                 ),
                                                                 Color(
                                                                   0xFF7C3AED,
                                                                 ).withValues(
-                                                                  alpha: 0.2,
+                                                                  alpha: 0.3,
                                                                 ),
                                                               ],
                                                             ),
@@ -1088,103 +753,71 @@ class _OutgoingLetterPageAdminDesktopState
                                                     ),
                                                   ),
 
-                                                  // kode
+                                                  // 2. name - flex: 200
                                                   SizedBox(width: 20),
                                                   Expanded(
-                                                    flex: 25,
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          surat['kode'] ?? '',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                          ),
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                      ],
+                                                    flex: 130,
+                                                    child: Text(
+                                                      surat['name'] == null ? 'Nama Tidak Ditemukan' : surat['name'],
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 13,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                          textAlign: TextAlign.center,
                                                     ),
                                                   ),
 
-                                                  // Klasifikasi
+                                                  // 3. username - flex: 100
+                                                  SizedBox(width: 0),
+                                                  Expanded(
+                                                    flex: 90,
+                                                    child: Text(
+                                                      surat['username'] == null ?
+                                                          'Username Tidak Ditemukan' : surat['username'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ),
+
+                                                  // 4. email - flex: 100
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 120,
+                                                    child: Text(
+                                                      surat['email'] == null ? 'Email Tidak Ditemukan' : surat['email'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      textAlign: TextAlign.center,
+                                                      softWrap: true,
+                                                      overflow: TextOverflow.clip,
+                                                    ),
+                                                  ),
+
+                                                  // 5. role - flex: 100
                                                   SizedBox(width: 5),
                                                   Expanded(
                                                     flex: 60,
-                                                    child: Row(
-                                                      children: [
-                                                        Container(
-                                                          padding:
-                                                              EdgeInsets.all(4),
-                                                          decoration: BoxDecoration(
-                                                            gradient:
-                                                                LinearGradient(
-                                                                  colors: [
-                                                                    Color(
-                                                                      0xFF10B981,
-                                                                    ).withValues(
-                                                                      alpha:
-                                                                          0.3,
-                                                                    ),
-                                                                    Color(
-                                                                      0xFF059669,
-                                                                    ).withValues(
-                                                                      alpha:
-                                                                          0.2,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  6,
-                                                                ),
-                                                          ),
-                                                          child: Icon(
-                                                            Icons.label,
-                                                            color: Colors.white,
-                                                            size: 12,
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 6),
-                                                        Expanded(
-                                                          child: Text(
-                                                            surat['klasifikasi'] ??
-                                                                '',
-                                                            style: TextStyle(
-                                                              color: Colors
-                                                                  .white
-                                                                  .withValues(
-                                                                    alpha: 0.8,
-                                                                  ),
-                                                              fontSize: 12,
-                                                              fontFamily:
-                                                                  'Roboto',
-                                                            ),
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-
-                                                  // Nomor Register
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 36,
                                                     child: Text(
-                                                      surat['no_register'] ??
-                                                          '',
+                                                      surat['role'] == null ? 'Role Tidak Ditemukan' : surat['role'],
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1193,260 +826,11 @@ class _OutgoingLetterPageAdminDesktopState
                                                         fontSize: 11,
                                                         fontFamily: 'Roboto',
                                                       ),
+                                                      textAlign: TextAlign.center,
                                                     ),
                                                   ),
-                                                  // tujuan surat
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 46,
-                                                    child: Text(
-                                                      surat['tujuan_surat']
-                                                              .isEmpty
-                                                          ? 'Tidak Ada'
-                                                          : surat['tujuan_surat'],
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // perihal
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 53,
-                                                    child: Text(
-                                                      surat['perihal'] ?? '',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                      softWrap: true,
-                                                      overflow:
-                                                          TextOverflow.clip,
-                                                    ),
-                                                  ),
-                                                  // tanggal surat
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 50,
-                                                    child: Text(
-                                                      surat['tgl_surat'] ?? '',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // klasifikasi dan arsip
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 50,
-                                                    child: Text(
-                                                      surat['klasifikasi_arsip'] ??
-                                                          '',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // pengolah
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 35,
-                                                    child: Text(
-                                                      // getNamaPengolah(
-                                                      //       (surat['pengolah']
-                                                      //                   as List?)
-                                                      //               ?.cast<
-                                                      //                 String
-                                                      //               >() ??
-                                                      //           [],
-                                                      //       listPengolah,
-                                                      //     ) ??
-                                                      //     '',
-                                                      "TEXT",
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // pembuat
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 32,
-                                                    child: Text(
-                                                      surat['pembuat'] ?? '',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // catatan
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 43,
-                                                    child: Text(
-                                                      surat['catatan'].isEmpty
-                                                          ? 'kosong'
-                                                          : surat['catatan'],
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // link surat
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 40,
-                                                    child: Text(
-                                                      surat['link_surat']
-                                                              .isEmpty
-                                                          ? 'kosong'
-                                                          : surat['link_surat'],
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // koreksi 1
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 27,
-                                                    child: Text(
-                                                      surat['koreksi_1'].isEmpty
-                                                          ? 'kosong'
-                                                          : surat['koreksi_1'],
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // koreksi 2
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 28,
-                                                    child: Text(
-                                                      surat['koreksi_2'].isEmpty
-                                                          ? 'kosong'
-                                                          : surat['koreksi_2'],
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  // Status
-                                                  Expanded(
-                                                    flex: 15,
-                                                    child: Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      widthFactor: 1,
-                                                      child: Container(
-                                                        padding:
-                                                            EdgeInsets.symmetric(
-                                                              horizontal: 8,
-                                                              vertical: 4,
-                                                            ),
-                                                        decoration: BoxDecoration(
-                                                          gradient: LinearGradient(
-                                                            colors: [
-                                                              getStatusColor(
-                                                                surat['status'],
-                                                              ),
-                                                              getStatusColor(
-                                                                surat['status'],
-                                                              ).withValues(
-                                                                alpha: 0.8,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                          boxShadow: [
-                                                            BoxShadow(
-                                                              color:
-                                                                  getStatusColor(
-                                                                    surat['status'],
-                                                                  ).withValues(
-                                                                    alpha: 0.3,
-                                                                  ),
-                                                              blurRadius: 4,
-                                                              offset: Offset(
-                                                                0,
-                                                                1,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        child: Text(
-                                                          surat['status'],
-                                                          softWrap: true,
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 10,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-
-                                                  // Actions
-                                                  SizedBox(width: 40),
+                                                  // Actions - width: 100 (sama kayak header)
+                                                  SizedBox(width: 8),
                                                   SizedBox(
                                                     width: 100,
                                                     child: Row(
@@ -1487,7 +871,6 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              // Handle view action
                                                               viewDetail(
                                                                 context,
                                                                 index,
@@ -1536,7 +919,6 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              // Handle edit action
                                                               editDokumen(
                                                                 context,
                                                                 index,
@@ -1582,7 +964,6 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              // Handle delete action
                                                               hapusDokumen(
                                                                 context,
                                                                 index,
@@ -1625,6 +1006,20 @@ class _OutgoingLetterPageAdminDesktopState
         ),
       ),
     );
+  }
+
+  // Helper function untuk warna status (pastikan ini ada di class lu)
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'selesai':
+        return Color(0xFF10B981); // Green
+      case 'proses':
+        return Color(0xFFF59E0B); // Orange
+      case 'ditolak':
+        return Color(0xFFEF4444); // Red
+      default:
+        return Color(0xFF6B7280); // Gray
+    }
   }
 
   @override
@@ -1681,7 +1076,7 @@ class _OutgoingLetterPageAdminDesktopState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Surat Keluar',
+                                  'Surat Masuk',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -1691,7 +1086,7 @@ class _OutgoingLetterPageAdminDesktopState
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Anda Dapat Mengatur Surat Keluar di Sini!',
+                                  'Anda Dapat Mengatur Surat Masuk di Sini!',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -1721,7 +1116,7 @@ class _OutgoingLetterPageAdminDesktopState
                                 ],
                               ),
                               child: Icon(
-                                FontAwesomeIcons.envelopeCircleCheck,
+                                LineIcons.envelopeOpen,
                                 color: Colors.white,
                                 size: 24,
                               ),
