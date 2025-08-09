@@ -521,7 +521,7 @@ class _DispositionLetterAdminDesktopState
                   Expanded(
                     child: buildSectionTitleDisposisiDesktop('Lembar Disposisi'),
                   ),
-                  buildMenuActionDisposisiAdmin(
+                  buildMenuActionDisposisiDesktopAdmin(
                     context,
                     nomorUrutController,
                     onDelete: () {
