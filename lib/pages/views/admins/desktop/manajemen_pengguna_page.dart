@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/utils/dialog.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/widget.dart';
 
 class UsersManagementPage extends StatefulWidget {
   const UsersManagementPage({super.key});
@@ -48,7 +50,7 @@ class _UsersManagementPageState extends State<UsersManagementPage>
     },
     {
       'icon': Icons.people_outline_rounded,
-      'title': 'Manajemen User',
+      'title': 'Manajemen Pengguna',
       'route': '/admin/desktop/manajemen_pengguna_page',
     },
     {
@@ -58,16 +60,16 @@ class _UsersManagementPageState extends State<UsersManagementPage>
     },
   ];
 
-  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+  void _navigateToPage(
+    BuildContext context,
+    Map<String, dynamic> item,
+    int index,
+  ) {
     setState(() {
       _selectedIndex = index;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      item['route'], 
-      (route) => false, 
-    );
+    Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
   @override
@@ -343,7 +345,6 @@ class _UsersManagementPageState extends State<UsersManagementPage>
       ),
     );
   }
-  
 
   Widget _buildRecentActivity(Animation<double> _cardAnimation) {
     return Transform.translate(
@@ -375,38 +376,204 @@ class _UsersManagementPageState extends State<UsersManagementPage>
             ],
           ),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
+              buildSectionTitleDisposisiDesktop('Manajemen Pengguna'),
+              SizedBox(height: 40),
               Text(
-                'Aktivitas Terbaru',
+                'Silahkan Pilih Pilihan Bidang Dibawah Untuk Membuka User Sesuai dari Bidang Pekerjaannya!',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                   fontFamily: 'Roboto',
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 12),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                            Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.2),
-                          ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: SizedBox(
+                        width: 800,
+                        child: GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 1.0,
+                                mainAxisSpacing: 25,
+                                crossAxisSpacing: 0,
+                              ),
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(),
+                          itemCount: 6,
+                          itemBuilder: (context, index) {
+                            List<Map<String, dynamic>> boxData = [
+                              {
+                                'icon': Icons.admin_panel_settings,
+                                'title': 'Penataan Ruang dan PB',
+                                'colors': [
+                                  Color(0xFF3B82F6),
+                                  Color(0xFF2563EB),
+                                ],
+                                'route':
+                                    'surat_permohonan_page_admin_phones.dart',
+                              },
+                              {
+                                'icon': Icons.location_city,
+                                'title': 'Perumahan',
+                                'colors': [
+                                  Color(0xFF10B981),
+                                  Color(0xFF059669),
+                                ],
+                                'route': 'surat_keluar_page_admin_phones.dart',
+                              },
+                              {
+                                'icon': Icons.house_rounded,
+                                'title': 'Permukiman',
+                                'colors': [
+                                  Color(0xFFF97316),
+                                  Color(0xFFEF4444),
+                                ],
+                                'route':
+                                    'surat_disposisi_page_admin_phones.dart',
+                              },
+                              {
+                                'icon': Icons.map_outlined,
+                                'title': 'Sekretariat',
+                                'colors': [
+                                  Color(0xFF06B6D4),
+                                  Color(0xFF0EA5E9),
+                                ],
+                                'route': 'support',
+                              },
+                              {
+                                'icon': Icons.water_drop_outlined,
+                                'title': 'UPT Pengelolaan Air Limbah Domestik',
+                                'colors': [
+                                  Color(0xFF22C55E),
+                                  Color(0xFF16A34A),
+                                ],
+                                'route': 'support',
+                              },
+                              {
+                                'icon': Icons.park_rounded,
+                                'title': 'UPT Pertamanan',
+                                'colors': [
+                                  Color(0xFF7C2D12),
+                                  Color(0xFF9A3412),
+                                ],
+                                'route': 'support',
+                              },
+                            ];
+
+                            return InkWell(
+                              onTap: () {
+                                switch (index) {
+                                  case 0:
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/admin/phones/surat_permohonan_page_admin',
+                                    );
+                                    break;
+                                  case 1:
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/admin/phones/surat_keluar_page_admin',
+                                    );
+                                    break;
+                                  case 2:
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/admin/phones/surat_disposisi_page_admin',
+                                    );
+                                    break;
+                                  case 3:
+                                    showSupportDialog(context);
+                                    break;
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                margin: EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 20,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color.fromRGBO(255, 255, 255, 0.4),
+                                      Color.fromRGBO(248, 250, 252, 0.15),
+                                      Color.fromRGBO(241, 245, 249, 0.15),
+                                      Color.fromRGBO(255, 255, 255, 0.4),
+                                    ],
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.white.withAlpha(25),
+                                      blurRadius: 8,
+                                      spreadRadius: 1,
+                                      offset: Offset(0, -4),
+                                    ),
+                                  ],
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.5),
+                                    width: 1.5,
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(16),
+                                      decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: boxData[index]['colors'],
+                                        ),
+                                        borderRadius: BorderRadius.circular(16),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: boxData[index]['colors'][0]
+                                                .withValues(alpha: 0.8),
+                                            blurRadius: 8,
+                                            offset: Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Icon(
+                                        boxData[index]['icon'],
+                                        color: Colors.white,
+                                        size: 32,
+                                      ),
+                                    ),
+                                    SizedBox(height: 12),
+                                    Text(
+                                      boxData[index]['title'],
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!, width: 1),
-                  ),
-                  child: Row(),
+                  ],
                 ),
               ),
             ],

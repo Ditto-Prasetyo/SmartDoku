@@ -46,25 +46,29 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
       'tgl_surat': baseData['tgl_surat'] ?? '28 Juli 2025',
       'kode': 'SR-2025-${baseData['id']?.toString().padLeft(3, '0') ?? '001'}',
       'no_urut': '${baseData['no_urut']?.toString() ?? '1'}/25',
-      'no_agenda': baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025' == null ? '404 Not Found' :  baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025',
-      'no_surat': baseData['no_surat'] == null ? '404 Not Found' : baseData['no_surat'],
-      'hal': baseData['perihal'] == null ? '404 Not Found' : baseData['perihal'],
-      'hari_tanggal': baseData['hari_tanggal'] == null ? '404 Not Found' : baseData['hari_tanggal'],
-      'waktu': baseData['waktu'] == null ? '404 Not Found' : baseData['waktu'],
-      'tempat': baseData['tempat'] == null ? '404 Not Found' : baseData['tempat'],
-      'disposisi': baseData['disposisi'] == null ? '404 Not Found' : baseData['disposisi'],
-      'index': 'IDX-${baseData['index']?.toString() == null ? '404 Not Found' : baseData['index']}',
-      'pengolah': baseData['pengolah'] == null ? '404 Not Found' : baseData['pengolah'],
-      'sifat': baseData['sifat'] == null ? '404 Not Found' : baseData['sifat'],
-      'link_scan': baseData['link_scan'] == null ? '404 Not Found' : baseData['link_scan'],
-      'disp_1': baseData['disposisi_kadin'] == null ? '404 Not Found' : baseData['disposisi_kadin'],
-      'disp_2': baseData['disposisi_sekdin'] == null ? '404 Not Found' : baseData['disposisi_sekdin'],
-      'disp_3': baseData['disposisi_kabid'] == null ? '404 Not Found' : baseData['disposisi_kabid'],
-      'disp_4': baseData['disposisi_kasubag'] == null ? '404 Not Found' : baseData['disposisi_kasubag'],
-      'disp_lanjutan': baseData['disposisi_lanjutan'] == null ? '404 Not Found' : baseData['disposisi_lanjutan'],
-      'tindak_lanjut_1': baseData['tindak_lanjut_1'] == null ? '404 Not Found' : baseData['tindak_lanjut_1'],
-      'tindak_lanjut_2': baseData['tindak_lanjut_2'] == null ? '404 Not Found' : baseData['tindak_lanjut_2'],
-      'status': baseData['status'] == null ? '404 Not Found' : baseData['status'],
+      'no_agenda': baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025' == null ? 'Data Kosong!' :  baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025',
+      'no_surat': baseData['no_surat'] == null ? 'Data Kosong!' : baseData['no_surat'],
+      'hal': baseData['perihal'] == null ? 'Data Kosong!' : baseData['perihal'],
+      'hari_tanggal': baseData['hari_tanggal'] == null ? 'Data Kosong!' : baseData['hari_tanggal'],
+      'waktu': baseData['waktu'] == null ? 'Data Kosong!' : baseData['waktu'],
+      'tempat': baseData['tempat'] == null ? 'Data Kosong!' : baseData['tempat'],
+      'disposisi': baseData['disposisi'] == null ? 'Data Kosong!' : baseData['disposisi'],
+      'index': 'IDX-${baseData['index']?.toString() == null ? 'Data Kosong!' : baseData['index']}',
+      'pengolah': baseData['pengolah'] == null ? 'Data Kosong!' : baseData['pengolah'],
+      'sifat': baseData['sifat'] == null ? 'Data Kosong!' : baseData['sifat'],
+      'link_scan': baseData['link_scan'] == null ? 'Data Kosong!' : baseData['link_scan'],
+      'disp_1': baseData['disposisi_kadin'] == null ? 'Data Kosong!' : baseData['disposisi_kadin'],
+      'disp_2': baseData['disposisi_sekdin'] == null ? 'Data Kosong!' : baseData['disposisi_sekdin'],
+      'disp_3': baseData['disposisi_kabid'] == null ? 'Data Kosong!' : baseData['disposisi_kabid'],
+      'disp_4': baseData['disposisi_kasubag'] == null ? 'Data Kosong!' : baseData['disposisi_kasubag'],
+      'notes_disp_1' : baseData['notes_disposisi_kadin'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kadin'],
+      'notes_disp_2' : baseData['notes_disposisi_sekdin'] == null ? 'Data Kosong!' : baseData['notes_disposisi_sekdin'],
+      'notes_disp_3' : baseData['notes_disposisi_kabid'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kabid'],
+      'notes_disp_4' : baseData['notes_disposisi_kasubag'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kasubag'],
+      'disp_lanjutan': baseData['disposisi_lanjutan'] == null ? 'Data Kosong!' : baseData['disposisi_lanjutan'],
+      'tindak_lanjut_1': baseData['tindak_lanjut_1'] == null ? 'Data Kosong!' : baseData['tindak_lanjut_1'],
+      'tindak_lanjut_2': baseData['tindak_lanjut_2'] == null ? 'Data Kosong!' : baseData['tindak_lanjut_2'],
+      'status': baseData['status'] == null ? 'Data Kosong!' : baseData['status'],
     };
   }
 
@@ -622,41 +626,41 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildSectionTitle('Informasi Dasar'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Nomor', detailData['nomor']),
+                            buildDetailRow('Nomor', detailData['nomor'] == null ? 'Data Kosong!' : detailData['nomor']),
                             buildDetailRow(
                               'Surat Dari',
-                              detailData['surat_dari'],
+                              detailData['surat_dari'] == null ? 'Data Kosong!' : detailData['surat_dari'],
                             ),
                             buildDetailRow(
                               'Diterima Tanggal',
-                              detailData['diterima_tgl'],
+                              detailData['diterima_tgl'] == null ? 'Data Kosong!' : detailData['diterima_tgl'],
                             ),
                             buildDetailRow(
                               'Tanggal Surat',
-                              detailData['tgl_surat'],
+                              detailData['tgl_surat'] == null ? 'Data Kosong!' : detailData['tgl_surat'],
                             ),
-                            buildDetailRow('Kode', detailData['kode']),
-                            buildDetailRow('No. Urut', detailData['no_urut']),
+                            buildDetailRow('Kode', detailData['kode'] == null ? 'Data Kosong!' : detailData['kode']),
+                            buildDetailRow('No. Urut', detailData['no_urut'] == null ? 'Data Kosong!' : detailData['no_urut']),
                           ]),
 
                           SizedBox(height: 20),
 
                           // Document Information Section
-                          buildSectionTitle('Informasi Dokumen'),
+                          buildSectionTitle('Informasi Surat'),
                           SizedBox(height: 15),
                           buildInfoCard([
                             buildDetailRow(
                               'No. Agenda',
-                              detailData['no_agenda'],
+                              detailData['no_agenda'] == null ? 'Data Kosong!' : detailData['no_agenda'],
                             ),
-                            buildDetailRow('No. Surat', detailData['no_surat']),
-                            buildDetailRow('Hal', detailData['hal']),
+                            buildDetailRow('No. Surat', detailData['no_surat'] == null ? 'Data Kosong!' : detailData['no_surat']),
+                            buildDetailRow('Hal', detailData['hal'] == null ? 'Data Kosong!' : detailData['hal']),
                             buildDetailRow(
                               'Hari/Tanggal',
-                              detailData['hari_tanggal'] ?? '',
+                              detailData['hari_tanggal'] == null ? 'Data Kosong!' : detailData['hari_tanggal'],
                             ),
-                            buildDetailRow('Waktu', detailData['waktu']),
-                            buildDetailRow('Tempat', detailData['tempat']),
+                            buildDetailRow('Waktu', detailData['waktu'] == null ? 'Data Kosong!' : detailData['waktu']),
+                            buildDetailRow('Tempat', detailData['tempat'] == null ? 'Data Kosong!' : detailData['tempat']),
                           ]),
 
                           SizedBox(height: 20),
@@ -667,19 +671,19 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildInfoCard([
                             buildDetailRow(
                               'Disposisi',
-                              detailData['disposisi'] ?? '404 Not Found',
+                              detailData['disposisi'] == null ? 'Data Kosong!' : detailData['disposisi'],
                             ),
                             buildDetailRow('Index', detailData['index']),
-                            buildDetailRow('Pengolah', detailData['pengolah']),
+                            buildDetailRow('Pengolah', detailData['pengolah'] == null ? 'Data Kosong!' : detailData['pengolah']),
                             buildDetailRow(
                               'Sifat',
                               detailData['sifat'],
                               isStatus: true,
-                              statusColor: getSifatColor(detailData['sifat']),
+                              statusColor: getSifatColor(detailData['sifat'] == null ? 'Data Kosong!' : detailData['sifat']),
                             ),
                             buildDetailRow(
                               'Link Scan',
-                              detailData['link_scan'],
+                              detailData['link_scan'] == null ? 'Data Kosong!' : detailData['link_scan'],
                               isLink: true,
                             ),
                           ]),
@@ -692,23 +696,47 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildInfoCard([
                             buildDetailRow(
                               'Disposisi Kadin',
-                              detailData['disp_1'],
+                              detailData['disp_1'] == null ? 'Data Kosong!' : detailData['disp_1'],
                             ),
                             buildDetailRow(
                               'Disposisi Sekdin',
-                              detailData['disp_2'],
+                              detailData['disp_2'] == null ? 'Data Kosong!' : detailData['disp_2'],
                             ),
                             buildDetailRow(
                               'Disposisi Kabid / KaUPT',
-                              detailData['disp_3'],
+                              detailData['disp_3'] == null ? 'Data Kosong!' : detailData['disp_3'],
                             ),
                             buildDetailRow(
                               'Disposisi Kasubag / Kasi',
-                              detailData['disp_4'],
+                              detailData['disp_4'] == null ? 'Data Kosong!' : detailData['disp_4'],
+                            ),
+                          ]),
+
+                          SizedBox(height: 20),
+
+                          // Disposition Notes Section
+                          buildSectionTitle('Catatan Disposisi'),
+                          SizedBox(height: 15),
+                          buildInfoCard([
+                            buildDetailRow(
+                              'Catatan Disposisi Kadin',
+                              detailData['notes_disp_1'] == null ? 'Data Kosong!' : detailData['notes_disp_1'],
+                            ),
+                            buildDetailRow(
+                              'Catatan Disposisi Sekdin',
+                              detailData['notes_disp_2'] == null ? 'Data Kosong!' : detailData['notes_disp_2'],
+                            ),
+                            buildDetailRow(
+                              'Catatan Disposisi Kabid / KaUPT',
+                              detailData['notes_disp_3'] == null ? 'Data Kosong!' : detailData['notes_disp_3'],
+                            ),
+                            buildDetailRow(
+                              'Catatan Disposisi Kasubag / Kasi',
+                              detailData['notes_disp_4'] == null ? 'Data Kosong!' : detailData['notes_disp_4'],
                             ),
                             buildDetailRow(
                               'Disposisi Lanjutan',
-                              detailData['disp_lanjutan'],
+                              detailData['disp_lanjutan'] == null ? 'Data Kosong!' : detailData['disp_lanjutan'],
                             ),
                           ]),
 
@@ -720,17 +748,17 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildInfoCard([
                             buildDetailRow(
                               'Tindak Lanjut 1',
-                              detailData['tindak_lanjut_1'],
+                              detailData['tindak_lanjut_1'] == null ? 'Data Kosong!' : detailData['tindak_lanjut_1'],
                             ),
                             buildDetailRow(
                               'Tindak Lanjut 2',
-                              detailData['tindak_lanjut_2'],
+                              detailData['tindak_lanjut_2'] == null ? 'Data Kosong!' : detailData['tindak_lanjut_2'],
                             ),
                             buildDetailRow(
                               'Status',
-                              detailData['status'],
+                              detailData['status'] == null ? 'Data Kosong!' : detailData['status'],
                               isStatus: true,
-                              statusColor: getStatusColor(detailData['status']),
+                              statusColor: getStatusColor(detailData['status'] == null ? 'Data Kosong!' : detailData['status']),
                             ),
                           ]),
 
@@ -742,22 +770,22 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildInfoCard([
                             buildDetailRow(
                               'Dokumen Final',
-                              detailData['dokumen_final'],
+                              detailData['dokumen_final'] == null ? 'Data Kosong!' : detailData['dokumen_final'],
                             ),
                             buildDetailRow(
                               'Dokumen Dikirim',
-                              detailData['dokumen_dikirim'],
+                              detailData['dokumen_dikirim'] == null ? 'Data Kosong!' : detailData['dokumen_dikirim'],
                               isStatus: true,
                               statusColor: getYesNoColor(
-                                detailData['dokumen_dikirim'],
+                                detailData['dokumen_dikirim'] == null ? 'Data Kosong!' : detailData['dokumen_dikirim'],
                               ),
                             ),
                             buildDetailRow(
                               'Tanda Terima',
-                              detailData['tanda_terima'],
+                              detailData['tanda_terima'] == null ? 'Data Kosong!' : detailData['tanda_terima'],
                               isStatus: true,
                               statusColor: getTandaTerimaColor(
-                                detailData['tanda_terima'],
+                                detailData['tanda_terima'] == null ? 'Data Kosong!' : detailData['tanda_terima'],
                               ),
                             ),
                           ]),

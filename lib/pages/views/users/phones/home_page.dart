@@ -211,7 +211,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   sigmaX: 15,
                                   sigmaY: 15,
                                 ),
-                                child: Container(                               
+                                child: Container(
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.asset(
@@ -623,7 +623,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                           ),
 
                           if (_showProfileContent)
-                            Flexible(child: buildProfileSection(_profileOpacityAnimation)),
+                            Flexible(
+                              child: buildProfileSection(
+                                _profileOpacityAnimation,
+                              ),
+                            ),
                         ],
                       ),
                     );
@@ -638,10 +642,10 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color.fromRGBO(255, 255, 255, 0.7),
-                          Color.fromRGBO(248, 250, 252, 0.4),
-                          Color.fromRGBO(241, 245, 249, 0.4),
-                          Color.fromRGBO(255, 255, 255, 0.7),
+                          Color.fromRGBO(255, 255, 255, 0.2),
+                          Color.fromRGBO(248, 250, 252, 0.05),
+                          Color.fromRGBO(241, 245, 249, 0.05),
+                          Color.fromRGBO(255, 255, 255, 0.2),
                         ],
                       ),
                       borderRadius: BorderRadius.only(
@@ -650,16 +654,10 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          blurRadius: 100,
-                          spreadRadius: -5,
+                          color: Colors.white.withValues(alpha: 0.1),
+                          blurRadius: 8,
+                          spreadRadius: 1,
                           offset: Offset(0, -10),
-                        ),
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 15,
-                          spreadRadius: -8,
-                          offset: Offset(0, 5),
                         ),
                       ],
                     ),
@@ -699,7 +697,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   boxShadow: [
                                     BoxShadow(
                                       color: Colors.white.withValues(
-                                        alpha: 0.8,
+                                        alpha: 0.6,
                                       ),
                                       blurRadius: 4,
                                       offset: Offset(0, -5),
@@ -738,7 +736,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                   crossAxisSpacing: 0,
                                 ),
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: BouncingScrollPhysics(),
                             itemCount: 4,
                             itemBuilder: (context, index) {
                               List<Map<String, dynamic>> boxData = [
@@ -798,9 +796,11 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       );
                                       break;
                                     case 2:
-                                      // Navigate ke Surat Disposisi Page                                  
-                                      Navigator.pushNamed(context, 
-                                      '/users/phone/surat_disposisi',);
+                                      // Navigate ke Surat Disposisi Page
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/users/phone/surat_disposisi',
+                                      );
                                       break;
                                     case 3:
                                       // Upload File functionality
@@ -815,31 +815,26 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                     horizontal: 20,
                                   ),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
                                     gradient: LinearGradient(
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
                                       colors: [
-                                        Colors.white,
-                                        Color.fromRGBO(248, 250, 252, 0.8),
+                                        Color.fromRGBO(255, 255, 255, 0.2),
+                                        Color.fromRGBO(248, 250, 252, 0.05),
+                                        Color.fromRGBO(241, 245, 249, 0.05),
+                                        Color.fromRGBO(255, 255, 255, 0.2),
                                       ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Colors.white.withAlpha(150),
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.3,
-                                        ),
+                                        color: Colors.white.withAlpha(25),
                                         blurRadius: 8,
-                                        spreadRadius: -2,
-                                        offset: Offset(-2, -6),
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: 0.8,
-                                        ),
-                                        blurRadius: 12,
-                                        spreadRadius: -3,
-                                        offset: Offset(3, 5),
+                                        spreadRadius: 1,
+                                        offset: Offset(0, -4),
                                       ),
                                     ],
                                   ),
@@ -879,7 +874,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                         style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w600,
-                                          color: Color(0xFF374151),
+                                          color: Colors.white,
                                           fontFamily: 'Roboto',
                                         ),
                                         textAlign: TextAlign.center,

@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/widget.dart';
 
 class PermohonanLettersPageAdminDesktop extends StatefulWidget {
   const PermohonanLettersPageAdminDesktop({super.key});
@@ -50,7 +51,7 @@ class _PermohonanLettersPageAdminDesktopState
     },
     {
       'icon': Icons.people_outline_rounded,
-      'title': 'Manajemen User',
+      'title': 'Manajemen Pengguna',
       'route': '/admin/desktop/manajemen_pengguna_page',
     },
     {
@@ -623,14 +624,6 @@ class _PermohonanLettersPageAdminDesktopState
             ),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: Colors.white.withAlpha(150)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withAlpha(25),
-                blurRadius: 8,
-                spreadRadius: 1,
-                offset: Offset(0, -4),
-              ),
-            ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -640,15 +633,7 @@ class _PermohonanLettersPageAdminDesktopState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Aktivitas Terbaru',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontFamily: 'Roboto',
-                    ),
-                  ),
+                  buildSectionTitleDisposisiDesktop('Data Surat Masuk'),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
@@ -685,6 +670,7 @@ class _PermohonanLettersPageAdminDesktopState
                       ],
                     ),
                   ),
+                
                 ],
               ),
 
@@ -703,8 +689,8 @@ class _PermohonanLettersPageAdminDesktopState
                           end: Alignment.bottomRight,
                           colors: [
                             Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.1),
+                            Colors.white.withValues(alpha: 0.05),
+                            Colors.white.withValues(alpha: 0.05),
                             Colors.white.withValues(alpha: 0.2),
                           ],
                         ),
@@ -735,8 +721,8 @@ class _PermohonanLettersPageAdminDesktopState
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
-                                        Colors.white.withValues(alpha: 0.15),
-                                        Colors.white.withValues(alpha: 0.08),
+                                        Colors.white.withValues(alpha: 0.20),
+                                        Colors.white.withValues(alpha: 0.10),
                                       ],
                                     ),
                                     border: Border(
@@ -767,7 +753,7 @@ class _PermohonanLettersPageAdminDesktopState
                                       // 2. Surat dari - flex: 200
                                       SizedBox(width: 20),
                                       Expanded(
-                                        flex: 200,
+                                        flex: 170,
                                         child: Text(
                                           'Surat Dari',
                                           style: TextStyle(
@@ -776,28 +762,30 @@ class _PermohonanLettersPageAdminDesktopState
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
 
                                       // 3. Diterima TGL - flex: 100
                                       SizedBox(width: 8),
                                       Expanded(
-                                        flex: 100,
+                                        flex: 130,
                                         child: Text(
-                                          'Diterima TGL',
+                                          'Diterima \nTGL',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
 
                                       // 4. Tanggal Surat - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 100,
+                                        flex: 110,
                                         child: Text(
                                           'TGL Surat',
                                           style: TextStyle(
@@ -812,7 +800,7 @@ class _PermohonanLettersPageAdminDesktopState
                                       // 5. Kode - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 100,
+                                        flex: 90,
                                         child: Text(
                                           'Kode',
                                           style: TextStyle(
@@ -857,7 +845,7 @@ class _PermohonanLettersPageAdminDesktopState
                                       // 8. No Surat - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 70,
+                                        flex: 60,
                                         child: Text(
                                           'No \nSurat',
                                           style: TextStyle(
@@ -870,9 +858,8 @@ class _PermohonanLettersPageAdminDesktopState
                                       ),
 
                                       // 9. Perihal - flex: 200
-                                      SizedBox(width: 5),
                                       Expanded(
-                                        flex: 230,
+                                        flex: 240,
                                         child: Text(
                                           'Perihal',
                                           style: TextStyle(
@@ -881,6 +868,7 @@ class _PermohonanLettersPageAdminDesktopState
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
 
@@ -898,6 +886,7 @@ class _PermohonanLettersPageAdminDesktopState
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Roboto',
                                             ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),
@@ -958,7 +947,7 @@ class _PermohonanLettersPageAdminDesktopState
 
                                       // 14. Index - flex: 100
                                       Expanded(
-                                        flex: 100,
+                                        flex: 80,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -975,7 +964,7 @@ class _PermohonanLettersPageAdminDesktopState
 
                                       // 15. Pengolah - flex: 100
                                       Expanded(
-                                        flex: 100,
+                                        flex: 80,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -986,13 +975,14 @@ class _PermohonanLettersPageAdminDesktopState
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Roboto',
                                             ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),
 
                                       // 16. Sifat - flex: 100
                                       Expanded(
-                                        flex: 100,
+                                        flex: 140,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -1003,6 +993,7 @@ class _PermohonanLettersPageAdminDesktopState
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Roboto',
                                             ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),
@@ -1018,12 +1009,13 @@ class _PermohonanLettersPageAdminDesktopState
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
 
                                       // 18. Disposisi Kadin - flex: 100
                                       Expanded(
-                                        flex: 100,
+                                        flex: 90,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -1034,13 +1026,14 @@ class _PermohonanLettersPageAdminDesktopState
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Roboto',
                                             ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),
 
                                       // 19. Disposisi Sekdin - flex: 100
                                       Expanded(
-                                        flex: 100,
+                                        flex: 110,
                                         child: Text(
                                           'Disposisi \nSekdin',
                                           style: TextStyle(
@@ -1049,28 +1042,30 @@ class _PermohonanLettersPageAdminDesktopState
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
 
                                       // 20. Disposisi Kabid - flex: 100
                                       Expanded(
-                                        flex: 100,
+                                        flex: 80,
                                         child: Text(
-                                          'Disposisi\nKabid/KaUPT',
+                                          'Disposisi\nKabid/ \nKaUPT',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                             fontFamily: 'Roboto',
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
 
                                       // 21. Disposisi Kasubag - flex: 100
                                       Expanded(
-                                        flex: 100,
+                                        flex: 140,
                                         child: Text(
-                                          'Disposisi \nKasubag/Kasi',
+                                          'Disposisi \nKasubag/ \nKasi',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -1079,12 +1074,13 @@ class _PermohonanLettersPageAdminDesktopState
                                           ),
                                           softWrap: true,
                                           overflow: TextOverflow.visible,
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
 
                                       // 22. Disposisi Lanjutan - flex: 200
                                       Expanded(
-                                        flex: 130,
+                                        flex: 120,
                                         child: Text(
                                           'Disposisi \nLanjutan',
                                           style: TextStyle(
@@ -1100,7 +1096,7 @@ class _PermohonanLettersPageAdminDesktopState
                                       Expanded(
                                         flex: 100,
                                         child: Text(
-                                          'Tindak Lanjut 1',
+                                          'Tindak \nLanjut 1',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
@@ -1114,7 +1110,7 @@ class _PermohonanLettersPageAdminDesktopState
                                       Expanded(
                                         flex: 110,
                                         child: Text(
-                                          'Tindak Lanjut 2',
+                                          'Tindak \nLanjut 2',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14,
