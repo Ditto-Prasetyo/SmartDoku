@@ -262,10 +262,12 @@ class _DispositionLetterAdminDesktopState
                       ),
                     ),
                   ),
-                  child: Icon(
-                    Icons.admin_panel_settings_rounded,
+                  child: Image.asset(
+                    'images/Icon_App.png',
+                    width: 180,
+                    height: 180,
+                    fit: BoxFit.cover,
                     color: Colors.white,
-                    size: 28,
                   ),
                 ),
                 SizedBox(width: 15),

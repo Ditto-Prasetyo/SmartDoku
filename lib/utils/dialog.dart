@@ -6186,6 +6186,97 @@ void showDetailActionMenuDisposisiDesktopAdmin(
   );
 }
 
+void showDetailActionMenuDisposisiDesktopUser(
+  BuildContext context,
+  VoidCallback onDelete,
+  TextEditingController nomorUrutController, {
+  Function(String)? onEditSave, // Tambahin parameter callback
+  String? currentNomorUrut, // Tambahin current value
+}) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (context) => BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+      child: Container(
+        margin: EdgeInsets.all(10),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        'Menu',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Edit Button 
+                      buildActionMenuItem(
+                        icon: Icons.edit_rounded,
+                        title: 'Edit Isi Disposisi',
+                        subtitle: 'Edit Nomor Urut untuk melihat preview disposisi',
+                        color: Color(0xFFFACC15),
+                        onTap: () {
+                          Navigator.pop(context);
+
+                          showEditDisposisiDesktop(
+                            context,
+                            nomorUrutController,
+                            onSave: onEditSave,
+                            currentValue:
+                                currentNomorUrut, 
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+
 void showEditDisposisi(
   BuildContext context,
   TextEditingController controller, {

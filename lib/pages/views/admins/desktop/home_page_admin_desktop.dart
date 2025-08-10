@@ -91,16 +91,16 @@ class _AdminDashboardState extends State<AdminDashboard>
     },
   ];
 
-  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+  void _navigateToPage(
+    BuildContext context,
+    Map<String, dynamic> item,
+    int index,
+  ) {
     setState(() {
       _selectedIndex = index;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      item['route'], 
-      (route) => false, 
-    );
+    Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
   @override
@@ -187,10 +187,12 @@ class _AdminDashboardState extends State<AdminDashboard>
                       ),
                     ),
                   ),
-                  child: Icon(
-                    Icons.admin_panel_settings_rounded,
+                  child: Image.asset(
+                    'images/Icon_App.png',
+                    width: 180,
+                    height: 180,
+                    fit: BoxFit.cover,
                     color: Colors.white,
-                    size: 28,
                   ),
                 ),
                 SizedBox(width: 15),
@@ -372,7 +374,7 @@ class _AdminDashboardState extends State<AdminDashboard>
               ),
             ),
           ),
-        
+
           // Build Number items
           Container(
             padding: EdgeInsets.all(20),
@@ -406,7 +408,6 @@ class _AdminDashboardState extends State<AdminDashboard>
       ),
     );
   }
-  
 
   Widget _buildStatsCard(Map<String, dynamic> data, int index) {
     return AnimatedBuilder(
@@ -419,21 +420,36 @@ class _AdminDashboardState extends State<AdminDashboard>
             child: InkWell(
               onTap: () {
                 switch (index) {
-                case 0:
-                  Navigator.pushNamed(context, '/admin/desktop/surat_permohonan_page_admin_desktop');
-                  break;
-                case 1:
-                  Navigator.pushNamed(context, '/admin/desktop/surat_keluar_page_admin_desktop');
-                  break;
-                case 2:
-                  Navigator.pushNamed(context, '/admin/desktop/manajemen_pengguna_page');
-                  break;
-                case 3:
-                  Navigator.pushNamed(context, '/admin/desktop/manajemen_pengguna_page');
-                  break;
-                default:
-                  Navigator.pushNamed(context, '/admin/desktop/home_page_admin_desktop');
-              }
+                  case 0:
+                    Navigator.pushNamed(
+                      context,
+                      '/admin/desktop/surat_permohonan_page_admin_desktop',
+                    );
+                    break;
+                  case 1:
+                    Navigator.pushNamed(
+                      context,
+                      '/admin/desktop/surat_keluar_page_admin_desktop',
+                    );
+                    break;
+                  case 2:
+                    Navigator.pushNamed(
+                      context,
+                      '/admin/desktop/manajemen_pengguna_page',
+                    );
+                    break;
+                  case 3:
+                    Navigator.pushNamed(
+                      context,
+                      '/admin/desktop/manajemen_pengguna_page',
+                    );
+                    break;
+                  default:
+                    Navigator.pushNamed(
+                      context,
+                      '/admin/desktop/home_page_admin_desktop',
+                    );
+                }
               },
               child: Container(
                 padding: EdgeInsets.all(24),
@@ -447,7 +463,9 @@ class _AdminDashboardState extends State<AdminDashboard>
                       Colors.white.withValues(alpha: 0.05),
                     ],
                   ),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.6),
+                  ),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(

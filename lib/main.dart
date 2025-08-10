@@ -17,6 +17,8 @@ import 'package:smart_doku/pages/views/admins/phones/surat_keluar_page_admin.dar
 import 'package:smart_doku/pages/views/admins/phones/surat_permohonan_page_admin.dart';
 import 'package:smart_doku/pages/views/users/desktop/home_page_desktop.dart';
 import 'package:smart_doku/pages/views/users/desktop/surat_disposisi_page_desktop.dart';
+import 'package:smart_doku/pages/views/users/desktop/surat_keluar_page_desktop.dart';
+import 'package:smart_doku/pages/views/users/desktop/surat_permohonan_page_desktop.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
@@ -77,7 +79,7 @@ class SmartDoku extends StatelessWidget {
         Locale('id', 'ID'), // Indonesia
         Locale('en', 'US'), // English
       ],
-      home: AdminDashboard(),
+      home: UserDashboard(),
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone
@@ -87,11 +89,11 @@ class SmartDoku extends StatelessWidget {
         '/forms/phone/users/detail_page': (context) => DetailPage(),
 
         // users desktop
-        // '/users/desktop/surat_permohonan': (context) => PermohonanLetterPageDesktop(),
-        // '/users/desktop/surat_keluar': (context) => OutgoingLetterPageDesktop(),
-        '/users/desktop/surat_disposisi': (context) =>
+        '/user/desktop/home_page_desktop': (context) => UserDashboard(),
+        '/user/desktop/surat_permohonan_page_desktop': (context) => PermohonanLettersPageDesktop(),
+        '/user/desktop/surat_keluar_page_desktop': (context) => OutgoingLetterPageDesktop(),
+        '/user/desktop/surat_disposisi_page_desktop': (context) =>
             DispositionLetterUserDesktop(),
-        '/users/desktop/home_page': (context) => UserDashboard(),
 
         // admins and superadmins phone
         '/admin/phones/home_page_admin_phones': (context) =>

@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class DispositionLetterUserDesktop extends StatefulWidget {
   final Map<String, dynamic>? suratData;
@@ -40,32 +41,27 @@ class _DispositionLetterUserDesktopState
     {
       'icon': Icons.dashboard_rounded,
       'title': 'Dashboard',
-      'route': '/users/desktop/home_page_admin_desktop',
+      'route': '/user/desktop/home_page_desktop',
     },
     {
       'icon': LineIcons.envelopeOpen,
       'title': 'Surat Masuk',
-      'route': '/admin/desktop/surat_permohonan_page_admin_desktop',
+      'route': '/user/desktop/surat_permohonan_page_desktop',
     },
     {
       'icon': FontAwesomeIcons.envelopeCircleCheck,
       'title': 'Surat Keluar',
-      'route': '/admin/desktop/surat_keluar_page_admin_desktop',
+      'route': '/user/desktop/surat_keluar_page_desktop',
     },
     {
       'icon': Icons.assignment_turned_in_rounded,
       'title': 'Disposisi',
-      'route': '/admin/desktop/surat_disposisi_page_admin_desktop',
-    },
-    {
-      'icon': Icons.people_outline_rounded,
-      'title': 'Manajemen User',
-      'route': '/admin/desktop/manajemen_pengguna_page',
+      'route': '/user/desktop/surat_disposisi_page_desktop',
     },
     {
       'icon': Icons.settings_outlined,
       'title': 'Pengaturan',
-      'route': '/admin/desktop/setting_page',
+      'route': '/user/desktop/setting_page',
     },
   ];
 
@@ -261,10 +257,12 @@ class _DispositionLetterUserDesktopState
                       ),
                     ),
                   ),
-                  child: Icon(
-                    Icons.admin_panel_settings_rounded,
+                  child: Image.asset(
+                    'images/Icon_App.png',
+                    width: 180,
+                    height: 180,
+                    fit: BoxFit.cover,
                     color: Colors.white,
-                    size: 28,
                   ),
                 ),
                 SizedBox(width: 15),
@@ -283,7 +281,7 @@ class _DispositionLetterUserDesktopState
                         ),
                       ),
                       Text(
-                        'Admin Panel',
+                        'User Panel',
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.7),
                           fontSize: 14,
@@ -446,6 +444,36 @@ class _DispositionLetterUserDesktopState
               ),
             ),
           ),
+
+          // Build Number items
+          Container(
+            padding: EdgeInsets.all(20),
+            child: FutureBuilder<PackageInfo>(
+              future: PackageInfo.fromPlatform(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return SizedBox();
+                final version = snapshot.data!.version;
+                final buildNumber = snapshot.data!.buildNumber;
+                return Column(
+                  children: [
+                    Divider(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      thickness: 1,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Version $version+$buildNumber',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.6),
+                        fontSize: 12,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -488,9 +516,11 @@ class _DispositionLetterUserDesktopState
               Row(
                 children: [
                   Expanded(
-                    child: buildSectionTitleDisposisi('Lembar Disposisi'),
+                    child: buildSectionTitleDisposisiDesktop(
+                      'Lembar Disposisi',
+                    ),
                   ),
-                  buildMenuActionDisposisiAdmin(
+                  buildMenuActionDisposisiDesktopUser(
                     context,
                     nomorUrutController,
                     onDelete: () {
@@ -577,7 +607,7 @@ class _DispositionLetterUserDesktopState
                                   child: Text(
                                     surat['judulsurat'] ?? '404 Not Found',
                                     style: TextStyle(
-                                      fontSize: 12,
+                                      fontSize: 16,
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
                                       letterSpacing: 1,
@@ -613,7 +643,7 @@ class _DispositionLetterUserDesktopState
                                             'Surat Dari: ${surat['surat_dari'] ?? '404 Not Found'}',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 10,
+                                              fontSize: 14,
                                             ),
                                             textAlign: TextAlign.center,
                                           ),
@@ -647,7 +677,7 @@ class _DispositionLetterUserDesktopState
                                             'Diterima Tanggal: ${surat['diterima_tgl'] ?? '404 Not Found'}',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 10,
+                                              fontSize: 14,
                                             ),
                                             textAlign: TextAlign.center,
                                           ),
@@ -683,7 +713,7 @@ class _DispositionLetterUserDesktopState
                                               'Surat Dari: ${surat['surat_dari'] ?? '404 Not Found'}',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 10,
+                                                fontSize: 14,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
@@ -720,7 +750,7 @@ class _DispositionLetterUserDesktopState
                                               'Diterima Tanggal: ${surat['diterima_tgl'] ?? '404 Not Found'}',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 10,
+                                                fontSize: 14,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
@@ -757,7 +787,7 @@ class _DispositionLetterUserDesktopState
                                                 'Nomor Urut: ${disposisiData['nomor_surat'] == null ? '404 Not Found' : disposisiData['nomor_surat']}',
                                                 style: TextStyle(
                                                   color: Colors.white,
-                                                  fontSize: 10,
+                                                  fontSize: 14,
                                                 ),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -793,7 +823,7 @@ class _DispositionLetterUserDesktopState
                                             'Nomor Agenda: ${surat['nomor_agenda'] ?? '404 Not Found'}',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 10,
+                                              fontSize: 14,
                                             ),
                                             textAlign: TextAlign.center,
                                           ),
@@ -829,7 +859,7 @@ class _DispositionLetterUserDesktopState
                                               'Nomor Surat: ${surat['nomor_surat'] ?? '404 Not Found'}',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 10,
+                                                fontSize: 14,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
@@ -866,7 +896,7 @@ class _DispositionLetterUserDesktopState
                                               'Nomor Agenda: ${surat['nomor_agenda'] ?? '404 Not Found'}',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 10,
+                                                fontSize: 14,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
@@ -915,14 +945,14 @@ class _DispositionLetterUserDesktopState
                                             'Tanggal Surat: ${surat['tgl_surat'] ?? '404 Not Found'}',
                                             style: TextStyle(
                                               color: Colors.white,
-                                              fontSize: 10,
+                                              fontSize: 14,
                                             ),
                                             textAlign: TextAlign.center,
                                           ),
                                         ),
                                         Container(
                                           width: double.infinity,
-                                          padding: EdgeInsets.all(12),
+                                          padding: EdgeInsets.all(14),
                                           decoration: BoxDecoration(
                                             border: Border(
                                               left: BorderSide(
@@ -994,7 +1024,7 @@ class _DispositionLetterUserDesktopState
                                                           'Sangat Segera',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 8,
+                                                            fontSize: 12,
                                                           ),
                                                           overflow: TextOverflow
                                                               .ellipsis,
@@ -1048,7 +1078,7 @@ class _DispositionLetterUserDesktopState
                                                           'Segera',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 8,
+                                                            fontSize: 12,
                                                           ),
                                                           overflow: TextOverflow
                                                               .ellipsis,
@@ -1103,7 +1133,7 @@ class _DispositionLetterUserDesktopState
                                                           'Rahasia',
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontSize: 8,
+                                                            fontSize: 12,
                                                           ),
                                                           overflow: TextOverflow
                                                               .ellipsis,
@@ -1147,7 +1177,7 @@ class _DispositionLetterUserDesktopState
                                               'Tanggal Surat: ${surat['tgl_surat'] ?? '404 Not Found'}',
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 10,
+                                                fontSize: 14,
                                               ),
                                               textAlign: TextAlign.center,
                                             ),
@@ -1156,7 +1186,7 @@ class _DispositionLetterUserDesktopState
                                         Expanded(
                                           child: Container(
                                             width: double.infinity,
-                                            padding: EdgeInsets.all(12),
+                                            padding: EdgeInsets.all(15),
                                             decoration: BoxDecoration(
                                               border: Border(
                                                 left: BorderSide(
@@ -1192,6 +1222,7 @@ class _DispositionLetterUserDesktopState
                                                       mainAxisSize:
                                                           MainAxisSize.min,
                                                       children: [
+                                                        SizedBox(width: 34),
                                                         Container(
                                                           width: 18,
                                                           height: 18,
@@ -1227,7 +1258,7 @@ class _DispositionLetterUserDesktopState
                                                             style: TextStyle(
                                                               color:
                                                                   Colors.white,
-                                                              fontSize: 8,
+                                                              fontSize: 12,
                                                             ),
                                                             overflow:
                                                                 TextOverflow
@@ -1251,6 +1282,7 @@ class _DispositionLetterUserDesktopState
                                                       mainAxisSize:
                                                           MainAxisSize.min,
                                                       children: [
+                                                        SizedBox(width: 60),
                                                         Container(
                                                           width: 18,
                                                           height: 18,
@@ -1285,7 +1317,7 @@ class _DispositionLetterUserDesktopState
                                                             style: TextStyle(
                                                               color:
                                                                   Colors.white,
-                                                              fontSize: 8,
+                                                              fontSize: 12,
                                                             ),
                                                             overflow:
                                                                 TextOverflow
@@ -1309,6 +1341,7 @@ class _DispositionLetterUserDesktopState
                                                       mainAxisSize:
                                                           MainAxisSize.min,
                                                       children: [
+                                                        SizedBox(width: 40),
                                                         Container(
                                                           width: 18,
                                                           height: 18,
@@ -1344,7 +1377,7 @@ class _DispositionLetterUserDesktopState
                                                             style: TextStyle(
                                                               color:
                                                                   Colors.white,
-                                                              fontSize: 8,
+                                                              fontSize: 12,
                                                             ),
                                                             overflow:
                                                                 TextOverflow
@@ -1426,7 +1459,7 @@ class _DispositionLetterUserDesktopState
                                                   'Diteruskan ke :',
                                                   style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 10,
+                                                    fontSize: 12,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
@@ -1463,7 +1496,7 @@ class _DispositionLetterUserDesktopState
                                                   'Dengan hormat harap :',
                                                   style: TextStyle(
                                                     color: Colors.white,
-                                                    fontSize: 10,
+                                                    fontSize: 12,
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
