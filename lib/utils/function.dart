@@ -3,7 +3,8 @@ import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_keluar.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_phones.dart';
-import 'package:smart_doku/pages/forms/users/detail_page.dart';
+import 'package:smart_doku/pages/forms/users/detail_keluar_page.dart';
+import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/services/user.dart';
@@ -496,11 +497,11 @@ void viewDetailKeluar(
   List<Map<String, dynamic>> suratData,
 ) {
   final surat = suratData[index];
-  print('View Detail - ID: ${surat['id']}, Judul: ${surat['judul']}');
+  print('View Detail - ID: ${surat['id']}, Judul: ${surat['klasifikasi']}');
 
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DetailPage(suratData: surat)),
+    MaterialPageRoute(builder: (context) => DetailPageKeluar(suratData: surat)),
   );
 }
 

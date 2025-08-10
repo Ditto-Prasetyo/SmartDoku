@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/forms/admins/desktop/tables_page_admin.dart';
-import 'package:smart_doku/pages/forms/users/detail_page.dart';
+import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_before_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/manajemen_pengguna_page.dart';

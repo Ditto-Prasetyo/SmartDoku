@@ -1508,7 +1508,7 @@ class _OutgoingLetterPageDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               // Handle view action
-                                                              viewDetail(
+                                                              viewDetailKeluar(
                                                                 context,
                                                                 index,
                                                                 suratData,

@@ -5,7 +5,7 @@ import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
 class DetailPage extends StatefulWidget {
-  final Map<String, dynamic>? suratData;
+  final Map<String, dynamic>? suratData; // Parameter untuk data surat
 
   const DetailPage({super.key, this.suratData});
 
@@ -13,7 +13,8 @@ class DetailPage extends StatefulWidget {
   State<DetailPage> createState() => _DetailPage();
 }
 
-class _DetailPage extends State<DetailPage> with TickerProviderStateMixin {
+class _DetailPage extends State<DetailPage>
+    with TickerProviderStateMixin {
   var height, width;
 
   bool isRefreshing = false;
@@ -37,36 +38,37 @@ class _DetailPage extends State<DetailPage> with TickerProviderStateMixin {
     return {
       'nomor': baseData['id']?.toString() ?? '001',
       'surat_dari': baseData['pengirim'] ?? 'HRD Department',
-      'diterima_tgl': '28 Juli 2025',
-      'tgl_surat': baseData['tanggal'] ?? '28 Juli 2025',
+      'diterima_tgl':
+          baseData['diterima_tgl'] ??
+          (DateTime.now().day).toString() + '/' +
+              (DateTime.now().month).toString() + '/' +
+              (DateTime.now().year).toString(),
+      'tgl_surat': baseData['tgl_surat'] ?? '28 Juli 2025',
       'kode': 'SR-2025-${baseData['id']?.toString().padLeft(3, '0') ?? '001'}',
-      'no_urut': '${baseData['id']?.toString() ?? '1'}/25',
-      'no_agenda':
-          'AG-${DateTime.now().year}-${baseData['id']?.toString().padLeft(4, '0') ?? '0001'}',
-      'no_surat':
-          'ST/${DateTime.now().year}/${baseData['id']?.toString().padLeft(3, '0') ?? '001'}',
-      'hal': baseData['judul'] ?? 'Surat Pemberitahuan',
-      'hari_tanggal': 'Senin, ${baseData['tanggal'] ?? '28 Juli 2025'}',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Utama',
-      'disposisi': 'Permukiman',
-      'index': 'IDX-${baseData['id']?.toString() ?? '1'}',
-      'pengolah': 'Ahmad Santoso',
-      'sifat': baseData['status'] == 'Proses' ? 'Urgent' : 'Normal',
-      'link_scan': 'https://drive.google.com/file/scan-${baseData['id'] ?? 1}',
-      'disp_1': 'Kepala Bagian - Review dokumen',
-      'disp_2': 'Manager Operasional - Persetujuan',
-      'disp_3': 'Direktur - Final approval',
-      'disp_4': 'Sekretaris - Dokumentasi',
-      'disp_lanjutan': 'Kirim ke semua departemen terkait',
-      'tindak_lanjut_1': 'Koordinasi dengan team',
-      'tindak_lanjut_2': 'Laporan progress mingguan',
-      'status': baseData['status'] ?? 'Proses',
-      'dokumen_final': 'Final_Doc_${baseData['id'] ?? 1}.pdf',
-      'dokumen_dikirim': baseData['status'] == 'Selesai' ? 'Ya' : 'Belum',
-      'tanda_terima': baseData['status'] == 'Selesai'
-          ? 'Sudah diterima'
-          : 'Pending',
+      'no_urut': '${baseData['no_urut']?.toString() ?? '1'}/25',
+      'no_agenda': baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025' == null ? 'Data Kosong!' :  baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025',
+      'no_surat': baseData['no_surat'] == null ? 'Data Kosong!' : baseData['no_surat'],
+      'hal': baseData['perihal'] == null ? 'Data Kosong!' : baseData['perihal'],
+      'hari_tanggal': baseData['hari_tanggal'] == null ? 'Data Kosong!' : baseData['hari_tanggal'],
+      'waktu': baseData['waktu'] == null ? 'Data Kosong!' : baseData['waktu'],
+      'tempat': baseData['tempat'] == null ? 'Data Kosong!' : baseData['tempat'],
+      'disposisi': baseData['disposisi'] == null ? 'Data Kosong!' : baseData['disposisi'],
+      'index': 'IDX-${baseData['index']?.toString() == null ? 'Data Kosong!' : baseData['index']}',
+      'pengolah': baseData['pengolah'] == null ? 'Data Kosong!' : baseData['pengolah'],
+      'sifat': baseData['sifat'] == null ? 'Data Kosong!' : baseData['sifat'],
+      'link_scan': baseData['link_scan'] == null ? 'Data Kosong!' : baseData['link_scan'],
+      'disp_1': baseData['disposisi_kadin'] == null ? 'Data Kosong!' : baseData['disposisi_kadin'],
+      'disp_2': baseData['disposisi_sekdin'] == null ? 'Data Kosong!' : baseData['disposisi_sekdin'],
+      'disp_3': baseData['disposisi_kabid'] == null ? 'Data Kosong!' : baseData['disposisi_kabid'],
+      'disp_4': baseData['disposisi_kasubag'] == null ? 'Data Kosong!' : baseData['disposisi_kasubag'],
+      'notes_disp_1' : baseData['notes_disposisi_kadin'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kadin'],
+      'notes_disp_2' : baseData['notes_disposisi_sekdin'] == null ? 'Data Kosong!' : baseData['notes_disposisi_sekdin'],
+      'notes_disp_3' : baseData['notes_disposisi_kabid'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kabid'],
+      'notes_disp_4' : baseData['notes_disposisi_kasubag'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kasubag'],
+      'disp_lanjutan': baseData['disposisi_lanjutan'] == null ? 'Data Kosong!' : baseData['disposisi_lanjutan'],
+      'tindak_lanjut_1': baseData['tindak_lanjut_1'] == null ? 'Data Kosong!' : baseData['tindak_lanjut_1'],
+      'tindak_lanjut_2': baseData['tindak_lanjut_2'] == null ? 'Data Kosong!' : baseData['tindak_lanjut_2'],
+      'status': baseData['status'] == null ? 'Data Kosong!' : baseData['status'],
     };
   }
 
@@ -575,7 +577,7 @@ class _DetailPage extends State<DetailPage> with TickerProviderStateMixin {
                         padding: EdgeInsets.only(top: 35, left: 15, right: 15),
                         child: Center(
                           child: Text(
-                            "Detail Surat",
+                            "Detail Surat Masuk",
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,
@@ -617,90 +619,148 @@ class _DetailPage extends State<DetailPage> with TickerProviderStateMixin {
                         children: [
                           // Header Info Card
                           buildHeaderCard(detailData),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Basic Information Section
                           buildSectionTitle('Informasi Dasar'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Nomor', detailData['nomor']),
-                            buildDetailRow('Surat Dari', detailData['surat_dari']),
-                            buildDetailRow('Diterima Tanggal', detailData['diterima_tgl']),
-                            buildDetailRow('Tanggal Surat', detailData['tgl_surat']),
-                            buildDetailRow('Kode', detailData['kode']),
-                            buildDetailRow('No. Urut', detailData['no_urut']),
+                            buildDetailRow('Nomor', detailData['nomor'] == null ? 'Data Kosong!' : detailData['nomor']),
+                            buildDetailRow(
+                              'Surat Dari',
+                              detailData['surat_dari'] == null ? 'Data Kosong!' : detailData['surat_dari'],
+                            ),
+                            buildDetailRow(
+                              'Diterima Tanggal',
+                              detailData['diterima_tgl'] == null ? 'Data Kosong!' : detailData['diterima_tgl'],
+                            ),
+                            buildDetailRow(
+                              'Tanggal Surat',
+                              detailData['tgl_surat'] == null ? 'Data Kosong!' : detailData['tgl_surat'],
+                            ),
+                            buildDetailRow('Kode', detailData['kode'] == null ? 'Data Kosong!' : detailData['kode']),
+                            buildDetailRow('No. Urut', detailData['no_urut'] == null ? 'Data Kosong!' : detailData['no_urut']),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Document Information Section
-                          buildSectionTitle('Informasi Dokumen'),
+                          buildSectionTitle('Informasi Surat'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('No. Agenda', detailData['no_agenda']),
-                            buildDetailRow('No. Surat', detailData['no_surat']),
-                            buildDetailRow('Hal', detailData['hal']),
-                            buildDetailRow('Hari/Tanggal', detailData['hari_tanggal']),
-                            buildDetailRow('Waktu', detailData['waktu']),
-                            buildDetailRow('Tempat', detailData['tempat']),
+                            buildDetailRow(
+                              'No. Agenda',
+                              detailData['no_agenda'] == null ? 'Data Kosong!' : detailData['no_agenda'],
+                            ),
+                            buildDetailRow('No. Surat', detailData['no_surat'] == null ? 'Data Kosong!' : detailData['no_surat']),
+                            buildDetailRow('Hal', detailData['hal'] == null ? 'Data Kosong!' : detailData['hal']),
+                            buildDetailRow(
+                              'Hari/Tanggal',
+                              detailData['hari_tanggal'] == null ? 'Data Kosong!' : detailData['hari_tanggal'],
+                            ),
+                            buildDetailRow('Waktu', detailData['waktu'] == null ? 'Data Kosong!' : detailData['waktu']),
+                            buildDetailRow('Tempat', detailData['tempat'] == null ? 'Data Kosong!' : detailData['tempat']),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Processing Information Section
                           buildSectionTitle('Informasi Pemrosesan'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Disposisi', detailData['disposisi']),
+                            buildDetailRow(
+                              'Disposisi',
+                              detailData['disposisi'] == null ? 'Data Kosong!' : detailData['disposisi'],
+                            ),
                             buildDetailRow('Index', detailData['index']),
-                            buildDetailRow('Pengolah', detailData['pengolah']),
-                            buildDetailRow('Sifat', detailData['sifat'], 
-                                isStatus: true, statusColor: getSifatColor(detailData['sifat'])),
-                            buildDetailRow('Link Scan', detailData['link_scan'], isLink: true),
+                            buildDetailRow('Pengolah', detailData['pengolah'] == null ? 'Data Kosong!' : detailData['pengolah']),
+                            buildDetailRow(
+                              'Sifat',
+                              detailData['sifat'],
+                              isStatus: true,
+                              statusColor: getSifatColor(detailData['sifat'] == null ? 'Data Kosong!' : detailData['sifat']),
+                            ),
+                            buildDetailRow(
+                              'Link Scan',
+                              detailData['link_scan'] == null ? 'Data Kosong!' : detailData['link_scan'],
+                              isLink: true,
+                            ),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
                           // Disposition Section
                           buildSectionTitle('Disposisi'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Disposisi Kadin', detailData['disp_1']),
-                            buildDetailRow('Disposisi Sekdin', detailData['disp_2']),
-                            buildDetailRow('Disposisi Kabid / KaUPT', detailData['disp_3']),
-                            buildDetailRow('Disposisi Kasubag / Kasi', detailData['disp_4']),
-                            buildDetailRow('Disposisi Lanjutan', detailData['disp_lanjutan']),
+                            buildDetailRow(
+                              'Disposisi Kadin',
+                              detailData['disp_1'] == null ? 'Data Kosong!' : detailData['disp_1'],
+                            ),
+                            buildDetailRow(
+                              'Disposisi Sekdin',
+                              detailData['disp_2'] == null ? 'Data Kosong!' : detailData['disp_2'],
+                            ),
+                            buildDetailRow(
+                              'Disposisi Kabid / KaUPT',
+                              detailData['disp_3'] == null ? 'Data Kosong!' : detailData['disp_3'],
+                            ),
+                            buildDetailRow(
+                              'Disposisi Kasubag / Kasi',
+                              detailData['disp_4'] == null ? 'Data Kosong!' : detailData['disp_4'],
+                            ),
                           ]),
-                          
+
                           SizedBox(height: 20),
-                          
+
+                          // Disposition Notes Section
+                          buildSectionTitle('Catatan Disposisi'),
+                          SizedBox(height: 15),
+                          buildInfoCard([
+                            buildDetailRow(
+                              'Catatan Disposisi Kadin',
+                              detailData['notes_disp_1'] == null ? 'Data Kosong!' : detailData['notes_disp_1'],
+                            ),
+                            buildDetailRow(
+                              'Catatan Disposisi Sekdin',
+                              detailData['notes_disp_2'] == null ? 'Data Kosong!' : detailData['notes_disp_2'],
+                            ),
+                            buildDetailRow(
+                              'Catatan Disposisi Kabid / KaUPT',
+                              detailData['notes_disp_3'] == null ? 'Data Kosong!' : detailData['notes_disp_3'],
+                            ),
+                            buildDetailRow(
+                              'Catatan Disposisi Kasubag / Kasi',
+                              detailData['notes_disp_4'] == null ? 'Data Kosong!' : detailData['notes_disp_4'],
+                            ),
+                            buildDetailRow(
+                              'Disposisi Lanjutan',
+                              detailData['disp_lanjutan'] == null ? 'Data Kosong!' : detailData['disp_lanjutan'],
+                            ),
+                          ]),
+
+                          SizedBox(height: 20),
+
                           // Follow Up Section
                           buildSectionTitle('Tindak Lanjut'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Tindak Lanjut 1', detailData['tindak_lanjut_1']),
-                            buildDetailRow('Tindak Lanjut 2', detailData['tindak_lanjut_2']),
-                            buildDetailRow('Status', detailData['status'], 
-                                isStatus: true, statusColor: getStatusColor(detailData['status'])),
+                            buildDetailRow(
+                              'Tindak Lanjut 1',
+                              detailData['tindak_lanjut_1'] == null ? 'Data Kosong!' : detailData['tindak_lanjut_1'],
+                            ),
+                            buildDetailRow(
+                              'Tindak Lanjut 2',
+                              detailData['tindak_lanjut_2'] == null ? 'Data Kosong!' : detailData['tindak_lanjut_2'],
+                            ),
+                            buildDetailRow(
+                              'Status',
+                              detailData['status'] == null ? 'Data Kosong!' : detailData['status'],
+                              isStatus: true,
+                              statusColor: getStatusColor(detailData['status'] == null ? 'Data Kosong!' : detailData['status']),
+                            ),
                           ]),
-                          
-                          SizedBox(height: 20),
-                          
-                          // Final Documents Section
-                          buildSectionTitle('Dokumen Final'),
-                          SizedBox(height: 15),
-                          buildInfoCard([
-                            buildDetailRow('Dokumen Final', detailData['dokumen_final']),
-                            buildDetailRow('Dokumen Dikirim', detailData['dokumen_dikirim'], 
-                                isStatus: true, statusColor: getYesNoColor(detailData['dokumen_dikirim'])),
-                            buildDetailRow('Tanda Terima', detailData['tanda_terima'], 
-                                isStatus: true, statusColor: getTandaTerimaColor(detailData['tanda_terima'])),
-                          ]),
-                          
-                          SizedBox(height: 30),
-                          
-                          
                         ],
                       ),
                     ),
