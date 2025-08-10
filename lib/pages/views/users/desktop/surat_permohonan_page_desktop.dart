@@ -830,7 +830,7 @@ class _PermohonanLettersPageDesktopState
                                       // 3. Diterima TGL - flex: 100
                                       SizedBox(width: 8),
                                       Expanded(
-                                        flex: 130,
+                                        flex: 140,
                                         child: Text(
                                           'Diterima \nTGL',
                                           style: TextStyle(
@@ -846,7 +846,7 @@ class _PermohonanLettersPageDesktopState
                                       // 4. Tanggal Surat - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 110,
+                                        flex: 120,
                                         child: Text(
                                           'TGL Surat',
                                           style: TextStyle(
@@ -861,7 +861,7 @@ class _PermohonanLettersPageDesktopState
                                       // 5. Kode - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 90,
+                                        flex: 80,
                                         child: Text(
                                           'Kode',
                                           style: TextStyle(
@@ -876,7 +876,7 @@ class _PermohonanLettersPageDesktopState
                                       // 6. No Urut - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 100,
+                                        flex: 110,
                                         child: Text(
                                           'No Urut',
                                           style: TextStyle(
@@ -891,7 +891,7 @@ class _PermohonanLettersPageDesktopState
                                       // 7. No Agenda - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 100,
+                                        flex: 120,
                                         child: Text(
                                           'No Agenda',
                                           style: TextStyle(
@@ -920,7 +920,7 @@ class _PermohonanLettersPageDesktopState
 
                                       // 9. Perihal - flex: 200
                                       Expanded(
-                                        flex: 240,
+                                        flex: 220,
                                         child: Text(
                                           'Perihal',
                                           style: TextStyle(
@@ -936,11 +936,11 @@ class _PermohonanLettersPageDesktopState
                                       // 10. Hari/Tanggal - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 100,
+                                        flex: 150,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8.0),
                                           child: Text(
-                                            'Hari/Tanggal',
+                                            'Hari/Tanggal\n/Waktu',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -955,7 +955,7 @@ class _PermohonanLettersPageDesktopState
                                       // 12. Tempat - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 100,
+                                        flex: 80,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -973,7 +973,7 @@ class _PermohonanLettersPageDesktopState
                                       // 13. Disposisi - flex: 100
                                       SizedBox(width: 5),
                                       Expanded(
-                                        flex: 100,
+                                        flex: 110,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -990,7 +990,7 @@ class _PermohonanLettersPageDesktopState
 
                                       // 14. Index - flex: 100
                                       Expanded(
-                                        flex: 80,
+                                        flex: 100,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -1007,7 +1007,7 @@ class _PermohonanLettersPageDesktopState
 
                                       // 15. Pengolah - flex: 100
                                       Expanded(
-                                        flex: 80,
+                                        flex: 100,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -1025,7 +1025,7 @@ class _PermohonanLettersPageDesktopState
 
                                       // 16. Sifat - flex: 100
                                       Expanded(
-                                        flex: 140,
+                                        flex: 120,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -1058,7 +1058,7 @@ class _PermohonanLettersPageDesktopState
 
                                       // 18. Disposisi Kadin - flex: 100
                                       Expanded(
-                                        flex: 90,
+                                        flex: 115,
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8),
                                           child: Text(
@@ -1076,7 +1076,7 @@ class _PermohonanLettersPageDesktopState
 
                                       // 19. Disposisi Sekdin - flex: 100
                                       Expanded(
-                                        flex: 110,
+                                        flex: 75,
                                         child: Text(
                                           'Disposisi \nSekdin',
                                           style: TextStyle(
@@ -1091,7 +1091,7 @@ class _PermohonanLettersPageDesktopState
 
                                       // 20. Disposisi Kabid - flex: 100
                                       Expanded(
-                                        flex: 80,
+                                        flex: 130,
                                         child: Text(
                                           'Disposisi\nKabid/ \nKaUPT',
                                           style: TextStyle(
@@ -1106,7 +1106,7 @@ class _PermohonanLettersPageDesktopState
 
                                       // 21. Disposisi Kasubag - flex: 100
                                       Expanded(
-                                        flex: 140,
+                                        flex: 80,
                                         child: Text(
                                           'Disposisi \nKasubag/ \nKasi',
                                           style: TextStyle(
@@ -1138,7 +1138,7 @@ class _PermohonanLettersPageDesktopState
                                       ),
 
                                       Expanded(
-                                        flex: 140,
+                                        flex: 100,
                                         child: Text(
                                           'Catatan Disposisi \nSekdin',
                                           style: TextStyle(
@@ -1154,7 +1154,7 @@ class _PermohonanLettersPageDesktopState
                                       ),
 
                                       Expanded(
-                                        flex: 140,
+                                        flex: 120,
                                         child: Text(
                                           'Catatan Disposisi\nKabid/ \nKaUPT',
                                           style: TextStyle(
@@ -1445,7 +1445,7 @@ class _PermohonanLettersPageDesktopState
                                                   // 6. No_urut - flex: 100
                                                   SizedBox(width: 5),
                                                   Expanded(
-                                                    flex: 100,
+                                                    flex: 80,
                                                     child: Text(
                                                       surat['no_urut'].isEmpty ? 'Data Nomor Urut \nSurat Kosong' : surat['no_urut'],
                                                       style: TextStyle(
@@ -1462,7 +1462,7 @@ class _PermohonanLettersPageDesktopState
                                                   // 7. No_agenda - flex: 100
                                                   SizedBox(width: 5),
                                                   Expanded(
-                                                    flex: 100,
+                                                    flex: 130,
                                                     child: Text(
                                                       surat['kode'] == null
                                                           ? ''
@@ -1485,7 +1485,7 @@ class _PermohonanLettersPageDesktopState
                                                   // 8. No surat - flex: 100
                                                   SizedBox(width: 5),
                                                   Expanded(
-                                                    flex: 70,
+                                                    flex: 60,
                                                     child: Text(
                                                       surat['no_surat'].isEmpty ? 'Data No Surat Kosong' : surat['no_surat'],
                                                       style: TextStyle(
