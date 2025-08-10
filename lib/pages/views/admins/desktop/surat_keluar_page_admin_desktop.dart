@@ -1490,7 +1490,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               // Handle view action
-                                                              viewDetail(
+                                                              viewDetailKeluar(
                                                                 context,
                                                                 index,
                                                                 suratData,
@@ -1539,7 +1539,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               // Handle edit action
-                                                              editDokumen(
+                                                              editDokumenAdminKeluar(
                                                                 context,
                                                                 index,
                                                                 suratData,
@@ -1585,7 +1585,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               // Handle delete action
-                                                              hapusDokumen(
+                                                              hapusDokumenKeluarDesktop(
                                                                 context,
                                                                 index,
                                                                 suratData,

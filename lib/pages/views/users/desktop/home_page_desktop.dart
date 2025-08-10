@@ -42,20 +42,6 @@ class _UserDashboardState extends State<UserDashboard>
       'color': Color(0xFF059669),
       'isPositive': true,
     },
-    {
-      'title': 'Total Pengguna',
-      'value': '156',
-      'icon': Icons.people_outline_rounded,
-      'color': Color(0xFF7C2D12),
-      'isPositive': true,
-    },
-    {
-      'title': 'Total Bidang',
-      'value': '6',
-      'icon': Icons.work_rounded,
-      'color': Colors.lightBlue,
-      'isPositive': true,
-    },
   ];
 
   final List<Map<String, dynamic>> _sidebarItems = [
@@ -417,16 +403,10 @@ class _UserDashboardState extends State<UserDashboard>
               onTap: () {
                 switch (index) {
                 case 0:
-                  Navigator.pushNamed(context, '/admin/desktop/surat_permohonan_page_admin_desktop');
+                  Navigator.pushNamed(context, '/user/desktop/surat_permohonan_page_desktop');
                   break;
                 case 1:
-                  Navigator.pushNamed(context, '/admin/desktop/surat_keluar_page_admin_desktop');
-                  break;
-                case 2:
-                  Navigator.pushNamed(context, '/admin/desktop/manajemen_pengguna_page');
-                  break;
-                case 3:
-                  Navigator.pushNamed(context, '/admin/desktop/manajemen_pengguna_page');
+                  Navigator.pushNamed(context, '/user/desktop/surat_keluar_page_desktop');
                   break;
                 default:
                   Navigator.pushNamed(context, '/admin/desktop/home_page_admin_desktop');

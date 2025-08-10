@@ -631,6 +631,25 @@ void hapusDokumen(
   );
 }
 
+void hapusDokumenDesktop(
+  BuildContext context,
+  int index,
+  List<Map<String, dynamic>> suratData,
+  void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
+) {
+  final surat = suratData[index];
+  showModernHapusMasukDialogDesktop(
+    '⚠️ Konfirmasi Hapus',
+    'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
+    Colors.orange,
+    Colors.deepOrange,
+    context,
+    index,
+    suratData,
+    onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
+  );
+}
+
 void hapusDokumenKeluar(
   BuildContext context,
   int index,
@@ -639,6 +658,25 @@ void hapusDokumenKeluar(
 ) {
   final surat = suratData[index];
   showModernHapusDialog(
+    '⚠️ Konfirmasi Hapus',
+    'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
+    Colors.orange,
+    Colors.deepOrange,
+    context,
+    index,
+    suratData,
+    onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
+  );
+}
+
+void hapusDokumenKeluarDesktop(
+  BuildContext context,
+  int index,
+  List<Map<String, dynamic>> suratData,
+  void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
+) {
+  final surat = suratData[index];
+  showModernHapusDialogDesktop(
     '⚠️ Konfirmasi Hapus',
     'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
     Colors.orange,

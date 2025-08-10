@@ -2052,7 +2052,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              hapusDokumen(
+                                                              hapusDokumenDesktop(
                                                                 context,
                                                                 index,
                                                                 suratData,
