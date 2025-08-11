@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/utils/map.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
@@ -631,7 +632,14 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildInfoCard([
                             buildDetailRow(
                               'Disposisi',
-                              detailData.disposisi == null ? 'Data Kosong!' : detailData.disposisi.join(", "),
+                              detailData.disposisi == null ? 'Data Kosong!' 
+                                : (detailData.disposisi as List)
+                                  .map((item) => workFields.entries
+                                    .firstWhere((entry) => entry.value == item['tujuan'],
+                                      orElse: () => MapEntry(item['tujuan']!, item['tujuan']!)
+                                    ).key
+                                  )
+                                  .join(', '),
                             ),
                             buildDetailRow('Index', detailData.index!),
                             buildDetailRow('Pengolah', detailData.pengolah == null ? 'Data Kosong!' : detailData.pengolah),

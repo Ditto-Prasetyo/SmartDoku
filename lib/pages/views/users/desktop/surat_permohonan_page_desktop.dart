@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/utils/map.dart';
 
 class PermohonanLettersPageDesktop extends StatefulWidget {
   const PermohonanLettersPageDesktop({super.key});
@@ -1398,7 +1399,13 @@ class _PermohonanLettersPageDesktopState
                                                           child: Text(
                                                             surat?.disposisi == null
                                                                 ? 'Data Tempat Kosong'
-                                                                : surat!.disposisi.join(','),
+                                                                : (surat!.disposisi as List)
+                                                              .map((item) => workFields.entries
+                                                                .firstWhere((entry) => entry.value == item['tujuan'],
+                                                                  orElse: () => MapEntry(item['tujuan']!, item['tujuan']!)
+                                                                ).key
+                                                              )
+                                                              .join(', '),
                                                             style: TextStyle(
                                                               color: Colors
                                                                   .white

@@ -982,12 +982,12 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                               ),
                                                               child: InkWell(
                                                                 onTap: () {
-                                                                  hapusDokumen(
-                                                                    context,
-                                                                    index,
-                                                                    suratData,
-                                                                    actionSetState,
-                                                                  );
+                                                                  // hapusDokumen(
+                                                                  //   context,
+                                                                  //   index,
+                                                                  //   suratData,
+                                                                  //   actionSetState,
+                                                                  // );
                                                                 },
                                                                 child: Icon(
                                                                   Icons

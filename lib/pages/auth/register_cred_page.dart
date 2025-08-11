@@ -7,6 +7,7 @@ import 'package:smart_doku/utils/formatter.dart';
 import 'package:smart_doku/utils/hover.dart';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/map.dart';
 import 'dart:ui';
 import 'dart:math';
 
@@ -46,15 +47,6 @@ class RegisterCredPageState extends State<RegisterCredPage>
 
   String? _selectedWorkField;
   String? _workFieldError;
-
-  final Map<String, String> _workFields = {
-    'Penataan Ruang dan PB': 'PRPB',
-    'Perumahan': 'Perumahan',
-    'Permukiman': 'Permukiman',
-    'Sekretariat': 'Sekretariat',
-    'UPT Pengelolaan Air Limbah Domestik': 'UPT_PALD',
-    'UPT Pertamanan': 'UPT_Taman',
-  };
 
   final List<IconData> _workFieldIcons = [
     Icons.admin_panel_settings,
@@ -642,7 +634,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
                                                 ),
                                               ],
                                             ),
-                                            items: _workFields.entries
+                                            items: workFields.entries
                                                 .toList()
                                                 .asMap()
                                                 .entries
