@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/utils/map.dart';
 
 class SuratMasuk {
   Future<List<SuratMasukModel?>> listSurat() async {
@@ -346,6 +347,12 @@ class SuratKeluar {
     } else {
       return null;
     }
+  }
+
+  List<Map<String, String>> getDisposisiForAPI(List<String> selectedKeys) {
+    return selectedKeys.map((key) {
+      return { "tujuan": workFields[key]! };
+    }).toList();
   }
 
   Future<SuratKeluarModel?> addSurat({

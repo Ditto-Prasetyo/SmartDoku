@@ -6,11 +6,11 @@ class SuratMasukModel {
   final DateTime tanggal_surat;
   final String kode;
   final String no_agenda;
-  final String no_surat;
+  final String no_surat;  
   final String hal;
   final DateTime tanggal_waktu;
   final String tempat;
-  final List<dynamic> disposisi; // Bisa diganti model khusus
+  final List<dynamic> disposisi;
   final String? index;
   final String pengolah;
   final String? sifat;
