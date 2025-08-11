@@ -66,11 +66,6 @@ class _UserDashboardState extends State<UserDashboard>
       'route': '/user/desktop/surat_disposisi_page_desktop',
     },
     {
-      'icon': Icons.settings_outlined,
-      'title': 'Pengaturan',
-      'route': '/user/desktop/setting_page',
-    },
-    {
       'icon': Icons.people_alt_rounded,
       'title': 'Profile Anda',
       'route': '/user/desktop/profile_user_page',
