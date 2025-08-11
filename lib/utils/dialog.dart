@@ -11,9 +11,13 @@ import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/icon.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:io' show Platform;
 
-// Auths Section
+// Services Initialize
+SuratKeluar _suratKeluarService = SuratKeluar();
+SuratMasuk _suratMasukService = SuratMasuk();
 
 // -- Login Edition --
 void showErrorDialog(
@@ -193,7 +197,7 @@ void showModernErrorDialog(
     },
     pageBuilder: (context, animation, secondaryAnimation) {
       Size size = MediaQuery.of(context).size;
-      
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
@@ -3856,94 +3860,94 @@ void showModernTambahSuratKeluarDesktopDialog(
 void showEditSuratDialog(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel?> suratData,
   void Function() refreshState,
 ) {
   final selectedSurat = suratData[index];
 
   // Controllers untuk form
   final TextEditingController judulController = TextEditingController(
-    text: selectedSurat['surat_dari'],
+    text: selectedSurat?.nama_surat,
   );
   final TextEditingController perihalController = TextEditingController(
-    text: selectedSurat['perihal'],
+    text: selectedSurat?.hal,
   );
   final TextEditingController tanggalController = TextEditingController(
-    text: selectedSurat['diterima_tgl'],
+    text: selectedSurat?.tanggal_diterima.toString(),
   );
   final TextEditingController pengirimController = TextEditingController(
-    text: selectedSurat['pengirim'],
+    text: selectedSurat?.pengolah,
   );
   final TextEditingController tanggalSuratController = TextEditingController(
-    text: selectedSurat['tgl_surat'],
+    text: selectedSurat?.tanggal_surat.toString(),
   );
   final TextEditingController kodeController = TextEditingController(
-    text: selectedSurat['kode'],
+    text: selectedSurat?.kode,
   );
   final TextEditingController noagendaController = TextEditingController(
-    text: selectedSurat['no_agenda'],
+    text: selectedSurat?.no_agenda,
   );
-  final TextEditingController nourutController = TextEditingController(
-    text: selectedSurat['no_urut'],
-  );
+  // final TextEditingController nourutController = TextEditingController(
+  //   text: selectedSurat?.nomor_urut.toString(),
+  // );
   final TextEditingController nosuratController = TextEditingController(
-    text: selectedSurat['no_surat'],
+    text: selectedSurat?.no_surat,
   );
   final TextEditingController haritanggalController = TextEditingController(
-    text: selectedSurat['hari_tanggal'],
+    text: selectedSurat?.tanggal_waktu.toString(),
   );
   final TextEditingController hariTanggalWaktuController = TextEditingController();
   final TextEditingController waktuController = TextEditingController(
-    text: selectedSurat['waktu'],
+    text: selectedSurat?.tanggal_waktu.toString(),
   );
   final TextEditingController tempatController = TextEditingController(
-    text: selectedSurat['tempat'],
+    text: selectedSurat?.tempat,
   );
   final TextEditingController disposisiController = TextEditingController(
-    text: selectedSurat['disposisi'],
+    text: selectedSurat?.disposisi.join(', '),
   );
   final TextEditingController indexController = TextEditingController(
-    text: selectedSurat['index'],
+    text: selectedSurat?.index,
   );
   final TextEditingController pengolahController = TextEditingController(
-    text: selectedSurat['pengolah'],
+    text: selectedSurat?.pengolah,
   );
   final TextEditingController sifatController = TextEditingController(
-    text: selectedSurat['sifat'],
+    text: selectedSurat?.sifat,
   );
   final TextEditingController linkscanController = TextEditingController(
-    text: selectedSurat['link_scan'],
+    text: selectedSurat?.link_scan,
   );
   final TextEditingController disposisikadinController = TextEditingController(
-    text: selectedSurat['disposisi_kadin'],
+    text: selectedSurat?.disp_1.toString(),
   );
   final TextEditingController disposisisekdinController = TextEditingController(
-    text: selectedSurat['disposisi_sekdin'],
+    text: selectedSurat?.disp_2.toString(),
   );
   final TextEditingController disposisikabidController = TextEditingController(
-    text: selectedSurat['disposisi_kabid'],
+    text: selectedSurat?.disp_3.toString(),
   );
   final TextEditingController disposisikasubagController =
-      TextEditingController(text: selectedSurat['disposisi_kasubag']);
+      TextEditingController(text: selectedSurat?.disp_4.toString());
   final TextEditingController disposisilanjutanController =
-      TextEditingController(text: selectedSurat['disposisi_lanjutan']);
+      TextEditingController(text: selectedSurat?.disp_lanjut);
   final TextEditingController tindaklanjut1Controller = TextEditingController(
-    text: selectedSurat['tindak_lanjut_1'],
+    text: selectedSurat?.tindak_lanjut_1.toString(),
   );
   final TextEditingController tindaklanjut2Controller = TextEditingController(
-    text: selectedSurat['tindak_lanjut_2'],
+    text: selectedSurat?.tindak_lanjut_2.toString(),
   );
 
   final TextEditingController notesDisposisiKadinController =
-      TextEditingController(text: selectedSurat['notes_disposisi_kadin']);
+      TextEditingController(text: selectedSurat?.disp_1_notes);
   final TextEditingController notesDisposisiSekdinController =
-      TextEditingController(text: selectedSurat['notes_disposisi_sekdin']);
+      TextEditingController(text: selectedSurat?.disp_2_notes);
   final TextEditingController notesDisposisiKabidController =
-      TextEditingController(text: selectedSurat['notes_disposisi_kabid']);
+      TextEditingController(text: selectedSurat?.disp_3_notes);
   final TextEditingController notesDisposisiKasubagController =
-      TextEditingController(text: selectedSurat['notes_disposisi_kasubag']);
+      TextEditingController(text: selectedSurat?.disp_4_notes);
 
-  String selectedStatus = selectedSurat['status'];
+  String selectedStatus = selectedSurat!.status;
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
 
   showGeneralDialog(
@@ -4117,14 +4121,14 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
-                                'No Urut',
-                                nourutController,
-                                Icons.format_list_numbered_rounded,
-                                maxLines: 1,
-                              ),
+                              // buildInputField(
+                              //   'No Urut',
+                              //   nourutController,
+                              //   Icons.format_list_numbered_rounded,
+                              //   maxLines: 1,
+                              // ),
 
-                              SizedBox(height: 20),
+                              // SizedBox(height: 20),
 
                               buildInputField(
                                 'No Agenda',
@@ -4417,17 +4421,39 @@ void showEditSuratDialog(
                                   Expanded(
                                     flex: 2,
                                     child: ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         // Update data
-                                        suratData[index] = {
-                                          'id': selectedSurat['id'],
-                                          'judul': judulController.text,
-                                          'perihal': perihalController.text,
-                                          'diterima_tgl':
-                                              tanggalController.text,
-                                          'pengirim': pengirimController.text,
-                                          'status': selectedStatus,
-                                        };
+                                        final data = await _suratMasukService.editSurat(
+                                          nomor_urut: selectedSurat.nomor_urut,
+                                          disp1Kadin: disposisikadinController.text,
+                                          disp2Sekdin: disposisisekdinController.text,
+                                          disp3Kabid: disposisikabidController.text,
+                                          disp4Kasubag: disposisikasubagController.text,
+                                          disp1Notes: notesDisposisiKadinController.text,
+                                          disp2Notes: notesDisposisiSekdinController.text,
+                                          disp3Notes: notesDisposisiKabidController.text,
+                                          disp4Notes: notesDisposisiKasubagController.text,
+                                          dispLanjut: disposisilanjutanController.text,
+                                          hal: perihalController.text,
+                                          index: indexController.text,
+                                          kode: kodeController.text,
+                                          linkScan: linkscanController.text,
+                                          noAgenda: noagendaController.text,
+                                          noSurat: nosuratController.text,
+                                          pengolah: pengolahController.text,
+                                          sifat: sifatController.text,
+                                          suratDari: judulController.text,
+                                          tempat: tempatController.text,
+                                          status: 'Pending',
+                                          tanggalSurat: tanggalSuratController.text as DateTime,
+                                          tanggalDiterima: tanggalController.text as DateTime,
+                                          tanggalWaktu: hariTanggalWaktuController.text as DateTime,
+                                          tindakLanjut1: tindaklanjut1Controller.text as DateTime,
+                                          tindakLanjut2: tindaklanjut2Controller.text as DateTime,
+                                          disposisi: '[]'
+                                        );
+
+                                        print(data);
 
                                         // Refresh state
                                         refreshState();
@@ -4507,68 +4533,67 @@ void showEditSuratDialog(
 void showEditSuratKeluarDialog(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel?> suratData,
   void Function() refreshState,
 ) {
   final selectedSurat = suratData[index];
 
   // Controllers untuk form
   final TextEditingController klasifikasiController = TextEditingController(
-    text: selectedSurat['klasifikasi'],
+    text: selectedSurat?.klasifikasi,
   );
   final TextEditingController kodeController = TextEditingController(
-    text: selectedSurat['kode'],
+    text: selectedSurat?.kode,
   );
   final TextEditingController noregisterController = TextEditingController(
-    text: selectedSurat['no_register'],
+    text: selectedSurat?.no_register,
   );
   final TextEditingController tujuansuratController = TextEditingController(
-    text: selectedSurat['tujuan_surat'],
+    text: selectedSurat?.tujuan_surat,
   );
   final TextEditingController perihalController = TextEditingController(
-    text: selectedSurat['perihal'],
+    text: selectedSurat?.perihal,
   );
   final TextEditingController tglsuratController = TextEditingController(
-    text: selectedSurat['tgl_surat'],
+    text: selectedSurat?.tanggal_surat.toIso8601String(),
   );
   final TextEditingController klasifikasiarsipController =
-      TextEditingController(text: selectedSurat['klasifikasi_arsip']);
+      TextEditingController(text: selectedSurat?.akses_arsip);
   final TextEditingController pengolahController = TextEditingController(
     text: (() {
-      final pengolah = selectedSurat['pengolah'];
+      final pengolah = selectedSurat?.pengolah;
 
       if (pengolah == null) return '';
       if (pengolah is String) return pengolah;
-      if (pengolah is List<String>) return pengolah.join(', ');
       return pengolah.toString();
     })(),
   );
   final TextEditingController pembuatController = TextEditingController(
-    text: selectedSurat['pembuat'],
+    text: selectedSurat?.pembuat,
   );
   final TextEditingController catatanController = TextEditingController(
-    text: selectedSurat['catatan'],
+    text: selectedSurat?.catatan,
   );
   final TextEditingController linksuratController = TextEditingController(
-    text: selectedSurat['link_surat'],
+    text: selectedSurat?.link_surat,
   );
   final TextEditingController koreksi1Controller = TextEditingController(
-    text: selectedSurat['koreksi_1'],
+    text: selectedSurat?.koreksi_1,
   );
   final TextEditingController koreksi2Controller = TextEditingController(
-    text: selectedSurat['koreksi_2'],
+    text: selectedSurat?.koreksi_2,
   );
   final TextEditingController dokfinalController = TextEditingController(
-    text: selectedSurat['dok_final'],
+    text: selectedSurat?.dok_final,
   );
   final TextEditingController dokdikirimtglController = TextEditingController(
-    text: selectedSurat['dok_dikirim_tgl'],
+    text: selectedSurat?.dok_dikirim!.toIso8601String(),
   );
   final TextEditingController tandaterimaController = TextEditingController(
-    text: selectedSurat['tanda_terima'],
+    text: selectedSurat?.tanda_terima!.toIso8601String(),
   );
 
-  String selectedStatus = selectedSurat['status'];
+  String selectedStatus = selectedSurat!.status!;
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
 
   showGeneralDialog(
@@ -4936,26 +4961,31 @@ void showEditSuratKeluarDialog(
                                   Expanded(
                                     flex: 2,
                                     child: ElevatedButton(
-                                      onPressed: () {
+                                      onPressed: () async {
                                         // Update data
-                                        suratData[index] = {
-                                          'id': selectedSurat['id'],
-                                          'kode': kodeController.text,
-                                          'klasifikasi':
-                                              klasifikasiController.text,
-                                          'no_register':
-                                              noregisterController.text,
-                                          'tujuan_surat':
-                                              tujuansuratController.text,
-                                          'perihal': perihalController.text,
-                                          'tgl_surat': tglsuratController,
-                                          'klasifikasi_arsip':
-                                              klasifikasiarsipController,
-                                          'pengolah': pengolahController,
-                                          'pembuat': pembuatController,
-                                          'catatan': catatanController,
-                                          'status': selectedStatus,
-                                        };
+                                        final data = await _suratKeluarService.editSurat(
+                                          nomor_urut: selectedSurat.nomor_urut,
+                                          kode: kodeController.text,
+                                          akses_arsip: klasifikasiarsipController.text,
+                                          tanggal_surat: tglsuratController.text as DateTime,
+                                          catatan: catatanController.text,
+                                          status: 'Proses',
+                                          tujuan_surat: tujuansuratController.text,
+                                          pembuat: pembuatController.text,
+                                          klasifikasi: klasifikasiController.text,
+                                          koreksi_1: koreksi1Controller.text,
+                                          koreksi_2: koreksi2Controller.text,
+                                          link_surat: linksuratController.text,
+                                          no_register: noregisterController.text,
+                                          pengolah: pengolahController.text,
+                                          perihal: perihalController.text,
+                                          tanda_terima: tandaterimaController.text,
+                                          dok_final: dokfinalController.text,
+                                          dok_dikirim: dokdikirimtglController.text as DateTime
+                                        );
+
+                                        print("[DEBUG] -> [STATUS] : Edit Status");
+                                        print(data);
 
                                         // Refresh state
                                         refreshState();
@@ -5228,10 +5258,11 @@ void showModernHapusMasukDialogDesktop(
   Color accentColor2,
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel?> suratData,
   void Function(int) onConfirmDelete,
 ) {
   Size size = MediaQuery.of(context).size;
+  final surat = suratData[index];
 
   showGeneralDialog(
     context: context,
@@ -5372,7 +5403,7 @@ void showModernHapusMasukDialogDesktop(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            onConfirmDelete(index);
+                            onConfirmDelete(surat!.nomor_urut);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
@@ -5421,10 +5452,11 @@ void showModernHapusDialogDesktop(
   Color accentColor2,
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete,
 ) {
   Size size = MediaQuery.of(context).size;
+  final surat = suratData[index];
 
   showGeneralDialog(
     context: context,
@@ -5565,7 +5597,7 @@ void showModernHapusDialogDesktop(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            onConfirmDelete(index);
+                            onConfirmDelete(surat!.nomor_urut);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
@@ -6406,7 +6438,7 @@ void showDetailActionMenuDisposisiAdmin(
                       ),
                       SizedBox(height: 20),
 
-                      // Edit Button 
+                      // Edit Button
                       buildActionMenuItem(
                         icon: Icons.edit_rounded,
                         title: 'Edit Isi Disposisi',
@@ -6420,7 +6452,7 @@ void showDetailActionMenuDisposisiAdmin(
                             nomorUrutController,
                             onSave: onEditSave,
                             currentValue:
-                                currentNomorUrut, 
+                                currentNomorUrut,
                           );
                         },
                       ),
@@ -6527,7 +6559,7 @@ void showDetailActionMenuDisposisiDesktopAdmin(
 
                       SizedBox(height: 20),
 
-                      // Edit Button 
+                      // Edit Button
                       buildActionMenuItem(
                         icon: Icons.edit_rounded,
                         title: 'Edit Isi Disposisi',
@@ -6541,7 +6573,7 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                             nomorUrutController,
                             onSave: onEditSave,
                             currentValue:
-                                currentNomorUrut, 
+                                currentNomorUrut,
                           );
                         },
                       ),
@@ -6632,7 +6664,7 @@ void showDetailActionMenuDisposisiDesktopUser(
                       ),
                       SizedBox(height: 20),
 
-                      // Edit Button 
+                      // Edit Button
                       buildActionMenuItem(
                         icon: Icons.edit_rounded,
                         title: 'Edit Isi Disposisi',
@@ -6646,7 +6678,7 @@ void showDetailActionMenuDisposisiDesktopUser(
                             nomorUrutController,
                             onSave: onEditSave,
                             currentValue:
-                                currentNomorUrut, 
+                                currentNomorUrut,
                           );
                         },
                       ),
