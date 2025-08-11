@@ -180,7 +180,7 @@ class _SettingPageUserState extends State<SettingPageUser>
                         ),
                       ),
                       Text(
-                        'Admin Panel',
+                        'User Panel',
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.7),
                           fontSize: 14,

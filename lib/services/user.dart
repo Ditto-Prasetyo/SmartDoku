@@ -7,6 +7,7 @@ class UserService {
   Future<UserModel?> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = await prefs.getString('user');
+    print(userJson);
 
     if (userJson != null) {
       final data = jsonDecode(userJson);

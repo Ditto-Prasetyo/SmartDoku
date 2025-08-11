@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/user.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/models/surat.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -60,6 +63,18 @@ class _UserProfileState extends State<UserProfile>
     },
   ];
 
+  UserService _userService = UserService();
+  UserModel? _user;
+
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+
+    setState(() {
+      _user = user;
+      print(_user?.name);
+    });
+  }
+  
   void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
     setState(() {
       _selectedIndex = index;
@@ -75,6 +90,7 @@ class _UserProfileState extends State<UserProfile>
   @override
   void initState() {
     super.initState();
+    _loadUser();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -180,7 +196,7 @@ class _UserProfileState extends State<UserProfile>
                         ),
                       ),
                       Text(
-                        'Admin Panel',
+                        'User Panel',
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.7),
                           fontSize: 14,
@@ -379,7 +395,8 @@ class _UserProfileState extends State<UserProfile>
   }
   
 
-  Widget _buildRecentActivity(Animation<double> _cardAnimation) {
+  Widget buildRecentActivity(Animation<double> _cardAnimation, String? name,
+  String? role) {
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -434,7 +451,78 @@ class _UserProfileState extends State<UserProfile>
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: Colors.grey[200]!, width: 1),
                   ),
-                  child: Row(),
+                  child: Row(
+                    children: [
+                      TweenAnimationBuilder<double>(
+                tween: Tween<double>(begin: 0.8, end: 1.0),
+                duration: Duration(milliseconds: 600),
+                builder: (context, scale, child) {
+                  return Transform.scale(
+                    scale: scale,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF4F46E5).withValues(alpha: 0.4),
+                            blurRadius: 20,
+                            spreadRadius: 5,
+                            offset: Offset(0, 8),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.3),
+                          width: 3,
+                        ),
+                      ),
+                      child: Icon(Icons.person, color: Colors.white, size: 60),
+                    ),
+                  );
+                },
+              ),
+
+              SizedBox(height: 20),
+
+              Text(
+                name?? "-",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Roboto',
+                ),
+              ),
+
+              SizedBox(height: 8),
+
+              Text(
+                role?.toLowerCase() ?? "-",
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  fontSize: 16,
+                  fontFamily: 'Roboto',
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  buildStatItem('Dokumen', '12', Icons.description),
+                  buildStatItem('Proses', '5', Icons.hourglass_empty),
+                  buildStatItem('Selesai', '7', Icons.check_circle),
+                ],
+              ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -448,6 +536,8 @@ class _UserProfileState extends State<UserProfile>
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
+    String? role;
+    String? name;
 
     return Scaffold(
       body: AnimatedBuilder(
@@ -549,7 +639,7 @@ class _UserProfileState extends State<UserProfile>
                         SizedBox(height: 40),
 
                         // Recent activity
-                        Expanded(child: _buildRecentActivity(_cardAnimation)),
+                        Expanded(child: buildRecentActivity(_cardAnimation, _user?.name, _user?.role)),
                       ],
                     ),
                   ),
