@@ -4,6 +4,7 @@ import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/map.dart';
 
 class PermohonanLetterPage extends StatefulWidget {
   const PermohonanLetterPage({super.key});
@@ -1658,7 +1659,13 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      surat.disposisi.join(', '),
+                                                                      (surat.disposisi as List)
+                                                                        .map((item) => workFields.entries
+                                                                          .firstWhere((entry) => entry.value == item['tujuan'],
+                                                                            orElse: () => MapEntry(item['tujuan']!, item['tujuan']!)
+                                                                          ).key
+                                                                        )
+                                                                        .join(', '),
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white

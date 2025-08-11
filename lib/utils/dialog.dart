@@ -2718,7 +2718,7 @@ void showModernActionAdminDialog(
   Color accentColor3,
   Color accentColor4,
   BuildContext context,
-  List<Map<String, dynamic>> suratData,
+  List<dynamic> suratData,
   void Function(int) editDokumen,
   void Function(int) viewDetailAdmin,
   void Function(int) hapusDokumen,

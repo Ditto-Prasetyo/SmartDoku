@@ -4,6 +4,7 @@ import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/map.dart';
 
 class PermohonanLetterPageAdmin extends StatefulWidget {
   final Function(Map<String, dynamic>)? onSuratAdded;
@@ -42,10 +43,13 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   List<SuratMasukModel?> _listSurat = [];
 
   void _loadAllData() async {
+    print('[DEBUG] -> [INFO] : Loading all data "surat masuk" ...');
     final data = await _suratService.listSurat();
 
     setState(() {
+      print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
       _listSurat = data;
+      print(_listSurat.map((e) => e?.toJson()).toList());
     });
   }
 
@@ -54,9 +58,11 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
       isRefreshing = true;
     });
 
+
     await Future.delayed(Duration(seconds: 2));
 
     // API buat call data disini yak..
+    _loadAllData();
 
     setState(() {
       isRefreshing = false;
@@ -89,6 +95,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize background animation
     _backgroundController = AnimationController(
@@ -176,7 +183,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
   void actionSetState(int index) {
     setState(() {
-      _listSurat.removeAt(index);
+      // _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -1428,28 +1435,28 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    // actionAdmin(
-                                                    //   index,
-                                                    //   context,
-                                                    //   _listSurat,
-                                                    //   (i) => editDokumenAdmin(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     refreshEditState,
-                                                    //   ),
-                                                    //   (i) => viewDetailAdmin(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //   ),
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                    actionAdmin(
+                                                      index,
+                                                      context,
+                                                      _listSurat,
+                                                      (i) => editDokumenAdmin(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                        refreshEditState,
+                                                      ),
+                                                      (i) => viewDetailAdmin(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                      ),
+                                                      (i) => hapusDokumen(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                        actionSetState,
+                                                      ),
+                                                    );
                                                     print(
                                                       'Surat dipilih: ${surat?.nama_surat} \ntanggal : ${surat?.tanggal_surat.toString()}',
                                                     );
@@ -1660,7 +1667,13 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      surat?.disposisi == null ? '404 Not Found': surat.disposisi.join(", "),
+                                                                      surat?.disposisi == null ? '404 Not Found': (surat.disposisi as List)
+                                                                        .map((item) => workFields.entries
+                                                                          .firstWhere((entry) => entry.value == item['tujuan'],
+                                                                            orElse: () => MapEntry(item['tujuan']!, item['tujuan']!)
+                                                                          ).key
+                                                                        )
+                                                                        .join(', '),
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white

@@ -415,22 +415,22 @@ void action(
 void actionAdmin(
   int index,
   BuildContext context,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel?> suratData,
   void Function(int) editDokumen,
   void Function(int) viewDetailAdmin,
   void Function(int) hapusDokumen,
 ) {
   final surat = suratData[index];
 
-  String perihal = surat['perihal'] ?? '';
+  String perihal = surat?.hal ?? '';
   String perihalPendek = perihal.length > 30
       ? '${perihal.substring(0, 30)}...'
       : perihal;
-  print('Anda Menggunakan Admin \nAnda memilih surat ${surat['surat_dari']}');
+  print('Anda Menggunakan Admin \nAnda memilih surat ${surat?.nama_surat}');
   showModernActionAdminDialog(
     index,
-    '${surat['surat_dari']}',
-    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat['tgl_surat']}',
+    '${surat?.nama_surat}',
+    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat?.tanggal_surat.toString()}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
@@ -509,10 +509,10 @@ void viewDetailKeluar(
 void viewDetailAdmin(
   BuildContext context,
   int index,
-  List<SuratMasukModel> suratData,
+  List<SuratMasukModel?> suratData,
 ) {
   final surat = suratData[index];
-  print('View Detail - ID: ${surat.id}, Judul: ${surat.nama_surat}');
+  print('View Detail - ID: ${surat?.id}, Judul: ${surat?.nama_surat}');
 
   Navigator.push(
     context,
@@ -549,12 +549,12 @@ void viewDetailAdminKeluar(
   void editDokumenAdmin(
     BuildContext context,
     int index, 
-    List<Map<String, dynamic>> suratData,
+    List<SuratMasukModel?> suratData,
     void Function() refreshEditState
     ) {
     final surat = suratData[index];
-    print('Edit Document - ID: ${surat['id']}, Judul: ${surat['surat_dari']}, \nPengirim : ${surat['pengirim']}');
-    showEditSuratDialog(context, index, suratData, refreshEditState);
+    print('Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengirim : ${surat?.pengolah}');
+    // showEditSuratDialog(context, index, suratData, refreshEditState);
   }
 
   void editDokumenAdminKeluar(
@@ -616,20 +616,20 @@ void tambahSuratKeluarDesktop(BuildContext context, Function(Map<String, dynamic
 void hapusDokumen(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel?> suratData,
   void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
 ) {
   final surat = suratData[index];
-  showModernHapusDialog(
-    '⚠️ Konfirmasi Hapus',
-    'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
-    Colors.orange,
-    Colors.deepOrange,
-    context,
-    index,
-    suratData,
-    onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
-  );
+  // showModernHapusDialog(
+  //   '⚠️ Konfirmasi Hapus',
+  //   'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
+  //   Colors.orange,
+  //   Colors.deepOrange,
+  //   context,
+  //   index,
+  //   suratData,
+  //   onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
+  // );
 }
 
 void hapusDokumenDesktop(

@@ -56,11 +56,6 @@ class _AdminDashboardState extends State<AdminDashboard>
       'color': Colors.lightBlue,
       'isPositive': true,
     },
-    {
-      'icon': Icons.people_alt_rounded,
-      'title': 'Profile Anda',
-      'route': '/admin/desktop/profile_admin_page',
-    },
   ];
 
   final List<Map<String, dynamic>> _sidebarItems = [
