@@ -640,7 +640,7 @@ void hapusDokumenDesktop(
   final surat = suratData[index];
   showModernHapusMasukDialogDesktop(
     '⚠️ Konfirmasi Hapus',
-    'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
+    'Apakah Anda yakin ingin menghapus surat "${surat['surat_dari']}"?',
     Colors.orange,
     Colors.deepOrange,
     context,
@@ -659,7 +659,7 @@ void hapusDokumenKeluar(
   final surat = suratData[index];
   showModernHapusDialog(
     '⚠️ Konfirmasi Hapus',
-    'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
+    'Apakah Anda yakin ingin menghapus surat "${surat['klasifikasi']}"?',
     Colors.orange,
     Colors.deepOrange,
     context,
