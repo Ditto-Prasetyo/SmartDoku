@@ -87,7 +87,7 @@ class _OutgoingLetterPageAdminDesktopState
 
   void actionSetState(int index) {
     setState(() {
-      // _listSurat.removeAt(index);
+      _suratService.deleteSurat(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -112,7 +112,18 @@ class _OutgoingLetterPageAdminDesktopState
   //   return match['nama_pengolah'];
   // }
 
+  void _loadAllData() async {
+    final data = await _suratService.listSurat();
+
+    setState(() {
+      _listSurat = data;
+      print(_listSurat.map((e) => e?.toJson()).toList());
+    });
+  }
+
   void refreshEditState() {
+    _loadAllData();
+
     setState(() {
       // Refresh ListView setelah edit data
       // Data suratData udah diupdate di modal
@@ -148,6 +159,7 @@ class _OutgoingLetterPageAdminDesktopState
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -1466,12 +1478,12 @@ class _OutgoingLetterPageAdminDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               // Handle edit action
-                                                              // editDokumenAdminKeluar(
-                                                              //   context,
-                                                              //   index,
-                                                              //   _listSurat,
-                                                              //   refreshEditState,
-                                                              // );
+                                                              editDokumenAdminKeluar(
+                                                                context,
+                                                                index,
+                                                                _listSurat,
+                                                                refreshEditState,
+                                                              );
                                                             },
                                                             child: Icon(
                                                               Icons
@@ -1512,12 +1524,12 @@ class _OutgoingLetterPageAdminDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               // Handle delete action
-                                                              // hapusDokumenKeluarDesktop(
-                                                              //   context,
-                                                              //   index,
-                                                              //   _listSurat,
-                                                              //   actionSetState,
-                                                              // );
+                                                              hapusDokumenKeluarDesktop(
+                                                                context,
+                                                                index,
+                                                                _listSurat,
+                                                                actionSetState,
+                                                              );
                                                             },
                                                             child: Icon(
                                                               Icons

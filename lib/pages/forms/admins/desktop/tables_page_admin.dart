@@ -937,12 +937,12 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                               ),
                                                               child: InkWell(
                                                                 onTap: () {
-                                                                  editDokumen(
-                                                                    context,
-                                                                    index,
-                                                                    suratData,
-                                                                    refreshEditState,
-                                                                  );
+                                                                  // editDokumen(
+                                                                  //   context,
+                                                                  //   index,
+                                                                  //   suratData,
+                                                                  //   refreshEditState,
+                                                                  // );
                                                                 },
                                                                 child: Icon(
                                                                   Icons

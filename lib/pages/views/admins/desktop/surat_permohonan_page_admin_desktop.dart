@@ -88,7 +88,7 @@ class _PermohonanLettersPageAdminDesktopState
 
   void actionSetState(int index) {
     setState(() {
-      _listSurat.removeAt(index);
+      _suratService.deleteSurat(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -1770,12 +1770,12 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              // editDokumen(
-                                                              //   context,
-                                                              //   index,
-                                                              //   _listSurat,
-                                                              //   refreshEditState,
-                                                              // );
+                                                              editDokumen(
+                                                                context,
+                                                                index,
+                                                                _listSurat,
+                                                                refreshEditState,
+                                                              );
                                                             },
                                                             child: Icon(
                                                               Icons
@@ -1815,12 +1815,12 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              // hapusDokumenDesktop(
-                                                              //   context,
-                                                              //   index,
-                                                              //   _listSurat,
-                                                              //   actionSetState,
-                                                              // );
+                                                              hapusDokumenDesktop(
+                                                                context,
+                                                                index,
+                                                                _listSurat,
+                                                                actionSetState,
+                                                              );
                                                             },
                                                             child: Icon(
                                                               Icons

@@ -68,7 +68,7 @@ class SuratMasuk {
     String? disp1Kadin,
     String? disp2Sekdin,
     String? disp3Kabid,
-    String? disp4Kadin,
+    String? disp4Kasubag,
     String? disp1Notes,
     String? disp2Notes,
     String? disp3Notes,
@@ -106,7 +106,7 @@ class SuratMasuk {
         'disp_1': disp1Kadin,
         'disp_2': disp2Sekdin,
         'disp_3': disp3Kabid,
-        'disp_4': disp4Kadin,
+        'disp_4': disp4Kasubag,
         'disp_1_notes': disp1Notes,
         'disp_2_notes': disp2Notes,
         'disp_3_notes': disp3Notes,
@@ -160,7 +160,7 @@ class SuratMasuk {
     String? disp1Kadin,
     String? disp2Sekdin,
     String? disp3Kabid,
-    String? disp4Kadin,
+    String? disp4Kasubag,
     String? disp1Notes,
     String? disp2Notes,
     String? disp3Notes,
@@ -198,7 +198,7 @@ class SuratMasuk {
         'disp_1': disp1Kadin,
         'disp_2': disp2Sekdin,
         'disp_3': disp3Kabid,
-        'disp_4': disp4Kadin,
+        'disp_4': disp4Kasubag,
         'disp_1_notes': disp1Notes,
         'disp_2_notes': disp2Notes,
         'disp_3_notes': disp3Notes,
@@ -233,9 +233,7 @@ class SuratMasuk {
     }
   }
 
-  Future<SuratMasukModel?> deleteSurat({
-    int? nomor_urut
-  }) async {
+  Future<SuratMasukModel?> deleteSurat(int nomor_urut) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');
@@ -489,9 +487,7 @@ class SuratKeluar {
     }
   }
 
-  Future<SuratKeluarModel?> deleteSurat({
-    int? nomor_urut
-  }) async {
+  Future<SuratKeluarModel?> deleteSurat(int? nomor_urut) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token');

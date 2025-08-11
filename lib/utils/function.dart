@@ -538,11 +538,11 @@ void viewDetailAdminKeluar(
   void editDokumen(
     BuildContext context,
     int index, 
-    List<Map<String, dynamic>> suratData,
+    List<SuratMasukModel?> suratData,
     void Function() refreshEditState
     ) {
     final surat = suratData[index];
-    print('Edit Document - ID: ${surat['id']}, Judul: ${surat['surat_dari']}, \nPengirim : ${surat['pengirim']}');
+    print('Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengolah : ${surat?.pengolah}');
     showEditSuratDialog(context, index, suratData, refreshEditState);
   }
 
@@ -560,11 +560,11 @@ void viewDetailAdminKeluar(
   void editDokumenAdminKeluar(
     BuildContext context,
     int index, 
-    List<Map<String, dynamic>> suratData,
+    List<SuratKeluarModel?> suratData,
     void Function() refreshEditState
     ) {
     final surat = suratData[index];
-    print('Edit Document - ID: ${surat['id']}, Judul: ${surat['surat_dari']}, \nPengirim : ${surat['pengirim']}');
+    print('Edit Document - ID: ${surat?.id}, Judul: ${surat?.klasifikasi}, \nPembuat : ${surat?.pembuat}');
     showEditSuratKeluarDialog(context, index, suratData, refreshEditState);
   }
 
@@ -635,19 +635,19 @@ void hapusDokumen(
 void hapusDokumenDesktop(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
-  void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
+  List<SuratMasukModel?> suratData,
+  void Function(int) onConfirmDelete,
 ) {
   final surat = suratData[index];
   showModernHapusMasukDialogDesktop(
     '⚠️ Konfirmasi Hapus',
-    'Apakah Anda yakin ingin menghapus surat "${surat['surat_dari']}"?',
+    'Apakah Anda yakin ingin menghapus surat "${surat?.nama_surat}"?',
     Colors.orange,
     Colors.deepOrange,
     context,
     index,
     suratData,
-    onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
+    onConfirmDelete,
   );
 }
 
@@ -666,26 +666,26 @@ void hapusDokumenKeluar(
     context,
     index,
     suratData,
-    onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
+    onConfirmDelete,
   );
 }
 
 void hapusDokumenKeluarDesktop(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
-  void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
+  List<SuratKeluarModel?> suratData,
+  void Function(int) onConfirmDelete, 
 ) {
   final surat = suratData[index];
   showModernHapusDialogDesktop(
     '⚠️ Konfirmasi Hapus',
-    'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
+    'Apakah Anda yakin ingin menghapus surat "${surat?.klasifikasi}"?',
     Colors.orange,
     Colors.deepOrange,
     context,
     index,
     suratData,
-    onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
+    onConfirmDelete,
   );
 }
 
