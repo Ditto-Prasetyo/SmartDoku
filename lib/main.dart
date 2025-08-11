@@ -25,6 +25,7 @@ import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_permohonan_page.dart';
+import 'package:smart_doku/test.dart';
 import 'dart:io' show Platform;
 import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -81,7 +82,7 @@ class SmartDoku extends StatelessWidget {
         Locale('id', 'ID'), // Indonesia
         Locale('en', 'US'), // English
       ],
-      home: LoginPage(),
+      home: MultiSelectDropdownExample(),
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone
