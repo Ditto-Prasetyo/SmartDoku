@@ -265,7 +265,7 @@ class SuratMasuk {
     }
   }
 
-  // Upload file
+  // Files services
   Future<bool> uploadFile(int nomor_urut, File file) async {
     final prefs = await SharedPreferences.getInstance();
     final token = await prefs.getString('token');
@@ -351,34 +351,23 @@ class SuratKeluar {
   }
 
   Future<SuratKeluarModel?> addSurat({
-    String? suratDari,
-    DateTime? tanggalDiterima,
-    DateTime? tanggalSurat,
     String? kode,
-    String? noAgenda,
-    String? noSurat,
-    String? hal,
-    DateTime? tanggalWaktu,
-    String? tempat,
-    dynamic disposisi,
-    String? index,
+    String? klasifikasi,
+    String? no_register,
+    String? tujuan_surat,
+    String? perihal,
+    DateTime? tanggal_surat,
+    String? akses_arsip,
     String? pengolah,
-    String? sifat,
-    String? linkScan,
-    String? disp1Kadin,
-    String? disp2Sekdin,
-    String? disp3Kabid,
-    String? disp4Kadin,
-    String? disp1Notes,
-    String? disp2Notes,
-    String? disp3Notes,
-    String? disp4Notes,
-    String? dispLanjut,
-    DateTime? tindakLanjut1,
-    DateTime? tindakLanjut2,
-    String? tl1Notes,
-    String? tl2Notes,
+    String? pembuat,
+    String? catatan,
+    String? link_surat,
+    String? koreksi_1,
+    String? koreksi_2,
     String? status,
+    String? dok_final,
+    DateTime? dok_dikirim,
+    String? tanda_terima
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -386,37 +375,26 @@ class SuratKeluar {
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
-      final url = Uri.parse("${dotenv.env['API_URL']}/surat/masuk");
+      final url = Uri.parse("${dotenv.env['API_URL']}/surat/keluar");
 
       final body = {
-        'nama_surat': suratDari,
-        'tanggal_diterima': tanggalDiterima?.toIso8601String(),
-        'tanggal_surat': tanggalSurat?.toIso8601String(),
         'kode': kode,
-        'no_agenda': noAgenda,
-        'no_surat': noSurat,
-        'hal': hal,
-        'tanggal_waktu': tanggalWaktu?.toIso8601String(),
-        'tempat': tempat,
-        'disposisi': disposisi,
-        'index': index,
+        'klasifikasi': klasifikasi,
+        'no_register': no_register,
+        'tujuan_surat': tujuan_surat,
+        'perihal': perihal,
+        'tanggal_surat': tanggal_surat?.toIso8601String(),
+        'akses_arsip': akses_arsip,
         'pengolah': pengolah,
-        'sifat': sifat,
-        'link_scan': linkScan,
-        'disp_1': disp1Kadin,
-        'disp_2': disp2Sekdin,
-        'disp_3': disp3Kabid,
-        'disp_4': disp4Kadin,
-        'disp_1_notes': disp1Notes,
-        'disp_2_notes': disp2Notes,
-        'disp_3_notes': disp3Notes,
-        'disp_4_notes': disp4Notes,
-        'disp_lanjut': dispLanjut,
-        'tindak_lanjut_1': tindakLanjut1?.toIso8601String(),
-        'tindak_lanjut_2': tindakLanjut2?.toIso8601String(),
-        'tl_notes_1': tl1Notes,
-        'tl_notes_2': tl2Notes,
+        'pembuat': pembuat,
+        'catatan': catatan,
+        'link_surat': link_surat,
+        'koreksi_1': koreksi_1,
+        'koreksi_2': koreksi_2,
         'status': status,
+        'dok_final': dok_final,
+        'dok_dikirim': dok_dikirim?.toIso8601String(),
+        'tanda_terima': tanda_terima
       };
 
       final response = await http.post(
@@ -441,36 +419,25 @@ class SuratKeluar {
     }
   }
 
-  Future<SuratMasukModel?> editSurat({
+  Future<SuratKeluarModel?> editSurat({
     int? nomor_urut,
-    String? suratDari,
-    DateTime? tanggalDiterima,
-    DateTime? tanggalSurat,
     String? kode,
-    String? noAgenda,
-    String? noSurat,
-    String? hal,
-    DateTime? tanggalWaktu,
-    String? tempat,
-    dynamic disposisi,
-    String? index,
+    String? klasifikasi,
+    String? no_register,
+    String? tujuan_surat,
+    String? perihal,
+    DateTime? tanggal_surat,
+    String? akses_arsip,
     String? pengolah,
-    String? sifat,
-    String? linkScan,
-    String? disp1Kadin,
-    String? disp2Sekdin,
-    String? disp3Kabid,
-    String? disp4Kadin,
-    String? disp1Notes,
-    String? disp2Notes,
-    String? disp3Notes,
-    String? disp4Notes,
-    String? dispLanjut,
-    DateTime? tindakLanjut1,
-    DateTime? tindakLanjut2,
-    String? tl1Notes,
-    String? tl2Notes,
+    String? pembuat,
+    String? catatan,
+    String? link_surat,
+    String? koreksi_1,
+    String? koreksi_2,
     String? status,
+    String? dok_final,
+    DateTime? dok_dikirim,
+    String? tanda_terima
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -478,37 +445,26 @@ class SuratKeluar {
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
-      final url = Uri.parse("${dotenv.env['API_URL']}/surat/masuk/$nomor_urut");
+      final url = Uri.parse("${dotenv.env['API_URL']}/surat/keluar/$nomor_urut");
 
       final body = {
-        'nama_surat': suratDari,
-        'tanggal_diterima': tanggalDiterima?.toIso8601String(),
-        'tanggal_surat': tanggalSurat?.toIso8601String(),
         'kode': kode,
-        'no_agenda': noAgenda,
-        'no_surat': noSurat,
-        'hal': hal,
-        'tanggal_waktu': tanggalWaktu?.toIso8601String(),
-        'tempat': tempat,
-        'disposisi': disposisi,
-        'index': index,
+        'klasifikasi': klasifikasi,
+        'no_register': no_register,
+        'tujuan_surat': tujuan_surat,
+        'perihal': perihal,
+        'tanggal_surat': tanggal_surat?.toIso8601String(),
+        'akses_arsip': akses_arsip,
         'pengolah': pengolah,
-        'sifat': sifat,
-        'link_scan': linkScan,
-        'disp_1': disp1Kadin,
-        'disp_2': disp2Sekdin,
-        'disp_3': disp3Kabid,
-        'disp_4': disp4Kadin,
-        'disp_1_notes': disp1Notes,
-        'disp_2_notes': disp2Notes,
-        'disp_3_notes': disp3Notes,
-        'disp_4_notes': disp4Notes,
-        'disp_lanjut': dispLanjut,
-        'tindak_lanjut_1': tindakLanjut1?.toIso8601String(),
-        'tindak_lanjut_2': tindakLanjut2?.toIso8601String(),
-        'tl_notes_1': tl1Notes,
-        'tl_notes_2': tl2Notes,
+        'pembuat': pembuat,
+        'catatan': catatan,
+        'link_surat': link_surat,
+        'koreksi_1': koreksi_1,
+        'koreksi_2': koreksi_2,
         'status': status,
+        'dok_final': dok_final,
+        'dok_dikirim': dok_dikirim?.toIso8601String(),
+        'tanda_terima': tanda_terima
       };
 
       final response = await http.put(
@@ -522,7 +478,7 @@ class SuratKeluar {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return SuratMasukModel.fromJson(data);
+        return SuratKeluarModel.fromJson(data);
       } else {
         print('Gagal tambah surat: ${response.body}');
         return null;
@@ -542,7 +498,7 @@ class SuratKeluar {
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
-      final url = Uri.parse("${dotenv.env['API_URL']}/surat/masuk/$nomor_urut");
+      final url = Uri.parse("${dotenv.env['API_URL']}/surat/keluar/$nomor_urut");
 
       final response = await http.delete(
         url,
@@ -565,7 +521,7 @@ class SuratKeluar {
     }
   }
 
-  // Upload file
+  // Files services
   Future<bool> uploadFile(int nomor_urut, File file) async {
     final prefs = await SharedPreferences.getInstance();
     final token = await prefs.getString('token');
