@@ -70,6 +70,11 @@ class _UserDashboardState extends State<UserDashboard>
       'title': 'Pengaturan',
       'route': '/user/desktop/setting_page',
     },
+    {
+      'icon': Icons.people_alt_rounded,
+      'title': 'Profile Anda',
+      'route': '/user/desktop/profile_user_page',
+    },
   ];
 
   void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {

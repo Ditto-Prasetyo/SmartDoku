@@ -4,6 +4,7 @@ import 'package:line_icons/line_icons.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/utils/widget.dart';
 
 class SettingPageUser extends StatefulWidget {
   const SettingPageUser({super.key});
@@ -51,6 +52,11 @@ class _SettingPageUserState extends State<SettingPageUser>
       'icon': Icons.settings_outlined,
       'title': 'Pengaturan',
       'route': '/user/desktop/setting_page',
+    },
+    {
+      'icon': Icons.people_alt_rounded,
+      'title': 'Profile Anda',
+      'route': '/user/desktop/profile_user_page',
     },
   ];
 
@@ -406,15 +412,7 @@ class _SettingPageUserState extends State<SettingPageUser>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Aktivitas Terbaru',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Roboto',
-                ),
-              ),
+              buildSectionTitleDisposisiDesktop('Pengaturan'),
               SizedBox(height: 20),
               Expanded(
                 child: Container(

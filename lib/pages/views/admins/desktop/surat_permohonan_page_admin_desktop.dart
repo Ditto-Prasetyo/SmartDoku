@@ -78,6 +78,11 @@ class _PermohonanLettersPageAdminDesktopState
       'title': 'Pengaturan',
       'route': '/admin/desktop/setting_page',
     },
+    {
+      'icon': Icons.people_alt_rounded,
+      'title': 'Profile Anda',
+      'route': '/admin/desktop/profile_admin_page',
+    },
   ];
 
   void actionSetState(int index) {
