@@ -524,10 +524,9 @@ class _PermohonanLettersPageAdminDesktopState
                               InkWell(
                                 onTap: () {
                                   tambahSuratMasukDesktop(context, (newSurat) {
-                                    // setState(() {
-                                    //   // Tambahin ke list suratData lu
-                                    //   _listSurat.add(newSurat);
-                                    // });
+                                    setState(() {
+                                      
+                                    });
                                   });
                                 },
                                 child: Icon(
