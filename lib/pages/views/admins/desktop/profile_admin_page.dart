@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/user.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -23,6 +25,9 @@ class _AdminProfileState extends State<AdminProfile>
 
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
+
+  late AnimationController _profileController;
+  late Animation<double> _profileAnimation;
 
   // Selected sidebar item
   int _selectedIndex = 6;
@@ -65,21 +70,34 @@ class _AdminProfileState extends State<AdminProfile>
     },
   ];
 
-  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+  UserService _userService = UserService();
+  UserModel? _user;
+
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+
+    setState(() {
+      _user = user;
+      print(_user?.name);
+    });
+  }
+
+  void _navigateToPage(
+    BuildContext context,
+    Map<String, dynamic> item,
+    int index,
+  ) {
     setState(() {
       _selectedIndex = index;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      item['route'], 
-      (route) => false, 
-    );
+    Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
   @override
   void initState() {
     super.initState();
+    _loadUser();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -93,6 +111,14 @@ class _AdminProfileState extends State<AdminProfile>
       ),
     );
 
+    _profileController = AnimationController(
+      duration: Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _profileAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _profileController, curve: Curves.elasticOut),
+    );
+
     _cardController = AnimationController(
       duration: Duration(milliseconds: 1200),
       vsync: this,
@@ -103,12 +129,18 @@ class _AdminProfileState extends State<AdminProfile>
 
     _backgroundController.repeat(reverse: true);
     _cardController.forward();
+
+    // Delay profile animation
+    Future.delayed(Duration(milliseconds: 300), () {
+      _profileController.forward();
+    });
   }
 
   @override
   void dispose() {
     _backgroundController.dispose();
     _cardController.dispose();
+    _profileController.dispose();
     super.dispose();
   }
 
@@ -348,7 +380,7 @@ class _AdminProfileState extends State<AdminProfile>
               ),
             ),
           ),
-        
+
           // Build Number items
           Container(
             padding: EdgeInsets.all(20),
@@ -382,68 +414,608 @@ class _AdminProfileState extends State<AdminProfile>
       ),
     );
   }
-  
 
-  Widget _buildRecentActivity(Animation<double> _cardAnimation) {
+  Widget buildAdminProfilePage(
+    Animation<double> _cardAnimation,
+    String? role,
+    String? name,
+    String? username,
+    String? email,
+  ) {
     return Transform.translate(
-      offset: Offset(0, 50 * (1 - _cardAnimation.value)),
+      offset: Offset(0, 30 * (1 - _cardAnimation.value).clamp(0.0, 1.0)),
       child: Opacity(
-        opacity: _cardAnimation.value.clamp(0.0, 1.0),
+        opacity: _cardAnimation.value.clamp(0.0, 1.0).clamp(0.0, 1.0),
         child: Container(
-          padding: EdgeInsets.all(24),
+          padding: EdgeInsets.all(30),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                Color.fromRGBO(255, 255, 255, 0.2),
-                Color.fromRGBO(248, 250, 252, 0.05),
-                Color.fromRGBO(241, 245, 249, 0.05),
-                Color.fromRGBO(255, 255, 255, 0.2),
+                Colors.white.withValues(alpha: 0.15),
+                Colors.white.withValues(alpha: 0.05),
+                Colors.white.withValues(alpha: 0.05),
+                Colors.white.withValues(alpha: 0.1),
               ],
             ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withAlpha(150)),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.2),
+              width: 1.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withAlpha(25),
-                blurRadius: 8,
-                spreadRadius: 1,
-                offset: Offset(0, -4),
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 20,
+                spreadRadius: 5,
+                offset: Offset(0, 10),
               ),
             ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              buildSectionTitleDisposisiDesktop('Profile Anda'),
-              SizedBox(height: 20),
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 12),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                            Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.2),
-                          ],
+              // Header Section
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFFDC2626), Color(0xFFEA580C)],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!, width: 1),
+                    child: Icon(
+                      Icons.admin_panel_settings,
+                      color: Colors.white,
+                      size: 28,
+                    ),
                   ),
-                  child: Row(),
+                  SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Admin Profile',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                      Text(
+                        'Informasi lengkap Administrator sistem',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.7),
+                          fontSize: 16,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 20), // Reduced from 40 to save space
+              // Profile Content - Make this scrollable
+              Expanded(
+                child: SingleChildScrollView(
+                  // Added scrollable wrapper
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Left Side - Admin Profile Info
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            // Admin Avatar and Info
+                            Container(
+                              padding: EdgeInsets.all(24), // Reduced padding
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.1),
+                                    Colors.white.withValues(alpha: 0.05),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Column(
+                                children: [
+                                  // Animated Admin Avatar - Reduced size
+                                  AnimatedBuilder(
+                                    animation: _profileAnimation,
+                                    builder: (context, child) {
+                                      return Transform.scale(
+                                        scale:
+                                            0.8 +
+                                            (0.2 * _profileAnimation.value),
+                                        child: Container(
+                                          width: 100, // Reduced from 140
+                                          height: 100, // Reduced from 140
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                Color(0xFFDC2626),
+                                                Color(0xFFEA580C),
+                                                Color(0xFFF59E0B),
+                                              ],
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color(
+                                                  0xFFDC2626,
+                                                ).withValues(alpha: 0.5),
+                                                blurRadius:
+                                                    20, // Reduced shadow
+                                                spreadRadius:
+                                                    4, // Reduced shadow
+                                                offset: Offset(
+                                                  0,
+                                                  10,
+                                                ), // Reduced shadow
+                                              ),
+                                            ],
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.4,
+                                              ),
+                                              width: 3, // Reduced border
+                                            ),
+                                          ),
+                                          child: Icon(
+                                            Icons.admin_panel_settings,
+                                            color: Colors.white,
+                                            size: 50, // Reduced from 70
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                  SizedBox(height: 16), // Reduced spacing
+                                  // Admin Name
+                                  Text(
+                                    name ?? "User Name",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24, // Reduced from 28
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Roboto',
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 8),
+
+                                  // Admin Role Badge
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(
+                                            0xFFDC2626,
+                                          ).withValues(alpha: 0.2),
+                                          Color(
+                                            0xFFEA580C,
+                                          ).withValues(alpha: 0.1),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: Color(
+                                          0xFFDC2626,
+                                        ).withValues(alpha: 0.3),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      role?.toUpperCase() ?? "ADMIN",
+                                      style: TextStyle(
+                                        color: Color(0xFFDC2626),
+                                        fontSize: 12, // Reduced from 14
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'Roboto',
+                                        letterSpacing: 1,
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 16), // Reduced spacing
+                                  // Admin Info Cards
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      _buildInfoItem(
+                                        'Status',
+                                        'Online',
+                                        Icons.circle,
+                                        Color(0xFF10B981),
+                                      ),
+                                      _buildInfoItem(
+                                        'Access Level',
+                                        'Full',
+                                        Icons.security,
+                                        Color(0xFFDC2626),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 16), // Reduced spacing
+                            // Admin Information - Set fixed height
+                            Container(
+                              height:
+                                  300, // Set fixed height instead of Expanded
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.1),
+                                    Colors.white.withValues(alpha: 0.05),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Informasi Admin',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Roboto',
+                                    ),
+                                  ),
+                                  SizedBox(height: 16),
+                                  Expanded(
+                                    child: ListView(
+                                      children: [
+                                        _buildAdminInfoCard(
+                                          'Username',
+                                          _user?.username ?? 'user123',
+                                          Icons.person_outline,
+                                          Color(0xFF3B82F6),
+                                        ),
+                                        SizedBox(height: 12),
+                                        _buildAdminInfoCard(
+                                          'Email',
+                                          _user?.email ?? 'user@smartdoku.com',
+                                          Icons.email_outlined,
+                                          Color(0xFF10B981),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(width: 30),
+
+                      // Right Side - System Statistics
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'System Overview',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Roboto',
+                              ),
+                            ),
+                            SizedBox(height: 20),
+
+                            // System Statistics Grid - Set fixed height
+                            Container(
+                              height: 600, 
+                              child: GridView.count(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 20,
+                                mainAxisSpacing: 20,
+                                childAspectRatio: 1.2,
+                                children: [
+                                  buildAdminStatCard(
+                                    'Total Users',
+                                    '156',
+                                    Icons.people,
+                                    Color(0xFF3B82F6),
+                                  ),
+                                  buildAdminStatCard(
+                                    'Active Sessions',
+                                    '42',
+                                    Icons.online_prediction,
+                                    Color(0xFF10B981),
+                                  ),
+                                  buildAdminStatCard(
+                                    'Pending Documents',
+                                    '23',
+                                    Icons.pending_actions,
+                                    Color(0xFFF59E0B),
+                                  ),
+                                  buildAdminStatCard(
+                                    'System Health',
+                                    '98%',
+                                    Icons.health_and_safety,
+                                    Color(0xFF059669),
+                                  ),
+                                  buildAdminStatCard(
+                                    'Storage Used',
+                                    '67%',
+                                    Icons.storage,
+                                    Color(0xFF8B5CF6),
+                                  ),
+                                  buildAdminStatCard(
+                                    'Daily Reports',
+                                    '12',
+                                    Icons.analytics,
+                                    Color(0xFFEF4444),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoItem(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return AnimatedBuilder(
+      animation: _profileAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, 20 * (1 - _profileAnimation.value).clamp(0.0, 1.0)),
+          child: Opacity(
+            opacity: _profileAnimation.value.clamp(0.0, 1.0),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    color.withValues(alpha: 0.15),
+                    color.withValues(alpha: 0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: color.withValues(alpha: 0.2)),
+              ),
+              child: Column(
+                children: [
+                  Icon(icon, color: color, size: 24),
+                  SizedBox(height: 8),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 12,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildAdminInfoCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return AnimatedBuilder(
+      animation: _profileAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(20 * (1 - _profileAnimation.value).clamp(0.0, 1.0), 0),
+          child: Opacity(
+            opacity: _profileAnimation.value.clamp(0.0, 1.0),
+            child: Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.1),
+                    Colors.white.withValues(alpha: 0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: color.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.1),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [color, color.withValues(alpha: 0.8)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: Colors.white, size: 24),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 14,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          value,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildAdminStatCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return AnimatedBuilder(
+      animation: _profileAnimation,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: 0.8 + (0.2 * _profileAnimation.value.clamp(0.0, 1.0)),
+          child: Container(
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  color.withValues(alpha: 0.2),
+                  color.withValues(alpha: 0.1),
+                ],
+              ),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: color.withValues(alpha: 0.3),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.2),
+                  blurRadius: 15,
+                  spreadRadius: 1,
+                  offset: Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [color, color.withValues(alpha: 0.8)],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: Colors.white, size: 24),
+                ),
+                SizedBox(height: 12),
+                Text(
+                  value,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontSize: 14,
+                    fontFamily: 'Roboto',
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -552,7 +1124,7 @@ class _AdminProfileState extends State<AdminProfile>
                         SizedBox(height: 40),
 
                         // Recent activity
-                        Expanded(child: _buildRecentActivity(_cardAnimation)),
+                        Expanded(child: buildAdminProfilePage(_cardAnimation, _user?.role, _user?.name, _user?.username, _user?.email)),
                       ],
                     ),
                   ),

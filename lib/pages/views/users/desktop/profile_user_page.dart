@@ -27,6 +27,9 @@ class _UserProfileState extends State<UserProfile>
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
 
+  late AnimationController _profileController;
+  late Animation<double> _profileAnimation;
+
   // Selected sidebar item
   int _selectedIndex = 5;
 
@@ -74,17 +77,17 @@ class _UserProfileState extends State<UserProfile>
       print(_user?.name);
     });
   }
-  
-  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+
+  void _navigateToPage(
+    BuildContext context,
+    Map<String, dynamic> item,
+    int index,
+  ) {
     setState(() {
       _selectedIndex = index;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      item['route'], 
-      (route) => false, 
-    );
+    Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
   @override
@@ -112,14 +115,28 @@ class _UserProfileState extends State<UserProfile>
       CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
 
+    _profileController = AnimationController(
+      duration: Duration(milliseconds: 800),
+      vsync: this,
+    );
+    _profileAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _profileController, curve: Curves.elasticOut),
+    );
+
     _backgroundController.repeat(reverse: true);
     _cardController.forward();
+    
+    // Delay profile animation
+    Future.delayed(Duration(milliseconds: 300), () {
+      _profileController.forward();
+    });
   }
 
   @override
   void dispose() {
     _backgroundController.dispose();
     _cardController.dispose();
+    _profileController.dispose();
     super.dispose();
   }
 
@@ -166,11 +183,6 @@ class _UserProfileState extends State<UserProfile>
                         offset: Offset(0, 4),
                       ),
                     ],
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.white.withValues(alpha: 0.8),
-                      ),
-                    ),
                   ),
                   child: Image.asset(
                     'images/Icon_App.png',
@@ -359,7 +371,7 @@ class _UserProfileState extends State<UserProfile>
               ),
             ),
           ),
-        
+
           // Build Number items
           Container(
             padding: EdgeInsets.all(20),
@@ -393,136 +405,374 @@ class _UserProfileState extends State<UserProfile>
       ),
     );
   }
-  
 
-  Widget buildRecentActivity(Animation<double> _cardAnimation, String? name,
-  String? role) {
+  Widget _buildUserInfoCard(String title, String value, IconData icon, Color color) {
+    return AnimatedBuilder(
+      animation: _profileAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(20 * (1 - _profileAnimation.value), 0),
+          child: Opacity(
+            opacity: _profileAnimation.value,
+            child: Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.1),
+                    Colors.white.withValues(alpha: 0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: color.withValues(alpha: 0.3),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.1),
+                    blurRadius: 10,
+                    spreadRadius: 1,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [color, color.withValues(alpha: 0.8)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontSize: 14,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          value,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildProfilePage(
+    Animation<double> _cardAnimation,
+    String? name,
+    String? role,
+    String? bidang,
+    String? email,
+    String? username
+  ) {
     return Transform.translate(
-      offset: Offset(0, 50 * (1 - _cardAnimation.value)),
+      offset: Offset(0, 30 * (1 - _cardAnimation.value)),
       child: Opacity(
         opacity: _cardAnimation.value.clamp(0.0, 1.0),
         child: Container(
-          padding: EdgeInsets.all(24),
+          padding: EdgeInsets.all(30),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
               colors: [
-                Color.fromRGBO(255, 255, 255, 0.2),
-                Color.fromRGBO(248, 250, 252, 0.05),
-                Color.fromRGBO(241, 245, 249, 0.05),
-                Color.fromRGBO(255, 255, 255, 0.2),
+                Colors.white.withValues(alpha: 0.15),
+                Colors.white.withValues(alpha: 0.05),
+                Colors.white.withValues(alpha: 0.05),
+                Colors.white.withValues(alpha: 0.1),
               ],
             ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withAlpha(150)),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.2),
+              width: 1.5,
+            ),
             boxShadow: [
               BoxShadow(
-                color: Colors.white.withAlpha(25),
-                blurRadius: 8,
-                spreadRadius: 1,
-                offset: Offset(0, -4),
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 20,
+                spreadRadius: 5,
+                offset: Offset(0, 10),
               ),
             ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              buildSectionTitleDisposisiDesktop(
-                      'Profile Anda',
+              // Header Section
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                      ),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-              SizedBox(height: 20),
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 12),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                            Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.2),
-                          ],
+                    child: Icon(
+                      Icons.people_alt_rounded,
+                      color: Colors.white,
+                      size: 28,
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!, width: 1),
                   ),
-                  child: Row(
+                  SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TweenAnimationBuilder<double>(
-                tween: Tween<double>(begin: 0.8, end: 1.0),
-                duration: Duration(milliseconds: 600),
-                builder: (context, scale, child) {
-                  return Transform.scale(
-                    scale: scale,
-                    child: Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Color(0xFF4F46E5).withValues(alpha: 0.4),
-                            blurRadius: 20,
-                            spreadRadius: 5,
-                            offset: Offset(0, 8),
-                          ),
-                        ],
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.3),
-                          width: 3,
+                      Text(
+                        'Profile Anda',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto',
                         ),
                       ),
-                      child: Icon(Icons.person, color: Colors.white, size: 60),
-                    ),
-                  );
-                },
-              ),
-
-              SizedBox(height: 20),
-
-              Text(
-                name?? "-",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-
-              SizedBox(height: 8),
-
-              Text(
-                role?.toLowerCase() ?? "-",
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.8),
-                  fontSize: 16,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-
-              SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildStatItem('Dokumen', '12', Icons.description),
-                  buildStatItem('Proses', '5', Icons.hourglass_empty),
-                  buildStatItem('Selesai', '7', Icons.check_circle),
-                ],
-              ),
+                      Text(
+                        'Informasi lengkap mengenai akun Anda',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.7),
+                          fontSize: 16,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
                     ],
                   ),
+                ],
+              ),
+
+              SizedBox(height: 40),
+
+              // Profile Content
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Left Side - Profile Info
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        children: [
+                          // Profile Avatar and Info
+                          Container(
+                            padding: EdgeInsets.all(32),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.white.withValues(alpha: 0.1),
+                                  Colors.white.withValues(alpha: 0.05),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.15),
+                                width: 1,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                // Animated Profile Avatar
+                                AnimatedBuilder(
+                                  animation: _profileAnimation,
+                                  builder: (context, child) {
+                                    return Transform.scale(
+                                      scale: 0.8 + (0.2 * _profileAnimation.value),
+                                      child: Container(
+                                        width: 140,
+                                        height: 140,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Color(0xFF4F46E5),
+                                              Color(0xFF7C3AED),
+                                              Color(0xFF8B5CF6),
+                                            ],
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                                              blurRadius: 30,
+                                              spreadRadius: 8,
+                                              offset: Offset(0, 15),
+                                            ),
+                                          ],
+                                          border: Border.all(
+                                            color: Colors.white.withValues(alpha: 0.4),
+                                            width: 4,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.person,
+                                          color: Colors.white,
+                                          size: 70,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+
+                                SizedBox(height: 24),
+
+                                // User Name
+                                Text(
+                                  name ?? "User Name",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+
+                                SizedBox(height: 8),
+
+                                // User Role
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 8,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color(0xFF10B981).withValues(alpha: 0.2),
+                                        Color(0xFF059669).withValues(alpha: 0.1),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                      color: Color(0xFF10B981).withValues(alpha: 0.3),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    role?.toUpperCase() ?? "USER ROLE",
+                                    style: TextStyle(
+                                      color: Color(0xFF10B981),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'Roboto',
+                                      letterSpacing: 1,
+                                    ),
+                                  ),
+                                ),
+
+                                SizedBox(height: 24),
+
+                                // Additional Info Cards
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _buildInfoItem(
+                                      'Status',
+                                      'Aktif',
+                                      Icons.check_circle,
+                                      Color(0xFF10B981),
+                                    ),
+                                    _buildInfoItem(
+                                      'Bergabung',
+                                      '2024',
+                                      Icons.calendar_today,
+                                      Color(0xFF3B82F6),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(width: 30),
+
+                    // Right Side - User Information
+                    Expanded(
+                      flex: 3,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Informasi Pengguna',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          
+                          // User Information Cards
+                          Expanded(
+                            child: ListView(
+                              children: [
+                                _buildUserInfoCard(
+                                  'Username',
+                                  _user?.username ?? 'user123',
+                                  Icons.person_outline,
+                                  Color(0xFF3B82F6),
+                                ),
+                                SizedBox(height: 16),
+                                _buildUserInfoCard(
+                                  'Email',
+                                  _user?.email ?? 'user@smartdoku.com',
+                                  Icons.email_outlined,
+                                  Color(0xFF10B981),
+                                ),
+                                SizedBox(height: 16),
+                                _buildUserInfoCard(
+                                  'Bidang',
+                                  _user?.bidang ?? 'Administrasi',
+                                  Icons.work_outline,
+                                  Color(0xFF8B5CF6),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -532,12 +782,66 @@ class _UserProfileState extends State<UserProfile>
     );
   }
 
+  Widget _buildInfoItem(String title, String value, IconData icon, Color color) {
+    return AnimatedBuilder(
+      animation: _profileAnimation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, 20 * (1 - _profileAnimation.value).clamp(0.0, 1.0)),
+          child: Opacity(
+            opacity: _profileAnimation.value.clamp(0.0, 1.0),
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    color.withValues(alpha: 0.15),
+                    color.withValues(alpha: 0.05),
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: color.withValues(alpha: 0.2),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Icon(
+                    icon,
+                    color: color,
+                    size: 24,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.7),
+                      fontSize: 12,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    String? role;
-    String? name;
 
     return Scaffold(
       body: AnimatedBuilder(
@@ -577,70 +881,13 @@ class _UserProfileState extends State<UserProfile>
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.all(30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Header
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Setting',
-                                  style: TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Anda Dapat Mengatur Pengaturan Aplikasi di Sini!',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              padding: EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFF4F46E5),
-                                    Color(0xFF7C3AED),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(
-                                      0xFF4F46E5,
-                                    ).withValues(alpha: 0.3),
-                                    blurRadius: 10,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.settings_outlined,
-                                color: Colors.white,
-                                size: 24,
-                              ),
-                            ),
-                          ],
-                        ),
-
-                        SizedBox(height: 40),
-
-                        // Recent activity
-                        Expanded(child: buildRecentActivity(_cardAnimation, _user?.name, _user?.role)),
-                      ],
+                    child: buildProfilePage(
+                      _cardAnimation,
+                      _user?.name,
+                      _user?.role,
+                      _user?.bidang,
+                      _user?.email,
+                      _user?.username
                     ),
                   ),
                 ),
