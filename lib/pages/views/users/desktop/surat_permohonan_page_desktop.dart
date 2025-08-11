@@ -75,271 +75,9 @@ class _PermohonanLettersPageDesktopState
     },
   ];
 
-  List<Map<String, dynamic>> suratData = [
-    {
-      'id': '1',
-      'surat_dari': 'Surat Pemberitahuan Rapat Bulanan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal':
-          'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
-      'tanggal': '28 Juli 2025',
-      'pengirim': 'HRD Department',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'notes_disposisi_kadin': '',
-      'notes_disposisi_sekdin': '',
-      'notes_disposisi_kabid': '',
-      'notes_disposisi_kasubag': '',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '2',
-      'surat_dari': 'Pengajuan Cuti Tahunan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'notes_disposisi_kadin': '',
-      'notes_disposisi_sekdin': '',
-      'notes_disposisi_kabid': '',
-      'notes_disposisi_kasubag': '',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '3',
-      'surat_dari': 'Laporan Keuangan Q2 2025',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Report keuangan triwulan kedua tahun 2025',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'notes_disposisi_kadin': '',
-      'notes_disposisi_sekdin': '',
-      'notes_disposisi_kabid': '',
-      'notes_disposisi_kasubag': '',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '4',
-      'surat_dari': 'Undangan Seminar IT',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'notes_disposisi_kadin': '',
-      'notes_disposisi_sekdin': '',
-      'notes_disposisi_kabid': '',
-      'notes_disposisi_kasubag': '',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '5',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'notes_disposisi_kadin': '',
-      'notes_disposisi_sekdin': '',
-      'notes_disposisi_kabid': '',
-      'notes_disposisi_kasubag': '',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '6',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'notes_disposisi_kadin': '',
-      'notes_disposisi_sekdin': '',
-      'notes_disposisi_kabid': '',
-      'notes_disposisi_kasubag': '',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '7',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'notes_disposisi_kadin': '',
-      'notes_disposisi_sekdin': '',
-      'notes_disposisi_kabid': '',
-      'notes_disposisi_kasubag': '',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '8',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'notes_disposisi_kadin': '',
-      'notes_disposisi_sekdin': '',
-      'notes_disposisi_kabid': '',
-      'notes_disposisi_kasubag': '',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-  ];
-
   void actionSetState(int index) {
     setState(() {
-      suratData.removeAt(index);
+      _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -735,7 +473,7 @@ class _PermohonanLettersPageDesktopState
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '${suratData.length} Data',
+                                '${_listSurat.length} Data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -1297,10 +1035,10 @@ class _PermohonanLettersPageDesktopState
                                         controller: _verticalScrollController,
                                         scrollDirection: Axis.vertical,
                                         child: Column(
-                                          children: List.generate(suratData.length, (
+                                          children: List.generate(_listSurat.length, (
                                             index,
                                           ) {
-                                            final surat = suratData[index];
+                                            final surat = _listSurat[index];
 
                                             return Container(
                                               padding: EdgeInsets.symmetric(
@@ -1319,7 +1057,7 @@ class _PermohonanLettersPageDesktopState
                                               child: InkWell(
                                                 onTap: () {
                                                   print(
-                                                    'Row tapped: ${surat['judul']}',
+                                                    'Row tapped: ${surat?.nama_surat}',
                                                   );
                                                 },
                                                 borderRadius:
@@ -1395,10 +1133,9 @@ class _PermohonanLettersPageDesktopState
                                                                   .start,
                                                           children: [
                                                             Text(
-                                                              surat['surat_dari']
-                                                                      .isEmpty
+                                                              surat?.nama_surat == null
                                                                   ? 'Data Judul \nSurat Kosong'
-                                                                  : surat['surat_dari'],
+                                                                  : surat!.nama_surat,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white,
@@ -1416,10 +1153,9 @@ class _PermohonanLettersPageDesktopState
                                                             ),
                                                             SizedBox(height: 2),
                                                             Text(
-                                                              surat['perihal']
-                                                                      .isEmpty
+                                                              surat?.hal == null
                                                                   ? 'Data Perihal Kosong'
-                                                                  : surat['perihal'],
+                                                                  : surat!.hal,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1445,10 +1181,9 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['diterima_tgl']
-                                                                  .isEmpty
+                                                          surat?.tanggal_diterima == null
                                                               ? 'Data Tanggal \nDiterima Kosong'
-                                                              : surat['diterima_tgl'],
+                                                              : surat!.tanggal_diterima.toString(),
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1466,10 +1201,9 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['tgl_surat']
-                                                                  .isEmpty
+                                                          surat?.tanggal_surat == null
                                                               ? 'Data Tanggal \nSurat Kosong'
-                                                              : surat['tgl_surat'],
+                                                              : surat!.tanggal_surat.toString(),
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1487,9 +1221,9 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['kode'].isEmpty
+                                                          surat?.kode == null
                                                               ? 'Data Kode \nSurat Kosong'
-                                                              : surat['kode'],
+                                                              : surat!.kode,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1507,10 +1241,9 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 80,
                                                         child: Text(
-                                                          surat['no_urut']
-                                                                  .isEmpty
+                                                          surat?.nomor_urut == null
                                                               ? 'Data Nomor Urut \nSurat Kosong'
-                                                              : surat['no_urut'],
+                                                              : surat!.nomor_urut.toString(),
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1528,11 +1261,11 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 130,
                                                         child: Text(
-                                                          surat['kode'] == null
+                                                          surat?.kode == null
                                                               ? ''
-                                                              : surat['kode'] +
+                                                              : surat!.kode +
                                                                     "/" +
-                                                                    surat['no_urut'] +
+                                                                    surat.nomor_urut.toString() +
                                                                     "/" +
                                                                     '35.07.303/2025',
                                                           style: TextStyle(
@@ -1552,10 +1285,9 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 60,
                                                         child: Text(
-                                                          surat['no_surat']
-                                                                  .isEmpty
+                                                          surat?.no_surat == null
                                                               ? 'Data No Surat Kosong'
-                                                              : surat['no_surat'],
+                                                              : surat!.no_surat,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1573,10 +1305,9 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 230,
                                                         child: Text(
-                                                          surat['perihal'] ==
-                                                                  null
+                                                          surat?.hal == null
                                                               ? 'Data Perihal Kosong'
-                                                              : surat['perihal'],
+                                                              : surat!.hal,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1602,10 +1333,9 @@ class _PermohonanLettersPageDesktopState
                                                                 left: 8.0,
                                                               ),
                                                           child: Text(
-                                                            surat['hari_tanggal_waktu'] ==
-                                                                    null
+                                                            surat?.tanggal_waktu == null
                                                                 ? 'Data Hari Tanggal Waktu Kosong'
-                                                                : surat['hari_tanggal_waktu'],
+                                                                : surat!.tanggal_waktu.toString(),
                                                             style: TextStyle(
                                                               color: Colors
                                                                   .white
@@ -1634,10 +1364,9 @@ class _PermohonanLettersPageDesktopState
                                                                 left: 8,
                                                               ),
                                                           child: Text(
-                                                            surat['tempat'] ==
-                                                                    null
+                                                            surat?.tempat == null
                                                                 ? 'Data Tempat Kosong'
-                                                                : surat['tempat'],
+                                                                : surat!.tempat,
                                                             style: TextStyle(
                                                               color: Colors
                                                                   .white
@@ -1662,10 +1391,9 @@ class _PermohonanLettersPageDesktopState
                                                                 left: 8,
                                                               ),
                                                           child: Text(
-                                                            surat['disposisi'] ==
-                                                                    null
+                                                            surat?.disposisi == null
                                                                 ? 'Data Tempat Kosong'
-                                                                : surat['disposisi'],
+                                                                : surat!.disposisi.join(','),
                                                             style: TextStyle(
                                                               color: Colors
                                                                   .white
@@ -1689,7 +1417,7 @@ class _PermohonanLettersPageDesktopState
                                                                 left: 8,
                                                               ),
                                                           child: Text(
-                                                            surat['index'],
+                                                            surat!.index!,
                                                             style: TextStyle(
                                                               color: Colors
                                                                   .white
@@ -1713,10 +1441,9 @@ class _PermohonanLettersPageDesktopState
                                                                 left: 8,
                                                               ),
                                                           child: Text(
-                                                            surat['pengolah'] ==
-                                                                    null
+                                                            surat?.pengolah == null
                                                                 ? 'Data Tempat Kosong'
-                                                                : surat['pengolah'],
+                                                                : surat.pengolah,
                                                             style: TextStyle(
                                                               color: Colors
                                                                   .white
@@ -1744,7 +1471,7 @@ class _PermohonanLettersPageDesktopState
                                                                 left: 8,
                                                               ),
                                                           child: Text(
-                                                            surat['sifat'],
+                                                            surat.sifat!,
                                                             style: TextStyle(
                                                               color: Colors
                                                                   .white
@@ -1763,7 +1490,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 200,
                                                         child: Text(
-                                                          surat['link_scan'],
+                                                          surat.link_scan!,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1788,10 +1515,9 @@ class _PermohonanLettersPageDesktopState
                                                                 left: 8,
                                                               ),
                                                           child: Text(
-                                                            surat['disposisi_kadin'] ==
-                                                                    null
+                                                            surat.disp_1 == null
                                                                 ? 'Data Disposisi Kadin Kosong'
-                                                                : surat['disposisi_kadin'],
+                                                                : surat.disp_1.toString(),
                                                             style: TextStyle(
                                                               color: Colors
                                                                   .white
@@ -1814,10 +1540,9 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['disposisi_sekdin'] ==
-                                                                  null
+                                                          surat.disp_2 == null
                                                               ? 'Data Disposisi Sekdin Kosong'
-                                                              : surat['disposisi_sekdin'],
+                                                              : surat.disp_2.toString(),
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1837,7 +1562,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['disposisi_kabid'],
+                                                          surat.disp_3.toString(),
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1857,7 +1582,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['disposisi_kasubag'],
+                                                          surat.disp_4.toString(),
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1876,7 +1601,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['notes_disposisi_kadin'],
+                                                          surat.disp_1_notes ?? "-",
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1895,7 +1620,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['notes_disposisi_sekdin'],
+                                                          surat.disp_2_notes ?? "-",
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1914,7 +1639,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['notes_disposisi_kabid'],
+                                                          surat.disp_3_notes!,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1933,7 +1658,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['notes_disposisi_kasubag'],
+                                                          surat.disp_4_notes ?? "-",
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1953,7 +1678,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 130,
                                                         child: Text(
-                                                          surat['disposisi_lanjutan'],
+                                                          surat.disp_lanjut ?? "-",
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1973,7 +1698,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 100,
                                                         child: Text(
-                                                          surat['tindak_lanjut_1'],
+                                                          surat.tindak_lanjut_1.toString(),
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1993,7 +1718,7 @@ class _PermohonanLettersPageDesktopState
                                                       Expanded(
                                                         flex: 110,
                                                         child: Text(
-                                                          surat['tindak_lanjut_2'],
+                                                          surat.tindak_lanjut_2.toString(),
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -2026,10 +1751,10 @@ class _PermohonanLettersPageDesktopState
                                                               gradient: LinearGradient(
                                                                 colors: [
                                                                   getStatusColor(
-                                                                    surat['status'],
+                                                                    surat.status,
                                                                   ),
                                                                   getStatusColor(
-                                                                    surat['status'],
+                                                                    surat.status,
                                                                   ).withValues(
                                                                     alpha: 0.8,
                                                                   ),
@@ -2043,7 +1768,7 @@ class _PermohonanLettersPageDesktopState
                                                                 BoxShadow(
                                                                   color:
                                                                       getStatusColor(
-                                                                        surat['status'],
+                                                                        surat.status,
                                                                       ).withValues(
                                                                         alpha:
                                                                             0.3,
@@ -2058,7 +1783,7 @@ class _PermohonanLettersPageDesktopState
                                                               ],
                                                             ),
                                                             child: Text(
-                                                              surat['status'],
+                                                              surat.status,
                                                               softWrap: true,
                                                               textAlign:
                                                                   TextAlign
