@@ -3023,7 +3023,7 @@ void showModernTambahSuratDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratMasukModel?) onSuratAdded,
 ) {
   showGeneralDialog(
     context: context,
@@ -3142,14 +3142,14 @@ void showModernTambahSuratDialog(
                               context,
                               accentColor,
                               accentColor2,
-                              onSuratAdded == null
-                                  ? (data) {
-                                      // Default behavior if no callback provided
-                                      print(
-                                        'Surat baru ditambahkan: ${data['surat_dari']}',
-                                      );
-                                    }
-                                  : onSuratAdded,
+                              onSuratAdded,
+                                  // ? (data) {
+                                  //     // Default behavior if no callback provided
+                                  //     print(
+                                  //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                                  //     );
+                                  //   }
+                                  // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -3232,7 +3232,7 @@ void showModernTambahSuratKeluarDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratKeluarModel?) onSuratAdded,
 ) {
   showGeneralDialog(
     context: context,
@@ -3351,14 +3351,14 @@ void showModernTambahSuratKeluarDialog(
                               context,
                               accentColor,
                               accentColor2,
-                              onSuratAdded == null
-                                  ? (data) {
-                                      // Default behavior if no callback provided
-                                      print(
-                                        'Surat baru ditambahkan: ${data['surat_dari']}',
-                                      );
-                                    }
-                                  : onSuratAdded,
+                              onSuratAdded,
+                                  // ? (data) {
+                                  //     // Default behavior if no callback provided
+                                  //     print(
+                                  //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                                  //     );
+                                  //   }
+                                  // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -3441,7 +3441,7 @@ void showModernTambahSuratMasukDesktopDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratMasukModel?) onSuratAdded,
 ) {
   Size size = MediaQuery.of(context).size;
   showGeneralDialog(
@@ -3566,7 +3566,7 @@ void showModernTambahSuratMasukDesktopDialog(
                                   ? (data) {
                                       // Default behavior if no callback provided
                                       print(
-                                        'Surat baru ditambahkan: ${data['surat_dari']}',
+                                        'Surat baru ditambahkan: ${data?.nama_surat}',
                                       );
                                     }
                                   : onSuratAdded,
@@ -3652,7 +3652,7 @@ void showModernTambahSuratKeluarDesktopDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratKeluarModel?) onSuratAdded,
 ) {
   Size size = MediaQuery.of(context).size;
   showGeneralDialog(
@@ -3773,14 +3773,14 @@ void showModernTambahSuratKeluarDesktopDialog(
                               context,
                               accentColor,
                               accentColor2,
-                              onSuratAdded == null
-                                  ? (data) {
-                                      // Default behavior if no callback provided
-                                      print(
-                                        'Surat baru ditambahkan: ${data['surat_dari']}',
-                                      );
-                                    }
-                                  : onSuratAdded,
+                              onSuratAdded,
+                                  // ? (data) {
+                                  //     // Default behavior if no callback provided
+                                  //     print(
+                                  //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                                  //     );
+                                  //   }
+                                  // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
