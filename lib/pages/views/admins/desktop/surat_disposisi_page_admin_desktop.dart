@@ -80,19 +80,26 @@ class _DispositionLetterAdminDesktopState
           'Telepon (0341) 391679 Laman : perumahan-ciptakarya.malangkab.go.id',
       'pos/kode': 'Pos-el : dppck.mlg@gmail.com, Kode Pos : 65163',
       'judulsurat': 'LEMBAR DISPOSISI',
-      'surat_dari': dataBase['pengi rim'] ?? 'HRD Department',
-      'diterima_tgl': '28 Juli 2025',
-      'nomor_surat': '001',
+      'surat_dari': dataBase['surat_dari'] ?? 'HRD Department',
+      'diterima_tgl':
+          dataBase['diterima_tgl'] ??
+          (DateTime.now().day).toString() +
+              '/' +
+              (DateTime.now().month).toString() +
+              '/' +
+              (DateTime.now().year).toString(),
+      'nomor_surat': dataBase['no_surat'] == null
+          ? 'Data Nomor Surat Kosong'
+          : dataBase['no_surat'],
       'nomor_agenda':
-          'AG-${DateTime.now().year}-${dataBase['id']?.toString().padLeft(4, '0') ?? '0001'}',
-      'tgl_surat': dataBase['tanggal'] ?? '28 Juli 2025',
-      'hal': dataBase['judul'] ?? 'Surat Pemberitahuan',
-      'hari_tanggal': 'Senin, ${dataBase['tanggal'] ?? '28 Juli 2025'}',
+          '${dataBase['kode'] ?? ''}/${dataBase['no_urut'] ?? ''}/35.07.303/2025',
+      'tgl_surat': dataBase['tgl_surat'] ?? '28 Juli 2025',
+      'hal': dataBase['perihal'] == null
+          ? 'Data Perihal Kosong'
+          : dataBase['perihal'],
+      'hari_tanggal_waktu': dataBase['hari_tanggal_waktu'],
       'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Utama',
-      'disp_1': 'Kepala Bagian - Review dokumen',
-      'disp_2': 'Manager Operasional - Persetujuan',
-      'disp_3': 'Direktur - Final approval',
+      'tempat': dataBase['tempat'],
     };
   }
 
@@ -100,7 +107,7 @@ class _DispositionLetterAdminDesktopState
   Widget buildNomorUrutDisplay() {
     final surat = getDisposisiData();
     return Text(
-      'Nomor Urut: ${surat['nomor_surat'] == null ? '404 Not Found' : surat['nomor_surat']}',
+      'Nomor Urut: ${surat['nomor_surat'] == null ? 'Data Kosong!' : surat['nomor_surat']}',
       style: TextStyle(color: Colors.white, fontSize: 10),
       textAlign: TextAlign.center,
     );
@@ -449,7 +456,7 @@ class _DispositionLetterAdminDesktopState
               ),
             ),
           ),
-        
+
           // Build Number items
           Container(
             padding: EdgeInsets.all(20),
@@ -484,7 +491,7 @@ class _DispositionLetterAdminDesktopState
     );
   }
 
-  Widget _buildRecentActivity(Animation<double> _cardAnimation) {
+  Widget buildDisposisiLetter(Animation<double> _cardAnimation) {
     final surat = getDisposisiData();
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
@@ -521,7 +528,9 @@ class _DispositionLetterAdminDesktopState
               Row(
                 children: [
                   Expanded(
-                    child: buildSectionTitleDisposisiDesktop('Lembar Disposisi'),
+                    child: buildSectionTitleDisposisiDesktop(
+                      'Lembar Disposisi',
+                    ),
                   ),
                   buildMenuActionDisposisiDesktopAdmin(
                     context,
@@ -608,7 +617,7 @@ class _DispositionLetterAdminDesktopState
                                 ),
                                 child: Center(
                                   child: Text(
-                                    surat['judulsurat'] ?? '404 Not Found',
+                                    surat['judulsurat'] ?? 'Data Kosong!',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.white,
@@ -643,7 +652,7 @@ class _DispositionLetterAdminDesktopState
                                             ),
                                           ),
                                           child: Text(
-                                            'Surat Dari: ${surat['surat_dari'] ?? '404 Not Found'}',
+                                            'Surat Dari: ${surat['surat_dari'] ?? 'Data Kosong!'}',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -677,7 +686,7 @@ class _DispositionLetterAdminDesktopState
                                             ),
                                           ),
                                           child: Text(
-                                            'Diterima Tanggal: ${surat['diterima_tgl'] ?? '404 Not Found'}',
+                                            'Diterima Tanggal: ${surat['diterima_tgl'] ?? 'Data Kosong!'}',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -713,7 +722,7 @@ class _DispositionLetterAdminDesktopState
                                               ),
                                             ),
                                             child: Text(
-                                              'Surat Dari: ${surat['surat_dari'] ?? '404 Not Found'}',
+                                              'Surat Dari: ${surat['surat_dari'] ?? 'Data Kosong!'}',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14,
@@ -750,7 +759,7 @@ class _DispositionLetterAdminDesktopState
                                               ),
                                             ),
                                             child: Text(
-                                              'Diterima Tanggal: ${surat['diterima_tgl'] ?? '404 Not Found'}',
+                                              'Diterima Tanggal: ${surat['diterima_tgl'] ?? 'Data Kosong!'}',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14,
@@ -787,7 +796,7 @@ class _DispositionLetterAdminDesktopState
                                           child: Column(
                                             children: [
                                               Text(
-                                                'Nomor Urut: ${disposisiData['nomor_surat'] == null ? '404 Not Found' : disposisiData['nomor_surat']}',
+                                                'Nomor Urut: ${disposisiData['nomor_surat'] == null ? 'Data Kosong!' : disposisiData['nomor_surat']}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 14,
@@ -823,7 +832,7 @@ class _DispositionLetterAdminDesktopState
                                             ),
                                           ),
                                           child: Text(
-                                            'Nomor Agenda: ${surat['nomor_agenda'] ?? '404 Not Found'}',
+                                            'Nomor Agenda: ${surat['nomor_agenda'] ?? 'Data Kosong!'}',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -859,7 +868,7 @@ class _DispositionLetterAdminDesktopState
                                               ),
                                             ),
                                             child: Text(
-                                              'Nomor Surat: ${surat['nomor_surat'] ?? '404 Not Found'}',
+                                              'Nomor Surat: ${surat['nomor_surat'] ?? 'Data Kosong!'}',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14,
@@ -896,7 +905,7 @@ class _DispositionLetterAdminDesktopState
                                               ),
                                             ),
                                             child: Text(
-                                              'Nomor Agenda: ${surat['nomor_agenda'] ?? '404 Not Found'}',
+                                              'Nomor Agenda: ${surat['nomor_agenda'] ?? 'Data Kosong!'}',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14,
@@ -945,7 +954,7 @@ class _DispositionLetterAdminDesktopState
                                             ),
                                           ),
                                           child: Text(
-                                            'Tanggal Surat: ${surat['tgl_surat'] ?? '404 Not Found'}',
+                                            'Tanggal Surat: ${surat['tgl_surat'] ?? 'Data Kosong!'}',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -1177,7 +1186,7 @@ class _DispositionLetterAdminDesktopState
                                               ),
                                             ),
                                             child: Text(
-                                              'Tanggal Surat: ${surat['tgl_surat'] ?? '404 Not Found'}',
+                                              'Tanggal Surat: ${surat['tgl_surat'] ?? 'Data Kosong!'}',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 14,
@@ -1410,16 +1419,16 @@ class _DispositionLetterAdminDesktopState
                                         CrossAxisAlignment.start,
                                     children: [
                                       buildBorderedText(
-                                        'Hal : ${surat['hal'] ?? '404 Not Found'}',
+                                        'Hal : ${surat['hal'] ?? 'Data Kosong!'}',
                                       ),
                                       buildBorderedText(
-                                        'Hari / Tanggal : ${surat['hari_tanggal'] ?? '404 Not Found'}',
+                                        'Hari / Tanggal : ${surat['hari_tanggal_waktu'] ?? 'Data Kosong!'}',
                                       ),
                                       buildBorderedText(
-                                        'Waktu : ${surat['waktu'] ?? '404 Not Found'}',
+                                        'Waktu : ${surat['waktu'] ?? 'Data Kosong!'}',
                                       ),
                                       buildBorderedText(
-                                        'Tempat : ${surat['tempat'] ?? '404 Not Found'}',
+                                        'Tempat : ${surat['tempat'] ?? 'Data Kosong!'}',
                                       ),
                                     ],
                                   ),
@@ -1766,7 +1775,7 @@ class _DispositionLetterAdminDesktopState
                         SizedBox(height: 40),
 
                         // Recent activity
-                        Expanded(child: _buildRecentActivity(_cardAnimation)),
+                        Expanded(child: buildDisposisiLetter(_cardAnimation)),
                       ],
                     ),
                   ),

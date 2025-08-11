@@ -1228,7 +1228,8 @@ class _OutgoingLetterPageDesktopState
                                                         fontFamily: 'Roboto',
                                                       ),
                                                     ),
-                                                  ),Expanded(
+                                                  ),
+                                                  Expanded(
                                                     flex: 27,
                                                     child: Text(
                                                       surat.tanda_terima.toString(),
@@ -1254,7 +1255,7 @@ class _OutgoingLetterPageDesktopState
                                                         fontFamily: 'Roboto',
                                                       ),
                                                     ),
-                                                  ),
+                                                    ),
                                                   // Status
                                                   Expanded(
                                                     flex: 18,

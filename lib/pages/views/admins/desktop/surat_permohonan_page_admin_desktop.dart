@@ -742,7 +742,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8.0),
                                           child: Text(
-                                            'Hari/Tanggal',
+                                            'Hari/Tanggal\n/Waktu',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -750,24 +750,6 @@ class _PermohonanLettersPageAdminDesktopState
                                               fontFamily: 'Roboto',
                                             ),
                                             textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-
-                                      // 11. Waktu - flex: 100
-                                      SizedBox(width: 5),
-                                      Expanded(
-                                        flex: 100,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(right: 8),
-                                          child: Text(
-                                            'Waktu',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto',
-                                            ),
                                           ),
                                         ),
                                       ),
