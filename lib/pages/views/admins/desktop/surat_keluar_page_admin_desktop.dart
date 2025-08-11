@@ -1263,7 +1263,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 27,
                                                     child: Text(
-                                                      surat['dok_dikirim_tgl'],
+                                                      surat!.dok_dikirim.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1277,7 +1277,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 27,
                                                     child: Text(
-                                                      surat['dok_final'],
+                                                      surat.dok_final!,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1290,7 +1290,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   ),Expanded(
                                                     flex: 27,
                                                     child: Text(
-                                                      surat['tanda_terima'],
+                                                      surat.tanda_terima.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
