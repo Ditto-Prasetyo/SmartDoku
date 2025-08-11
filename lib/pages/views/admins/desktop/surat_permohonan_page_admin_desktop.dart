@@ -75,8 +75,7 @@ class _PermohonanLettersPageAdminDesktopState
       'kode': '600.3.3.2',
       'no_urut': '0001',
       'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
+      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
       'tempat': 'Ruang Rapat Paripurna',
       'disposisi': 'PRPB',
       'index': 'MC',
@@ -104,8 +103,7 @@ class _PermohonanLettersPageAdminDesktopState
       'kode': '600.3.3.2',
       'no_urut': '0001',
       'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
+      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
       'tempat': 'Ruang Rapat Paripurna',
       'disposisi': 'PRPB',
       'index': 'MC',
@@ -133,8 +131,7 @@ class _PermohonanLettersPageAdminDesktopState
       'kode': '600.3.3.2',
       'no_urut': '0001',
       'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
+      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
       'tempat': 'Ruang Rapat Paripurna',
       'disposisi': 'PRPB',
       'index': 'MC',
@@ -162,8 +159,7 @@ class _PermohonanLettersPageAdminDesktopState
       'kode': '600.3.3.2',
       'no_urut': '0001',
       'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
+      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
       'tempat': 'Ruang Rapat Paripurna',
       'disposisi': 'PRPB',
       'index': 'MC',
@@ -191,8 +187,7 @@ class _PermohonanLettersPageAdminDesktopState
       'kode': '600.3.3.2',
       'no_urut': '0001',
       'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
+      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
       'tempat': 'Ruang Rapat Paripurna',
       'disposisi': 'PRPB',
       'index': 'MC',
@@ -220,8 +215,7 @@ class _PermohonanLettersPageAdminDesktopState
       'kode': '600.3.3.2',
       'no_urut': '0001',
       'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
+      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
       'tempat': 'Ruang Rapat Paripurna',
       'disposisi': 'PRPB',
       'index': 'MC',
@@ -249,8 +243,7 @@ class _PermohonanLettersPageAdminDesktopState
       'kode': '600.3.3.2',
       'no_urut': '0001',
       'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
+      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
       'tempat': 'Ruang Rapat Paripurna',
       'disposisi': 'PRPB',
       'index': 'MC',
@@ -278,8 +271,7 @@ class _PermohonanLettersPageAdminDesktopState
       'kode': '600.3.3.2',
       'no_urut': '0001',
       'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
+      'hari_tanggal_waktu': 'Selasa, 28 Juli 2025 - 09:00 WIB',
       'tempat': 'Ruang Rapat Paripurna',
       'disposisi': 'PRPB',
       'index': 'MC',
@@ -962,7 +954,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8.0),
                                           child: Text(
-                                            'Hari/Tanggal',
+                                            'Hari/Tanggal\n/Waktu',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -970,24 +962,6 @@ class _PermohonanLettersPageAdminDesktopState
                                               fontFamily: 'Roboto',
                                             ),
                                             textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-
-                                      // 11. Waktu - flex: 100
-                                      SizedBox(width: 5),
-                                      Expanded(
-                                        flex: 100,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(right: 8),
-                                          child: Text(
-                                            'Waktu',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto',
-                                            ),
                                           ),
                                         ),
                                       ),
@@ -1508,10 +1482,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                         left: 8.0,
                                                       ),
                                                       child: Text(
-                                                        surat['hari_tanggal'] ==
+                                                        surat['hari_tanggal_waktu'] ==
                                                                 null
                                                             ? '404 Not Found'
-                                                            : surat['hari_tanggal'],
+                                                            : surat['hari_tanggal_waktu'],
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1525,31 +1499,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                         softWrap: true,
                                                       ),
                                                     ),
-                                                  ),
-
-                                                  // 11. Waktu - flex: 100
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    flex: 100,
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                        right: 8,
-                                                      ),
-                                                      child: Text(
-                                                        surat['waktu'] == null
-                                                            ? '404 Not Found'
-                                                            : surat['waktu'],
-                                                        style: TextStyle(
-                                                          color: Colors.white
-                                                              .withValues(
-                                                                alpha: 0.7,
-                                                              ),
-                                                          fontSize: 11,
-                                                          fontFamily: 'Roboto',
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
+                                                  ), 
 
                                                   // 12. Tempat - flex: 100
                                                   SizedBox(width: 5),

@@ -1351,6 +1351,20 @@ class _OutgoingLetterPageDesktopState
                                                   Expanded(
                                                     flex: 27,
                                                     child: Text(
+                                                      surat['koreksi_2'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 27,
+                                                    child: Text(
                                                       surat['dok_dikirim_tgl'],
                                                       style: TextStyle(
                                                         color: Colors.white
@@ -1388,20 +1402,7 @@ class _OutgoingLetterPageDesktopState
                                                         fontFamily: 'Roboto',
                                                       ),
                                                     ),
-                                                  ),Expanded(
-                                                    flex: 27,
-                                                    child: Text(
-                                                      surat['koreksi_2'],
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
-                                                            ),
-                                                        fontSize: 11,
-                                                        fontFamily: 'Roboto',
-                                                      ),
                                                     ),
-                                                  ),
                                                   // Status
                                                   Expanded(
                                                     flex: 18,

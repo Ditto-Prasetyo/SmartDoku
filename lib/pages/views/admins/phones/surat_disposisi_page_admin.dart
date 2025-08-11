@@ -35,19 +35,26 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
           'Telepon (0341) 391679 Laman : perumahan-ciptakarya.malangkab.go.id',
       'pos/kode': 'Pos-el : dppck.mlg@gmail.com, Kode Pos : 65163',
       'judulsurat': 'LEMBAR DISPOSISI',
-      'surat_dari': dataBase['pengi rim'] ?? 'HRD Department',
-      'diterima_tgl': '28 Juli 2025',
-      'nomor_surat': '001',
+      'surat_dari': dataBase['surat_dari'] ?? 'HRD Department',
+      'diterima_tgl':
+          dataBase['diterima_tgl'] ??
+          (DateTime.now().day).toString() +
+              '/' +
+              (DateTime.now().month).toString() +
+              '/' +
+              (DateTime.now().year).toString(),
+      'nomor_surat': dataBase['no_surat'] == null
+          ? 'Data Nomor Surat Kosong'
+          : dataBase['no_surat'],
       'nomor_agenda':
-          'AG-${DateTime.now().year}-${dataBase['id']?.toString().padLeft(4, '0') ?? '0001'}',
-      'tgl_surat': dataBase['tanggal'] ?? '28 Juli 2025',
-      'hal': dataBase['judul'] ?? 'Surat Pemberitahuan',
-      'hari_tanggal': 'Senin, ${dataBase['tanggal'] ?? '28 Juli 2025'}',
+          '${dataBase['kode'] ?? ''}/${dataBase['no_urut'] ?? ''}/35.07.303/2025',
+      'tgl_surat': dataBase['tgl_surat'] ?? '28 Juli 2025',
+      'hal': dataBase['perihal'] == null
+          ? 'Data Perihal Kosong'
+          : dataBase['perihal'],
+      'hari_tanggal_waktu': dataBase['hari_tanggal_waktu'],
       'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Utama',
-      'disp_1': 'Kepala Bagian - Review dokumen',
-      'disp_2': 'Manager Operasional - Persetujuan',
-      'disp_3': 'Direktur - Final approval',
+      'tempat': dataBase['tempat'],
     };
   }
 

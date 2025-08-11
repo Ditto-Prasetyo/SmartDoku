@@ -837,7 +837,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // Tujuan Surat
                                       Expanded(
-                                        flex: 55,
+                                        flex: 45,
                                         child: Text(
                                           'TUJUAN SURAT',
                                           style: TextStyle(
@@ -850,7 +850,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // Perihal
                                       Expanded(
-                                        flex: 45,
+                                        flex: 65,
                                         child: Text(
                                           'PERIHAL',
                                           style: TextStyle(
@@ -864,7 +864,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // Tanggal Surat
                                       Expanded(
-                                        flex: 30,
+                                        flex: 20,
                                         child: Text(
                                           'TGL\nSURAT',
                                           style: TextStyle(
@@ -958,7 +958,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ),
                                       // Koreksi 2
                                       Expanded(
-                                        flex: 35,
+                                        flex: 31,
                                         child: Text(
                                           'KOREKSI 2',
                                           style: TextStyle(
@@ -969,6 +969,42 @@ class _OutgoingLetterPageAdminDesktopState
                                           ),
                                         ),
                                       ),
+                                      Expanded(
+                                        flex: 39,
+                                        child: Text(
+                                          'Dokumen Dikirim',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 35,
+                                        child: Text(
+                                          'Dokumen Final',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 35,
+                                        child: Text(
+                                          'Tanda Terima',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),  
                                       // Status
                                       Expanded(
                                         flex: 30,
@@ -1297,7 +1333,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   // pembuat
                                                   SizedBox(width: 5),
                                                   Expanded(
-                                                    flex: 32,
+                                                    flex: 27,
                                                     child: Text(
                                                       surat['pembuat'] ?? '',
                                                       style: TextStyle(
@@ -1313,7 +1349,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   // catatan
                                                   SizedBox(width: 5),
                                                   Expanded(
-                                                    flex: 43,
+                                                    flex: 44,
                                                     child: Text(
                                                       surat['catatan'].isEmpty
                                                           ? 'kosong'
@@ -1331,7 +1367,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   // link surat
                                                   SizedBox(width: 5),
                                                   Expanded(
-                                                    flex: 40,
+                                                    flex: 37,
                                                     child: Text(
                                                       surat['link_surat']
                                                               .isEmpty
@@ -1368,11 +1404,53 @@ class _OutgoingLetterPageAdminDesktopState
                                                   // koreksi 2
                                                   SizedBox(width: 5),
                                                   Expanded(
-                                                    flex: 28,
+                                                    flex: 35,
                                                     child: Text(
                                                       surat['koreksi_2'].isEmpty
                                                           ? 'kosong'
                                                           : surat['koreksi_2'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    flex: 27,
+                                                    child: Text(
+                                                      surat['dok_dikirim_tgl'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Expanded(
+                                                    flex: 27,
+                                                    child: Text(
+                                                      surat['dok_final'],
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        fontSize: 11,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),Expanded(
+                                                    flex: 27,
+                                                    child: Text(
+                                                      surat['tanda_terima'],
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
