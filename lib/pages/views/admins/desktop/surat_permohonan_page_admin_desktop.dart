@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
@@ -25,6 +27,20 @@ class _PermohonanLettersPageAdminDesktopState
 
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
+
+  SuratMasuk _suratService = SuratMasuk();
+  List<SuratMasukModel?> _listSurat = [];
+
+  void _loadAllData() async {
+    final data = await _suratService.listSurat();
+    print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
+
+    setState(() {
+      _listSurat = data;
+      print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
+      print(_listSurat.map((e) => e!.toJson()).toList());
+    });
+  }
 
   // Selected sidebar item
   int _selectedIndex = 1;
@@ -62,247 +78,9 @@ class _PermohonanLettersPageAdminDesktopState
     },
   ];
 
-  List<Map<String, dynamic>> suratData = [
-    {
-      'id': '1',
-      'surat_dari': 'Surat Pemberitahuan Rapat Bulanan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal':
-          'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
-      'tanggal': '28 Juli 2025',
-      'pengirim': 'HRD Department',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '2',
-      'surat_dari': 'Pengajuan Cuti Tahunan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '3',
-      'surat_dari': 'Laporan Keuangan Q2 2025',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Report keuangan triwulan kedua tahun 2025',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '4',
-      'surat_dari': 'Undangan Seminar IT',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '5',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '6',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '7',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '8',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-  ];
-
   void actionSetState(int index) {
     setState(() {
-      suratData.removeAt(index);
+      _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -313,9 +91,10 @@ class _PermohonanLettersPageAdminDesktopState
   }
 
   void refreshEditState() {
+    _loadAllData();
+
     setState(() {
-      // Refresh ListView setelah edit data
-      // Data suratData udah diupdate di modal
+
     });
   }
 
@@ -334,6 +113,7 @@ class _PermohonanLettersPageAdminDesktopState
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -698,7 +478,7 @@ class _PermohonanLettersPageAdminDesktopState
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '${suratData.length} Data',
+                                '${_listSurat.length} Data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -734,10 +514,10 @@ class _PermohonanLettersPageAdminDesktopState
                               InkWell(
                                 onTap: () {
                                   tambahSuratMasukDesktop(context, (newSurat) {
-                                    setState(() {
-                                      // Tambahin ke list suratData lu
-                                      suratData.add(newSurat);
-                                    });
+                                    // setState(() {
+                                    //   // Tambahin ke list suratData lu
+                                    //   _listSurat.add(newSurat);
+                                    // });
                                   });
                                 },
                                 child: Icon(
@@ -1241,10 +1021,10 @@ class _PermohonanLettersPageAdminDesktopState
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.vertical,
                                     child: Column(
-                                      children: List.generate(suratData.length, (
+                                      children: List.generate(_listSurat.length, (
                                         index,
                                       ) {
-                                        final surat = suratData[index];
+                                        final surat = _listSurat[index];
 
                                         return Container(
                                           padding: EdgeInsets.symmetric(
@@ -1264,7 +1044,7 @@ class _PermohonanLettersPageAdminDesktopState
                                           child: InkWell(
                                             onTap: () {
                                               print(
-                                                'Row tapped: ${surat['judul']}',
+                                                'Row tapped: ${surat.nama_surat}',
                                               );
                                             },
                                             borderRadius: BorderRadius.circular(
@@ -1335,7 +1115,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          surat['surat_dari'],
+                                                          surat!.nama_surat,
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 13,
@@ -1350,7 +1130,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                         ),
                                                         SizedBox(height: 2),
                                                         Text(
-                                                          surat['perihal'],
+                                                          surat.hal,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1373,8 +1153,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['diterima_tgl'] ??
-                                                          '',
+                                                      surat.tanggal_diterima.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1391,7 +1170,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['tgl_surat'] ?? '',
+                                                      surat.tanggal_surat.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1408,7 +1187,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['kode'] ?? '',
+                                                      surat.kode,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1425,7 +1204,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['no_urut'] ?? '',
+                                                      surat.nomor_urut.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1442,11 +1221,11 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['kode'] == null
+                                                      surat.kode == null
                                                           ? '404 Not Found'
-                                                          : surat['kode'] +
+                                                          : surat.kode +
                                                                 "/" +
-                                                                surat['no_urut'] +
+                                                                surat.nomor_urut.toString() +
                                                                 "/" +
                                                                 '35.07.303/2025',
                                                       style: TextStyle(
@@ -1465,7 +1244,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 70,
                                                     child: Text(
-                                                      surat['no_surat'] ?? '',
+                                                      surat.no_surat,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1482,9 +1261,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 230,
                                                     child: Text(
-                                                      surat['perihal'] == null
+                                                      surat.hal == null
                                                           ? '404 Not Found'
-                                                          : surat['perihal'],
+                                                          : surat.hal,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1508,10 +1287,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                         left: 8.0,
                                                       ),
                                                       child: Text(
-                                                        surat['hari_tanggal'] ==
-                                                                null
-                                                            ? '404 Not Found'
-                                                            : surat['hari_tanggal'],
+                                                        surat.tanggal_waktu.toString(),
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1536,9 +1312,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                         right: 8,
                                                       ),
                                                       child: Text(
-                                                        surat['waktu'] == null
-                                                            ? '404 Not Found'
-                                                            : surat['waktu'],
+                                                        surat.tanggal_waktu.toString(),
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1560,9 +1334,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                         left: 8,
                                                       ),
                                                       child: Text(
-                                                        surat['tempat'] == null
-                                                            ? '404 Not Found'
-                                                            : surat['tempat'],
+                                                        surat.tempat,
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1584,10 +1356,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                         left: 8,
                                                       ),
                                                       child: Text(
-                                                        surat['disposisi'] ==
-                                                                null
-                                                            ? '404 Not Found'
-                                                            : surat['disposisi'],
+                                                        surat.disposisi.join(', '),
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1608,9 +1377,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                         left: 8,
                                                       ),
                                                       child: Text(
-                                                        surat['index'] == null
+                                                        surat.index == null
                                                             ? '404 Not Found'
-                                                            : surat['index'],
+                                                            : surat.index!,
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1631,10 +1400,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                         left: 8,
                                                       ),
                                                       child: Text(
-                                                        surat['pengolah'] ==
-                                                                null
-                                                            ? '404 Not Found'
-                                                            : surat['pengolah'],
+                                                        surat.pengolah,
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1658,9 +1424,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                         left: 8,
                                                       ),
                                                       child: Text(
-                                                        surat['sifat'] == null
+                                                        surat.sifat == null
                                                             ? '404 Not Found'
-                                                            : surat['sifat'],
+                                                            : surat.sifat!,
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1677,9 +1443,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 200,
                                                     child: Text(
-                                                      surat['link_scan'] == null
+                                                      surat.link_scan == null
                                                           ? '404 Not Found'
-                                                          : surat['link_scan'],
+                                                          : surat.link_scan!,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1702,10 +1468,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                         left: 8,
                                                       ),
                                                       child: Text(
-                                                        surat['disposisi_kadin'] ==
-                                                                null
+                                                        surat.disp_1 == null
                                                             ? '404 Not Found'
-                                                            : surat['disposisi_kadin'],
+                                                            : surat.disp_1.toString(),
                                                         style: TextStyle(
                                                           color: Colors.white
                                                               .withValues(
@@ -1725,10 +1490,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['disposisi_sekdin'] ==
+                                                      surat.disp_2 ==
                                                               null
                                                           ? '404 Not Found'
-                                                          : surat['disposisi_sekdin'],
+                                                          : surat.disp_2.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1747,10 +1512,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['disposisi_kabid'] ==
+                                                      surat.disp_3 ==
                                                               null
                                                           ? '404 Not Found'
-                                                          : surat['disposisi_kabid'],
+                                                          : surat.disp_3.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1769,10 +1534,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['disposisi_kasubag'] ==
+                                                      surat.disp_4 ==
                                                               null
                                                           ? '404 Not Found'
-                                                          : surat['disposisi_kasubag'],
+                                                          : surat.disp_4.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1791,10 +1556,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 130,
                                                     child: Text(
-                                                      surat['disposisi_lanjutan'] ==
+                                                      surat.disp_lanjut ==
                                                               null
                                                           ? '404 Not Found'
-                                                          : surat['disposisi_lanjutan'],
+                                                          : surat.disp_lanjut.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1813,10 +1578,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 100,
                                                     child: Text(
-                                                      surat['tindak_lanjut_1'] ==
+                                                      surat.tindak_lanjut_1 ==
                                                               null
                                                           ? '404 Not Found'
-                                                          : surat['tindak_lanjut_1'],
+                                                          : surat.tindak_lanjut_1.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1835,10 +1600,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                   Expanded(
                                                     flex: 110,
                                                     child: Text(
-                                                      surat['tindak_lanjut_2'] ==
+                                                      surat.tindak_lanjut_2 ==
                                                               null
                                                           ? '404 Not Found'
-                                                          : surat['tindak_lanjut_2'],
+                                                          : surat.tindak_lanjut_2.toString(),
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1870,10 +1635,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                           gradient: LinearGradient(
                                                             colors: [
                                                               getStatusColor(
-                                                                surat['status'],
+                                                                surat.status,
                                                               ),
                                                               getStatusColor(
-                                                                surat['status'],
+                                                                surat.status,
                                                               ).withValues(
                                                                 alpha: 0.8,
                                                               ),
@@ -1887,7 +1652,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             BoxShadow(
                                                               color:
                                                                   getStatusColor(
-                                                                    surat['status'],
+                                                                    surat.status,
                                                                   ).withValues(
                                                                     alpha: 0.3,
                                                                   ),
@@ -1900,7 +1665,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ],
                                                         ),
                                                         child: Text(
-                                                          surat['status'],
+                                                          surat.status,
                                                           softWrap: true,
                                                           textAlign:
                                                               TextAlign.center,
@@ -1962,7 +1727,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                               viewDetail(
                                                                 context,
                                                                 index,
-                                                                suratData,
+                                                                _listSurat,
                                                               );
                                                             },
                                                             child: Icon(
@@ -2007,12 +1772,12 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              editDokumen(
-                                                                context,
-                                                                index,
-                                                                suratData,
-                                                                refreshEditState,
-                                                              );
+                                                              // editDokumen(
+                                                              //   context,
+                                                              //   index,
+                                                              //   _listSurat,
+                                                              //   refreshEditState,
+                                                              // );
                                                             },
                                                             child: Icon(
                                                               Icons
@@ -2052,12 +1817,12 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                                                           child: InkWell(
                                                             onTap: () {
-                                                              hapusDokumenDesktop(
-                                                                context,
-                                                                index,
-                                                                suratData,
-                                                                actionSetState,
-                                                              );
+                                                              // hapusDokumenDesktop(
+                                                              //   context,
+                                                              //   index,
+                                                              //   _listSurat,
+                                                              //   actionSetState,
+                                                              // );
                                                             },
                                                             child: Icon(
                                                               Icons

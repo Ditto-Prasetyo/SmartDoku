@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_doku/models/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:intl/intl.dart';
@@ -980,7 +981,7 @@ Widget buildStatItem(String label, String value, IconData icon) {
 }
 
 // Widget untuk Header Card
-Widget buildHeaderCard(Map<String, dynamic> data) {
+Widget buildHeaderCard(SuratMasukModel? data) {
   return Container(
     width: double.infinity,
     margin: EdgeInsets.only(bottom: 10),
@@ -1044,7 +1045,7 @@ Widget buildHeaderCard(Map<String, dynamic> data) {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          data['hal'] ?? 'Judul Surat',
+                          data?.hal ?? 'Judul Surat',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.white,
@@ -1055,7 +1056,7 @@ Widget buildHeaderCard(Map<String, dynamic> data) {
                         ),
                         SizedBox(height: 5),
                         Text(
-                          'No: ${data['no_surat']}',
+                          'No: ${data?.no_surat}',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.white.withValues(alpha: 0.8),
@@ -1077,15 +1078,15 @@ Widget buildHeaderCard(Map<String, dynamic> data) {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          getStatusColor(data['status']),
-                          getStatusColor(data['status']).withValues(alpha: 0.8),
+                          getStatusColor(data!.status),
+                          getStatusColor(data.status).withValues(alpha: 0.8),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: getStatusColor(
-                            data['status'],
+                            data.status,
                           ).withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: Offset(0, 2),
@@ -1093,7 +1094,7 @@ Widget buildHeaderCard(Map<String, dynamic> data) {
                       ],
                     ),
                     child: Text(
-                      data['status'],
+                      data.status,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -1103,7 +1104,7 @@ Widget buildHeaderCard(Map<String, dynamic> data) {
                     ),
                   ),
                   Text(
-                    data['tgl_surat'],
+                    data.tanggal_surat.toString(),
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 14,
@@ -1120,7 +1121,7 @@ Widget buildHeaderCard(Map<String, dynamic> data) {
   );
 }
 
-Widget buildHeaderCardKeluar(Map<String, dynamic> data) {
+Widget buildHeaderCardKeluar(SuratKeluarModel? data) {
   return Container(
     width: double.infinity,
     margin: EdgeInsets.only(bottom: 10),
@@ -1184,7 +1185,7 @@ Widget buildHeaderCardKeluar(Map<String, dynamic> data) {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          data['klasifikasi'] ?? 'Judul Surat',
+                          data?.klasifikasi ?? 'Judul Surat',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.white,
@@ -1195,7 +1196,7 @@ Widget buildHeaderCardKeluar(Map<String, dynamic> data) {
                         ),
                         SizedBox(height: 5),
                         Text(
-                          'No: ${data['nomor']}',
+                          'No: ${data?.nomor_urut}',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.white.withValues(alpha: 0.8),
@@ -1217,15 +1218,15 @@ Widget buildHeaderCardKeluar(Map<String, dynamic> data) {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          getStatusColor(data['status']),
-                          getStatusColor(data['status']).withValues(alpha: 0.8),
+                          getStatusColor(data?.status ?? "Pending"),
+                          getStatusColor(data?.status ?? "Pending").withValues(alpha: 0.8),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
                           color: getStatusColor(
-                            data['status'],
+                            data?.status ?? "Pending",
                           ).withValues(alpha: 0.3),
                           blurRadius: 8,
                           offset: Offset(0, 2),
@@ -1233,7 +1234,7 @@ Widget buildHeaderCardKeluar(Map<String, dynamic> data) {
                       ],
                     ),
                     child: Text(
-                      data['status'],
+                      data!.status ?? "Pending",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -1243,7 +1244,7 @@ Widget buildHeaderCardKeluar(Map<String, dynamic> data) {
                     ),
                   ),
                   Text(
-                    data['tgl_surat'],
+                    data!.tanggal_surat.toString(),
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 14,

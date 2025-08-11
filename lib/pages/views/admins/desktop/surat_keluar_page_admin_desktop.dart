@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
@@ -25,6 +27,9 @@ class _OutgoingLetterPageAdminDesktopState
 
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
+
+  SuratKeluar _suratService = SuratKeluar();
+  List<SuratKeluarModel?> _listSurat = [];
 
   // Selected sidebar item
   int _selectedIndex = 2;
@@ -73,172 +78,9 @@ class _OutgoingLetterPageAdminDesktopState
     {'id': 'p8', 'nama_pengolah': 'UKP'},
   ];
 
-  List<Map<String, dynamic>> suratData = [
-    {
-      'id': '1',
-      'kode': '100.1.2',
-      'klasifikasi': 'Penyelenggaraan pemerintah daerah',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Kepala DPPKB Kab.Malang',
-      'perihal': 'Permintaan data RTLH yang telah dilakukan pada DPPKB',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'yaziq',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '2',
-      'kode': '600.3.3.2',
-      'klasifikasi': 'Ijin Pemanfaatan Ruang',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Anita Megawati',
-      'perihal': 'KKPR Pembibitan dan Budidaya  itik/ Bebek',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'yaziq',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '3',
-      'kode': '600.1.15',
-      'klasifikasi': 'Pembinaan penataan bangunan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Direktur RSU Pindad',
-      'perihal': 'Surat keterangan dalam proses pengurusan SLF',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'sela',
-      'catatan': 'belum scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '4',
-      'kode': '900.1.3',
-      'klasifikasi': 'Pelaksanaan Anggaran',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Bapak Bupati Malang',
-      'perihal': 'Usulan Rekening Perangkat Daerah',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'eko',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '5',
-      'kode': '700.1.2.5',
-      'klasifikasi': 'Data tindak lanjut temuan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Bapak Bupati Malang',
-      'perihal': 'Usulan Rekening Perangkat Daerah',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'eko',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '6',
-      'kode': '800.1.11.1',
-      'klasifikasi': 'Surat Tugas',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': '',
-      'perihal': 'Surtug melaksanakan survey KKPR',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'riski',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '7',
-      'kode': '000.3',
-      'klasifikasi': 'Pengadaan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Plh.Sekda',
-      'perihal': 'Permohonan bantuan pejabat pengadaan barang / jasa',
-      'tgl_surat': '7 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'jumik',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '8',
-      'kode': '900',
-      'klasifikasi': 'Keuangan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Plt.BKAD',
-      'perihal': 'Surat pengantar SPP dan SPM 2 (berkas)',
-      'tgl_surat': '7 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'jumik',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-  ];
-
   void actionSetState(int index) {
     setState(() {
-      suratData.removeAt(index);
+      // _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -248,20 +90,20 @@ class _OutgoingLetterPageAdminDesktopState
     );
   }
 
-  String? getNamaPengolah(
-    List<String> ids,
-    List<Map<String, dynamic>> listPengolah,
-  ) {
-    if (ids.isEmpty) return null;
+  // String? getNamaPengolah(
+  //   List<String> ids,
+  //   List<Map<String, dynamic>> listPengolah,
+  // ) {
+  //   if (ids.isEmpty) return null;
 
-    final idPertama = ids.first;
-    final match = listPengolah.firstWhere(
-      (e) => e['id'] == idPertama,
-      orElse: () => {},
-    );
+  //   final idPertama = ids.first;
+  //   final match = listPengolah.firstWhere(
+  //     (e) => e['id'] == idPertama,
+  //     orElse: () => {},
+  //   );
 
-    return match['nama_pengolah'];
-  }
+  //   return match['nama_pengolah'];
+  // }
 
   void refreshEditState() {
     setState(() {
@@ -660,7 +502,7 @@ class _OutgoingLetterPageAdminDesktopState
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '${suratData.length} Data',
+                                '${_listSurat.length} Data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -698,7 +540,7 @@ class _OutgoingLetterPageAdminDesktopState
                                   tambahSuratKeluarDesktop(context, (newSurat) {
                                     setState(() {
                                       // Tambahin ke list suratData lu
-                                      suratData.add(newSurat);
+                                      // _listSurat.add(newSurat);
                                     });
                                   });
                                 },
@@ -1005,10 +847,10 @@ class _OutgoingLetterPageAdminDesktopState
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.vertical,
                                     child: Column(
-                                      children: List.generate(suratData.length, (
+                                      children: List.generate(_listSurat.length, (
                                         index,
                                       ) {
-                                        final surat = suratData[index];
+                                        final surat = _listSurat[index];
 
                                         return Container(
                                           padding: EdgeInsets.symmetric(
@@ -1029,7 +871,7 @@ class _OutgoingLetterPageAdminDesktopState
                                             onTap: () {
                                               // Handle row tap
                                               print(
-                                                'Row tapped: ${surat['kode']}',
+                                                'Row tapped: ${surat?.kode}',
                                               );
                                             },
                                             borderRadius: BorderRadius.circular(
@@ -1100,7 +942,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                               .start,
                                                       children: [
                                                         Text(
-                                                          surat['kode'] ?? '',
+                                                          surat?.kode ?? '',
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 13,
@@ -1158,7 +1000,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                         SizedBox(width: 6),
                                                         Expanded(
                                                           child: Text(
-                                                            surat['klasifikasi'] ??
+                                                            surat?.klasifikasi ??
                                                                 '',
                                                             style: TextStyle(
                                                               color: Colors
@@ -1185,7 +1027,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 36,
                                                     child: Text(
-                                                      surat['no_register'] ??
+                                                      surat?.no_register ??
                                                           '',
                                                       style: TextStyle(
                                                         color: Colors.white
@@ -1202,10 +1044,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 46,
                                                     child: Text(
-                                                      surat['tujuan_surat']
-                                                              .isEmpty
+                                                      surat?.tujuan_surat == null
                                                           ? 'Tidak Ada'
-                                                          : surat['tujuan_surat'],
+                                                          : surat!.tujuan_surat!,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1221,7 +1062,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 53,
                                                     child: Text(
-                                                      surat['perihal'] ?? '',
+                                                      surat?.perihal ?? '',
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1240,7 +1081,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 50,
                                                     child: Text(
-                                                      surat['tgl_surat'] ?? '',
+                                                      surat?.tanggal_surat.toString() ?? '',
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1256,7 +1097,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 50,
                                                     child: Text(
-                                                      surat['klasifikasi_arsip'] ??
+                                                      surat?.akses_arsip ??
                                                           '',
                                                       style: TextStyle(
                                                         color: Colors.white
@@ -1299,7 +1140,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 32,
                                                     child: Text(
-                                                      surat['pembuat'] ?? '',
+                                                      surat?.pembuat ?? '',
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1315,9 +1156,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 43,
                                                     child: Text(
-                                                      surat['catatan'].isEmpty
+                                                      surat?.catatan == null
                                                           ? 'kosong'
-                                                          : surat['catatan'],
+                                                          : surat!.catatan!,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1333,10 +1174,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 40,
                                                     child: Text(
-                                                      surat['link_surat']
-                                                              .isEmpty
+                                                      surat?.link_surat == null
                                                           ? 'kosong'
-                                                          : surat['link_surat'],
+                                                          : surat!.link_surat!,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1352,9 +1192,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 27,
                                                     child: Text(
-                                                      surat['koreksi_1'].isEmpty
+                                                      surat?.koreksi_1 == null
                                                           ? 'kosong'
-                                                          : surat['koreksi_1'],
+                                                          : surat!.koreksi_1!,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1370,9 +1210,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                   Expanded(
                                                     flex: 28,
                                                     child: Text(
-                                                      surat['koreksi_2'].isEmpty
+                                                      surat?.koreksi_2 == null
                                                           ? 'kosong'
-                                                          : surat['koreksi_2'],
+                                                          : surat!.koreksi_2!,
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(
@@ -1400,10 +1240,10 @@ class _OutgoingLetterPageAdminDesktopState
                                                           gradient: LinearGradient(
                                                             colors: [
                                                               getStatusColor(
-                                                                surat['status'],
+                                                                surat!.status!,
                                                               ),
                                                               getStatusColor(
-                                                                surat['status'],
+                                                                surat.status!,
                                                               ).withValues(
                                                                 alpha: 0.8,
                                                               ),
@@ -1417,7 +1257,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                             BoxShadow(
                                                               color:
                                                                   getStatusColor(
-                                                                    surat['status'],
+                                                                    surat.status!,
                                                                   ).withValues(
                                                                     alpha: 0.3,
                                                                   ),
@@ -1430,7 +1270,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ],
                                                         ),
                                                         child: Text(
-                                                          surat['status'],
+                                                          surat.status!,
                                                           softWrap: true,
                                                           textAlign:
                                                               TextAlign.center,
@@ -1493,7 +1333,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                               viewDetailKeluar(
                                                                 context,
                                                                 index,
-                                                                suratData,
+                                                                _listSurat,
                                                               );
                                                             },
                                                             child: Icon(
@@ -1539,12 +1379,12 @@ class _OutgoingLetterPageAdminDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               // Handle edit action
-                                                              editDokumenAdminKeluar(
-                                                                context,
-                                                                index,
-                                                                suratData,
-                                                                refreshEditState,
-                                                              );
+                                                              // editDokumenAdminKeluar(
+                                                              //   context,
+                                                              //   index,
+                                                              //   _listSurat,
+                                                              //   refreshEditState,
+                                                              // );
                                                             },
                                                             child: Icon(
                                                               Icons
@@ -1585,12 +1425,12 @@ class _OutgoingLetterPageAdminDesktopState
                                                           child: InkWell(
                                                             onTap: () {
                                                               // Handle delete action
-                                                              hapusDokumenKeluarDesktop(
-                                                                context,
-                                                                index,
-                                                                suratData,
-                                                                actionSetState,
-                                                              );
+                                                              // hapusDokumenKeluarDesktop(
+                                                              //   context,
+                                                              //   index,
+                                                              //   _listSurat,
+                                                              //   actionSetState,
+                                                              // );
                                                             },
                                                             child: Icon(
                                                               Icons

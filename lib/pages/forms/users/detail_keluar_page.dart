@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
 class DetailPageKeluar extends StatefulWidget {
-  final Map<String, dynamic>? suratData; // Parameter untuk data surat
+  final SuratKeluarModel? suratData; // Parameter untuk data surat
 
   const DetailPageKeluar({super.key, this.suratData});
 
@@ -30,60 +31,6 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
   late AnimationController _backgroundController;
 
   late Animation<double> _backgroundAnimation;
-
-  Map<String, dynamic> getDetailData() {
-    // Kalau ada data yang di-pass, gabungin dengan detail data
-    final baseData = widget.suratData ?? {};
-
-    return {
-      'nomor': baseData['id']?.toString() ?? '001',
-      'kode': baseData['kode']?.toString() == null
-          ? 'Kode Kosong'
-          : baseData['kode'],
-      'klasifikasi': baseData['klasifikasi']?.toString() == null
-          ? 'Klasifikasi Kosong'
-          : baseData['klasifikasi'],
-      'tujuan_surat': baseData['tujuan_surat']?.toString() == null
-          ? 'Tujuan Kosong'
-          : baseData['tujuan_surat'],
-      'perihal': baseData['perihal']?.toString() == null
-          ? 'Perihal Kosong'
-          : baseData['perihal'],
-      'tgl_surat': baseData['tgl_surat']?.toString() == null
-          ? 'Tanggal Surat Kosong'
-          : baseData['tgl_surat'],
-      'klasifikasi_arsip': baseData['klasifikasi_arsip']?.toString() == null
-          ? 'Klasifikasi Arsip Belum Ditentukan'
-          : baseData['klasifikasi_arsip'],
-      'pengolah': () {
-        final pengolah = baseData['pengolah'];
-
-        if (pengolah == null) {
-          return 'Pengolah Belum Ditentukan';
-        } else if (pengolah is String) {
-          return pengolah.isEmpty ? 'Pengolah Belum Ditentukan' : pengolah;
-        } else if (pengolah is List<String>) {
-          return pengolah.isEmpty
-              ? 'Pengolah Belum Ditentukan'
-              : pengolah.join(', ');
-        } else {
-          return pengolah.toString();
-        }
-      }(),
-      'pembuat': baseData['pembuat']?.toString() == null
-          ? ''
-          : baseData['pembuat'],
-      'catatan': baseData['catatan']?.toString() == null
-          ? ''
-          : baseData['catatan'],
-      'status': baseData['status'] == null
-          ? 'Status Belum Ditentukan'
-          : baseData['status'],
-          'dokumen_final' : baseData['dok_final'],
-          'dokumen_dikirm' : baseData['dok_dikirim_tgl'],
-          'tanda_terima' : baseData['tanda_terima']
-    };
-  }
 
   @override
   void initState() {
@@ -116,7 +63,7 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    final detailData = getDetailData();
+    final detailData = widget.suratData;
     return Scaffold(
       drawer: SizedBox(
         width: 250,
@@ -641,27 +588,27 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
                           buildInfoCard([
                             buildDetailRow(
                               'Nomor',
-                              detailData['nomor'] == null
+                              detailData?.nomor_urut == null
                                   ? 'Data Kosong!'
-                                  : detailData['nomor'],
+                                  : detailData!.nomor_urut.toString(),
                             ),
                             buildDetailRow(
                               'Kode',
-                              detailData['kode'] == null
+                              detailData?.kode == null
                                   ? 'Data Kosong!'
-                                  : detailData['kode'],
+                                  : detailData!.kode,
                             ),
                             buildDetailRow(
                               'Klasifikasi',
-                              detailData['klasifikasi'] == null
+                              detailData?.klasifikasi == null
                                   ? 'Data Kosong!'
-                                  : detailData['klasifikasi'],
+                                  : detailData!.klasifikasi,
                             ),
                             buildDetailRow(
                               'Tanggal Surat',
-                              detailData['tgl_surat'] == null
+                              detailData?.tanggal_surat == null
                                   ? 'Data Kosong!'
-                                  : detailData['tgl_surat'],
+                                  : detailData!.tanggal_surat.toString(),
                             ),
                           ]),
 
@@ -673,21 +620,21 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
                           buildInfoCard([
                             buildDetailRow(
                               'Tujuan Surat',
-                              detailData['tujuan_surat'] == null
+                              detailData?.tujuan_surat == null
                                   ? 'Data Kosong!'
-                                  : detailData['tujuan_surat'],
+                                  : detailData!.tujuan_surat!,
                             ),
                             buildDetailRow(
                               'Perihal',
-                              detailData['perihal'] == null
+                              detailData?.perihal == null
                                   ? 'Data Kosong!'
-                                  : detailData['perihal'],
+                                  : detailData!.perihal,
                             ),
                             buildDetailRow(
                               'Ket. Klasifikasi Keamanan \n& Akses Arsip',
-                              detailData['klasifikasi_arsip'] == null
+                              detailData?.klasifikasi == null
                                   ? 'Data Kosong!'
-                                  : detailData['klasifikasi_arsip'],
+                                  : detailData!.klasifikasi,
                             ),
                           ]),
 
@@ -699,26 +646,26 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
                           buildInfoCard([
                             buildDetailRow(
                               'Pengolah',
-                              detailData['pengolah'] == null
+                              detailData?.pengolah == null
                                   ? 'Data Kosong!'
-                                  : detailData['pengolah'],
+                                  : detailData!.pengolah,
                             ),
                             buildDetailRow(
                               'Pembuat',
-                              detailData['pembuat'] == null
+                              detailData?.pembuat == null
                                   ? 'Data Kosong!'
-                                  : detailData['pembuat'],
+                                  : detailData!.pembuat!,
                             ),
                             buildDetailRow(
                               'Status',
-                              detailData['status'] == null
+                              detailData?.status == null
                                   ? 'Status Belum Ditentukan!'
-                                  : detailData['status'],
+                                  : detailData!.status!,
                               isStatus: true,
                               statusColor: getStatusColor(
-                                detailData['status'] == null
+                                detailData?.status == null
                                     ? 'Data Kosong!'
-                                    : detailData['status'],
+                                    : detailData!.status!,
                               ),
                             ),
                           ]),
@@ -731,28 +678,28 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
                           buildInfoCard([
                             buildDetailRow(
                               'Catatan',
-                              detailData['catatan'] == null
+                              detailData?.catatan == null
                                   ? 'Data Kosong!'
-                                  : detailData['catatan'],
+                                  : detailData!.catatan!,
                             ),
                             buildDetailRow(
                               'Dokumen Final',
-                              detailData['dokumen_final'].isEmpty ? 'Data Dokumen Final Kosong' : detailData['dokumen_final'],
+                              detailData?.dok_final == null ? 'Data Dokumen Final Kosong' : detailData!.dok_final!,
                             ),
                             buildDetailRow(
                               'Dokumen Dikirim',
-                              detailData['dokumen_dikirim'] == null ? 'Data Dokumen Dikirim Kosong' : detailData['dokumen_dikirim'],
+                              detailData?.dok_dikirim == null ? 'Data Dokumen Dikirim Kosong' : detailData!.dok_dikirim.toString(),
                               isStatus: true,
                               statusColor: getYesNoColor(
-                                detailData['dokumen_dikirim'] == null ? 'Data Dokumen Dikirim Kosong' : detailData['dokumen_dikirim'],
+                                detailData?.dok_dikirim == null ? 'Data Dokumen Dikirim Kosong' : detailData!.dok_dikirim.toString(),
                               ),
                             ),
                             buildDetailRow(
                               'Tanda Terima',
-                              detailData['tanda_terima'] == null ? 'Data Tanda Terima Kosong' : detailData['tanda_terima'],
+                              detailData?.tanda_terima == null ? 'Data Tanda Terima Kosong' : detailData!.tanda_terima.toString(),
                               isStatus: true,
                               statusColor: getTandaTerimaColor(
-                                detailData['tanda_terima'] == null ? 'Data Tanda Terima Kosong' : detailData['tanda_terima'],
+                                detailData?.tanda_terima == null ? 'Data Tanda Terima Kosong' : detailData!.tanda_terima.toString(),
                               ),
                             ),
                           ]),

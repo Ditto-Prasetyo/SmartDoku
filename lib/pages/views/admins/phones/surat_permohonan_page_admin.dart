@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 
@@ -36,6 +38,17 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   late Animation<double> _searchAnimation;
   late Animation<double> _optionsAnimation;
 
+  SuratMasuk _suratService = SuratMasuk();
+  List<SuratMasukModel?> _listSurat = [];
+
+  void _loadAllData() async {
+    final data = await _suratService.listSurat();
+
+    setState(() {
+      _listSurat = data;
+    });
+  }
+
   Future<void> _refreshData() async {
     setState(() {
       isRefreshing = true;
@@ -60,248 +73,6 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
     },
     {'value': 'status', 'label': 'Pengirim', 'icon': Icons.person_rounded},
     {'value': 'status', 'label': 'Status', 'icon': Icons.flag_rounded},
-  ];
-
-  List<Map<String, dynamic>> suratData = [
-    {
-      'id': '1',
-      'surat_dari': 'Surat Pemberitahuan Rapat Bulanan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal':
-          'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
-      'tanggal': '28 Juli 2025',
-      'pengirim': 'HRD Department',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'notes_disposisi_kadin' : 'Lanjutkan!',
-      'notes_disposisi_sekdin' : 'Lanjutkan!',
-      'notes_disposisi_kabid' : 'Lanjutkan!',
-      'notes_disposisi_kasubag' : 'Lanjutkan!',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '2',
-      'surat_dari': 'Pengajuan Cuti Tahunan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '3',
-      'surat_dari': 'Laporan Keuangan Q2 2025',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Report keuangan triwulan kedua tahun 2025',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '4',
-      'surat_dari': 'Undangan Seminar IT',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Mengundang untuk menghadiri seminar teknologi terbaru',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '5',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '6',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '7',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '8',
-      'surat_dari': 'Surat Peringatan Kedisiplinan',
-      'diterima_tgl': '28 Juli 2025',
-      'perihal': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tgl_surat': '28 Juli 2025',
-      'kode': '600.3.3.2',
-      'no_urut': '0001',
-      'no_surat': '1001',
-      'hari_tanggal': 'Selasa, 28 Juli 2025',
-      'waktu': '09:00 WIB',
-      'tempat': 'Ruang Rapat Paripurna',
-      'disposisi': 'PRPB',
-      'index': 'MC',
-      'pengolah': 'Kominfo',
-      'sifat': 'terbatas',
-      'link_scan': 'https://drive.google.com/drive/my-drive?hl=RU',
-      'disposisi_kadin': '06/01/2025',
-      'disposisi_sekdin': '07/01/2025',
-      'disposisi_kabid': '08/01/2025',
-      'disposisi_kasubag': '08/01/2025',
-      'disposisi_lanjutan': 'Pemanfaatan ruang dan bangunan',
-      'tindak_lanjut_1': '08/01/2025',
-      'tindak_lanjut_2': '30/01/2025',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
   ];
 
   Color getStatusColor(String status) {
@@ -405,7 +176,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
   void actionSetState(int index) {
     setState(() {
-      suratData.removeAt(index);
+      _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -1596,10 +1367,10 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                       physics: AlwaysScrollableScrollPhysics(
                                         parent: BouncingScrollPhysics(),
                                       ), // Enable pull to refresh even when list is short
-                                      itemCount: suratData.length,
+                                      itemCount: _listSurat.length,
                                       padding: EdgeInsets.only(bottom: 20),
                                       itemBuilder: (context, index) {
-                                        final surat = suratData[index];
+                                        final surat = _listSurat[index];
 
                                         return Container(
                                           margin: EdgeInsets.only(bottom: 15),
@@ -1657,55 +1428,55 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    actionAdmin(
-                                                      index,
-                                                      context,
-                                                      suratData,
-                                                      (i) => editDokumenAdmin(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        refreshEditState,
-                                                      ),
-                                                      (i) => viewDetailAdmin(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                      ),
-                                                      (i) => hapusDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        actionSetState,
-                                                      ),
-                                                    );
+                                                    // actionAdmin(
+                                                    //   index,
+                                                    //   context,
+                                                    //   _listSurat,
+                                                    //   (i) => editDokumenAdmin(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //     refreshEditState,
+                                                    //   ),
+                                                    //   (i) => viewDetailAdmin(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //   ),
+                                                    //   (i) => hapusDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //     actionSetState,
+                                                    //   ),
+                                                    // );
                                                     print(
-                                                      'Surat dipilih: ${surat['surat_dari']} \ntanggal : ${surat['tgl_surat']}',
+                                                      'Surat dipilih: ${surat?.nama_surat} \ntanggal : ${surat?.tanggal_surat.toString()}',
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    actionAdmin(
-                                                      index,
-                                                      context,
-                                                      suratData,
-                                                      (i) => editDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        refreshEditState,
-                                                      ),
-                                                      (i) => viewDetailAdmin(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                      ),
-                                                      (i) => hapusDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        actionSetState,
-                                                      ),
-                                                    );
+                                                    // actionAdmin(
+                                                    //   index,
+                                                    //   context,
+                                                    //   _listSurat,
+                                                    //   (i) => editDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //     refreshEditState,
+                                                    //   ),
+                                                    //   (i) => viewDetailAdmin(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //   ),
+                                                    //   (i) => hapusDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //     actionSetState,
+                                                    //   ),
+                                                    // );
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -1733,10 +1504,10 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                 gradient: LinearGradient(
                                                                   colors: [
                                                                     getStatusColor(
-                                                                      surat['status'],
+                                                                      surat!.status,
                                                                     ),
                                                                     getStatusColor(
-                                                                      surat['status'],
+                                                                      surat.status,
                                                                     ).withValues(
                                                                       alpha:
                                                                           0.8,
@@ -1751,7 +1522,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                   BoxShadow(
                                                                     color:
                                                                         getStatusColor(
-                                                                          surat['status'],
+                                                                          surat.status,
                                                                         ).withValues(
                                                                           alpha:
                                                                               0.3,
@@ -1767,7 +1538,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                 ],
                                                               ),
                                                               child: Text(
-                                                                surat['status'],
+                                                                surat.status,
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white,
@@ -1782,7 +1553,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat['diterima_tgl'],
+                                                              surat.tanggal_diterima.toString(),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1802,7 +1573,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
                                                         // Judul Surat
                                                         Text(
-                                                          surat['surat_dari'],
+                                                          surat.nama_surat,
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 18,
@@ -1821,7 +1592,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
                                                         // Perihal
                                                         Text(
-                                                          surat['perihal'],
+                                                          surat.hal,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1889,7 +1660,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      surat['pengirim'] == null ? '404 Not Found': surat['pengirim'],
+                                                                      surat?.disposisi == null ? '404 Not Found': surat.disposisi.join(", "),
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white
@@ -2011,10 +1782,10 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
           onPressed: () {
             // Option 1: Bikin method handle sendiri
             tambahSuratMasuk(context, (newSurat) {
-              setState(() {
-                // Tambahin ke list suratData lu
-                suratData.add(newSurat);
-              });
+              // setState(() {
+              //   // Tambahin ke list suratData lu
+              //   _listSurat.add(newSurat);
+              // });
               // Logic tambahan kalo ada
             });
           },

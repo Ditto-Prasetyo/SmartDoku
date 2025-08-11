@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
@@ -25,6 +27,20 @@ class _PermohonanLettersPageDesktopState
 
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
+
+  SuratMasuk _suratService = SuratMasuk();
+  List<SuratMasukModel?> _listSurat = [];
+
+  void _loadAllData() async {
+    final data = await _suratService.listSurat();
+    print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
+
+    setState(() {
+      _listSurat = data;
+      print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
+      print(_listSurat.map((e) => e!.toJson()).toList());
+    });
+  }
 
   // Selected sidebar item
   int _selectedIndex = 1;
@@ -332,9 +348,9 @@ class _PermohonanLettersPageDesktopState
   }
 
   void refreshEditState() {
+    _loadAllData();
     setState(() {
-      // Refresh ListView setelah edit data
-      // Data suratData udah diupdate di modal
+
     });
   }
 
@@ -353,6 +369,7 @@ class _PermohonanLettersPageDesktopState
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -2010,7 +2027,7 @@ class _PermohonanLettersPageDesktopState
                                                               viewDetail(
                                                                 context,
                                                                 index,
-                                                                suratData,
+                                                                _listSurat,
                                                               );
                                                             },
                                                             child: Icon(
