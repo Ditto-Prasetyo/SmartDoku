@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 
@@ -33,6 +35,17 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
   late Animation<double> _searchAnimation;
   late Animation<double> _optionsAnimation;
 
+  SuratKeluar _suratService = SuratKeluar();
+  List<SuratKeluarModel?> _listSurat = [];
+
+  void _loadAllData() async {
+    final data = await _suratService.listSurat();
+    
+    setState(() {
+      _listSurat = data;
+    });
+  }
+
   Future<void> _refreshData() async {
     setState(() {
       isRefreshing = true;
@@ -41,6 +54,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
     await Future.delayed(Duration(seconds: 2));
 
     // API buat call data disini yak..
+    _loadAllData();
 
     setState(() {
       isRefreshing = false;
@@ -59,45 +73,6 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
     {'value': 'status', 'label': 'Status', 'icon': Icons.flag_rounded},
   ];
 
-  List<Map<String, dynamic>> suratData = [
-    {
-      'judul': 'Surat Pemberitahuan Rapat Bulanan',
-      'Klasifikasi':
-          'Mengundang seluruh staff untuk menghadiri rapat evaluasi bulanan',
-      'tanggal': '28 Juli 2025',
-      'pengirim': 'HRD Department',
-      'status': 'Proses',
-    },
-    {
-      'judul': 'Pengajuan Cuti Tahunan',
-      'Klasifikasi': 'Permohonan persetujuan cuti tahunan untuk bulan Agustus',
-      'tanggal': '27 Juli 2025',
-      'pengirim': 'Karyawan - Ahmad Rizki',
-      'status': 'Selesai',
-    },
-    {
-      'judul': 'Laporan Keuangan Q2 2025',
-      'Klasifikasi': 'Report keuangan triwulan kedua tahun 2025',
-      'tanggal': '26 Juli 2025',
-      'pengirim': 'Finance Department',
-      'status': 'Selesai',
-    },
-    {
-      'judul': 'Undangan Seminar IT',
-      'Klasifikasi': 'Mengundang untuk menghadiri seminar teknologi terbaru',
-      'tanggal': '25 Juli 2025',
-      'pengirim': 'IT Department',
-      'status': 'Proses',
-    },
-    {
-      'judul': 'Surat Peringatan Kedisiplinan',
-      'Klasifikasi': 'Teguran untuk meningkatkan kedisiplinan dalam bekerja',
-      'tanggal': '24 Juli 2025',
-      'pengirim': 'HRD Department',
-      'status': 'Selesai',
-    },
-  ];
-
   Color getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'proses':
@@ -112,6 +87,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize background animation
     _backgroundController = AnimationController(
@@ -199,7 +175,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
 
   void actionSetState(int index) {
     setState(() {
-      suratData.removeAt(index);
+      _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -1388,10 +1364,10 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                       physics: AlwaysScrollableScrollPhysics(
                                         parent: BouncingScrollPhysics(),
                                       ), // Enable pull to refresh even when list is short
-                                      itemCount: suratData.length,
+                                      itemCount: _listSurat.length,
                                       padding: EdgeInsets.only(bottom: 20),
                                       itemBuilder: (context, index) {
-                                        final surat = suratData[index];
+                                        final surat = _listSurat[index];
 
                                         return Container(
                                           margin: EdgeInsets.only(bottom: 15),
@@ -1449,55 +1425,55 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    action(
-                                                      index,
-                                                      context,
-                                                      suratData,
-                                                      (i) => editDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        refreshEditState
-                                                      ),
-                                                      (i) => viewDetail(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                      ),
-                                                      (i) => hapusDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        actionSetState,
-                                                      ),
-                                                    );
+                                                    // action(
+                                                    //   index,
+                                                    //   context,
+                                                    //   suratData,
+                                                    //   (i) => editDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     suratData,
+                                                    //     refreshEditState
+                                                    //   ),
+                                                    //   (i) => viewDetail(
+                                                    //     context,
+                                                    //     index,
+                                                    //     suratData,
+                                                    //   ),
+                                                    //   (i) => hapusDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     suratData,
+                                                    //     actionSetState,
+                                                    //   ),
+                                                    // );
                                                     print(
-                                                      'Surat dipilih: ${surat['judul']}',
+                                                      'Surat dipilih: ${surat?.perihal}',
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    actionAdmin(
-                                                      index,
-                                                      context,
-                                                      suratData,
-                                                      (i) => editDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        refreshEditState
-                                                      ),
-                                                      (i) => viewDetail(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                      ),
-                                                      (i) => hapusDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        actionSetState,
-                                                      ),
-                                                    );
+                                                    // actionAdmin(
+                                                    //   index,
+                                                    //   context,
+                                                    //   _listSurat,
+                                                    //   (i) => editDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //     refreshEditState
+                                                    //   ),
+                                                    //   (i) => viewDetail(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //   ),
+                                                    //   (i) => hapusDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     _listSurat,
+                                                    //     actionSetState,
+                                                    //   ),
+                                                    // );
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -1524,10 +1500,10 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                                 gradient: LinearGradient(
                                                                   colors: [
                                                                     getStatusColor(
-                                                                      surat['status'],
+                                                                      surat!.status!,
                                                                     ),
                                                                     getStatusColor(
-                                                                      surat['status'],
+                                                                      surat.status!,
                                                                     ).withValues(
                                                                       alpha:
                                                                           0.8,
@@ -1542,7 +1518,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                                   BoxShadow(
                                                                     color:
                                                                         getStatusColor(
-                                                                          surat['status'],
+                                                                          surat.status!,
                                                                         ).withValues(
                                                                           alpha:
                                                                               0.3,
@@ -1558,7 +1534,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                                 ],
                                                               ),
                                                               child: Text(
-                                                                surat['status'],
+                                                                surat.status!,
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white,
@@ -1573,7 +1549,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat['tanggal'],
+                                                              surat.tanggal_surat.toString(),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1593,7 +1569,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
 
                                                         // Judul Surat
                                                         Text(
-                                                          surat['judul'],
+                                                          surat.perihal,
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 18,
@@ -1612,7 +1588,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
 
                                                         // Klasifikasi
                                                         Text(
-                                                          surat['Klasifikasi'],
+                                                          surat.klasifikasi,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1680,7 +1656,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      surat['pengirim'],
+                                                                      surat.pengolah,
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white

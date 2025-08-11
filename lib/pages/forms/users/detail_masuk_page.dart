@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
 class DetailPage extends StatefulWidget {
-  final Map<String, dynamic>? suratData; // Parameter untuk data surat
+  final SuratMasukModel? suratData; // Parameter untuk data surat
 
   const DetailPage({super.key, this.suratData});
 
@@ -30,47 +31,6 @@ class _DetailPage extends State<DetailPage>
   late AnimationController _backgroundController;
 
   late Animation<double> _backgroundAnimation;
-
-  Map<String, dynamic> getDetailData() {
-    // Kalau ada data yang di-pass, gabungin dengan detail data
-    final baseData = widget.suratData ?? {};
-
-    return {
-      'nomor': baseData['id']?.toString() ?? '001',
-      'surat_dari': baseData['pengirim'] ?? 'HRD Department',
-      'diterima_tgl':
-          baseData['diterima_tgl'] ??
-          (DateTime.now().day).toString() + '/' +
-              (DateTime.now().month).toString() + '/' +
-              (DateTime.now().year).toString(),
-      'tgl_surat': baseData['tgl_surat'] ?? '28 Juli 2025',
-      'kode': 'SR-2025-${baseData['id']?.toString().padLeft(3, '0') ?? '001'}',
-      'no_urut': '${baseData['no_urut']?.toString() ?? '1'}/25',
-      'no_agenda': baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025' == null ? 'Data Kosong!' :  baseData['kode'] + '/' + baseData['no_urut'] + '/' + '35.07.303/2025',
-      'no_surat': baseData['no_surat'] == null ? 'Data Kosong!' : baseData['no_surat'],
-      'hal': baseData['perihal'] == null ? 'Data Kosong!' : baseData['perihal'],
-      'hari_tanggal': baseData['hari_tanggal'] == null ? 'Data Kosong!' : baseData['hari_tanggal'],
-      'waktu': baseData['waktu'] == null ? 'Data Kosong!' : baseData['waktu'],
-      'tempat': baseData['tempat'] == null ? 'Data Kosong!' : baseData['tempat'],
-      'disposisi': baseData['disposisi'] == null ? 'Data Kosong!' : baseData['disposisi'],
-      'index': 'IDX-${baseData['index']?.toString() == null ? 'Data Kosong!' : baseData['index']}',
-      'pengolah': baseData['pengolah'] == null ? 'Data Kosong!' : baseData['pengolah'],
-      'sifat': baseData['sifat'] == null ? 'Data Kosong!' : baseData['sifat'],
-      'link_scan': baseData['link_scan'] == null ? 'Data Kosong!' : baseData['link_scan'],
-      'disp_1': baseData['disposisi_kadin'] == null ? 'Data Kosong!' : baseData['disposisi_kadin'],
-      'disp_2': baseData['disposisi_sekdin'] == null ? 'Data Kosong!' : baseData['disposisi_sekdin'],
-      'disp_3': baseData['disposisi_kabid'] == null ? 'Data Kosong!' : baseData['disposisi_kabid'],
-      'disp_4': baseData['disposisi_kasubag'] == null ? 'Data Kosong!' : baseData['disposisi_kasubag'],
-      'notes_disp_1' : baseData['notes_disposisi_kadin'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kadin'],
-      'notes_disp_2' : baseData['notes_disposisi_sekdin'] == null ? 'Data Kosong!' : baseData['notes_disposisi_sekdin'],
-      'notes_disp_3' : baseData['notes_disposisi_kabid'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kabid'],
-      'notes_disp_4' : baseData['notes_disposisi_kasubag'] == null ? 'Data Kosong!' : baseData['notes_disposisi_kasubag'],
-      'disp_lanjutan': baseData['disposisi_lanjutan'] == null ? 'Data Kosong!' : baseData['disposisi_lanjutan'],
-      'tindak_lanjut_1': baseData['tindak_lanjut_1'] == null ? 'Data Kosong!' : baseData['tindak_lanjut_1'],
-      'tindak_lanjut_2': baseData['tindak_lanjut_2'] == null ? 'Data Kosong!' : baseData['tindak_lanjut_2'],
-      'status': baseData['status'] == null ? 'Data Kosong!' : baseData['status'],
-    };
-  }
 
   @override
   void initState() {
@@ -103,7 +63,7 @@ class _DetailPage extends State<DetailPage>
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    final detailData = getDetailData();
+    final detailData = widget.suratData;
     return Scaffold(
       drawer: SizedBox(
         width: 250,
@@ -626,21 +586,21 @@ class _DetailPage extends State<DetailPage>
                           buildSectionTitle('Informasi Dasar'),
                           SizedBox(height: 15),
                           buildInfoCard([
-                            buildDetailRow('Nomor', detailData['nomor'] == null ? 'Data Kosong!' : detailData['nomor']),
+                            buildDetailRow('Nomor', detailData?.nomor_urut == null ? 'Data Kosong!' : detailData!.nomor_urut.toString()),
                             buildDetailRow(
                               'Surat Dari',
-                              detailData['surat_dari'] == null ? 'Data Kosong!' : detailData['surat_dari'],
+                              detailData!.nama_surat == null ? 'Data Kosong!' : detailData.nama_surat,
                             ),
                             buildDetailRow(
                               'Diterima Tanggal',
-                              detailData['diterima_tgl'] == null ? 'Data Kosong!' : detailData['diterima_tgl'],
+                              detailData.tanggal_diterima == null ? 'Data Kosong!' : detailData.tanggal_diterima.toString(),
                             ),
                             buildDetailRow(
                               'Tanggal Surat',
-                              detailData['tgl_surat'] == null ? 'Data Kosong!' : detailData['tgl_surat'],
+                              detailData.tanggal_surat == null ? 'Data Kosong!' : detailData.tanggal_surat.toString(),
                             ),
-                            buildDetailRow('Kode', detailData['kode'] == null ? 'Data Kosong!' : detailData['kode']),
-                            buildDetailRow('No. Urut', detailData['no_urut'] == null ? 'Data Kosong!' : detailData['no_urut']),
+                            buildDetailRow('Kode', detailData.kode == null ? 'Data Kosong!' : detailData.kode),
+                            buildDetailRow('No. Urut', detailData.nomor_urut == null ? 'Data Kosong!' : detailData.nomor_urut.toString()),
                           ]),
 
                           SizedBox(height: 20),
@@ -651,16 +611,16 @@ class _DetailPage extends State<DetailPage>
                           buildInfoCard([
                             buildDetailRow(
                               'No. Agenda',
-                              detailData['no_agenda'] == null ? 'Data Kosong!' : detailData['no_agenda'],
+                              detailData.no_agenda == null ? 'Data Kosong!' : detailData.no_agenda,
                             ),
-                            buildDetailRow('No. Surat', detailData['no_surat'] == null ? 'Data Kosong!' : detailData['no_surat']),
-                            buildDetailRow('Hal', detailData['hal'] == null ? 'Data Kosong!' : detailData['hal']),
+                            buildDetailRow('No. Surat', detailData.no_surat == null ? 'Data Kosong!' : detailData.no_surat),
+                            buildDetailRow('Hal', detailData.hal == null ? 'Data Kosong!' : detailData.hal),
                             buildDetailRow(
                               'Hari/Tanggal',
-                              detailData['hari_tanggal'] == null ? 'Data Kosong!' : detailData['hari_tanggal'],
+                              detailData.tanggal_waktu == null ? 'Data Kosong!' : detailData.tanggal_waktu.toLocal().toString(),
                             ),
-                            buildDetailRow('Waktu', detailData['waktu'] == null ? 'Data Kosong!' : detailData['waktu']),
-                            buildDetailRow('Tempat', detailData['tempat'] == null ? 'Data Kosong!' : detailData['tempat']),
+                            buildDetailRow('Waktu', detailData.tanggal_waktu == null ? 'Data Kosong!' : detailData.tanggal_waktu.toLocal().toString()),
+                            buildDetailRow('Tempat', detailData.tempat == null ? 'Data Kosong!' : detailData.tempat),
                           ]),
 
                           SizedBox(height: 20),
@@ -671,19 +631,19 @@ class _DetailPage extends State<DetailPage>
                           buildInfoCard([
                             buildDetailRow(
                               'Disposisi',
-                              detailData['disposisi'] == null ? 'Data Kosong!' : detailData['disposisi'],
+                              detailData.disposisi == null ? 'Data Kosong!' : detailData.disposisi.join(','),
                             ),
-                            buildDetailRow('Index', detailData['index']),
-                            buildDetailRow('Pengolah', detailData['pengolah'] == null ? 'Data Kosong!' : detailData['pengolah']),
+                            buildDetailRow('Index', detailData.index!),
+                            buildDetailRow('Pengolah', detailData.pengolah == null ? 'Data Kosong!' : detailData.pengolah),
                             buildDetailRow(
                               'Sifat',
-                              detailData['sifat'],
+                              detailData.sifat!,
                               isStatus: true,
-                              statusColor: getSifatColor(detailData['sifat'] == null ? 'Data Kosong!' : detailData['sifat']),
+                              statusColor: getSifatColor(detailData.sifat == null ? 'Data Kosong!' : detailData.sifat!),
                             ),
                             buildDetailRow(
                               'Link Scan',
-                              detailData['link_scan'] == null ? 'Data Kosong!' : detailData['link_scan'],
+                              detailData.link_scan == null ? 'Data Kosong!' : detailData.link_scan!,
                               isLink: true,
                             ),
                           ]),
@@ -696,19 +656,19 @@ class _DetailPage extends State<DetailPage>
                           buildInfoCard([
                             buildDetailRow(
                               'Disposisi Kadin',
-                              detailData['disp_1'] == null ? 'Data Kosong!' : detailData['disp_1'],
+                              detailData.disp_1 == null ? 'Data Kosong!' : detailData.disp_1.toString(),
                             ),
                             buildDetailRow(
                               'Disposisi Sekdin',
-                              detailData['disp_2'] == null ? 'Data Kosong!' : detailData['disp_2'],
+                              detailData.disp_2 == null ? 'Data Kosong!' : detailData.disp_2.toString(),
                             ),
                             buildDetailRow(
                               'Disposisi Kabid / KaUPT',
-                              detailData['disp_3'] == null ? 'Data Kosong!' : detailData['disp_3'],
+                              detailData.disp_3 == null ? 'Data Kosong!' : detailData.disp_3.toString(),
                             ),
                             buildDetailRow(
                               'Disposisi Kasubag / Kasi',
-                              detailData['disp_4'] == null ? 'Data Kosong!' : detailData['disp_4'],
+                              detailData.disp_4 == null ? 'Data Kosong!' : detailData.disp_4.toString(),
                             ),
                           ]),
 
@@ -720,23 +680,23 @@ class _DetailPage extends State<DetailPage>
                           buildInfoCard([
                             buildDetailRow(
                               'Catatan Disposisi Kadin',
-                              detailData['notes_disp_1'] == null ? 'Data Kosong!' : detailData['notes_disp_1'],
+                              detailData.disp_1_notes == null ? 'Data Kosong!' : detailData.disp_1_notes!,
                             ),
                             buildDetailRow(
                               'Catatan Disposisi Sekdin',
-                              detailData['notes_disp_2'] == null ? 'Data Kosong!' : detailData['notes_disp_2'],
+                              detailData.disp_2_notes == null ? 'Data Kosong!' : detailData.disp_2_notes!,
                             ),
                             buildDetailRow(
                               'Catatan Disposisi Kabid / KaUPT',
-                              detailData['notes_disp_3'] == null ? 'Data Kosong!' : detailData['notes_disp_3'],
+                              detailData.disp_3_notes == null ? 'Data Kosong!' : detailData.disp_3_notes!,
                             ),
                             buildDetailRow(
                               'Catatan Disposisi Kasubag / Kasi',
-                              detailData['notes_disp_4'] == null ? 'Data Kosong!' : detailData['notes_disp_4'],
+                              detailData.disp_4_notes == null ? 'Data Kosong!' : detailData.disp_4_notes!,
                             ),
                             buildDetailRow(
                               'Disposisi Lanjutan',
-                              detailData['disp_lanjutan'] == null ? 'Data Kosong!' : detailData['disp_lanjutan'],
+                              detailData.disp_lanjut == null ? 'Data Kosong!' : detailData.disp_lanjut!,
                             ),
                           ]),
 
@@ -748,17 +708,17 @@ class _DetailPage extends State<DetailPage>
                           buildInfoCard([
                             buildDetailRow(
                               'Tindak Lanjut 1',
-                              detailData['tindak_lanjut_1'] == null ? 'Data Kosong!' : detailData['tindak_lanjut_1'],
+                              detailData.tindak_lanjut_1 == null ? 'Data Kosong!' : detailData.tindak_lanjut_1.toString(),
                             ),
                             buildDetailRow(
                               'Tindak Lanjut 2',
-                              detailData['tindak_lanjut_2'] == null ? 'Data Kosong!' : detailData['tindak_lanjut_2'],
+                              detailData.tindak_lanjut_2 == null ? 'Data Kosong!' : detailData.tindak_lanjut_2.toString(),
                             ),
                             buildDetailRow(
                               'Status',
-                              detailData['status'] == null ? 'Data Kosong!' : detailData['status'],
+                              detailData.status == null ? 'Data Kosong!' : detailData.status,
                               isStatus: true,
-                              statusColor: getStatusColor(detailData['status'] == null ? 'Data Kosong!' : detailData['status']),
+                              statusColor: getStatusColor(detailData.status == null ? 'Data Kosong!' : detailData.status),
                             ),
                           ]),
                         ],

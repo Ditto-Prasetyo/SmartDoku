@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 
@@ -33,6 +35,17 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
   late Animation<double> _searchAnimation;
   late Animation<double> _optionsAnimation;
 
+  SuratKeluar _suratService = SuratKeluar();
+  List<SuratKeluarModel?> _listSurat = [];
+
+  void _loadAllData() async {
+    final data = await _suratService.listSurat();
+
+    setState(() {
+      _listSurat = data;
+    });
+  }
+
   Future<void> _refreshData() async {
     setState(() {
       isRefreshing = true;
@@ -41,6 +54,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
     await Future.delayed(Duration(seconds: 2));
 
     // API buat call data disini yak..
+    _loadAllData();
 
     setState(() {
       isRefreshing = false;
@@ -72,169 +86,6 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
     {'id': 'p6', 'nama_pengolah': 'UPT PALD'},
     {'id': 'p7', 'nama_pengolah': 'Renvapor'},
     {'id': 'p8', 'nama_pengolah': 'UKP'},
-  ];
-
-  List<Map<String, dynamic>> suratData = [
-    {
-      'id': '1',
-      'kode': '100.1.2',
-      'klasifikasi': 'Penyelenggaraan pemerintah daerah',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Kepala DPPKB Kab.Malang',
-      'perihal': 'Permintaan data RTLH yang telah dilakukan pada DPPKB',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'yaziq',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '2',
-      'kode': '600.3.3.2',
-      'klasifikasi': 'Ijin Pemanfaatan Ruang',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Anita Megawati',
-      'perihal': 'KKPR Pembibitan dan Budidaya  itik/ Bebek',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'yaziq',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '3',
-      'kode': '600.1.15',
-      'klasifikasi': 'Pembinaan penataan bangunan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Direktur RSU Pindad',
-      'perihal': 'Surat keterangan dalam proses pengurusan SLF',
-      'tgl_surat': '3 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'sela',
-      'catatan': 'belum scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '4',
-      'kode': '900.1.3',
-      'klasifikasi': 'Pelaksanaan Anggaran',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Bapak Bupati Malang',
-      'perihal': 'Usulan Rekening Perangkat Daerah',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'eko',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '5',
-      'kode': '700.1.2.5',
-      'klasifikasi': 'Data tindak lanjut temuan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Bapak Bupati Malang',
-      'perihal': 'Usulan Rekening Perangkat Daerah',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'eko',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '6',
-      'kode': '800.1.11.1',
-      'klasifikasi': 'Surat Tugas',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': '',
-      'perihal': 'Surtug melaksanakan survey KKPR',
-      'tgl_surat': '6 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'riski',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '7',
-      'kode': '000.3',
-      'klasifikasi': 'Pengadaan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Plh.Sekda',
-      'perihal': 'Permohonan bantuan pejabat pengadaan barang / jasa',
-      'tgl_surat': '7 Januari 2025',
-      'klasifikasi_arsip': 'Terbuka',
-      'pengolah': <String>[],
-      'pembuat': 'jumik',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Selesai',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
-    {
-      'id': '8',
-      'kode': '900',
-      'klasifikasi': 'Keuangan',
-      'no_register': '35.07.303/2025',
-      'tujuan_surat': 'Plt.BKAD',
-      'perihal': 'Surat pengantar SPP dan SPM 2 (berkas)',
-      'tgl_surat': '7 Januari 2025',
-      'klasifikasi_arsip': 'Tertutup',
-      'pengolah': <String>[],
-      'pembuat': 'jumik',
-      'catatan': 'sudah scan',
-      'link_surat': '',
-      'koreksi_1': '',
-      'koreksi_2': '',
-      'status': 'Proses',
-      'dok_final': '',
-      'dok_dikirim_tgl': '',
-      'tanda_terima': '',
-    },
   ];
 
   Color getStatusColor(String status) {
@@ -338,7 +189,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
 
   void actionSetState(int index) {
     setState(() {
-      suratData.removeAt(index);
+      // suratData.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -1527,10 +1378,10 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                       physics: AlwaysScrollableScrollPhysics(
                                         parent: BouncingScrollPhysics(),
                                       ), // Enable pull to refresh even when list is short
-                                      itemCount: suratData.length,
+                                      itemCount: _listSurat.length,
                                       padding: EdgeInsets.only(bottom: 20),
                                       itemBuilder: (context, index) {
-                                        final surat = suratData[index];
+                                        final surat = _listSurat[index];
 
                                         return Container(
                                           margin: EdgeInsets.only(bottom: 15),
@@ -1588,57 +1439,57 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    actionAdminKeluar(
-                                                      index,
-                                                      context,
-                                                      suratData,
-                                                      (i) =>
-                                                          editDokumenAdminKeluar(
-                                                            context,
-                                                            index,
-                                                            suratData,
-                                                            refreshEditState,
-                                                          ),
-                                                      (i) =>
-                                                          viewDetailAdminKeluar(
-                                                            context,
-                                                            index,
-                                                            suratData,
-                                                          ),
-                                                      (i) => hapusDokumenKeluar(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        actionSetState,
-                                                      ),
-                                                    );
+                                                    // actionAdminKeluar(
+                                                    //   index,
+                                                    //   context,
+                                                    //   suratData,
+                                                    //   (i) =>
+                                                    //       editDokumenAdminKeluar(
+                                                    //         context,
+                                                    //         index,
+                                                    //         suratData,
+                                                    //         refreshEditState,
+                                                    //       ),
+                                                    //   (i) =>
+                                                    //       viewDetailAdminKeluar(
+                                                    //         context,
+                                                    //         index,
+                                                    //         suratData,
+                                                    //       ),
+                                                    //   (i) => hapusDokumenKeluar(
+                                                    //     context,
+                                                    //     index,
+                                                    //     suratData,
+                                                    //     actionSetState,
+                                                    //   ),
+                                                    // );
                                                     print(
-                                                      'Surat dipilih: ${surat['klasifikasi']}',
+                                                      'Surat dipilih: ${surat?.klasifikasi}',
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    actionAdmin(
-                                                      index,
-                                                      context,
-                                                      suratData,
-                                                      (i) => editDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        refreshEditState,
-                                                      ),
-                                                      (i) => viewDetailAdmin(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                      ),
-                                                      (i) => hapusDokumen(
-                                                        context,
-                                                        index,
-                                                        suratData,
-                                                        actionSetState,
-                                                      ),
-                                                    );
+                                                    // actionAdmin(
+                                                    //   index,
+                                                    //   context,
+                                                    //   suratData,
+                                                    //   (i) => editDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     suratData,
+                                                    //     refreshEditState,
+                                                    //   ),
+                                                    //   (i) => viewDetailAdmin(
+                                                    //     context,
+                                                    //     index,
+                                                    //     suratData,
+                                                    //   ),
+                                                    //   (i) => hapusDokumen(
+                                                    //     context,
+                                                    //     index,
+                                                    //     suratData,
+                                                    //     actionSetState,
+                                                    //   ),
+                                                    // );
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
@@ -1667,10 +1518,10 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                                 gradient: LinearGradient(
                                                                   colors: [
                                                                     getStatusColor(
-                                                                      surat['status'] == null ? 'Status Belum Ditentukan' : surat['status'],
+                                                                      surat?.status == null ? 'Status Belum Ditentukan' : surat!.status!,
                                                                     ),
                                                                     getStatusColor(
-                                                                      surat['status'] == null ? 'Status Belum Ditentukan' : surat['status'],
+                                                                      surat?.status == null ? 'Status Belum Ditentukan' : surat!.status!,
                                                                     ).withValues(
                                                                       alpha:
                                                                           0.8,
@@ -1685,7 +1536,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                                   BoxShadow(
                                                                     color:
                                                                         getStatusColor(
-                                                                          surat['status'] == null ? 'Status Belum Ditentukan' : surat['status'],
+                                                                          surat?.status == null ? 'Status Belum Ditentukan' : surat!.status!,
                                                                         ).withValues(
                                                                           alpha:
                                                                               0.3,
@@ -1701,7 +1552,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                                 ],
                                                               ),
                                                               child: Text(
-                                                                surat['status'] == null ? 'Status Belum Ditentukan' : surat['status'],
+                                                                surat?.status == null ? 'Status Belum Ditentukan' : surat!.status!,
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white,
@@ -1716,7 +1567,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat['tgl_surat'] == null ? 'Data Kosong!' : surat['tgl_surat'],
+                                                              surat?.tanggal_surat == null ? 'Data Kosong!' : surat!.tanggal_surat.toString(),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1736,7 +1587,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
 
                                                         // Judul Surat
                                                         Text(
-                                                          surat['klasifikasi'] == null ? 'Data Kosong!' : surat['klasifikasi'],
+                                                          surat?.klasifikasi == null ? 'Data Kosong!' : surat!.klasifikasi,
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 18,
@@ -1755,7 +1606,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
 
                                                         // Klasifikasi
                                                         Text(
-                                                          surat['perihal'] == null ? 'Data Kosong!' : surat['perihal'],
+                                                          surat?.perihal == null ? 'Data Kosong!' : surat!.perihal,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -1823,7 +1674,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      surat['tujuan_surat'].isEmpty ? 'Tidak Memiliki Tujuan Akhir' : surat['tujuan_surat'],
+                                                                      surat?.tujuan_surat == null ? 'Tidak Memiliki Tujuan Akhir' : surat!.tujuan_surat!,
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white
@@ -1945,10 +1796,10 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
           onPressed: () {
             // Fungsi untuk tambah surat masuk
             tambahSuratKeluar(context, (newSurat) {
-              setState(() {
-                // Tambahin ke list suratData lu
-                suratData.add(newSurat);
-              });
+              // setState(() {
+              //   // Tambahin ke list suratData lu
+              //   suratData.add(newSurat);
+              // });
             });
           },
           backgroundColor: Colors.transparent,

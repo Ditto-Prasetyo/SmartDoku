@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_keluar.dart';
@@ -480,10 +481,10 @@ void actionAdminKeluar(
 void viewDetail(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel?> suratData,
 ) {
   final surat = suratData[index];
-  print('View Detail - ID: ${surat['id']}, Judul: ${surat['judul']}');
+  print('View Detail - ID: ${surat!.nomor_urut}, Judul: ${surat.nama_surat}');
 
   Navigator.push(
     context,
@@ -494,10 +495,10 @@ void viewDetail(
 void viewDetailKeluar(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel?> suratData,
 ) {
   final surat = suratData[index];
-  print('View Detail - ID: ${surat['id']}, Judul: ${surat['klasifikasi']}');
+  print('View Detail - ID: ${surat?.id}, Judul: ${surat?.klasifikasi}');
 
   Navigator.push(
     context,
@@ -508,10 +509,10 @@ void viewDetailKeluar(
 void viewDetailAdmin(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel> suratData,
 ) {
   final surat = suratData[index];
-  print('View Detail - ID: ${surat['id']}, Judul: ${surat['judul']}');
+  print('View Detail - ID: ${surat.id}, Judul: ${surat.nama_surat}');
 
   Navigator.push(
     context,
@@ -522,10 +523,10 @@ void viewDetailAdmin(
 void viewDetailAdminKeluar(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel> suratData,
 ) {
   final surat = suratData[index];
-  print('View Detail - ID: ${surat['id']}, Judul: ${surat['klasifikasi']}');
+  print('View Detail - ID: ${surat.nomor_urut}, Judul: ${surat.klasifikasi}');
   print('Anda memakai Detail Surat Keluar');
 
   Navigator.push(
