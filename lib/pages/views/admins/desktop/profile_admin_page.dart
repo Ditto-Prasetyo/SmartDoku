@@ -499,11 +499,10 @@ class _AdminProfileState extends State<AdminProfile>
                 ],
               ),
 
-              SizedBox(height: 20), // Reduced from 40 to save space
-              // Profile Content - Make this scrollable
+              SizedBox(height: 20), 
+              // Profile Content
               Expanded(
                 child: SingleChildScrollView(
-                  // Added scrollable wrapper
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -514,7 +513,7 @@ class _AdminProfileState extends State<AdminProfile>
                           children: [
                             // Admin Avatar and Info
                             Container(
-                              padding: EdgeInsets.all(24), // Reduced padding
+                              padding: EdgeInsets.all(24), 
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   begin: Alignment.topLeft,
@@ -532,7 +531,6 @@ class _AdminProfileState extends State<AdminProfile>
                               ),
                               child: Column(
                                 children: [
-                                  // Animated Admin Avatar - Reduced size
                                   AnimatedBuilder(
                                     animation: _profileAnimation,
                                     builder: (context, child) {
@@ -541,8 +539,8 @@ class _AdminProfileState extends State<AdminProfile>
                                             0.8 +
                                             (0.2 * _profileAnimation.value),
                                         child: Container(
-                                          width: 100, // Reduced from 140
-                                          height: 100, // Reduced from 140
+                                          width: 100,
+                                          height: 100,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             gradient: LinearGradient(

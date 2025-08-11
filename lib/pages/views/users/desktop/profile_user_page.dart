@@ -31,7 +31,7 @@ class _UserProfileState extends State<UserProfile>
   late Animation<double> _profileAnimation;
 
   // Selected sidebar item
-  int _selectedIndex = 5;
+  int _selectedIndex = 4;
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -53,11 +53,6 @@ class _UserProfileState extends State<UserProfile>
       'icon': Icons.assignment_turned_in_rounded,
       'title': 'Disposisi',
       'route': '/user/desktop/surat_disposisi_page_desktop',
-    },
-    {
-      'icon': Icons.settings_outlined,
-      'title': 'Pengaturan',
-      'route': '/user/desktop/setting_page',
     },
     {
       'icon': Icons.people_alt_rounded,
