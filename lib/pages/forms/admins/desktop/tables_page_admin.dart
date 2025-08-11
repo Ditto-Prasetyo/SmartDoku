@@ -889,11 +889,11 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                               ),
                                                               child: InkWell(
                                                                 onTap: () {
-                                                                  viewDetail(
-                                                                    context,
-                                                                    index,
-                                                                    suratData,
-                                                                  );
+                                                                  // viewDetail(
+                                                                  //   context,
+                                                                  //   index,
+                                                                  //   suratData,
+                                                                  // );
                                                                 },
                                                                 child: Icon(
                                                                   Icons

@@ -1414,7 +1414,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                   ),
                 ),
               ),
-            ],
+          )],
           ),
         ),
       ),
