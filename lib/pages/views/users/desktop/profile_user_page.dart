@@ -406,9 +406,9 @@ class _UserProfileState extends State<UserProfile>
       animation: _profileAnimation,
       builder: (context, child) {
         return Transform.translate(
-          offset: Offset(20 * (1 - _profileAnimation.value), 0),
+          offset: Offset(20 * (1 - _profileAnimation.value).clamp(0.0, 1.0), 0),
           child: Opacity(
-            opacity: _profileAnimation.value,
+            opacity: _profileAnimation.value.clamp(0.0, 1.0),
             child: Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -495,7 +495,7 @@ class _UserProfileState extends State<UserProfile>
     String? username
   ) {
     return Transform.translate(
-      offset: Offset(0, 30 * (1 - _cardAnimation.value)),
+      offset: Offset(0, 30 * (1 - _cardAnimation.value).clamp(0.0, 1.0)),
       child: Opacity(
         opacity: _cardAnimation.value.clamp(0.0, 1.0),
         child: Container(
@@ -608,7 +608,7 @@ class _UserProfileState extends State<UserProfile>
                                   animation: _profileAnimation,
                                   builder: (context, child) {
                                     return Transform.scale(
-                                      scale: 0.8 + (0.2 * _profileAnimation.value),
+                                      scale: 0.8 + (0.2 * _profileAnimation.value.clamp(0.0, 1.0)),
                                       child: Container(
                                         width: 140,
                                         height: 140,

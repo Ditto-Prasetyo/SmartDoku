@@ -338,7 +338,6 @@ void checkLengthAddress(
 // Other Functions
 
 void logout(BuildContext context) {
-  Navigator.of(context).pop();
   showModernLogoutDialog(
     '⚠️ Logout',
     'Apakah Anda Yakin Ingin Keluar?',
@@ -349,7 +348,6 @@ void logout(BuildContext context) {
 }
 
 void logoutDesktop(BuildContext context) {
-  Navigator.of(context).pop();
   showModernLogoutDesktopDialog(
     '⚠️ Logout',
     'Apakah Anda Yakin Ingin Keluar?',
@@ -360,7 +358,6 @@ void logoutDesktop(BuildContext context) {
 }
 
 void home(BuildContext context) {
-  Navigator.of(context).pop();
   showModernHomeDialog(
     '⚠️ Go Home',
     'Apakah Anda Yakin Ingin Kembali ke Halaman Dashboard?',
@@ -371,7 +368,6 @@ void home(BuildContext context) {
 }
 
 void homeAdmin(BuildContext context) {
-  Navigator.of(context).pop();
   showModernHomeAdminDialog(
     '⚠️ Go Home',
     'Apakah Anda Yakin Ingin Kembali ke Halaman Dashboard?',

@@ -474,7 +474,7 @@ class _SettingPageState extends State<SettingPage>
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildSectionTitleDisposisiDesktop('Pengaturan Format Kode Dokumen'),
+              buildSectionTitleDisposisiDesktop('Pengaturan Format Kode Suffix Nomor Register dan Agenda'),
               SizedBox(height: 20),
               
               // Document Code Format Settings
@@ -591,7 +591,7 @@ class _SettingPageState extends State<SettingPage>
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'Bagian pertama dari kode register',
+                              'Bagian pertama dari kode register dan agenda',
                               style: TextStyle(
                                 color: Colors.white.withValues(alpha: 0.7),
                                 fontSize: 14,
@@ -660,7 +660,7 @@ class _SettingPageState extends State<SettingPage>
                             Row(
                               children: [
                                 Icon(
-                                  Icons.calendar_today_outlined,
+                                  Icons.label_outline_rounded,
                                   color: Colors.white,
                                   size: 20,
                                 ),
@@ -678,7 +678,7 @@ class _SettingPageState extends State<SettingPage>
                             ),
                             SizedBox(height: 8),
                             Text(
-                              'Bagian ketiga dari kode register',
+                              'Bagian ketiga dari kode register dan agenda',
                               style: TextStyle(
                                 color: Colors.white.withValues(alpha: 0.7),
                                 fontSize: 14,
