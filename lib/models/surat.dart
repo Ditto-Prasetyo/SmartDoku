@@ -191,7 +191,7 @@ class SuratKeluarModel {
       no_register: json['no_register'],
       tujuan_surat: json['tujuan_surat'],
       perihal: json['perihal'],
-      tanggal_surat: json['tanggal_surat'],
+      tanggal_surat: DateTime.parse(json['tanggal_surat']),
       akses_arsip: json['akses_arsip'],
       pengolah: json['pengolah'],
       pembuat: json['pembuat'],
@@ -202,8 +202,8 @@ class SuratKeluarModel {
       status: json['status'],
       dok_final: json['dok_final'],
       dok_dikirim: json['dok_dikirim'],
-      tanda_terima: json['tanda_terima'],
-      timestamp: json['timestamp']
+      tanda_terima: json['tanda_terima'] != null ? DateTime.parse(json['tanda_terima']) : null,
+      timestamp: DateTime.parse(json['timestamp']),
     );
   }
 

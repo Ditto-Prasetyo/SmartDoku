@@ -10010,3 +10010,20 @@ void showDeleteConfirmationDisposisiAdmin(BuildContext context) {
     ),
   );
 }
+
+Color getStatusColor(String status) {
+  switch (status.toLowerCase()) {
+    case 'selesai':
+      return Color(0xFF10B981);
+    case 'proses':
+      return Color(0xFF3B82F6);
+    case 'terbatas':
+      return Colors.orange;
+    case 'ditolak':
+      return Colors.red;
+    case 'pending':
+      return Colors.yellow;
+    default:
+      return Color(0xFF6B7280);
+  }
+}

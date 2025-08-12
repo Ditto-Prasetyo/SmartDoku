@@ -344,12 +344,118 @@ void showModernTambahSuratFormDialog(
                                           icon: Icons
                                               .admin_panel_settings_rounded,
                                         ),
-                                        _buildModernTextField(
-                                          controller: controllers['status']!,
-                                          label: 'Status',
-                                          icon: Icons.info_outline_rounded,
-                                        ),
 
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            value:
+                                                controllers['status']!
+                                                    .text
+                                                    .isNotEmpty
+                                                ? controllers['status']!.text
+                                                : null,
+                                            items:
+                                                [
+                                                      'Pending',
+                                                      'Proses',
+                                                      'Selesai',
+                                                      'Ditolak',
+                                                    ]
+                                                    .map(
+                                                      (status) =>
+                                                          DropdownMenuItem(
+                                                            value: status,
+                                                            child: Text(
+                                                              status,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.9,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                    )
+                                                    .toList(),
+                                            onChanged: (value) {
+                                              controllers['status']!.text =
+                                                  value ?? '';
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Status wajib diisi';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Status',
+                                              labelStyle: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
+                                                ),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons.info_outline_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white
+                                                  .withValues(alpha: 0.05),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.red.withValues(
+                                                    alpha: 0.7,
+                                                  ),
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                    ),
+                                                  ),
+                                            ),
+                                            dropdownColor: Colors.black
+                                                .withValues(alpha: 0.7),
+                                            iconEnabledColor: Colors.white
+                                                .withValues(alpha: 0.9),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
                                         SizedBox(height: 20),
 
                                         // Disposisi Dates Section
@@ -521,46 +627,114 @@ void showModernTambahSuratFormDialog(
                                         //   newSurat[key] = controller.text;
                                         // });
 
-                                        SuratMasukModel? data = await _suratMasukService.addSurat(
-                                          suratDari: controllers['surat_dari']?.text,
-                                          tanggalDiterima: controllers['diterima_tgl']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['diterima_tgl']!.text)
+                                        SuratMasukModel?
+                                        data = await _suratMasukService.addSurat(
+                                          suratDari:
+                                              controllers['surat_dari']?.text,
+                                          tanggalDiterima:
+                                              controllers['diterima_tgl']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['diterima_tgl']!
+                                                      .text,
+                                                )
                                               : null,
-                                          tanggalSurat: controllers['tgl_surat']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                          tanggalSurat:
+                                              controllers['tgl_surat']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['tgl_surat']!
+                                                      .text,
+                                                )
                                               : null,
                                           kode: controllers['kode']?.text,
-                                          noAgenda: controllers['no_urut']?.text,
-                                          noSurat: controllers['no_surat']?.text,
+                                          noAgenda:
+                                              controllers['no_urut']?.text,
+                                          noSurat:
+                                              controllers['no_surat']?.text,
                                           hal: controllers['perihal']?.text,
-                                          tanggalWaktu: controllers['hari_tanggal']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['hari_tanggal']!.text)
+                                          tanggalWaktu:
+                                              controllers['hari_tanggal']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['hari_tanggal']!
+                                                      .text,
+                                                )
                                               : null,
                                           tempat: controllers['tempat']?.text,
-                                          disposisi: controllers['disposisi']?.text.isNotEmpty == true
-                                              ? controllers['disposisi']!.text.split(',') // contoh parsing jadi list
+                                          disposisi:
+                                              controllers['disposisi']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? controllers['disposisi']!.text
+                                                    .split(
+                                                      ',',
+                                                    ) // contoh parsing jadi list
                                               : [],
                                           index: controllers['index']?.text,
-                                          pengolah: controllers['pengolah']?.text,
+                                          pengolah:
+                                              controllers['pengolah']?.text,
                                           sifat: controllers['sifat']?.text,
-                                          linkScan: controllers['link_scan']?.text,
-                                          disp1Kadin: controllers['disposisi_kadin']?.text,
-                                          disp2Sekdin: controllers['disposisi_sekdin']?.text,
-                                          disp3Kabid: controllers['disposisi_kabid']?.text,
-                                          disp4Kasubag: controllers['disposisi_kasubag']?.text,
-                                          disp1Notes: controllers['notes_disposisi_kadin']?.text,
-                                          disp2Notes: controllers['notes_disposisi_sekdin']?.text,
-                                          disp3Notes: controllers['notes_disposisi_kabid']?.text,
-                                          disp4Notes: controllers['notes_disposisi_kasubag']?.text,
-                                          dispLanjut: controllers['disposisi_lanjutan']?.text,
-                                          tindakLanjut1: controllers['tindak_lanjut_1']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['tindak_lanjut_1']!.text)
+                                          linkScan:
+                                              controllers['link_scan']?.text,
+                                          disp1Kadin:
+                                              controllers['disposisi_kadin']
+                                                  ?.text,
+                                          disp2Sekdin:
+                                              controllers['disposisi_sekdin']
+                                                  ?.text,
+                                          disp3Kabid:
+                                              controllers['disposisi_kabid']
+                                                  ?.text,
+                                          disp4Kasubag:
+                                              controllers['disposisi_kasubag']
+                                                  ?.text,
+                                          disp1Notes:
+                                              controllers['notes_disposisi_kadin']
+                                                  ?.text,
+                                          disp2Notes:
+                                              controllers['notes_disposisi_sekdin']
+                                                  ?.text,
+                                          disp3Notes:
+                                              controllers['notes_disposisi_kabid']
+                                                  ?.text,
+                                          disp4Notes:
+                                              controllers['notes_disposisi_kasubag']
+                                                  ?.text,
+                                          dispLanjut:
+                                              controllers['disposisi_lanjutan']
+                                                  ?.text,
+                                          tindakLanjut1:
+                                              controllers['tindak_lanjut_1']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['tindak_lanjut_1']!
+                                                      .text,
+                                                )
                                               : null,
-                                          tindakLanjut2: controllers['tindak_lanjut_2']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['tindak_lanjut_2']!.text)
+                                          tindakLanjut2:
+                                              controllers['tindak_lanjut_2']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['tindak_lanjut_2']!
+                                                      .text,
+                                                )
                                               : null,
-                                          tl1Notes: null, // kalau belum ada di controllers
-                                          tl2Notes: null, // kalau belum ada di controllers
+                                          tl1Notes:
+                                              null, // kalau belum ada di controllers
+                                          tl2Notes:
+                                              null, // kalau belum ada di controllers
                                           status: controllers['status']?.text,
                                         );
 
@@ -958,10 +1132,116 @@ void showModernTambahSuratKeluarFormDialog(
                                           icon: Icons
                                               .admin_panel_settings_rounded,
                                         ),
-                                        _buildModernTextField(
-                                          controller: controllers['status']!,
-                                          label: 'Status',
-                                          icon: Icons.info_outline_rounded,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            value:
+                                                controllers['status']!
+                                                    .text
+                                                    .isNotEmpty
+                                                ? controllers['status']!.text
+                                                : null,
+                                            items:
+                                                [
+                                                      'Pending',
+                                                      'Proses',
+                                                      'Selesai',
+                                                      'Ditolak',
+                                                    ]
+                                                    .map(
+                                                      (status) =>
+                                                          DropdownMenuItem(
+                                                            value: status,
+                                                            child: Text(
+                                                              status,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.9,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                    )
+                                                    .toList(),
+                                            onChanged: (value) {
+                                              controllers['status']!.text =
+                                                  value ?? '';
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Status wajib diisi';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Status',
+                                              labelStyle: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
+                                                ),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons.info_outline_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white
+                                                  .withValues(alpha: 0.05),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.red.withValues(
+                                                    alpha: 0.7,
+                                                  ),
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                    ),
+                                                  ),
+                                            ),
+                                            dropdownColor: Colors.black
+                                                .withValues(alpha: 0.7),
+                                            iconEnabledColor: Colors.white
+                                                .withValues(alpha: 0.9),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
 
                                         SizedBox(height: 20),
@@ -1075,28 +1355,54 @@ void showModernTambahSuratKeluarFormDialog(
                                         // controllers.forEach((key, controller) {
                                         //   newSurat[key] = controller.text;
                                         // });
-                                        SuratKeluarModel? data = await _suratKeluarService.addSurat(
+                                        SuratKeluarModel?
+                                        data = await _suratKeluarService.addSurat(
                                           kode: controllers['kode']?.text,
-                                          klasifikasi: controllers['klasifikasi']?.text,
-                                          no_register: controllers['no_register']?.text,
-                                          tujuan_surat: controllers['tujuan_surat']?.text,
+                                          klasifikasi:
+                                              controllers['klasifikasi']?.text,
+                                          no_register:
+                                              controllers['no_register']?.text,
+                                          tujuan_surat:
+                                              controllers['tujuan_surat']?.text,
                                           perihal: controllers['perihal']?.text,
-                                          tanggal_surat: controllers['tgl_surat']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                          tanggal_surat:
+                                              controllers['tgl_surat']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['tgl_surat']!
+                                                      .text,
+                                                )
                                               : null,
-                                          akses_arsip: controllers['klasifikasi_arsip']?.text,
-                                          pengolah: controllers['pengolah']?.text,
+                                          akses_arsip:
+                                              controllers['klasifikasi_arsip']
+                                                  ?.text,
+                                          pengolah:
+                                              controllers['pengolah']?.text,
                                           pembuat: controllers['pembuat']?.text,
                                           catatan: controllers['catatan']?.text,
-                                          link_surat: controllers['link_surat']?.text,
-                                          koreksi_1: controllers['koreksi_1']?.text,
-                                          koreksi_2: controllers['koreksi_2']?.text,
+                                          link_surat:
+                                              controllers['link_surat']?.text,
+                                          koreksi_1:
+                                              controllers['koreksi_1']?.text,
+                                          koreksi_2:
+                                              controllers['koreksi_2']?.text,
                                           status: controllers['status']?.text,
-                                          dok_final: controllers['dok_final']?.text,
-                                          dok_dikirim: controllers['dok_dikirim_tgl']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['dok_dikirim_tgl']!.text)
+                                          dok_final:
+                                              controllers['dok_final']?.text,
+                                          dok_dikirim:
+                                              controllers['dok_dikirim_tgl']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['dok_dikirim_tgl']!
+                                                      .text,
+                                                )
                                               : null,
-                                          tanda_terima: controllers['tanda_terima']?.text,
+                                          tanda_terima:
+                                              controllers['tanda_terima']?.text,
                                         );
 
                                         // Call the callback function
@@ -1552,10 +1858,134 @@ void showModernTambahSuratMasukFormDialog(
                                               .admin_panel_settings_rounded,
                                           required: true,
                                         ),
-                                        _buildModernTextField(
-                                          controller: controllers['status']!,
-                                          label: 'Status',
-                                          icon: Icons.info_outline_rounded,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            value:
+                                                controllers['status']!
+                                                    .text
+                                                    .isNotEmpty
+                                                ? controllers['status']!.text
+                                                : null,
+                                            items:
+                                                [
+                                                      'Pending',
+                                                      'Proses',
+                                                      'Selesai',
+                                                      'Ditolak',
+                                                    ]
+                                                    .map(
+                                                      (
+                                                        status,
+                                                      ) => DropdownMenuItem(
+                                                        value: status,
+                                                        child: Row(
+                                                          children: [
+                                                            Container(
+                                                              width: 10,
+                                                              height: 10,
+                                                              decoration: BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color:
+                                                                    getStatusColor(
+                                                                      status,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 10),
+                                                            Text(
+                                                              status,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.9,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    )
+                                                    .toList(),
+                                            onChanged: (value) {
+                                              controllers['status']!.text =
+                                                  value ?? '';
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Status wajib diisi';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Status',
+                                              labelStyle: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
+                                                ),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons.info_outline_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white
+                                                  .withValues(alpha: 0.05),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.red.withValues(
+                                                    alpha: 0.7,
+                                                  ),
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                    ),
+                                                  ),
+                                            ),
+                                            dropdownColor: Colors.black
+                                                .withValues(alpha: 0.7),
+                                            iconEnabledColor: Colors.white
+                                                .withValues(alpha: 0.9),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
 
                                         SizedBox(height: 20),
@@ -1727,49 +2157,116 @@ void showModernTambahSuratMasukFormDialog(
                                         // controllers.forEach((key, controller) {
                                         //   newSurat[key] = controller.text;
                                         // });
-                                        SuratMasukModel? data = await _suratMasukService.addSurat(
-                                          suratDari: controllers['surat_dari']?.text,
-                                          tanggalDiterima: controllers['diterima_tgl']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['diterima_tgl']!.text)
+                                        SuratMasukModel?
+                                        data = await _suratMasukService.addSurat(
+                                          suratDari:
+                                              controllers['surat_dari']?.text,
+                                          tanggalDiterima:
+                                              controllers['diterima_tgl']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['diterima_tgl']!
+                                                      .text,
+                                                )
                                               : null,
-                                          tanggalSurat: controllers['tgl_surat']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                          tanggalSurat:
+                                              controllers['tgl_surat']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['tgl_surat']!
+                                                      .text,
+                                                )
                                               : null,
                                           kode: controllers['kode']?.text,
-                                          noAgenda: controllers['no_urut']?.text,
-                                          noSurat: controllers['no_surat']?.text,
+                                          noAgenda:
+                                              controllers['no_urut']?.text,
+                                          noSurat:
+                                              controllers['no_surat']?.text,
                                           hal: controllers['perihal']?.text,
-                                          tanggalWaktu: controllers['hari_tanggal']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['hari_tanggal']!.text)
+                                          tanggalWaktu:
+                                              controllers['hari_tanggal']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['hari_tanggal']!
+                                                      .text,
+                                                )
                                               : null,
                                           tempat: controllers['tempat']?.text,
-                                          disposisi: controllers['disposisi']?.text.isNotEmpty == true
-                                              ? controllers['disposisi']!.text.split(',') // contoh parsing jadi list
+                                          disposisi:
+                                              controllers['disposisi']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? controllers['disposisi']!.text
+                                                    .split(
+                                                      ',',
+                                                    ) // contoh parsing jadi list
                                               : [],
                                           index: controllers['index']?.text,
-                                          pengolah: controllers['pengolah']?.text,
+                                          pengolah:
+                                              controllers['pengolah']?.text,
                                           sifat: controllers['sifat']?.text,
-                                          linkScan: controllers['link_scan']?.text,
-                                          disp1Kadin: controllers['disposisi_kadin']?.text,
-                                          disp2Sekdin: controllers['disposisi_sekdin']?.text,
-                                          disp3Kabid: controllers['disposisi_kabid']?.text,
-                                          disp4Kasubag: controllers['disposisi_kasubag']?.text,
-                                          disp1Notes: controllers['notes_disposisi_kadin']?.text,
-                                          disp2Notes: controllers['notes_disposisi_sekdin']?.text,
-                                          disp3Notes: controllers['notes_disposisi_kabid']?.text,
-                                          disp4Notes: controllers['notes_disposisi_kasubag']?.text,
-                                          dispLanjut: controllers['disposisi_lanjutan']?.text,
-                                          tindakLanjut1: controllers['tindak_lanjut_1']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['tindak_lanjut_1']!.text)
+                                          linkScan:
+                                              controllers['link_scan']?.text,
+                                          disp1Kadin:
+                                              controllers['disposisi_kadin']
+                                                  ?.text,
+                                          disp2Sekdin:
+                                              controllers['disposisi_sekdin']
+                                                  ?.text,
+                                          disp3Kabid:
+                                              controllers['disposisi_kabid']
+                                                  ?.text,
+                                          disp4Kasubag:
+                                              controllers['disposisi_kasubag']
+                                                  ?.text,
+                                          disp1Notes:
+                                              controllers['notes_disposisi_kadin']
+                                                  ?.text,
+                                          disp2Notes:
+                                              controllers['notes_disposisi_sekdin']
+                                                  ?.text,
+                                          disp3Notes:
+                                              controllers['notes_disposisi_kabid']
+                                                  ?.text,
+                                          disp4Notes:
+                                              controllers['notes_disposisi_kasubag']
+                                                  ?.text,
+                                          dispLanjut:
+                                              controllers['disposisi_lanjutan']
+                                                  ?.text,
+                                          tindakLanjut1:
+                                              controllers['tindak_lanjut_1']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['tindak_lanjut_1']!
+                                                      .text,
+                                                )
                                               : null,
-                                          tindakLanjut2: controllers['tindak_lanjut_2']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['tindak_lanjut_2']!.text)
+                                          tindakLanjut2:
+                                              controllers['tindak_lanjut_2']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['tindak_lanjut_2']!
+                                                      .text,
+                                                )
                                               : null,
-                                          tl1Notes: null, // kalau belum ada di controllers
-                                          tl2Notes: null, // kalau belum ada di controllers
+                                          tl1Notes:
+                                              null, // kalau belum ada di controllers
+                                          tl2Notes:
+                                              null, // kalau belum ada di controllers
                                           status: controllers['status']?.text,
                                         );
-
 
                                         // Call the callback function
                                         onSuratAdded(data);
@@ -2168,10 +2665,116 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                           icon: Icons
                                               .admin_panel_settings_rounded,
                                         ),
-                                        _buildModernTextField(
-                                          controller: controllers['status']!,
-                                          label: 'Status',
-                                          icon: Icons.info_outline_rounded,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            value:
+                                                controllers['status']!
+                                                    .text
+                                                    .isNotEmpty
+                                                ? controllers['status']!.text
+                                                : null,
+                                            items:
+                                                [
+                                                      'Pending',
+                                                      'Proses',
+                                                      'Selesai',
+                                                      'Ditolak',
+                                                    ]
+                                                    .map(
+                                                      (status) =>
+                                                          DropdownMenuItem(
+                                                            value: status,
+                                                            child: Text(
+                                                              status,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.9,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                    )
+                                                    .toList(),
+                                            onChanged: (value) {
+                                              controllers['status']!.text =
+                                                  value ?? '';
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Status wajib diisi';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Status',
+                                              labelStyle: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
+                                                ),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons.info_outline_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white
+                                                  .withValues(alpha: 0.05),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.red.withValues(
+                                                    alpha: 0.7,
+                                                  ),
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                    ),
+                                                  ),
+                                            ),
+                                            dropdownColor: Colors.black
+                                                .withValues(alpha: 0.7),
+                                            iconEnabledColor: Colors.white
+                                                .withValues(alpha: 0.9),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
 
                                         SizedBox(height: 20),
@@ -2286,28 +2889,54 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                         //   newSurat[key] = controller.text;
                                         // });
 
-                                        SuratKeluarModel? data = await _suratKeluarService.addSurat(
+                                        SuratKeluarModel?
+                                        data = await _suratKeluarService.addSurat(
                                           kode: controllers['kode']?.text,
-                                          klasifikasi: controllers['klasifikasi']?.text,
-                                          no_register: controllers['no_register']?.text,
-                                          tujuan_surat: controllers['tujuan_surat']?.text,
+                                          klasifikasi:
+                                              controllers['klasifikasi']?.text,
+                                          no_register:
+                                              controllers['no_register']?.text,
+                                          tujuan_surat:
+                                              controllers['tujuan_surat']?.text,
                                           perihal: controllers['perihal']?.text,
-                                          tanggal_surat: controllers['tgl_surat']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                          tanggal_surat:
+                                              controllers['tgl_surat']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['tgl_surat']!
+                                                      .text,
+                                                )
                                               : null,
-                                          akses_arsip: controllers['klasifikasi_arsip']?.text,
-                                          pengolah: controllers['pengolah']?.text,
+                                          akses_arsip:
+                                              controllers['klasifikasi_arsip']
+                                                  ?.text,
+                                          pengolah:
+                                              controllers['pengolah']?.text,
                                           pembuat: controllers['pembuat']?.text,
                                           catatan: controllers['catatan']?.text,
-                                          link_surat: controllers['link_surat']?.text,
-                                          koreksi_1: controllers['koreksi_1']?.text,
-                                          koreksi_2: controllers['koreksi_2']?.text,
+                                          link_surat:
+                                              controllers['link_surat']?.text,
+                                          koreksi_1:
+                                              controllers['koreksi_1']?.text,
+                                          koreksi_2:
+                                              controllers['koreksi_2']?.text,
                                           status: controllers['status']?.text,
-                                          dok_final: controllers['dok_final']?.text,
-                                          dok_dikirim: controllers['dok_dikirim_tgl']?.text.isNotEmpty == true
-                                              ? DateTime.tryParse(controllers['dok_dikirim_tgl']!.text)
+                                          dok_final:
+                                              controllers['dok_final']?.text,
+                                          dok_dikirim:
+                                              controllers['dok_dikirim_tgl']
+                                                      ?.text
+                                                      .isNotEmpty ==
+                                                  true
+                                              ? DateTime.tryParse(
+                                                  controllers['dok_dikirim_tgl']!
+                                                      .text,
+                                                )
                                               : null,
-                                          tanda_terima: controllers['tanda_terima']?.text,
+                                          tanda_terima:
+                                              controllers['tanda_terima']?.text,
                                         );
 
                                         // Call the callback function
@@ -2737,4 +3366,21 @@ InputDecoration _modernDecoration(String label, IconData icon, bool required) {
     ),
     contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
   );
+}
+
+Color getStatusColor(String status) {
+  switch (status.toLowerCase()) {
+    case 'selesai':
+      return Color(0xFF10B981);
+    case 'proses':
+      return Color(0xFF3B82F6);
+    case 'terbatas':
+      return Colors.orange;
+    case 'ditolak':
+      return Colors.red;
+    case 'pending':
+      return Colors.yellow;
+    default:
+      return Color(0xFF6B7280);
+  }
 }
