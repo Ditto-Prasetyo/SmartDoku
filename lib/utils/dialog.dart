@@ -4587,10 +4587,10 @@ void showEditSuratKeluarDialog(
     text: selectedSurat?.dok_final,
   );
   final TextEditingController dokdikirimtglController = TextEditingController(
-    text: selectedSurat?.dok_dikirim!.toIso8601String(),
+    text: selectedSurat?.dok_dikirim?.toIso8601String() ?? null,
   );
   final TextEditingController tandaterimaController = TextEditingController(
-    text: selectedSurat?.tanda_terima!.toIso8601String(),
+    text: selectedSurat?.tanda_terima?.toIso8601String() ?? null,
   );
 
   String selectedStatus = selectedSurat!.status!;

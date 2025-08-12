@@ -175,7 +175,7 @@ class SuratMasuk {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = prefs.getString('jwt_token');
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -237,7 +237,7 @@ class SuratMasuk {
   Future<SuratMasukModel?> deleteSurat(int nomor_urut) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = prefs.getString('jwt_token');
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -267,7 +267,7 @@ class SuratMasuk {
   // Files services
   Future<bool> uploadFile(int nomor_urut, File file) async {
     final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('token');
+    final token = await prefs.getString('jwt_token');
 
     final request = http.MultipartRequest(
       'POST',
@@ -282,7 +282,7 @@ class SuratMasuk {
 
   Future<File?> downloadFile(int fileId, String savePath) async {
     final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('token');
+    final token = await prefs.getString('jwt_token');
 
     final uri = Uri.parse('${dotenv.env['API_URL']}/download/surat/masuk/$fileId');
     final response = await http.get(
@@ -376,7 +376,7 @@ class SuratKeluar {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = prefs.getString('jwt_token');
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -446,7 +446,7 @@ class SuratKeluar {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = prefs.getString('jwt_token');
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -497,7 +497,7 @@ class SuratKeluar {
   Future<SuratKeluarModel?> deleteSurat(int? nomor_urut) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = prefs.getString('jwt_token');
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -527,7 +527,7 @@ class SuratKeluar {
   // Files services
   Future<bool> uploadFile(int nomor_urut, File file) async {
     final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('token');
+    final token = await prefs.getString('jwt_token');
 
     final request = http.MultipartRequest(
       'POST',
