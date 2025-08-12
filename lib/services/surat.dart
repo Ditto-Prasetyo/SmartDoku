@@ -372,7 +372,7 @@ class SuratKeluar {
     String? status,
     String? dok_final,
     DateTime? dok_dikirim,
-    String? tanda_terima
+    DateTime? tanda_terima
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -399,7 +399,7 @@ class SuratKeluar {
         'status': status,
         'dok_final': dok_final,
         'dok_dikirim': dok_dikirim?.toIso8601String(),
-        'tanda_terima': tanda_terima
+        'tanda_terima': tanda_terima?.toIso8601String()
       };
 
       final response = await http.post(

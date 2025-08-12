@@ -4590,7 +4590,7 @@ void showEditSuratKeluarDialog(
     text: selectedSurat?.dok_dikirim?.toIso8601String() ?? null,
   );
   final TextEditingController tandaterimaController = TextEditingController(
-    text: selectedSurat?.tanda_terima?.toIso8601String() ?? null,
+    text: selectedSurat?.tanda_terima?.toUtc().toIso8601String() ?? null,
   );
 
   String selectedStatus = selectedSurat!.status!;
@@ -4967,7 +4967,7 @@ void showEditSuratKeluarDialog(
                                           nomor_urut: selectedSurat.nomor_urut,
                                           kode: kodeController.text,
                                           akses_arsip: klasifikasiarsipController.text,
-                                          tanggal_surat: tglsuratController.text as DateTime,
+                                          tanggal_surat: DateTime.tryParse(tglsuratController.text),
                                           catatan: catatanController.text,
                                           status: 'Proses',
                                           tujuan_surat: tujuansuratController.text,
@@ -4979,12 +4979,14 @@ void showEditSuratKeluarDialog(
                                           no_register: noregisterController.text,
                                           pengolah: pengolahController.text,
                                           perihal: perihalController.text,
-                                          tanda_terima: tandaterimaController.text,
+                                          tanda_terima: tandaterimaController!.text.isNotEmpty ?
+                                                DateTime.tryParse(tandaterimaController!.text)?.toIso8601String() : null,
                                           dok_final: dokfinalController.text,
-                                          dok_dikirim: dokdikirimtglController.text as DateTime
+                                          dok_dikirim: DateTime.tryParse(dokdikirimtglController.text)
                                         );
 
                                         print("[DEBUG] -> [STATUS] : Edit Status");
+                                        print("[DEBUG] -> [INFO] : nomor_urut = ${selectedSurat.nomor_urut}");
                                         print(data);
 
                                         // Refresh state
