@@ -1071,7 +1071,7 @@ class _AdminProfileState extends State<AdminProfile>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Setting',
+                                  'Profile Anda',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -1081,7 +1081,7 @@ class _AdminProfileState extends State<AdminProfile>
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Anda Dapat Mengatur Pengaturan Aplikasi di Sini!',
+                                  'Informasi lengkap mengenai akun Anda!',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -1111,7 +1111,7 @@ class _AdminProfileState extends State<AdminProfile>
                                 ],
                               ),
                               child: Icon(
-                                Icons.settings_outlined,
+                                Icons.people_alt_rounded,
                                 color: Colors.white,
                                 size: 24,
                               ),

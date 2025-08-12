@@ -13,6 +13,7 @@ import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/icon.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/utils/map.dart';
 import 'dart:io' show Platform;
 
 // Services Initialize
@@ -63,7 +64,12 @@ void showErrorDialog(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -202,7 +208,9 @@ void showModernErrorDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -220,7 +228,12 @@ void showModernErrorDialog(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -358,7 +371,9 @@ void showErrorDialogLengthUsername(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -515,7 +530,9 @@ void showErrorDialogLengthPassword(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -672,7 +689,9 @@ void showErrorDialogLengthEmail(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -828,7 +847,9 @@ void showErrorDialogEmailFormat(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -984,7 +1005,9 @@ void showErrorDialogUsernameSpaceChecker(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1148,7 +1171,9 @@ void showErrorDialogPasswordSpaceChecker(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1312,7 +1337,9 @@ void showErrorDialogEmailSpaceChecker(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1471,7 +1498,6 @@ void showModernHomeAdminDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
-
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
@@ -1664,7 +1690,6 @@ void showModernLogoutDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
-
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
@@ -1866,7 +1891,9 @@ void showModernLogoutDesktopDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2064,7 +2091,9 @@ void showModernHomeDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2266,7 +2295,9 @@ void showModernActionUserDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2584,7 +2615,9 @@ void showModernActionErrorDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -3143,13 +3176,13 @@ void showModernTambahSuratDialog(
                               accentColor,
                               accentColor2,
                               onSuratAdded,
-                                  // ? (data) {
-                                  //     // Default behavior if no callback provided
-                                  //     print(
-                                  //       'Surat baru ditambahkan: ${data['surat_dari']}',
-                                  //     );
-                                  //   }
-                                  // : onSuratAdded,
+                              // ? (data) {
+                              //     // Default behavior if no callback provided
+                              //     print(
+                              //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                              //     );
+                              //   }
+                              // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -3352,13 +3385,13 @@ void showModernTambahSuratKeluarDialog(
                               accentColor,
                               accentColor2,
                               onSuratAdded,
-                                  // ? (data) {
-                                  //     // Default behavior if no callback provided
-                                  //     print(
-                                  //       'Surat baru ditambahkan: ${data['surat_dari']}',
-                                  //     );
-                                  //   }
-                                  // : onSuratAdded,
+                              // ? (data) {
+                              //     // Default behavior if no callback provided
+                              //     print(
+                              //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                              //     );
+                              //   }
+                              // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -3461,7 +3494,9 @@ void showModernTambahSuratMasukDesktopDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -3672,7 +3707,9 @@ void showModernTambahSuratKeluarDesktopDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -3774,13 +3811,13 @@ void showModernTambahSuratKeluarDesktopDialog(
                               accentColor,
                               accentColor2,
                               onSuratAdded,
-                                  // ? (data) {
-                                  //     // Default behavior if no callback provided
-                                  //     print(
-                                  //       'Surat baru ditambahkan: ${data['surat_dari']}',
-                                  //     );
-                                  //   }
-                                  // : onSuratAdded,
+                              // ? (data) {
+                              //     // Default behavior if no callback provided
+                              //     print(
+                              //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                              //     );
+                              //   }
+                              // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -3864,7 +3901,6 @@ void showEditSuratDialog(
   void Function() refreshState,
 ) {
   final selectedSurat = suratData[index];
-
   // Controllers untuk form
   final TextEditingController judulController = TextEditingController(
     text: selectedSurat?.nama_surat,
@@ -3887,25 +3923,35 @@ void showEditSuratDialog(
   final TextEditingController noagendaController = TextEditingController(
     text: selectedSurat?.no_agenda,
   );
-  // final TextEditingController nourutController = TextEditingController(
-  //   text: selectedSurat?.nomor_urut.toString(),
-  // );
   final TextEditingController nosuratController = TextEditingController(
     text: selectedSurat?.no_surat,
   );
   final TextEditingController haritanggalController = TextEditingController(
     text: selectedSurat?.tanggal_waktu.toString(),
   );
-  final TextEditingController hariTanggalWaktuController = TextEditingController();
+  final TextEditingController hariTanggalWaktuController =
+      TextEditingController();
   final TextEditingController waktuController = TextEditingController(
     text: selectedSurat?.tanggal_waktu.toString(),
   );
   final TextEditingController tempatController = TextEditingController(
     text: selectedSurat?.tempat,
   );
-  final TextEditingController disposisiController = TextEditingController(
-    text: selectedSurat?.disposisi.join(', '),
-  );
+
+  // Initialize selected disposisi from existing data
+  List<String> selectedDisposisi = [];
+  if (selectedSurat?.disposisi != null && selectedSurat!.disposisi.isNotEmpty) {
+    // Convert existing disposisi to selected list
+    selectedDisposisi = selectedSurat.disposisi
+        .where(
+          (disp) =>
+              workFields.values.contains(disp) ||
+              workFields.keys.contains(disp),
+        )
+        .cast<String>()
+        .toList();
+  }
+
   final TextEditingController indexController = TextEditingController(
     text: selectedSurat?.index,
   );
@@ -4121,15 +4167,6 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              // buildInputField(
-                              //   'No Urut',
-                              //   nourutController,
-                              //   Icons.format_list_numbered_rounded,
-                              //   maxLines: 1,
-                              // ),
-
-                              // SizedBox(height: 20),
-
                               buildInputField(
                                 'No Agenda',
                                 noagendaController,
@@ -4176,11 +4213,226 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
-                                'Disposisi',
-                                disposisiController,
-                                Icons.send_rounded,
-                                maxLines: 1,
+                              // Multi-Select Disposisi Dropdown
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Disposisi',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Display selected disposisi
+                                        if (selectedDisposisi.isNotEmpty) ...[
+                                          Wrap(
+                                            spacing: 8,
+                                            runSpacing: 8,
+                                            children: selectedDisposisi.map((
+                                              disp,
+                                            ) {
+                                              // Find the display name
+                                              String displayName = workFields
+                                                  .entries
+                                                  .firstWhere(
+                                                    (entry) =>
+                                                        entry.value == disp ||
+                                                        entry.key == disp,
+                                                    orElse: () =>
+                                                        MapEntry(disp, disp),
+                                                  )
+                                                  .key;
+
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 6,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(
+                                                        0xFF4F46E5,
+                                                      ).withValues(alpha: 0.3),
+                                                      Color(
+                                                        0xFF7C3AED,
+                                                      ).withValues(alpha: 0.2),
+                                                    ],
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  border: Border.all(
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.3),
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      displayName,
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        decoration:
+                                                            TextDecoration.none,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 6),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectedDisposisi
+                                                              .remove(disp);
+                                                        });
+                                                      },
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        size: 16,
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.8,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(height: 12),
+                                        ],
+
+                                        // Dropdown to add more disposisi
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.05,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              hint: Text(
+                                                'Pilih Disposisi',
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.6),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              value: null,
+                                              isExpanded: true,
+                                              dropdownColor: Color(0xFF1F2937),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              icon: Icon(
+                                                Icons.add,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                                size: 20,
+                                              ),
+                                              items: workFields.entries
+                                                  .where(
+                                                    (entry) =>
+                                                        !selectedDisposisi
+                                                            .contains(
+                                                              entry.value,
+                                                            ),
+                                                  )
+                                                  .map((entry) {
+                                                    return DropdownMenuItem<
+                                                      String
+                                                    >(
+                                                      value: entry.value,
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.work_outline,
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.7,
+                                                                ),
+                                                            size: 16,
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Expanded(
+                                                            child: Text(
+                                                              entry.key,
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  })
+                                                  .toList(),
+                                              onChanged: (String? value) {
+                                                if (value != null &&
+                                                    !selectedDisposisi.contains(
+                                                      value,
+                                                    )) {
+                                                  setState(() {
+                                                    selectedDisposisi.add(
+                                                      value,
+                                                    );
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
 
                               SizedBox(height: 20),
@@ -4280,7 +4532,7 @@ void showEditSuratDialog(
 
                               buildDateInputField(
                                 'Disposisi Kasubag',
-                                judulController,
+                                disposisikasubagController,
                                 Icons.people_alt_rounded,
                                 context,
                                 maxLines: 1,
@@ -4423,35 +4675,66 @@ void showEditSuratDialog(
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         // Update data
-                                        final data = await _suratMasukService.editSurat(
-                                          nomor_urut: selectedSurat.nomor_urut,
-                                          disp1Kadin: disposisikadinController.text,
-                                          disp2Sekdin: disposisisekdinController.text,
-                                          disp3Kabid: disposisikabidController.text,
-                                          disp4Kasubag: disposisikasubagController.text,
-                                          disp1Notes: notesDisposisiKadinController.text,
-                                          disp2Notes: notesDisposisiSekdinController.text,
-                                          disp3Notes: notesDisposisiKabidController.text,
-                                          disp4Notes: notesDisposisiKasubagController.text,
-                                          dispLanjut: disposisilanjutanController.text,
-                                          hal: perihalController.text,
-                                          index: indexController.text,
-                                          kode: kodeController.text,
-                                          linkScan: linkscanController.text,
-                                          noAgenda: noagendaController.text,
-                                          noSurat: nosuratController.text,
-                                          pengolah: pengolahController.text,
-                                          sifat: sifatController.text,
-                                          suratDari: judulController.text,
-                                          tempat: tempatController.text,
-                                          status: 'Pending',
-                                          tanggalSurat: tanggalSuratController.text as DateTime,
-                                          tanggalDiterima: tanggalController.text as DateTime,
-                                          tanggalWaktu: hariTanggalWaktuController.text as DateTime,
-                                          tindakLanjut1: tindaklanjut1Controller.text as DateTime,
-                                          tindakLanjut2: tindaklanjut2Controller.text as DateTime,
-                                          disposisi: '[]'
-                                        );
+                                        final data = await _suratMasukService
+                                            .editSurat(
+                                              nomor_urut:
+                                                  selectedSurat.nomor_urut,
+                                              disp1Kadin:
+                                                  disposisikadinController.text,
+                                              disp2Sekdin:
+                                                  disposisisekdinController
+                                                      .text,
+                                              disp3Kabid:
+                                                  disposisikabidController.text,
+                                              disp4Kasubag:
+                                                  disposisikasubagController
+                                                      .text,
+                                              disp1Notes:
+                                                  notesDisposisiKadinController
+                                                      .text,
+                                              disp2Notes:
+                                                  notesDisposisiSekdinController
+                                                      .text,
+                                              disp3Notes:
+                                                  notesDisposisiKabidController
+                                                      .text,
+                                              disp4Notes:
+                                                  notesDisposisiKasubagController
+                                                      .text,
+                                              dispLanjut:
+                                                  disposisilanjutanController
+                                                      .text,
+                                              hal: perihalController.text,
+                                              index: indexController.text,
+                                              kode: kodeController.text,
+                                              linkScan: linkscanController.text,
+                                              noAgenda: noagendaController.text,
+                                              noSurat: nosuratController.text,
+                                              pengolah: pengolahController.text,
+                                              sifat: sifatController.text,
+                                              suratDari: judulController.text,
+                                              tempat: tempatController.text,
+                                              status: selectedStatus,
+                                              tanggalSurat:
+                                                  tanggalSuratController.text
+                                                      as DateTime,
+                                              tanggalDiterima:
+                                                  tanggalController.text
+                                                      as DateTime,
+                                              tanggalWaktu:
+                                                  hariTanggalWaktuController
+                                                          .text
+                                                      as DateTime,
+                                              tindakLanjut1:
+                                                  tindaklanjut1Controller.text
+                                                      as DateTime,
+                                              tindakLanjut2:
+                                                  tindaklanjut2Controller.text
+                                                      as DateTime,
+                                              disposisi: selectedDisposisi.join(
+                                                ',',
+                                              ), // Convert list to comma-separated string
+                                            );
 
                                         print(data);
 
@@ -4568,6 +4851,19 @@ void showEditSuratKeluarDialog(
       return pengolah.toString();
     })(),
   );
+
+  List<String> selectedPengolah = [];
+  if (selectedSurat?.pengolah != null && selectedSurat!.pengolah.isNotEmpty) {
+    selectedPengolah = selectedSurat.pengolah
+        .split(',')
+        .map((e) => e.trim()) 
+        .where(
+          (disp) =>
+              workFields.values.contains(disp) ||
+              workFields.keys.contains(disp),
+        )
+        .toList();
+  }
   final TextEditingController pembuatController = TextEditingController(
     text: selectedSurat?.pembuat,
   );
@@ -4792,11 +5088,171 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
-                                'Pengolah',
-                                pengolahController,
-                                Icons.manage_accounts_rounded,
-                                maxLines: 1,
+                              // Multi-Select Pengolah Dropdown
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Pengolah',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(alpha: 0.9),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(alpha: 0.2),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        // Display selected disposisi
+                                        if (selectedPengolah.isNotEmpty) ...[
+                                          Wrap(
+                                            spacing: 8,
+                                            runSpacing: 8,
+                                            children: selectedPengolah.map((disp) {
+                                              // Find the display name
+                                              String displayName = workFields.entries
+                                                  .firstWhere((entry) => 
+                                                    entry.value == disp || entry.key == disp,
+                                                    orElse: () => MapEntry(disp, disp))
+                                                  .key;
+                                              
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 6,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(0xFF4F46E5).withValues(alpha: 0.3),
+                                                      Color(0xFF7C3AED).withValues(alpha: 0.2),
+                                                    ],
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(20),
+                                                  border: Border.all(
+                                                    color: Colors.white.withValues(alpha: 0.3),
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      displayName,
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w500,
+                                                        decoration: TextDecoration.none,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 6),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectedPengolah.remove(disp);
+                                                        });
+                                                      },
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        size: 16,
+                                                        color: Colors.white.withValues(alpha: 0.8),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(height: 12),
+                                        ],
+                                        
+                                        // Dropdown to add more disposisi
+                                        Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 12),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(alpha: 0.05),
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(alpha: 0.1),
+                                            ),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              hint: Text(
+                                                'Pilih Pengolah',
+                                                style: TextStyle(
+                                                  color: Colors.white.withValues(alpha: 0.6),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              value: null,
+                                              isExpanded: true,
+                                              dropdownColor: Color(0xFF1F2937),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              icon: Icon(
+                                                Icons.add,
+                                                color: Colors.white.withValues(alpha: 0.7),
+                                                size: 20,
+                                              ),
+                                              items: workFields.entries
+                                                  .where((entry) => !selectedPengolah.contains(entry.value))
+                                                  .map((entry) {
+                                                return DropdownMenuItem<String>(
+                                                  value: entry.value,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.work_outline,
+                                                        color: Colors.white.withValues(alpha: 0.7),
+                                                        size: 16,
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Expanded(
+                                                        child: Text(
+                                                          entry.key,
+                                                          style: TextStyle(fontSize: 14),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? value) {
+                                                if (value != null && !selectedPengolah.contains(value)) {
+                                                  setState(() {
+                                                    selectedPengolah.add(value);
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
 
                               SizedBox(height: 20),
@@ -5283,7 +5739,9 @@ void showModernHapusMasukDialogDesktop(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -5445,7 +5903,6 @@ void showModernHapusMasukDialogDesktop(
     },
   );
 }
-
 
 void showModernHapusDialogDesktop(
   String title,
@@ -5477,7 +5934,9 @@ void showModernHapusDialogDesktop(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -5639,7 +6098,6 @@ void showModernHapusDialogDesktop(
     },
   );
 }
-
 
 // Action menu detailPage
 void showDetailActionMenu(BuildContext context, VoidCallback onDelete) {
@@ -6453,8 +6911,7 @@ void showDetailActionMenuDisposisiAdmin(
                             context,
                             nomorUrutController,
                             onSave: onEditSave,
-                            currentValue:
-                                currentNomorUrut,
+                            currentValue: currentNomorUrut,
                           );
                         },
                       ),
@@ -6484,7 +6941,6 @@ void showDetailActionMenuDisposisiAdmin(
     ),
   );
 }
-
 
 void showDetailActionMenuDisposisiDesktopAdmin(
   BuildContext context,
@@ -6574,8 +7030,7 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                             context,
                             nomorUrutController,
                             onSave: onEditSave,
-                            currentValue:
-                                currentNomorUrut,
+                            currentValue: currentNomorUrut,
                           );
                         },
                       ),
@@ -6670,7 +7125,8 @@ void showDetailActionMenuDisposisiDesktopUser(
                       buildActionMenuItem(
                         icon: Icons.edit_rounded,
                         title: 'Edit Isi Disposisi',
-                        subtitle: 'Edit Nomor Urut untuk melihat preview disposisi',
+                        subtitle:
+                            'Edit Nomor Urut untuk melihat preview disposisi',
                         color: Color(0xFFFACC15),
                         onTap: () {
                           Navigator.pop(context);
@@ -6679,8 +7135,7 @@ void showDetailActionMenuDisposisiDesktopUser(
                             context,
                             nomorUrutController,
                             onSave: onEditSave,
-                            currentValue:
-                                currentNomorUrut,
+                            currentValue: currentNomorUrut,
                           );
                         },
                       ),
@@ -6695,7 +7150,6 @@ void showDetailActionMenuDisposisiDesktopUser(
     ),
   );
 }
-
 
 void showEditDisposisi(
   BuildContext context,
@@ -7050,7 +7504,12 @@ void showEditDisposisiDesktop(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -7350,7 +7809,12 @@ void showPrintDialog(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -7544,7 +8008,9 @@ void showPrintImageFormat(BuildContext context) {
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -7812,7 +8278,12 @@ void showPrintDocumentFormat(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2 :size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -8243,7 +8714,12 @@ void showDownloadDesktopDialog(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -8421,7 +8897,6 @@ void showDownloadDesktopDialog(BuildContext context) {
     },
   );
 }
-
 
 void showImageFormat(BuildContext context) {
   showGeneralDialog(
@@ -8923,7 +9398,12 @@ void showImageDesktopFormat(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -9174,7 +9654,12 @@ void showDocumentDesktopFormat(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -9354,7 +9839,6 @@ void showDocumentDesktopFormat(BuildContext context) {
     },
   );
 }
-
 
 // Share Dialog
 void showShareDownloadDialog(BuildContext context) {
