@@ -559,7 +559,7 @@ class _UserProfileState extends State<UserProfile>
                         ),
                       ),
                       Text(
-                        'Informasi lengkap mengenai akun Anda',
+                        'Informasi lengkap mengenai akun Anda!',
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.7),
                           fontSize: 16,
