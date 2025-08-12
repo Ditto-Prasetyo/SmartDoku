@@ -364,21 +364,29 @@ void showModernTambahSuratFormDialog(
                                                       'Ditolak',
                                                     ]
                                                     .map(
-                                                      (status) =>
-                                                          DropdownMenuItem(
-                                                            value: status,
-                                                            child: Text(
-                                                              status,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.9,
+                                                      (
+                                                        status,
+                                                      ) => DropdownMenuItem(
+                                                        value: status,
+                                                        child: Row(
+                                                          children: [
+                                                            Container(
+                                                              width: 10,
+                                                              height: 10,
+                                                              decoration: BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color:
+                                                                    getStatusColor(
+                                                                      status,
                                                                     ),
                                                               ),
                                                             ),
-                                                          ),
+                                                            SizedBox(width: 10),
+                                                            Text(status),
+                                                          ],
+                                                        ),
+                                                      ),
                                                     )
                                                     .toList(),
                                             onChanged: (value) {
@@ -1151,21 +1159,29 @@ void showModernTambahSuratKeluarFormDialog(
                                                       'Ditolak',
                                                     ]
                                                     .map(
-                                                      (status) =>
-                                                          DropdownMenuItem(
-                                                            value: status,
-                                                            child: Text(
-                                                              status,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.9,
+                                                      (
+                                                        status,
+                                                      ) => DropdownMenuItem(
+                                                        value: status,
+                                                        child: Row(
+                                                          children: [
+                                                            Container(
+                                                              width: 10,
+                                                              height: 10,
+                                                              decoration: BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color:
+                                                                    getStatusColor(
+                                                                      status,
                                                                     ),
                                                               ),
                                                             ),
-                                                          ),
+                                                            SizedBox(width: 10),
+                                                            Text(status),
+                                                          ],
+                                                        ),
+                                                      ),
                                                     )
                                                     .toList(),
                                             onChanged: (value) {
@@ -2684,21 +2700,29 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                                       'Ditolak',
                                                     ]
                                                     .map(
-                                                      (status) =>
-                                                          DropdownMenuItem(
-                                                            value: status,
-                                                            child: Text(
-                                                              status,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.9,
+                                                      (
+                                                        status,
+                                                      ) => DropdownMenuItem(
+                                                        value: status,
+                                                        child: Row(
+                                                          children: [
+                                                            Container(
+                                                              width: 10,
+                                                              height: 10,
+                                                              decoration: BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color:
+                                                                    getStatusColor(
+                                                                      status,
                                                                     ),
                                                               ),
                                                             ),
-                                                          ),
+                                                            SizedBox(width: 10),
+                                                            Text(status),
+                                                          ],
+                                                        ),
+                                                      ),
                                                     )
                                                     .toList(),
                                             onChanged: (value) {
