@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:smart_doku/utils/widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:line_icons/line_icons.dart';
@@ -9,11 +9,11 @@ import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
-import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/icon.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/utils/map.dart';
+import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
 
 // Services Initialize
@@ -3894,6 +3894,17 @@ void showModernTambahSuratKeluarDesktopDialog(
   );
 }
 
+// Tambahkan helper function untuk parse DateTime
+DateTime? parseDateTime(String dateStr) {
+  if (dateStr.isEmpty) return null;
+  try {
+    return DateTime.parse(dateStr);
+  } catch (e) {
+    print('Error parsing date: $dateStr - $e');
+    return null;
+  }
+}
+
 void showEditSuratDialog(
   BuildContext context,
   int index,
@@ -3909,13 +3920,17 @@ void showEditSuratDialog(
     text: selectedSurat?.hal,
   );
   final TextEditingController tanggalController = TextEditingController(
-    text: selectedSurat?.tanggal_diterima.toString(),
+    text:
+        selectedSurat?.tanggal_diterima?.toString().split(' ')[0] ??
+        '', // Format ke yyyy-mm-dd aja
   );
   final TextEditingController pengirimController = TextEditingController(
     text: selectedSurat?.pengolah,
   );
   final TextEditingController tanggalSuratController = TextEditingController(
-    text: selectedSurat?.tanggal_surat.toString(),
+    text:
+        selectedSurat?.tanggal_surat?.toString().split(' ')[0] ??
+        '', // Format ke yyyy-mm-dd aja
   );
   final TextEditingController kodeController = TextEditingController(
     text: selectedSurat?.kode,
@@ -3927,12 +3942,14 @@ void showEditSuratDialog(
     text: selectedSurat?.no_surat,
   );
   final TextEditingController haritanggalController = TextEditingController(
-    text: selectedSurat?.tanggal_waktu.toString(),
+    text: selectedSurat?.tanggal_waktu?.toString().split(' ')[0] ?? '',
   );
   final TextEditingController hariTanggalWaktuController =
-      TextEditingController();
+      TextEditingController(
+        text: selectedSurat?.tanggal_waktu?.toString().split(' ')[0] ?? '',
+      );
   final TextEditingController waktuController = TextEditingController(
-    text: selectedSurat?.tanggal_waktu.toString(),
+    text: selectedSurat?.tanggal_waktu?.toString(),
   );
   final TextEditingController tempatController = TextEditingController(
     text: selectedSurat?.tempat,
@@ -3965,23 +3982,25 @@ void showEditSuratDialog(
     text: selectedSurat?.link_scan,
   );
   final TextEditingController disposisikadinController = TextEditingController(
-    text: selectedSurat?.disp_1.toString(),
+    text: selectedSurat?.disp_1?.toString().split(' ')[0] ?? '',
   );
   final TextEditingController disposisisekdinController = TextEditingController(
-    text: selectedSurat?.disp_2.toString(),
+    text: selectedSurat?.disp_2?.toString().split(' ')[0] ?? '',
   );
   final TextEditingController disposisikabidController = TextEditingController(
-    text: selectedSurat?.disp_3.toString(),
+    text: selectedSurat?.disp_3?.toString().split(' ')[0] ?? '',
   );
   final TextEditingController disposisikasubagController =
-      TextEditingController(text: selectedSurat?.disp_4.toString());
+      TextEditingController(
+        text: selectedSurat?.disp_4?.toString().split(' ')[0] ?? '',
+      );
   final TextEditingController disposisilanjutanController =
       TextEditingController(text: selectedSurat?.disp_lanjut);
   final TextEditingController tindaklanjut1Controller = TextEditingController(
-    text: selectedSurat?.tindak_lanjut_1.toString(),
+    text: selectedSurat?.tindak_lanjut_1?.toString().split(' ')[0] ?? '',
   );
   final TextEditingController tindaklanjut2Controller = TextEditingController(
-    text: selectedSurat?.tindak_lanjut_2.toString(),
+    text: selectedSurat?.tindak_lanjut_2?.toString().split(' ')[0] ?? '',
   );
 
   final TextEditingController notesDisposisiKadinController =
@@ -4674,92 +4693,139 @@ void showEditSuratDialog(
                                     flex: 2,
                                     child: ElevatedButton(
                                       onPressed: () async {
-                                        // Update data
-                                        final data = await _suratMasukService
-                                            .editSurat(
-                                              nomor_urut:
-                                                  selectedSurat.nomor_urut,
-                                              disp1Kadin:
-                                                  disposisikadinController.text,
-                                              disp2Sekdin:
-                                                  disposisisekdinController
-                                                      .text,
-                                              disp3Kabid:
-                                                  disposisikabidController.text,
-                                              disp4Kasubag:
-                                                  disposisikasubagController
-                                                      .text,
-                                              disp1Notes:
-                                                  notesDisposisiKadinController
-                                                      .text,
-                                              disp2Notes:
-                                                  notesDisposisiSekdinController
-                                                      .text,
-                                              disp3Notes:
-                                                  notesDisposisiKabidController
-                                                      .text,
-                                              disp4Notes:
-                                                  notesDisposisiKasubagController
-                                                      .text,
-                                              dispLanjut:
-                                                  disposisilanjutanController
-                                                      .text,
-                                              hal: perihalController.text,
-                                              index: indexController.text,
-                                              kode: kodeController.text,
-                                              linkScan: linkscanController.text,
-                                              noAgenda: noagendaController.text,
-                                              noSurat: nosuratController.text,
-                                              pengolah: pengolahController.text,
-                                              sifat: sifatController.text,
-                                              suratDari: judulController.text,
-                                              tempat: tempatController.text,
-                                              status: selectedStatus,
-                                              tanggalSurat:
-                                                  tanggalSuratController.text
-                                                      as DateTime,
-                                              tanggalDiterima:
-                                                  tanggalController.text
-                                                      as DateTime,
-                                              tanggalWaktu:
-                                                  hariTanggalWaktuController
-                                                          .text
-                                                      as DateTime,
-                                              tindakLanjut1:
-                                                  tindaklanjut1Controller.text
-                                                      as DateTime,
-                                              tindakLanjut2:
-                                                  tindaklanjut2Controller.text
-                                                      as DateTime,
-                                              disposisi: selectedDisposisi.join(
-                                                ',',
-                                              ), // Convert list to comma-separated string
-                                            );
-
-                                        print(data);
-
-                                        // Refresh state
-                                        refreshState();
-
-                                        // Close dialog
-                                        Navigator.pop(context);
-
-                                        // Show success message
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Surat berhasil diperbarui!',
-                                            ),
-                                            backgroundColor: Color(0xFF10B981),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
+                                        // Parse DateTime dari string controllers
+                                        DateTime? tanggalSurat = parseDateTime(
+                                          tanggalSuratController.text,
                                         );
+                                        DateTime? tanggalDiterima =
+                                            parseDateTime(
+                                              tanggalController.text,
+                                            );
+                                        DateTime? tanggalWaktu = parseDateTime(
+                                          hariTanggalWaktuController.text,
+                                        );
+                                        DateTime? tindakLanjut1 = parseDateTime(
+                                          tindaklanjut1Controller.text,
+                                        );
+                                        DateTime? tindakLanjut2 = parseDateTime(
+                                          tindaklanjut2Controller.text,
+                                        );
+
+                                        // Validasi tanggal wajib
+                                        if (tanggalSurat == null ||
+                                            tanggalDiterima == null) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Tanggal Surat dan Tanggal Diterima wajib diisi!',
+                                              ),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        try {
+                                          // Update data
+                                          final data = await _suratMasukService.editSurat(
+                                            nomor_urut:
+                                                selectedSurat.nomor_urut,
+                                            disp1Kadin:
+                                                disposisikadinController.text,
+                                            disp2Sekdin:
+                                                disposisisekdinController.text,
+                                            disp3Kabid:
+                                                disposisikabidController.text,
+                                            disp4Kasubag:
+                                                disposisikasubagController.text,
+                                            disp1Notes:
+                                                notesDisposisiKadinController
+                                                    .text,
+                                            disp2Notes:
+                                                notesDisposisiSekdinController
+                                                    .text,
+                                            disp3Notes:
+                                                notesDisposisiKabidController
+                                                    .text,
+                                            disp4Notes:
+                                                notesDisposisiKasubagController
+                                                    .text,
+                                            dispLanjut:
+                                                disposisilanjutanController
+                                                    .text,
+                                            hal: perihalController.text,
+                                            index: indexController.text,
+                                            kode: kodeController.text,
+                                            linkScan: linkscanController.text,
+                                            noAgenda: noagendaController.text,
+                                            noSurat: nosuratController.text,
+                                            pengolah: pengolahController.text,
+                                            sifat: sifatController.text,
+                                            suratDari: judulController.text,
+                                            tempat: tempatController.text,
+                                            status: selectedStatus,
+                                            tanggalSurat:
+                                                tanggalSurat, // Udah DateTime
+                                            tanggalDiterima:
+                                                tanggalDiterima, // Udah DateTime
+                                            tanggalWaktu:
+                                                tanggalWaktu, // Bisa null
+                                            tindakLanjut1:
+                                                tindakLanjut1, // Bisa null
+                                            tindakLanjut2:
+                                                tindakLanjut2, // Bisa null
+                                            disposisi: selectedDisposisi.join(
+                                              ',',
+                                            ), // Convert list to comma-separated string
+                                          );
+
+                                          print(data);
+
+                                          // Refresh state
+                                          refreshState();
+
+                                          // Close dialog
+                                          Navigator.pop(context);
+
+                                          // Show success message
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Surat berhasil diperbarui!',
+                                              ),
+                                              backgroundColor: Color(
+                                                0xFF10B981,
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          // Handle error
+                                          print('Error updating surat: $e');
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Error: $e'),
+                                              backgroundColor: Colors.red,
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          );
+                                        }
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Color(0xFF10B981),
@@ -4837,9 +4903,14 @@ void showEditSuratKeluarDialog(
   final TextEditingController perihalController = TextEditingController(
     text: selectedSurat?.perihal,
   );
+
+  // FIX: Format tanggal dengan proper formatting
   final TextEditingController tglsuratController = TextEditingController(
-    text: selectedSurat?.tanggal_surat.toIso8601String(),
+    text: selectedSurat?.tanggal_surat != null
+        ? DateFormat('yyyy-MM-dd').format(selectedSurat!.tanggal_surat)
+        : '',
   );
+
   final TextEditingController klasifikasiarsipController =
       TextEditingController(text: selectedSurat?.akses_arsip);
   final TextEditingController pengolahController = TextEditingController(
@@ -4856,7 +4927,7 @@ void showEditSuratKeluarDialog(
   if (selectedSurat?.pengolah != null && selectedSurat!.pengolah.isNotEmpty) {
     selectedPengolah = selectedSurat.pengolah
         .split(',')
-        .map((e) => e.trim()) 
+        .map((e) => e.trim())
         .where(
           (disp) =>
               workFields.values.contains(disp) ||
@@ -4882,11 +4953,18 @@ void showEditSuratKeluarDialog(
   final TextEditingController dokfinalController = TextEditingController(
     text: selectedSurat?.dok_final,
   );
+
+  // FIX: Format tanggal dengan proper formatting
   final TextEditingController dokdikirimtglController = TextEditingController(
-    text: selectedSurat?.dok_dikirim?.toIso8601String() ?? null,
+    text: selectedSurat?.dok_dikirim != null
+        ? DateFormat('yyyy-MM-dd').format(selectedSurat!.dok_dikirim!)
+        : '',
   );
+
   final TextEditingController tandaterimaController = TextEditingController(
-    text: selectedSurat?.tanda_terima?.toIso8601String() ?? null,
+    text: selectedSurat?.tanda_terima != null
+        ? DateFormat('yyyy-MM-dd').format(selectedSurat!.tanda_terima!)
+        : '',
   );
 
   String selectedStatus = selectedSurat!.status!;
@@ -5095,7 +5173,9 @@ void showEditSuratKeluarDialog(
                                   Text(
                                     'Pengolah',
                                     style: TextStyle(
-                                      color: Colors.white.withValues(alpha: 0.9),
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
                                       decoration: TextDecoration.none,
@@ -5114,26 +5194,36 @@ void showEditSuratKeluarDialog(
                                       ),
                                       borderRadius: BorderRadius.circular(15),
                                       border: Border.all(
-                                        color: Colors.white.withValues(alpha: 0.2),
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
                                         width: 1,
                                       ),
                                     ),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         // Display selected disposisi
                                         if (selectedPengolah.isNotEmpty) ...[
                                           Wrap(
                                             spacing: 8,
                                             runSpacing: 8,
-                                            children: selectedPengolah.map((disp) {
+                                            children: selectedPengolah.map((
+                                              disp,
+                                            ) {
                                               // Find the display name
-                                              String displayName = workFields.entries
-                                                  .firstWhere((entry) => 
-                                                    entry.value == disp || entry.key == disp,
-                                                    orElse: () => MapEntry(disp, disp))
+                                              String displayName = workFields
+                                                  .entries
+                                                  .firstWhere(
+                                                    (entry) =>
+                                                        entry.value == disp ||
+                                                        entry.key == disp,
+                                                    orElse: () =>
+                                                        MapEntry(disp, disp),
+                                                  )
                                                   .key;
-                                              
+
                                               return Container(
                                                 padding: EdgeInsets.symmetric(
                                                   horizontal: 12,
@@ -5142,38 +5232,51 @@ void showEditSuratKeluarDialog(
                                                 decoration: BoxDecoration(
                                                   gradient: LinearGradient(
                                                     colors: [
-                                                      Color(0xFF4F46E5).withValues(alpha: 0.3),
-                                                      Color(0xFF7C3AED).withValues(alpha: 0.2),
+                                                      Color(
+                                                        0xFF4F46E5,
+                                                      ).withValues(alpha: 0.3),
+                                                      Color(
+                                                        0xFF7C3AED,
+                                                      ).withValues(alpha: 0.2),
                                                     ],
                                                   ),
-                                                  borderRadius: BorderRadius.circular(20),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
                                                   border: Border.all(
-                                                    color: Colors.white.withValues(alpha: 0.3),
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.3),
                                                   ),
                                                 ),
                                                 child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
                                                     Text(
                                                       displayName,
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 12,
-                                                        fontWeight: FontWeight.w500,
-                                                        decoration: TextDecoration.none,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        decoration:
+                                                            TextDecoration.none,
                                                       ),
                                                     ),
                                                     SizedBox(width: 6),
                                                     GestureDetector(
                                                       onTap: () {
                                                         setState(() {
-                                                          selectedPengolah.remove(disp);
+                                                          selectedPengolah
+                                                              .remove(disp);
                                                         });
                                                       },
                                                       child: Icon(
                                                         Icons.close,
                                                         size: 16,
-                                                        color: Colors.white.withValues(alpha: 0.8),
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.8,
+                                                            ),
                                                       ),
                                                     ),
                                                   ],
@@ -5183,15 +5286,23 @@ void showEditSuratKeluarDialog(
                                           ),
                                           SizedBox(height: 12),
                                         ],
-                                        
+
                                         // Dropdown to add more disposisi
                                         Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 12),
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
                                           decoration: BoxDecoration(
-                                            color: Colors.white.withValues(alpha: 0.05),
-                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white.withValues(
+                                              alpha: 0.05,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
                                             border: Border.all(
-                                              color: Colors.white.withValues(alpha: 0.1),
+                                              color: Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
                                             ),
                                           ),
                                           child: DropdownButtonHideUnderline(
@@ -5199,7 +5310,8 @@ void showEditSuratKeluarDialog(
                                               hint: Text(
                                                 'Pilih Pengolah',
                                                 style: TextStyle(
-                                                  color: Colors.white.withValues(alpha: 0.6),
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.6),
                                                   fontSize: 14,
                                                 ),
                                               ),
@@ -5213,34 +5325,50 @@ void showEditSuratKeluarDialog(
                                               ),
                                               icon: Icon(
                                                 Icons.add,
-                                                color: Colors.white.withValues(alpha: 0.7),
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
                                                 size: 20,
                                               ),
                                               items: workFields.entries
-                                                  .where((entry) => !selectedPengolah.contains(entry.value))
+                                                  .where(
+                                                    (entry) => !selectedPengolah
+                                                        .contains(entry.value),
+                                                  )
                                                   .map((entry) {
-                                                return DropdownMenuItem<String>(
-                                                  value: entry.value,
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.work_outline,
-                                                        color: Colors.white.withValues(alpha: 0.7),
-                                                        size: 16,
+                                                    return DropdownMenuItem<
+                                                      String
+                                                    >(
+                                                      value: entry.value,
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.work_outline,
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.7,
+                                                                ),
+                                                            size: 16,
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Expanded(
+                                                            child: Text(
+                                                              entry.key,
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      SizedBox(width: 8),
-                                                      Expanded(
-                                                        child: Text(
-                                                          entry.key,
-                                                          style: TextStyle(fontSize: 14),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }).toList(),
+                                                    );
+                                                  })
+                                                  .toList(),
                                               onChanged: (String? value) {
-                                                if (value != null && !selectedPengolah.contains(value)) {
+                                                if (value != null &&
+                                                    !selectedPengolah.contains(
+                                                      value,
+                                                    )) {
                                                   setState(() {
                                                     selectedPengolah.add(value);
                                                   });
@@ -5418,71 +5546,148 @@ void showEditSuratKeluarDialog(
                                     flex: 2,
                                     child: ElevatedButton(
                                       onPressed: () async {
-                                        // Update data
-                                        final data = await _suratKeluarService
-                                            .editSurat(
-                                              nomor_urut:
-                                                  selectedSurat.nomor_urut,
-                                              kode: kodeController.text,
-                                              akses_arsip:
-                                                  klasifikasiarsipController
-                                                      .text,
-                                              tanggal_surat:
-                                                  tglsuratController.text
-                                                      as DateTime,
-                                              catatan: catatanController.text,
-                                              status: 'Proses',
-                                              tujuan_surat:
-                                                  tujuansuratController.text,
-                                              pembuat: pembuatController.text,
-                                              klasifikasi:
-                                                  klasifikasiController.text,
-                                              koreksi_1:
-                                                  koreksi1Controller.text,
-                                              koreksi_2:
-                                                  koreksi2Controller.text,
-                                              link_surat:
-                                                  linksuratController.text,
-                                              no_register:
-                                                  noregisterController.text,
-                                              pengolah: pengolahController.text,
-                                              perihal: perihalController.text,
-                                              tanda_terima:
-                                                  tandaterimaController.text,
-                                              dok_final:
-                                                  dokfinalController.text,
-                                              dok_dikirim:
-                                                  dokdikirimtglController.text
-                                                      as DateTime,
+                                        try {
+                                          // FIX: Parse tanggal dengan proper error handling
+                                          DateTime? tanggalSurat;
+                                          DateTime? dokDikirim;
+                                          DateTime? tandaTerima;
+
+                                          // Parse tanggal surat
+                                          if (tglsuratController
+                                              .text
+                                              .isNotEmpty) {
+                                            tanggalSurat = DateTime.tryParse(
+                                              tglsuratController.text,
                                             );
+                                            if (tanggalSurat == null) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Format tanggal surat tidak valid!',
+                                                  ),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                              return;
+                                            }
+                                          }
 
-                                        print(
-                                          "[DEBUG] -> [STATUS] : Edit Status",
-                                        );
-                                        print(data);
+                                          // Parse dokumen dikirim
+                                          if (dokdikirimtglController
+                                              .text
+                                              .isNotEmpty) {
+                                            dokDikirim = DateTime.tryParse(
+                                              dokdikirimtglController.text,
+                                            );
+                                          }
 
-                                        // Refresh state
-                                        refreshState();
+                                          // Parse tanda terima
+                                          if (tandaterimaController
+                                              .text
+                                              .isNotEmpty) {
+                                            tandaTerima = DateTime.tryParse(
+                                              tandaterimaController.text,
+                                            );
+                                          }
 
-                                        // Close dialog
-                                        Navigator.pop(context);
+                                          // Update pengolah controller dengan selected values
+                                          pengolahController.text =
+                                              selectedPengolah.join(', ');
 
-                                        // Show success message
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Surat berhasil diperbarui!',
+                                          // Update data
+                                          final data = await _suratKeluarService
+                                              .editSurat(
+                                                nomor_urut:
+                                                    selectedSurat.nomor_urut,
+                                                kode: kodeController.text,
+                                                akses_arsip:
+                                                    klasifikasiarsipController
+                                                        .text,
+                                                tanggal_surat:
+                                                    tanggalSurat ??
+                                                    selectedSurat.tanggal_surat,
+                                                catatan: catatanController.text,
+                                                status:
+                                                    selectedStatus, // FIX: Gunakan selectedStatus yang sebenarnya
+                                                tujuan_surat:
+                                                    tujuansuratController.text,
+                                                pembuat: pembuatController.text,
+                                                klasifikasi:
+                                                    klasifikasiController.text,
+                                                koreksi_1:
+                                                    koreksi1Controller.text,
+                                                koreksi_2:
+                                                    koreksi2Controller.text,
+                                                link_surat:
+                                                    linksuratController.text,
+                                                no_register:
+                                                    noregisterController.text,
+                                                pengolah:
+                                                    pengolahController.text,
+                                                perihal: perihalController.text,
+                                                tanda_terima:
+                                                    tandaTerima
+                                                        ?.toIso8601String() ??
+                                                    '',
+                                                dok_final:
+                                                    dokfinalController.text,
+                                                dok_dikirim:
+                                                    dokDikirim ??
+                                                    selectedSurat.dok_dikirim,
+                                              );
+
+                                          print(
+                                            "[DEBUG] -> [STATUS] : Edit Status",
+                                          );
+                                          print(data);
+
+                                          // Refresh state
+                                          refreshState();
+
+                                          // Close dialog
+                                          Navigator.pop(context);
+
+                                          // Show success message
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Surat berhasil diperbarui!',
+                                              ),
+                                              backgroundColor: Color(
+                                                0xFF10B981,
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
                                             ),
-                                            backgroundColor: Color(0xFF10B981),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                          );
+                                        } catch (e) {
+                                          // Handle error
+                                          print("[ERROR] -> Edit Surat: $e");
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Gagal memperbarui surat: $e',
+                                              ),
+                                              backgroundColor: Colors.red,
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        }
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Color(0xFF10B981),
