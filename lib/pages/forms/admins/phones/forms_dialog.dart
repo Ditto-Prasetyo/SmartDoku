@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 import 'package:intl/intl.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/utils/map.dart';
 
 SuratMasuk _suratMasukService = SuratMasuk();
 SuratKeluar _suratKeluarService = SuratKeluar();
@@ -331,13 +332,111 @@ void showModernTambahSuratFormDialog(
 
                                         // Process Info Section
                                         _buildSectionTitle('Informasi Proses'),
-                                        _buildModernTextField(
-                                          controller: controllers['disposisi']!,
-                                          label: 'Disposisi',
-                                          icon: Icons
-                                              .assignment_turned_in_rounded,
-                                          required: true,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            value:
+                                                controllers['disposisi']!
+                                                    .text
+                                                    .isNotEmpty
+                                                ? controllers['disposisi']!.text
+                                                : null,
+                                            items: workFields.entries
+                                                .map(
+                                                  (entry) => DropdownMenuItem(
+                                                    value: entry.value,
+                                                    child: Text(
+                                                      entry.key,
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.9,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                            onChanged: (value) {
+                                              controllers['disposisi']!.text =
+                                                  value ?? '';
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Disposisi harus diisi';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Disposisi',
+                                              labelStyle: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
+                                                ),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons
+                                                    .assignment_turned_in_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white
+                                                  .withValues(alpha: 0.05),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.red.withValues(
+                                                    alpha: 0.7,
+                                                  ),
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                    ),
+                                                  ),
+                                            ),
+                                            dropdownColor: Colors.black
+                                                .withValues(alpha: 0.7),
+                                            iconEnabledColor: Colors.white
+                                                .withValues(alpha: 0.9),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
+                                        SizedBox(height: 10),
+
                                         _buildModernTextField(
                                           controller: controllers['pengolah']!,
                                           label: 'Pengolah',
@@ -1127,13 +1226,111 @@ void showModernTambahSuratKeluarFormDialog(
 
                                         // Process Info Section
                                         _buildSectionTitle('Informasi Proses'),
-                                        _buildModernTextField(
-                                          controller: controllers['pengolah']!,
-                                          label: 'Pengolah',
-                                          icon: Icons
-                                              .admin_panel_settings_rounded,
-                                          required: true,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            value:
+                                                controllers['pengolah']!
+                                                    .text
+                                                    .isNotEmpty
+                                                ? controllers['pengolah']!.text
+                                                : null,
+                                            items: workFields.entries
+                                                .map(
+                                                  (entry) => DropdownMenuItem(
+                                                    value: entry.value,
+                                                    child: Text(
+                                                      entry.key,
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.9,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                            onChanged: (value) {
+                                              controllers['pengolah']!.text =
+                                                  value ?? '';
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Pengolah harus diisi';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Pengolah',
+                                              labelStyle: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
+                                                ),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons
+                                                    .assignment_turned_in_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white
+                                                  .withValues(alpha: 0.05),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.red.withValues(
+                                                    alpha: 0.7,
+                                                  ),
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                    ),
+                                                  ),
+                                            ),
+                                            dropdownColor: Colors.black
+                                                .withValues(alpha: 0.7),
+                                            iconEnabledColor: Colors.white
+                                                .withValues(alpha: 0.9),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
+                                        SizedBox(height: 10),
+
                                         _buildModernTextField(
                                           controller: controllers['pembuat']!,
                                           label: 'Pembuat',
@@ -1860,13 +2057,111 @@ void showModernTambahSuratMasukFormDialog(
 
                                         // Process Info Section
                                         _buildSectionTitle('Informasi Proses'),
-                                        _buildModernTextField(
-                                          controller: controllers['disposisi']!,
-                                          label: 'Disposisi',
-                                          icon: Icons
-                                              .assignment_turned_in_rounded,
-                                          required: true,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            value:
+                                                controllers['disposisi']!
+                                                    .text
+                                                    .isNotEmpty
+                                                ? controllers['disposisi']!.text
+                                                : null,
+                                            items: workFields.entries
+                                                .map(
+                                                  (entry) => DropdownMenuItem(
+                                                    value: entry.value,
+                                                    child: Text(
+                                                      entry.key,
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.9,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                            onChanged: (value) {
+                                              controllers['disposisi']!.text =
+                                                  value ?? '';
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Disposisi harus diisi';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Disposisi',
+                                              labelStyle: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
+                                                ),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons
+                                                    .assignment_turned_in_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white
+                                                  .withValues(alpha: 0.05),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.red.withValues(
+                                                    alpha: 0.7,
+                                                  ),
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                    ),
+                                                  ),
+                                            ),
+                                            dropdownColor: Colors.black
+                                                .withValues(alpha: 0.7),
+                                            iconEnabledColor: Colors.white
+                                                .withValues(alpha: 0.9),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
+                                        SizedBox(height: 10),
+
                                         _buildModernTextField(
                                           controller: controllers['pengolah']!,
                                           label: 'Pengolah',
@@ -2668,13 +2963,111 @@ void showModernTambahSuratKeluarFormDesktopDialog(
 
                                         // Process Info Section
                                         _buildSectionTitle('Informasi Proses'),
-                                        _buildModernTextField(
-                                          controller: controllers['pengolah']!,
-                                          label: 'Pengolah',
-                                          icon: Icons
-                                              .admin_panel_settings_rounded,
-                                          required: true,
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 10,
+                                          ),
+                                          child: DropdownButtonFormField<String>(
+                                            value:
+                                                controllers['pengolah']!
+                                                    .text
+                                                    .isNotEmpty
+                                                ? controllers['pengolah']!.text
+                                                : null,
+                                            items: workFields.entries
+                                                .map(
+                                                  (entry) => DropdownMenuItem(
+                                                    value: entry.value,
+                                                    child: Text(
+                                                      entry.key,
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.9,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                            onChanged: (value) {
+                                              controllers['pengolah']!.text =
+                                                  value ?? '';
+                                            },
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Pengolah harus diisi';
+                                              }
+                                              return null;
+                                            },
+                                            decoration: InputDecoration(
+                                              labelText: 'Pengolah',
+                                              labelStyle: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.8,
+                                                ),
+                                              ),
+                                              prefixIcon: Icon(
+                                                Icons
+                                                    .assignment_turned_in_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                              ),
+                                              filled: true,
+                                              fillColor: Colors.white
+                                                  .withValues(alpha: 0.05),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                ),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.4),
+                                                ),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: Colors.red.withValues(
+                                                    alpha: 0.7,
+                                                  ),
+                                                ),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                    ),
+                                                  ),
+                                            ),
+                                            dropdownColor: Colors.black
+                                                .withValues(alpha: 0.7),
+                                            iconEnabledColor: Colors.white
+                                                .withValues(alpha: 0.9),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
+                                        SizedBox(height: 10),
+
                                         _buildModernTextField(
                                           controller: controllers['pembuat']!,
                                           label: 'Pembuat',
@@ -2849,7 +3242,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                         Row(
                                           children: [
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['dok_dikirim_tgl']!,
                                                 label:
@@ -2859,7 +3253,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                             ),
                                             SizedBox(width: 15),
                                             Expanded(
-                                              child: _buildModernTextField(
+                                              child: buildDatePickerField(
+                                                context: context,
                                                 controller:
                                                     controllers['tanda_terima']!,
                                                 label: 'Tanda Terima',
@@ -3176,9 +3571,10 @@ Widget buildDatePickerField({
           lastDate: DateTime(2100),
         );
 
+        final selectedDate = pickedDate?.toIso8601String();
+
         if (pickedDate != null) {
-          String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-          controller.text = formattedDate;
+          controller.text = selectedDate!;
         }
       },
       validator: required
@@ -3261,17 +3657,15 @@ Widget buildDayDatePickerField({
           lastDate: DateTime(2100),
           locale: const Locale('id', 'ID'), // Biar bahasa Indonesia
         );
+        
+        final selectedDate = pickedDate?.toIso8601String();
 
         if (pickedDate != null) {
           String formattedDay = DateFormat(
             'EEEE',
             'id_ID',
           ).format(pickedDate); // Hari
-          String formattedDate = DateFormat(
-            'dd MMMM yyyy',
-            'id_ID',
-          ).format(pickedDate); // Tanggal
-          controller.text = '$formattedDay, $formattedDate';
+          controller.text = selectedDate!;
         }
       },
       validator: required
@@ -3326,17 +3720,9 @@ Widget buildDayDateTimePickerField({
               pickedTime.minute,
             );
 
-            String dayName = DateFormat(
-              'EEEE',
-              'id_ID',
-            ).format(combinedDateTime);
-            String datePart = DateFormat(
-              'dd MMMM yyyy',
-              'id_ID',
-            ).format(combinedDateTime);
-            String timePart = DateFormat('HH:mm').format(combinedDateTime);
+            final selectedDateTime = combinedDateTime.toIso8601String();
 
-            controller.text = "$dayName, $datePart - $timePart";
+            controller.text = selectedDateTime;
           }
         }
       },
