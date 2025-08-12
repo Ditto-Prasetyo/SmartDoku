@@ -1310,7 +1310,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   ),Expanded(
                                                     flex: 27,
                                                     child: Text(
-                                                      surat.tanda_terima.toString(),
+                                                      surat.tanda_terima.toString() ?? "-",
                                                       style: TextStyle(
                                                         color: Colors.white
                                                             .withValues(

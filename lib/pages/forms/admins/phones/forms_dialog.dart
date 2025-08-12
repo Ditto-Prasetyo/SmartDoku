@@ -1615,7 +1615,8 @@ void showModernTambahSuratKeluarFormDialog(
                                                 )
                                               : null,
                                           tanda_terima:
-                                              controllers['tanda_terima']?.text,
+                                              controllers['tanda_terima']!.text.isNotEmpty ?
+                                                DateTime.tryParse(controllers['tanda_terima']!.text) : null,
                                         );
 
                                         // Call the callback function
@@ -3355,7 +3356,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                                 )
                                               : null,
                                           tanda_terima:
-                                              controllers['tanda_terima']?.text,
+                                              controllers['tanda_terima']!.text.isNotEmpty ?
+                                                DateTime.tryParse(controllers['tanda_terima']!.text) : null,
                                         );
 
                                         // Call the callback function
@@ -3571,7 +3573,7 @@ Widget buildDatePickerField({
           lastDate: DateTime(2100),
         );
 
-        final selectedDate = pickedDate?.toIso8601String();
+        final selectedDate = pickedDate?.toUtc().toIso8601String();
 
         if (pickedDate != null) {
           controller.text = selectedDate!;
@@ -3619,8 +3621,8 @@ Widget buildTimePickerField({
             pickedTime.minute,
           );
 
-          String formattedTime = DateFormat('HH:mm').format(selectedTime);
-          controller.text = formattedTime;
+          final selectedTimeIso = selectedTime.toUtc().toIso8601String();
+          controller.text = selectedTimeIso;
         }
       },
       validator: required
@@ -3658,7 +3660,7 @@ Widget buildDayDatePickerField({
           locale: const Locale('id', 'ID'), // Biar bahasa Indonesia
         );
         
-        final selectedDate = pickedDate?.toIso8601String();
+        final selectedDate = pickedDate?.toUtc().toIso8601String();
 
         if (pickedDate != null) {
           String formattedDay = DateFormat(
