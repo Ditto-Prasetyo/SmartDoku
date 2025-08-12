@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:io' show Platform;
 import 'package:intl/intl.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
+
+SuratMasuk _suratMasukService = SuratMasuk();
+SuratKeluar _suratKeluarService = SuratKeluar();
 
 void showModernTambahSuratFormDialog(
   BuildContext context,
   Color accentColor,
   Color accentColor2,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratMasukModel?) onSuratAdded,
 ) {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -502,22 +507,65 @@ void showModernTambahSuratFormDialog(
                                 Container(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        // Create new surat data
-                                        Map<String, dynamic> newSurat = {
-                                          'id': DateTime.now()
-                                              .millisecondsSinceEpoch
-                                              .toString(),
-                                        };
+                                        // // Create new surat data
+                                        // Map<String, dynamic> newSurat = {
+                                        //   'id': DateTime.now()
+                                        //       .millisecondsSinceEpoch
+                                        //       .toString(),
+                                        // };
 
-                                        // Add all controller values to the map
-                                        controllers.forEach((key, controller) {
-                                          newSurat[key] = controller.text;
-                                        });
+                                        // // Add all controller values to the map
+                                        // controllers.forEach((key, controller) {
+                                        //   newSurat[key] = controller.text;
+                                        // });
+
+                                        SuratMasukModel? data = await _suratMasukService.addSurat(
+                                          suratDari: controllers['surat_dari']?.text,
+                                          tanggalDiterima: controllers['diterima_tgl']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['diterima_tgl']!.text)
+                                              : null,
+                                          tanggalSurat: controllers['tgl_surat']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                              : null,
+                                          kode: controllers['kode']?.text,
+                                          noAgenda: controllers['no_urut']?.text,
+                                          noSurat: controllers['no_surat']?.text,
+                                          hal: controllers['perihal']?.text,
+                                          tanggalWaktu: controllers['hari_tanggal']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['hari_tanggal']!.text)
+                                              : null,
+                                          tempat: controllers['tempat']?.text,
+                                          disposisi: controllers['disposisi']?.text.isNotEmpty == true
+                                              ? controllers['disposisi']!.text.split(',') // contoh parsing jadi list
+                                              : [],
+                                          index: controllers['index']?.text,
+                                          pengolah: controllers['pengolah']?.text,
+                                          sifat: controllers['sifat']?.text,
+                                          linkScan: controllers['link_scan']?.text,
+                                          disp1Kadin: controllers['disposisi_kadin']?.text,
+                                          disp2Sekdin: controllers['disposisi_sekdin']?.text,
+                                          disp3Kabid: controllers['disposisi_kabid']?.text,
+                                          disp4Kasubag: controllers['disposisi_kasubag']?.text,
+                                          disp1Notes: controllers['notes_disposisi_kadin']?.text,
+                                          disp2Notes: controllers['notes_disposisi_sekdin']?.text,
+                                          disp3Notes: controllers['notes_disposisi_kabid']?.text,
+                                          disp4Notes: controllers['notes_disposisi_kasubag']?.text,
+                                          dispLanjut: controllers['disposisi_lanjutan']?.text,
+                                          tindakLanjut1: controllers['tindak_lanjut_1']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['tindak_lanjut_1']!.text)
+                                              : null,
+                                          tindakLanjut2: controllers['tindak_lanjut_2']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['tindak_lanjut_2']!.text)
+                                              : null,
+                                          tl1Notes: null, // kalau belum ada di controllers
+                                          tl2Notes: null, // kalau belum ada di controllers
+                                          status: controllers['status']?.text,
+                                        );
 
                                         // Call the callback function
-                                        onSuratAdded(newSurat);
+                                        onSuratAdded(data);
 
                                         Navigator.pop(context);
 
@@ -632,7 +680,7 @@ void showModernTambahSuratKeluarFormDialog(
   BuildContext context,
   Color accentColor,
   Color accentColor2,
-  Function(Map<String, dynamic>) onSuratKeluarAdded,
+  Function(SuratKeluarModel?) onSuratKeluarAdded,
 ) {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -1014,22 +1062,45 @@ void showModernTambahSuratKeluarFormDialog(
                                 Container(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
                                         // Create new surat data
-                                        Map<String, dynamic> newSurat = {
-                                          'id': DateTime.now()
-                                              .millisecondsSinceEpoch
-                                              .toString(),
-                                        };
+                                        // Map<String, dynamic> newSurat = {
+                                        //   'id': DateTime.now()
+                                        //       .millisecondsSinceEpoch
+                                        //       .toString(),
+                                        // };
 
-                                        // Add all controller values to the map
-                                        controllers.forEach((key, controller) {
-                                          newSurat[key] = controller.text;
-                                        });
+                                        // // Add all controller values to the map
+                                        // controllers.forEach((key, controller) {
+                                        //   newSurat[key] = controller.text;
+                                        // });
+                                        SuratKeluarModel? data = await _suratKeluarService.addSurat(
+                                          kode: controllers['kode']?.text,
+                                          klasifikasi: controllers['klasifikasi']?.text,
+                                          no_register: controllers['no_register']?.text,
+                                          tujuan_surat: controllers['tujuan_surat']?.text,
+                                          perihal: controllers['perihal']?.text,
+                                          tanggal_surat: controllers['tgl_surat']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                              : null,
+                                          akses_arsip: controllers['klasifikasi_arsip']?.text,
+                                          pengolah: controllers['pengolah']?.text,
+                                          pembuat: controllers['pembuat']?.text,
+                                          catatan: controllers['catatan']?.text,
+                                          link_surat: controllers['link_surat']?.text,
+                                          koreksi_1: controllers['koreksi_1']?.text,
+                                          koreksi_2: controllers['koreksi_2']?.text,
+                                          status: controllers['status']?.text,
+                                          dok_final: controllers['dok_final']?.text,
+                                          dok_dikirim: controllers['dok_dikirim_tgl']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['dok_dikirim_tgl']!.text)
+                                              : null,
+                                          tanda_terima: controllers['tanda_terima']?.text,
+                                        );
 
                                         // Call the callback function
-                                        onSuratKeluarAdded(newSurat);
+                                        onSuratKeluarAdded(data);
 
                                         Navigator.pop(context);
 
@@ -1144,7 +1215,7 @@ void showModernTambahSuratMasukFormDialog(
   BuildContext context,
   Color accentColor,
   Color accentColor2,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratMasukModel?) onSuratAdded,
 ) {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -1643,22 +1714,65 @@ void showModernTambahSuratMasukFormDialog(
                                 Container(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
                                         // Create new surat data
-                                        Map<String, dynamic> newSurat = {
-                                          'id': DateTime.now()
-                                              .millisecondsSinceEpoch
-                                              .toString(),
-                                        };
+                                        // Map<String, dynamic> newSurat = {
+                                        //   'id': DateTime.now()
+                                        //       .millisecondsSinceEpoch
+                                        //       .toString(),
+                                        // };
 
-                                        // Add all controller values to the map
-                                        controllers.forEach((key, controller) {
-                                          newSurat[key] = controller.text;
-                                        });
+                                        // // Add all controller values to the map
+                                        // controllers.forEach((key, controller) {
+                                        //   newSurat[key] = controller.text;
+                                        // });
+                                        SuratMasukModel? data = await _suratMasukService.addSurat(
+                                          suratDari: controllers['surat_dari']?.text,
+                                          tanggalDiterima: controllers['diterima_tgl']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['diterima_tgl']!.text)
+                                              : null,
+                                          tanggalSurat: controllers['tgl_surat']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                              : null,
+                                          kode: controllers['kode']?.text,
+                                          noAgenda: controllers['no_urut']?.text,
+                                          noSurat: controllers['no_surat']?.text,
+                                          hal: controllers['perihal']?.text,
+                                          tanggalWaktu: controllers['hari_tanggal']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['hari_tanggal']!.text)
+                                              : null,
+                                          tempat: controllers['tempat']?.text,
+                                          disposisi: controllers['disposisi']?.text.isNotEmpty == true
+                                              ? controllers['disposisi']!.text.split(',') // contoh parsing jadi list
+                                              : [],
+                                          index: controllers['index']?.text,
+                                          pengolah: controllers['pengolah']?.text,
+                                          sifat: controllers['sifat']?.text,
+                                          linkScan: controllers['link_scan']?.text,
+                                          disp1Kadin: controllers['disposisi_kadin']?.text,
+                                          disp2Sekdin: controllers['disposisi_sekdin']?.text,
+                                          disp3Kabid: controllers['disposisi_kabid']?.text,
+                                          disp4Kasubag: controllers['disposisi_kasubag']?.text,
+                                          disp1Notes: controllers['notes_disposisi_kadin']?.text,
+                                          disp2Notes: controllers['notes_disposisi_sekdin']?.text,
+                                          disp3Notes: controllers['notes_disposisi_kabid']?.text,
+                                          disp4Notes: controllers['notes_disposisi_kasubag']?.text,
+                                          dispLanjut: controllers['disposisi_lanjutan']?.text,
+                                          tindakLanjut1: controllers['tindak_lanjut_1']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['tindak_lanjut_1']!.text)
+                                              : null,
+                                          tindakLanjut2: controllers['tindak_lanjut_2']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['tindak_lanjut_2']!.text)
+                                              : null,
+                                          tl1Notes: null, // kalau belum ada di controllers
+                                          tl2Notes: null, // kalau belum ada di controllers
+                                          status: controllers['status']?.text,
+                                        );
+
 
                                         // Call the callback function
-                                        onSuratAdded(newSurat);
+                                        onSuratAdded(data);
 
                                         Navigator.pop(context);
 
@@ -1773,7 +1887,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
   BuildContext context,
   Color accentColor,
   Color accentColor2,
-  Function(Map<String, dynamic>) onSuratKeluarAdded,
+  Function(SuratKeluarModel?) onSuratKeluarAdded,
 ) {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -2158,22 +2272,46 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                 Container(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
                                         // Create new surat data
-                                        Map<String, dynamic> newSurat = {
-                                          'id': DateTime.now()
-                                              .millisecondsSinceEpoch
-                                              .toString(),
-                                        };
+                                        // Map<String, dynamic> newSurat = {
+                                        //   'id': DateTime.now()
+                                        //       .millisecondsSinceEpoch
+                                        //       .toString(),
+                                        // };
 
-                                        // Add all controller values to the map
-                                        controllers.forEach((key, controller) {
-                                          newSurat[key] = controller.text;
-                                        });
+                                        // // Add all controller values to the map
+                                        // controllers.forEach((key, controller) {
+                                        //   newSurat[key] = controller.text;
+                                        // });
+
+                                        SuratKeluarModel? data = await _suratKeluarService.addSurat(
+                                          kode: controllers['kode']?.text,
+                                          klasifikasi: controllers['klasifikasi']?.text,
+                                          no_register: controllers['no_register']?.text,
+                                          tujuan_surat: controllers['tujuan_surat']?.text,
+                                          perihal: controllers['perihal']?.text,
+                                          tanggal_surat: controllers['tgl_surat']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                              : null,
+                                          akses_arsip: controllers['klasifikasi_arsip']?.text,
+                                          pengolah: controllers['pengolah']?.text,
+                                          pembuat: controllers['pembuat']?.text,
+                                          catatan: controllers['catatan']?.text,
+                                          link_surat: controllers['link_surat']?.text,
+                                          koreksi_1: controllers['koreksi_1']?.text,
+                                          koreksi_2: controllers['koreksi_2']?.text,
+                                          status: controllers['status']?.text,
+                                          dok_final: controllers['dok_final']?.text,
+                                          dok_dikirim: controllers['dok_dikirim_tgl']?.text.isNotEmpty == true
+                                              ? DateTime.tryParse(controllers['dok_dikirim_tgl']!.text)
+                                              : null,
+                                          tanda_terima: controllers['tanda_terima']?.text,
+                                        );
 
                                         // Call the callback function
-                                        onSuratKeluarAdded(newSurat);
+                                        onSuratKeluarAdded(data);
 
                                         Navigator.pop(context);
 

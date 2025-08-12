@@ -565,7 +565,7 @@ void viewDetailAdminKeluar(
   }
 
   
-void tambahSuratMasuk(BuildContext context, Function(Map<String, dynamic>) onSuratAdded) {
+void tambahSuratMasuk(BuildContext context, Function(SuratMasukModel?) onSuratAdded) {
   showModernTambahSuratDialog(
     'Tambah Surat Masuk',
     'Pilih metode untuk menambahkan surat masuk baru',
@@ -576,7 +576,7 @@ void tambahSuratMasuk(BuildContext context, Function(Map<String, dynamic>) onSur
   );
 }
 
-void tambahSuratKeluar(BuildContext context, Function(Map<String, dynamic>) onSuratKeluarAdded) {
+void tambahSuratKeluar(BuildContext context, Function(SuratKeluarModel?) onSuratKeluarAdded) {
   showModernTambahSuratKeluarDialog(
     'Tambah Surat Keluar',
     'Pilih metode untuk menambahkan surat keluar baru',
@@ -587,7 +587,7 @@ void tambahSuratKeluar(BuildContext context, Function(Map<String, dynamic>) onSu
   );
 }
 
-void tambahSuratMasukDesktop(BuildContext context, Function(Map<String, dynamic>) onSuratKeluarAdded) {
+void tambahSuratMasukDesktop(BuildContext context, Function(SuratMasukModel?) onSuratKeluarAdded) {
   showModernTambahSuratMasukDesktopDialog(
     'Tambah Surat Masuk',
     'Pilih metode untuk menambahkan surat masuk baru',
@@ -598,7 +598,7 @@ void tambahSuratMasukDesktop(BuildContext context, Function(Map<String, dynamic>
   );
 }
 
-void tambahSuratKeluarDesktop(BuildContext context, Function(Map<String, dynamic>) onSuratKeluarAdded) {
+void tambahSuratKeluarDesktop(BuildContext context, Function(SuratKeluarModel?) onSuratKeluarAdded) {
   showModernTambahSuratKeluarDesktopDialog(
     'Tambah Surat Keluar',
     'Pilih metode untuk menambahkan surat keluar baru',

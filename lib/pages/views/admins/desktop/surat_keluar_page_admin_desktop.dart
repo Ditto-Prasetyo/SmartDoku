@@ -560,8 +560,7 @@ class _OutgoingLetterPageAdminDesktopState
                                 onTap: () {
                                   tambahSuratKeluarDesktop(context, (newSurat) {
                                     setState(() {
-                                      // Tambahin ke list suratData lu
-                                      // _listSurat.add(newSurat);
+                                      
                                     });
                                   });
                                 },
