@@ -89,6 +89,7 @@ class _OutgoingLetterPageAdminDesktopState
     setState(() {
       _suratService.deleteSurat(index);
     });
+    refreshEditState();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Dokumen berhasil dihapus'),
@@ -559,9 +560,7 @@ class _OutgoingLetterPageAdminDesktopState
                               InkWell(
                                 onTap: () {
                                   tambahSuratKeluarDesktop(context, (newSurat) {
-                                    setState(() {
-                                      
-                                    });
+                                    refreshEditState();
                                   });
                                 },
                                 child: Icon(
