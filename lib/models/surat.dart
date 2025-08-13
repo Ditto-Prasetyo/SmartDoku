@@ -201,7 +201,7 @@ class SuratKeluarModel {
       koreksi_2: json['koreksi_2'],
       status: json['status'],
       dok_final: json['dok_final'],
-      dok_dikirim: json['dok_dikirim'],
+      dok_dikirim: json['dok_dikirim'] != null ? DateTime.parse(json['dok_dikirim']) : null,
       tanda_terima: json['tanda_terima'] != null ? DateTime.parse(json['tanda_terima']) : null,
       timestamp: DateTime.parse(json['timestamp']),
     );

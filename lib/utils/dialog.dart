@@ -3921,7 +3921,7 @@ void showEditSuratDialog(
   );
   final TextEditingController tanggalController = TextEditingController(
     text:
-        selectedSurat?.tanggal_diterima?.toString().split(' ')[0] ??
+        selectedSurat?.tanggal_diterima?.toUtc().toIso8601String() ??
         '', // Format ke yyyy-mm-dd aja
   );
   final TextEditingController pengirimController = TextEditingController(
@@ -3929,7 +3929,7 @@ void showEditSuratDialog(
   );
   final TextEditingController tanggalSuratController = TextEditingController(
     text:
-        selectedSurat?.tanggal_surat?.toString().split(' ')[0] ??
+        selectedSurat?.tanggal_surat?.toUtc().toIso8601String() ??
         '', // Format ke yyyy-mm-dd aja
   );
   final TextEditingController kodeController = TextEditingController(
@@ -3942,11 +3942,11 @@ void showEditSuratDialog(
     text: selectedSurat?.no_surat,
   );
   final TextEditingController haritanggalController = TextEditingController(
-    text: selectedSurat?.tanggal_waktu?.toString().split(' ')[0] ?? '',
+    text: selectedSurat?.tanggal_waktu?.toUtc().toIso8601String() ?? '',
   );
   final TextEditingController hariTanggalWaktuController =
       TextEditingController(
-        text: selectedSurat?.tanggal_waktu?.toString().split(' ')[0] ?? '',
+        text: selectedSurat?.tanggal_waktu?.toUtc().toIso8601String() ?? '',
       );
   final TextEditingController waktuController = TextEditingController(
     text: selectedSurat?.tanggal_waktu?.toString(),
@@ -5147,12 +5147,11 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 20),
 
-                              buildDateInputField(
-                                'Tanggal Surat',
-                                tglsuratController,
-                                Icons.date_range_rounded,
-                                context,
-                                maxLines: 1,
+                              buildDatePickerField(
+                                label: 'Tanggal Surat',
+                                controller: tglsuratController,
+                                icon: Icons.date_range_rounded,
+                                context: context,
                               ),
 
                               SizedBox(height: 20),
@@ -5508,6 +5507,16 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 30),
 
+                              buildInputField("Dok Final", dokfinalController, Icons.document_scanner),
+
+                              SizedBox(height: 30),
+
+                              buildDatePickerField(context: context, controller: dokdikirimtglController, label: "Dok Dikirim", icon: Icons.date_range),
+
+                              SizedBox(height: 30),
+
+                              buildDatePickerField(context: context, controller: tandaterimaController, label: "Tanda Terima", icon: Icons.document_scanner),
+
                               // Action Buttons
                               Row(
                                 children: [
@@ -5547,51 +5556,6 @@ void showEditSuratKeluarDialog(
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         try {
-                                          // FIX: Parse tanggal dengan proper error handling
-                                          DateTime? tanggalSurat;
-                                          DateTime? dokDikirim;
-                                          DateTime? tandaTerima;
-
-                                          // Parse tanggal surat
-                                          if (tglsuratController
-                                              .text
-                                              .isNotEmpty) {
-                                            tanggalSurat = DateTime.tryParse(
-                                              tglsuratController.text,
-                                            );
-                                            if (tanggalSurat == null) {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                    'Format tanggal surat tidak valid!',
-                                                  ),
-                                                  backgroundColor: Colors.red,
-                                                ),
-                                              );
-                                              return;
-                                            }
-                                          }
-
-                                          // Parse dokumen dikirim
-                                          if (dokdikirimtglController
-                                              .text
-                                              .isNotEmpty) {
-                                            dokDikirim = DateTime.tryParse(
-                                              dokdikirimtglController.text,
-                                            );
-                                          }
-
-                                          // Parse tanda terima
-                                          if (tandaterimaController
-                                              .text
-                                              .isNotEmpty) {
-                                            tandaTerima = DateTime.tryParse(
-                                              tandaterimaController.text,
-                                            );
-                                          }
-
                                           // Update pengolah controller dengan selected values
                                           pengolahController.text =
                                               selectedPengolah.join(', ');
@@ -5606,8 +5570,7 @@ void showEditSuratKeluarDialog(
                                                     klasifikasiarsipController
                                                         .text,
                                                 tanggal_surat:
-                                                    tanggalSurat ??
-                                                    selectedSurat.tanggal_surat,
+                                                    parseDateTime(tglsuratController.text),
                                                 catatan: catatanController.text,
                                                 status:
                                                     selectedStatus, // FIX: Gunakan selectedStatus yang sebenarnya
@@ -5628,14 +5591,11 @@ void showEditSuratKeluarDialog(
                                                     pengolahController.text,
                                                 perihal: perihalController.text,
                                                 tanda_terima:
-                                                    tandaTerima
-                                                        ?.toIso8601String() ??
-                                                    '',
+                                                    parseDateTime(tandaterimaController.text),
                                                 dok_final:
                                                     dokfinalController.text,
                                                 dok_dikirim:
-                                                    dokDikirim ??
-                                                    selectedSurat.dok_dikirim,
+                                                    parseDateTime(dokdikirimtglController.text),
                                               );
 
                                           print(

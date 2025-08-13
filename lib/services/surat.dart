@@ -66,10 +66,10 @@ class SuratMasuk {
     String? pengolah,
     String? sifat,
     String? linkScan,
-    String? disp1Kadin,
-    String? disp2Sekdin,
-    String? disp3Kabid,
-    String? disp4Kasubag,
+    DateTime? disp1Kadin,
+    DateTime? disp2Sekdin,
+    DateTime? disp3Kabid,
+    DateTime? disp4Kasubag,
     String? disp1Notes,
     String? disp2Notes,
     String? disp3Notes,
@@ -83,7 +83,7 @@ class SuratMasuk {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
+      final token = prefs.getString('jwt_token');
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -104,10 +104,10 @@ class SuratMasuk {
         'pengolah': pengolah,
         'sifat': sifat,
         'link_scan': linkScan,
-        'disp_1': disp1Kadin,
-        'disp_2': disp2Sekdin,
-        'disp_3': disp3Kabid,
-        'disp_4': disp4Kasubag,
+        'disp_1': disp1Kadin?.toIso8601String(),
+        'disp_2': disp2Sekdin?.toIso8601String(),
+        'disp_3': disp3Kabid?.toIso8601String(),
+        'disp_4': disp4Kasubag?.toIso8601String(),
         'disp_1_notes': disp1Notes,
         'disp_2_notes': disp2Notes,
         'disp_3_notes': disp3Notes,
@@ -442,7 +442,7 @@ class SuratKeluar {
     String? status,
     String? dok_final,
     DateTime? dok_dikirim,
-    String? tanda_terima
+    DateTime? tanda_terima
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -458,7 +458,7 @@ class SuratKeluar {
         'no_register': no_register,
         'tujuan_surat': tujuan_surat,
         'perihal': perihal,
-        'tanggal_surat': tanggal_surat?.toIso8601String(),
+        'tanggal_surat': tanggal_surat?.toUtc().toIso8601String(),
         'akses_arsip': akses_arsip,
         'pengolah': pengolah,
         'pembuat': pembuat,
@@ -468,8 +468,8 @@ class SuratKeluar {
         'koreksi_2': koreksi_2,
         'status': status,
         'dok_final': dok_final,
-        'dok_dikirim': dok_dikirim?.toIso8601String(),
-        'tanda_terima': tanda_terima
+        'dok_dikirim': dok_dikirim?.toUtc().toIso8601String(),
+        'tanda_terima': tanda_terima?.toUtc().toIso8601String()
       };
 
       final response = await http.put(
@@ -519,7 +519,7 @@ class SuratKeluar {
         return null;
       }
     } catch (e) {
-      print('Error addSurat: $e');
+      print('Error deleteSurat: $e');
       return null;
     }
   }

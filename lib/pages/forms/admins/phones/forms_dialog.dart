@@ -792,17 +792,17 @@ void showModernTambahSuratFormDialog(
                                           linkScan:
                                               controllers['link_scan']?.text,
                                           disp1Kadin:
-                                              controllers['disposisi_kadin']
-                                                  ?.text,
+                                              controllers['disposisi_kadin']!.text.isNotEmpty ? 
+                                                DateTime.tryParse(controllers['disposisi_kadin']!.text) : null,
                                           disp2Sekdin:
-                                              controllers['disposisi_sekdin']
-                                                  ?.text,
+                                              controllers['disposisi_sekdin']!.text.isNotEmpty ?
+                                                DateTime.tryParse(controllers['disposisi_sekdin']!.text) : null,
                                           disp3Kabid:
-                                              controllers['disposisi_kabid']
-                                                  ?.text,
+                                              controllers['disposisi_kabid']!.text.isNotEmpty ?
+                                                DateTime.tryParse(controllers['disposisi_kabid']!.text) : null,
                                           disp4Kasubag:
-                                              controllers['disposisi_kasubag']
-                                                  ?.text,
+                                              controllers['disposisi_kasubag']!.text.isNotEmpty ? 
+                                                DateTime.tryParse(controllers['disposisi_kasubag']!.text) : null,
                                           disp1Notes:
                                               controllers['notes_disposisi_kadin']
                                                   ?.text,
@@ -2527,17 +2527,16 @@ void showModernTambahSuratMasukFormDialog(
                                           linkScan:
                                               controllers['link_scan']?.text,
                                           disp1Kadin:
-                                              controllers['disposisi_kadin']
-                                                  ?.text,
+                                              controllers['disposisi_kadin']!.text.isNotEmpty ? DateTime.tryParse(controllers['disposisi_kadin']!.text) : null,
                                           disp2Sekdin:
-                                              controllers['disposisi_sekdin']
-                                                  ?.text,
+                                              controllers['disposisi_sekdin']!.text.isNotEmpty ?
+                                                DateTime.tryParse(controllers['disposisi_sekdin']!.text) : null,
                                           disp3Kabid:
-                                              controllers['disposisi_kabid']
-                                                  ?.text,
+                                              controllers['disposisi_kabid']!.text.isNotEmpty ?
+                                                DateTime.tryParse(controllers['disposisi_kabid']!.text) : null,
                                           disp4Kasubag:
-                                              controllers['disposisi_kasubag']
-                                                  ?.text,
+                                              controllers['disposisi_kasubag']!.text.isNotEmpty ?
+                                                DateTime.tryParse(controllers['disposisi_kasubag']!.text) : null,
                                           disp1Notes:
                                               controllers['notes_disposisi_kadin']
                                                   ?.text,
@@ -3321,9 +3320,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                           perihal: controllers['perihal']?.text,
                                           tanggal_surat:
                                               controllers['tgl_surat']
-                                                      ?.text
-                                                      .isNotEmpty ==
-                                                  true
+                                                      !.text
+                                                      .isNotEmpty
                                               ? DateTime.tryParse(
                                                   controllers['tgl_surat']!
                                                       .text,
@@ -3347,9 +3345,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                               controllers['dok_final']?.text,
                                           dok_dikirim:
                                               controllers['dok_dikirim_tgl']
-                                                      ?.text
-                                                      .isNotEmpty ==
-                                                  true
+                                                      !.text
+                                                      .isNotEmpty
                                               ? DateTime.tryParse(
                                                   controllers['dok_dikirim_tgl']!
                                                       .text,
@@ -3722,7 +3719,7 @@ Widget buildDayDateTimePickerField({
               pickedTime.minute,
             );
 
-            final selectedDateTime = combinedDateTime.toIso8601String();
+            final selectedDateTime = combinedDateTime.toUtc().toIso8601String();
 
             controller.text = selectedDateTime;
           }
