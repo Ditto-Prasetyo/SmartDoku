@@ -3,8 +3,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
+import 'dart:io';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/map.dart';
+import 'package:smart_doku/utils/dialog.dart';
 
 class PermohonanLetterPage extends StatefulWidget {
   const PermohonanLetterPage({super.key});
@@ -39,12 +41,27 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
   SuratMasuk _suratService = SuratMasuk();
   List<SuratMasukModel?> _listSurat = [];
 
-  void _loadAllData() async {
-    final data = await _suratService.listSurat();
+  Future<void> _loadAllData() async {
+    print('[DEBUG] -> [INFO] : Loading all data "surat masuk" ...');
+    try {
+      final data = await _suratService.listSurat();
 
-    setState(() {
-      _listSurat = data;
-    });
+      setState(() {
+        print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
+        _listSurat = data;
+        print(_listSurat.map((e) => e?.toJson()).toList());
+      });
+    } catch (e) {
+      print("[ERROR] -> Gagal load data: $e");
+
+      // Kalau API error (bukan karena internet), tampilkan juga
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Terjadi kesalahan saat mengambil data dari server.\n\nDetail: $e",
+        Colors.orangeAccent,
+      );
+    }
   }
 
   Future<void> _refreshData() async {
@@ -54,11 +71,26 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
 
     await Future.delayed(Duration(seconds: 2));
 
-    // API buat call data disini yak..
-
-    setState(() {
-      isRefreshing = false;
-    });
+    try {
+      // Cek koneksi internet dengan ping google
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // ✅ Ada internet → load data dari API
+        await _loadAllData();
+      }
+    } on SocketException catch (_) {
+      // ❌ Tidak ada internet
+      showModernErrorDialog(
+        context,
+        "Koneksi Terputus",
+        "Mohon maaf, data tidak bisa diperbarui karena ketiadaan internet pada device anda saat ini!",
+        Colors.redAccent,
+      );
+    } finally {
+      setState(() {
+        isRefreshing = false;
+      });
+    }
   }
 
   List<Map<String, dynamic>> searchOptions = [
@@ -186,11 +218,11 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
   }
 
   void refreshEditState() {
-  setState(() {
-    // Refresh ListView setelah edit data
-    // Data suratData udah diupdate di modal
-  });
-}
+    setState(() {
+      // Refresh ListView setelah edit data
+      // Data suratData udah diupdate di modal
+    });
+  }
 
   OverlayEntry _createOverlayEntry() {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
@@ -1503,10 +1535,12 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                                 gradient: LinearGradient(
                                                                   colors: [
                                                                     getStatusColor(
-                                                                      surat!.status,
+                                                                      surat!
+                                                                          .status,
                                                                     ),
                                                                     getStatusColor(
-                                                                      surat.status,
+                                                                      surat
+                                                                          .status,
                                                                     ).withValues(
                                                                       alpha:
                                                                           0.8,
@@ -1521,7 +1555,8 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                                   BoxShadow(
                                                                     color:
                                                                         getStatusColor(
-                                                                          surat!.status,
+                                                                          surat!
+                                                                              .status,
                                                                         ).withValues(
                                                                           alpha:
                                                                               0.3,
@@ -1552,7 +1587,9 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat.tanggal_surat.toString(),
+                                                              surat
+                                                                  .tanggal_surat
+                                                                  .toString(),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1659,13 +1696,28 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      (surat.disposisi as List)
-                                                                        .map((item) => workFields.entries
-                                                                          .firstWhere((entry) => entry.value == item['tujuan'],
-                                                                            orElse: () => MapEntry(item['tujuan']!, item['tujuan']!)
-                                                                          ).key
-                                                                        )
-                                                                        .join(', '),
+                                                                      (surat.disposisi
+                                                                              as List)
+                                                                          .map(
+                                                                            (
+                                                                              item,
+                                                                            ) => workFields.entries
+                                                                                .firstWhere(
+                                                                                  (
+                                                                                    entry,
+                                                                                  ) =>
+                                                                                      entry.value ==
+                                                                                      item['tujuan'],
+                                                                                  orElse: () => MapEntry(
+                                                                                    item['tujuan']!,
+                                                                                    item['tujuan']!,
+                                                                                  ),
+                                                                                )
+                                                                                .key,
+                                                                          )
+                                                                          .join(
+                                                                            ', ',
+                                                                          ),
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white

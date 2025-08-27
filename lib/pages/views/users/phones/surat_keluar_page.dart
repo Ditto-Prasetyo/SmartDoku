@@ -3,6 +3,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
+import 'dart:io';
+import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 
 class OutgoingLetterPage extends StatefulWidget {
@@ -38,14 +40,6 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
   SuratKeluar _suratService = SuratKeluar();
   List<SuratKeluarModel?> _listSurat = [];
 
-  void _loadAllData() async {
-    final data = await _suratService.listSurat();
-    
-    setState(() {
-      _listSurat = data;
-    });
-  }
-
   Future<void> _refreshData() async {
     setState(() {
       isRefreshing = true;
@@ -53,17 +47,58 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
 
     await Future.delayed(Duration(seconds: 2));
 
-    // API buat call data disini yak..
-    _loadAllData();
+    try {
+      // Cek koneksi internet dengan ping google
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // ✅ Ada internet → load data dari API
+        await _loadAllData();
+      }
+    } on SocketException catch (_) {
+      // ❌ Tidak ada internet
+      showModernErrorDialog(
+        context,
+        "Koneksi Terputus",
+        "Mohon maaf, data tidak bisa diperbarui karena ketiadaan internet pada device anda saat ini!",
+        Colors.redAccent,
+      );
+    } finally {
+      setState(() {
+        isRefreshing = false;
+      });
+    }
+  }
 
-    setState(() {
-      isRefreshing = false;
-    });
+  Future<void> _loadAllData() async {
+    print('[DEBUG] -> [INFO] : Loading all data "surat masuk" ...');
+    try {
+      final data = await _suratService.listSurat();
+
+      setState(() {
+        print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
+        _listSurat = data;
+        print(_listSurat.map((e) => e?.toJson()).toList());
+      });
+    } catch (e) {
+      print("[ERROR] -> Gagal load data: $e");
+
+      // Kalau API error (bukan karena internet), tampilkan juga
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Terjadi kesalahan saat mengambil data dari server.\n\nDetail: $e",
+        Colors.orangeAccent,
+      );
+    }
   }
 
   List<Map<String, dynamic>> searchOptions = [
     {'value': 'judul', 'label': 'Judul Surat', 'icon': Icons.title_rounded},
-    {'value': 'klasifikasi', 'label': 'Klasifikasi', 'icon': Icons.description_rounded},
+    {
+      'value': 'klasifikasi',
+      'label': 'Klasifikasi',
+      'icon': Icons.description_rounded,
+    },
     {
       'value': 'tanggal',
       'label': 'Tanggal',
@@ -186,11 +221,11 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
   }
 
   void refreshEditState() {
-  setState(() {
-    // Refresh ListView setelah edit data
-    // Data suratData udah diupdate di modal
-  });
-}
+    setState(() {
+      // Refresh ListView setelah edit data
+      // Data suratData udah diupdate di modal
+    });
+  }
 
   OverlayEntry _createOverlayEntry() {
     RenderBox renderBox = context.findRenderObject() as RenderBox;
@@ -1500,10 +1535,12 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                                 gradient: LinearGradient(
                                                                   colors: [
                                                                     getStatusColor(
-                                                                      surat!.status!,
+                                                                      surat!
+                                                                          .status!,
                                                                     ),
                                                                     getStatusColor(
-                                                                      surat.status!,
+                                                                      surat
+                                                                          .status!,
                                                                     ).withValues(
                                                                       alpha:
                                                                           0.8,
@@ -1518,7 +1555,8 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                                   BoxShadow(
                                                                     color:
                                                                         getStatusColor(
-                                                                          surat.status!,
+                                                                          surat
+                                                                              .status!,
                                                                         ).withValues(
                                                                           alpha:
                                                                               0.3,
@@ -1549,7 +1587,9 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat.tanggal_surat.toString(),
+                                                              surat
+                                                                  .tanggal_surat
+                                                                  .toString(),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1656,7 +1696,8 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      surat.pengolah,
+                                                                      surat
+                                                                          .pengolah,
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white

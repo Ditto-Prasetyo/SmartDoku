@@ -7,7 +7,7 @@ import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
+import 'package:smart_doku/utils/dialog.dart';
 
 class DispositionLetterAdminDesktop extends StatefulWidget {
   final Map<String, dynamic>? suratData;
@@ -38,16 +38,28 @@ class _DispositionLetterAdminDesktopState
 
   SuratMasuk _suratService = SuratMasuk();
   List<SuratMasukModel?> _listSurat = [];
+  bool isLoading = true;
 
-  void _loadAllData() async {
-    final data = await _suratService.listSurat();
+  Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
-
-    setState(() {
-      _listSurat = data;
+    try {
+      final data = await _suratService.listSurat();
+      setState(() {
+        _listSurat = data;
+        isLoading = false;
+      });
       print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
-      print(_listSurat.map((e) => e!.toJson()).toList());
-    });
+    } catch (e) {
+      setState(() => isLoading = false);
+      print("[ERROR] -> gagal load data: $e");
+      // tampilkan error dialog modern
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Tidak dapat mengambil data surat masuk.\nDetail: $e",
+        Colors.redAccent,
+      );
+    }
   }
 
   // Selected sidebar item

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
+import 'dart:io';
+import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
-import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DispositionLetterUserDesktop extends StatefulWidget {
@@ -33,6 +36,10 @@ class _DispositionLetterUserDesktopState
   late Animation<double> _cardAnimation;
 
   late Map<String, dynamic> disposisiData;
+
+  SuratMasuk _suratService = SuratMasuk();
+  List<SuratMasukModel?> _listSurat = [];
+  bool isLoading = true;
 
   // Selected sidebar item
   int _selectedIndex = 3;
@@ -178,9 +185,32 @@ class _DispositionLetterUserDesktopState
 
   Map<String, bool> checkboxStates = {};
 
+   Future<void> _loadAllData() async {
+    print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
+    try {
+      final data = await _suratService.listSurat();
+      setState(() {
+        _listSurat = data;
+        isLoading = false;
+      });
+      print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
+    } catch (e) {
+      setState(() => isLoading = false);
+      print("[ERROR] -> gagal load data: $e");
+      // tampilkan error dialog modern
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Tidak dapat mengambil data surat masuk.\nDetail: $e",
+        Colors.redAccent,
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize animations
     _backgroundController = AnimationController(
