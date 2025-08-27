@@ -120,7 +120,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
       showModernErrorDialog(
         context,
         "Gagal Memuat Data",
-        "Tidak dapat mengambil data surat masuk.\nDetail: $e",
+        "Terjadi kesalahan saat mengambil data dari server. \nSilahkan tanyakan masalah ini kepada admin!",
         Colors.redAccent,
       );
     }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
+import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
 
@@ -106,7 +109,10 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
   }
 
   Map<String, bool> checkboxStates = {};
- late Map<String, dynamic> disposisiData;
+  late Map<String, dynamic> disposisiData;
+  SuratMasuk _suratService = SuratMasuk();
+  List<SuratMasukModel?> _listSurat = [];
+  bool isLoading = true;
 
   // Widget untuk menampilkan nomor urut yang akan ter-update
   Widget buildNomorUrutDisplay() {
@@ -119,11 +125,34 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
   }
 
   // Method untuk update nomor urut
-   void updateNomorUrut(String newValue) {
+  void updateNomorUrut(String newValue) {
     setState(() {
-      disposisiData['nomor_surat'] = newValue; // Update ke disposisiData, bukan surat
+      disposisiData['nomor_surat'] =
+          newValue; // Update ke disposisiData, bukan surat
     });
     print('Updated nomor urut: $newValue');
+  }
+
+  Future<void> _loadAllData() async {
+    print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
+    try {
+      final data = await _suratService.listSurat();
+      setState(() {
+        _listSurat = data;
+        isLoading = false;
+      });
+      print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
+    } catch (e) {
+      setState(() => isLoading = false);
+      print("[ERROR] -> gagal load data: $e");
+      // tampilkan error dialog modern
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Terjadi kesalahan saat mengambil data dari server. \nSilahkan tanyakan masalah ini kepada admin!",
+        Colors.redAccent,
+      );
+    }
   }
 
   @override
@@ -961,7 +990,6 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                                     ),
                                                     textAlign: TextAlign.center,
                                                   ),
-                                                  
                                                 ],
                                               ),
                                             ),

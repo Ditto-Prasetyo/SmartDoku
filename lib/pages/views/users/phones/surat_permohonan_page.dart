@@ -58,7 +58,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
       showModernErrorDialog(
         context,
         "Gagal Memuat Data",
-        "Terjadi kesalahan saat mengambil data dari server.\n\nDetail: $e",
+        "Terjadi kesalahan saat mengambil data dari server. \nSilahkan tanyakan masalah ini kepada admin!",
         Colors.orangeAccent,
       );
     }
