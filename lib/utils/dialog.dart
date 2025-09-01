@@ -4923,18 +4923,10 @@ void showEditSuratKeluarDialog(
     })(),
   );
 
-  List<String> selectedPengolah = [];
-  if (selectedSurat?.pengolah != null && selectedSurat!.pengolah.isNotEmpty) {
-    selectedPengolah = selectedSurat.pengolah
-        .split(',')
-        .map((e) => e.trim())
-        .where(
-          (disp) =>
-              workFields.values.contains(disp) ||
-              workFields.keys.contains(disp),
-        )
-        .toList();
-  }
+  String? selectedPengolah = selectedSurat?.pengolah?.isNotEmpty == true
+      ? selectedSurat!.pengolah
+      : null;
+
   final TextEditingController pembuatController = TextEditingController(
     text: selectedSurat?.pembuat,
   );
@@ -5203,89 +5195,6 @@ void showEditSuratKeluarDialog(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        // Display selected disposisi
-                                        if (selectedPengolah.isNotEmpty) ...[
-                                          Wrap(
-                                            spacing: 8,
-                                            runSpacing: 8,
-                                            children: selectedPengolah.map((
-                                              disp,
-                                            ) {
-                                              // Find the display name
-                                              String displayName = workFields
-                                                  .entries
-                                                  .firstWhere(
-                                                    (entry) =>
-                                                        entry.value == disp ||
-                                                        entry.key == disp,
-                                                    orElse: () =>
-                                                        MapEntry(disp, disp),
-                                                  )
-                                                  .key;
-
-                                              return Container(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 6,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    colors: [
-                                                      Color(
-                                                        0xFF4F46E5,
-                                                      ).withValues(alpha: 0.3),
-                                                      Color(
-                                                        0xFF7C3AED,
-                                                      ).withValues(alpha: 0.2),
-                                                    ],
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  border: Border.all(
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.3),
-                                                  ),
-                                                ),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      displayName,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        decoration:
-                                                            TextDecoration.none,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 6),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        setState(() {
-                                                          selectedPengolah
-                                                              .remove(disp);
-                                                        });
-                                                      },
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        size: 16,
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.8,
-                                                            ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            }).toList(),
-                                          ),
-                                          SizedBox(height: 12),
-                                        ],
-
                                         // Dropdown to add more disposisi
                                         Container(
                                           padding: EdgeInsets.symmetric(
@@ -5314,7 +5223,7 @@ void showEditSuratKeluarDialog(
                                                   fontSize: 14,
                                                 ),
                                               ),
-                                              value: null,
+                                              value: selectedPengolah,
                                               isExpanded: true,
                                               dropdownColor: Color(0xFF1F2937),
                                               style: TextStyle(
@@ -5323,55 +5232,42 @@ void showEditSuratKeluarDialog(
                                                 fontFamily: 'Roboto',
                                               ),
                                               icon: Icon(
-                                                Icons.add,
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.7,
+                                                Icons
+                                                    .keyboard_arrow_down_rounded,
+                                                color: Colors.white.withValues(alpha: 
+                                                  0.7,
                                                 ),
-                                                size: 20,
                                               ),
-                                              items: workFields.entries
-                                                  .where(
-                                                    (entry) => !selectedPengolah
-                                                        .contains(entry.value),
-                                                  )
-                                                  .map((entry) {
-                                                    return DropdownMenuItem<
-                                                      String
-                                                    >(
-                                                      value: entry.value,
-                                                      child: Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons.work_outline,
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.7,
-                                                                ),
-                                                            size: 16,
-                                                          ),
-                                                          SizedBox(width: 8),
-                                                          Expanded(
-                                                            child: Text(
-                                                              entry.key,
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
+                                              items: workFields.entries.map((
+                                                entry,
+                                              ) {
+                                                return DropdownMenuItem<String>(
+                                                  value: entry.value,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.work_outline,
+                                                        color: Colors.white
+                                                            .withValues(alpha: 0.7),
+                                                        size: 16,
                                                       ),
-                                                    );
-                                                  })
-                                                  .toList(),
+                                                      SizedBox(width: 8),
+                                                      Expanded(
+                                                        child: Text(
+                                                          entry.key,
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
                                               onChanged: (String? value) {
-                                                if (value != null &&
-                                                    !selectedPengolah.contains(
-                                                      value,
-                                                    )) {
-                                                  setState(() {
-                                                    selectedPengolah.add(value);
-                                                  });
-                                                }
+                                                setState(() {
+                                                  selectedPengolah = value;
+                                                });
                                               },
                                             ),
                                           ),
@@ -5507,15 +5403,29 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 30),
 
-                              buildInputField("Dok Final", dokfinalController, Icons.document_scanner),
+                              buildInputField(
+                                "Dok Final",
+                                dokfinalController,
+                                Icons.document_scanner,
+                              ),
 
                               SizedBox(height: 30),
 
-                              buildDatePickerField(context: context, controller: dokdikirimtglController, label: "Dok Dikirim", icon: Icons.date_range),
+                              buildDatePickerField(
+                                context: context,
+                                controller: dokdikirimtglController,
+                                label: "Dok Dikirim",
+                                icon: Icons.date_range,
+                              ),
 
                               SizedBox(height: 30),
 
-                              buildDatePickerField(context: context, controller: tandaterimaController, label: "Tanda Terima", icon: Icons.document_scanner),
+                              buildDatePickerField(
+                                context: context,
+                                controller: tandaterimaController,
+                                label: "Tanda Terima",
+                                icon: Icons.document_scanner,
+                              ),
 
                               // Action Buttons
                               Row(
@@ -5557,8 +5467,7 @@ void showEditSuratKeluarDialog(
                                       onPressed: () async {
                                         try {
                                           // Update pengolah controller dengan selected values
-                                          pengolahController.text =
-                                              selectedPengolah.join(', ');
+                                          pengolahController.text = selectedPengolah ?? '';
 
                                           // Update data
                                           final data = await _suratKeluarService
@@ -5569,8 +5478,9 @@ void showEditSuratKeluarDialog(
                                                 akses_arsip:
                                                     klasifikasiarsipController
                                                         .text,
-                                                tanggal_surat:
-                                                    parseDateTime(tglsuratController.text),
+                                                tanggal_surat: parseDateTime(
+                                                  tglsuratController.text,
+                                                ),
                                                 catatan: catatanController.text,
                                                 status:
                                                     selectedStatus, // FIX: Gunakan selectedStatus yang sebenarnya
@@ -5590,12 +5500,14 @@ void showEditSuratKeluarDialog(
                                                 pengolah:
                                                     pengolahController.text,
                                                 perihal: perihalController.text,
-                                                tanda_terima:
-                                                    parseDateTime(tandaterimaController.text),
+                                                tanda_terima: parseDateTime(
+                                                  tandaterimaController.text,
+                                                ),
                                                 dok_final:
                                                     dokfinalController.text,
-                                                dok_dikirim:
-                                                    parseDateTime(dokdikirimtglController.text),
+                                                dok_dikirim: parseDateTime(
+                                                  dokdikirimtglController.text,
+                                                ),
                                               );
 
                                           print(
