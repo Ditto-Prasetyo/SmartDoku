@@ -1264,7 +1264,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                               //       listPengolah,
                                                               //     ) ??
                                                               //     '',
-                                                              "TEXT",
+                                                              surat?.pengolah ?? '',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
