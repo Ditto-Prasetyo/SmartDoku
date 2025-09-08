@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/utils/map.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 SuratMasuk _suratMasukService = SuratMasuk();
 SuratKeluar _suratKeluarService = SuratKeluar();
@@ -792,17 +793,41 @@ void showModernTambahSuratFormDialog(
                                           linkScan:
                                               controllers['link_scan']?.text,
                                           disp1Kadin:
-                                              controllers['disposisi_kadin']!.text.isNotEmpty ? 
-                                                DateTime.tryParse(controllers['disposisi_kadin']!.text) : null,
+                                              controllers['disposisi_kadin']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['disposisi_kadin']!
+                                                      .text,
+                                                )
+                                              : null,
                                           disp2Sekdin:
-                                              controllers['disposisi_sekdin']!.text.isNotEmpty ?
-                                                DateTime.tryParse(controllers['disposisi_sekdin']!.text) : null,
+                                              controllers['disposisi_sekdin']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['disposisi_sekdin']!
+                                                      .text,
+                                                )
+                                              : null,
                                           disp3Kabid:
-                                              controllers['disposisi_kabid']!.text.isNotEmpty ?
-                                                DateTime.tryParse(controllers['disposisi_kabid']!.text) : null,
+                                              controllers['disposisi_kabid']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['disposisi_kabid']!
+                                                      .text,
+                                                )
+                                              : null,
                                           disp4Kasubag:
-                                              controllers['disposisi_kasubag']!.text.isNotEmpty ? 
-                                                DateTime.tryParse(controllers['disposisi_kasubag']!.text) : null,
+                                              controllers['disposisi_kasubag']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['disposisi_kasubag']!
+                                                      .text,
+                                                )
+                                              : null,
                                           disp1Notes:
                                               controllers['notes_disposisi_kadin']
                                                   ?.text,
@@ -1615,8 +1640,14 @@ void showModernTambahSuratKeluarFormDialog(
                                                 )
                                               : null,
                                           tanda_terima:
-                                              controllers['tanda_terima']!.text.isNotEmpty ?
-                                                DateTime.tryParse(controllers['tanda_terima']!.text) : null,
+                                              controllers['tanda_terima']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['tanda_terima']!
+                                                      .text,
+                                                )
+                                              : null,
                                         );
 
                                         // Call the callback function
@@ -2062,103 +2093,63 @@ void showModernTambahSuratMasukFormDialog(
                                           padding: const EdgeInsets.symmetric(
                                             vertical: 10,
                                           ),
-                                          child: DropdownButtonFormField<String>(
-                                            value:
-                                                controllers['disposisi']!
-                                                    .text
-                                                    .isNotEmpty
-                                                ? controllers['disposisi']!.text
-                                                : null,
+                                          child: MultiSelectDialogField<String>(
                                             items: workFields.entries
                                                 .map(
-                                                  (entry) => DropdownMenuItem(
-                                                    value: entry.value,
-                                                    child: Text(
-                                                      entry.key,
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.9,
-                                                            ),
+                                                  (entry) =>
+                                                      MultiSelectItem<String>(
+                                                        entry.value,
+                                                        entry.key,
                                                       ),
-                                                    ),
-                                                  ),
                                                 )
                                                 .toList(),
-                                            onChanged: (value) {
-                                              controllers['disposisi']!.text =
-                                                  value ?? '';
-                                            },
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Disposisi harus diisi';
-                                              }
-                                              return null;
-                                            },
-                                            decoration: InputDecoration(
-                                              labelText: 'Disposisi',
-                                              labelStyle: TextStyle(
+                                            title: Text(
+                                              "Pilih Disposisi",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            selectedColor: accentColor,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.05,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              border: Border.all(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.2,
+                                                ),
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            buttonIcon: Icon(
+                                              Icons
+                                                  .assignment_turned_in_rounded,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.9,
+                                              ),
+                                            ),
+                                            buttonText: Text(
+                                              "Disposisi",
+                                              style: TextStyle(
                                                 color: Colors.white.withValues(
                                                   alpha: 0.8,
                                                 ),
+                                                fontSize: 16,
                                               ),
-                                              prefixIcon: Icon(
-                                                Icons
-                                                    .assignment_turned_in_rounded,
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.9,
-                                                ),
-                                              ),
-                                              filled: true,
-                                              fillColor: Colors.white
-                                                  .withValues(alpha: 0.05),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.2),
-                                                ),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.4),
-                                                ),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.red.withValues(
-                                                    alpha: 0.7,
-                                                  ),
-                                                ),
-                                              ),
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          15,
-                                                        ),
-                                                    borderSide: BorderSide(
-                                                      color: Colors.red
-                                                          .withValues(
-                                                            alpha: 0.9,
-                                                          ),
-                                                    ),
-                                                  ),
                                             ),
-                                            dropdownColor: Colors.black
-                                                .withValues(alpha: 0.7),
-                                            iconEnabledColor: Colors.white
-                                                .withValues(alpha: 0.9),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
+                                            onConfirm: (values) {
+                                              controllers['disposisi']!.text =
+                                                  values.join(",");
+                                            },
+                                            validator: (values) {
+                                              if (values == null ||
+                                                  values.isEmpty) {
+                                                return "Disposisi harus diisi";
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ),
                                         SizedBox(height: 10),
@@ -2458,17 +2449,6 @@ void showModernTambahSuratMasukFormDialog(
                                   child: ElevatedButton(
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        // Create new surat data
-                                        // Map<String, dynamic> newSurat = {
-                                        //   'id': DateTime.now()
-                                        //       .millisecondsSinceEpoch
-                                        //       .toString(),
-                                        // };
-
-                                        // // Add all controller values to the map
-                                        // controllers.forEach((key, controller) {
-                                        //   newSurat[key] = controller.text;
-                                        // });
                                         SuratMasukModel?
                                         data = await _suratMasukService.addSurat(
                                           suratDari:
@@ -2527,16 +2507,41 @@ void showModernTambahSuratMasukFormDialog(
                                           linkScan:
                                               controllers['link_scan']?.text,
                                           disp1Kadin:
-                                              controllers['disposisi_kadin']!.text.isNotEmpty ? DateTime.tryParse(controllers['disposisi_kadin']!.text) : null,
+                                              controllers['disposisi_kadin']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['disposisi_kadin']!
+                                                      .text,
+                                                )
+                                              : null,
                                           disp2Sekdin:
-                                              controllers['disposisi_sekdin']!.text.isNotEmpty ?
-                                                DateTime.tryParse(controllers['disposisi_sekdin']!.text) : null,
+                                              controllers['disposisi_sekdin']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['disposisi_sekdin']!
+                                                      .text,
+                                                )
+                                              : null,
                                           disp3Kabid:
-                                              controllers['disposisi_kabid']!.text.isNotEmpty ?
-                                                DateTime.tryParse(controllers['disposisi_kabid']!.text) : null,
+                                              controllers['disposisi_kabid']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['disposisi_kabid']!
+                                                      .text,
+                                                )
+                                              : null,
                                           disp4Kasubag:
-                                              controllers['disposisi_kasubag']!.text.isNotEmpty ?
-                                                DateTime.tryParse(controllers['disposisi_kasubag']!.text) : null,
+                                              controllers['disposisi_kasubag']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['disposisi_kasubag']!
+                                                      .text,
+                                                )
+                                              : null,
                                           disp1Notes:
                                               controllers['notes_disposisi_kadin']
                                                   ?.text,
@@ -3319,9 +3324,9 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                               controllers['tujuan_surat']?.text,
                                           perihal: controllers['perihal']?.text,
                                           tanggal_surat:
-                                              controllers['tgl_surat']
-                                                      !.text
-                                                      .isNotEmpty
+                                              controllers['tgl_surat']!
+                                                  .text
+                                                  .isNotEmpty
                                               ? DateTime.tryParse(
                                                   controllers['tgl_surat']!
                                                       .text,
@@ -3344,17 +3349,23 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                           dok_final:
                                               controllers['dok_final']?.text,
                                           dok_dikirim:
-                                              controllers['dok_dikirim_tgl']
-                                                      !.text
-                                                      .isNotEmpty
+                                              controllers['dok_dikirim_tgl']!
+                                                  .text
+                                                  .isNotEmpty
                                               ? DateTime.tryParse(
                                                   controllers['dok_dikirim_tgl']!
                                                       .text,
                                                 )
                                               : null,
                                           tanda_terima:
-                                              controllers['tanda_terima']!.text.isNotEmpty ?
-                                                DateTime.tryParse(controllers['tanda_terima']!.text) : null,
+                                              controllers['tanda_terima']!
+                                                  .text
+                                                  .isNotEmpty
+                                              ? DateTime.tryParse(
+                                                  controllers['tanda_terima']!
+                                                      .text,
+                                                )
+                                              : null,
                                         );
 
                                         // Call the callback function
@@ -3656,7 +3667,7 @@ Widget buildDayDatePickerField({
           lastDate: DateTime(2100),
           locale: const Locale('id', 'ID'), // Biar bahasa Indonesia
         );
-        
+
         final selectedDate = pickedDate?.toUtc().toIso8601String();
 
         if (pickedDate != null) {
