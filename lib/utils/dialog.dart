@@ -3982,17 +3982,17 @@ void showEditSuratDialog(
     text: selectedSurat?.link_scan,
   );
   final TextEditingController disposisikadinController = TextEditingController(
-    text: selectedSurat?.disp_1?.toString().split(' ')[0] ?? '',
+    text: selectedSurat?.disp_1 != null ? (selectedSurat?.disp_1 as DateTime).toUtc().toIso8601String() : ''
   );
   final TextEditingController disposisisekdinController = TextEditingController(
-    text: selectedSurat?.disp_2?.toString().split(' ')[0] ?? '',
+    text: selectedSurat?.disp_2 != null ? (selectedSurat?.disp_2 as DateTime).toUtc().toIso8601String() : ''
   );
   final TextEditingController disposisikabidController = TextEditingController(
-    text: selectedSurat?.disp_3?.toString().split(' ')[0] ?? '',
+    text: selectedSurat?.disp_3 != null ? (selectedSurat?.disp_3 as DateTime).toUtc().toIso8601String() : ''
   );
   final TextEditingController disposisikasubagController =
       TextEditingController(
-        text: selectedSurat?.disp_4?.toString().split(' ')[0] ?? '',
+        text: selectedSurat?.disp_4 != null ? (selectedSurat?.disp_4 as DateTime).toUtc().toIso8601String() : ''
       );
   final TextEditingController disposisilanjutanController =
       TextEditingController(text: selectedSurat?.disp_lanjut);
