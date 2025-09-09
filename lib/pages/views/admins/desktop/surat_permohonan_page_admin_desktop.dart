@@ -1460,10 +1460,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                                               entry,
                                                                             ) =>
                                                                                 entry.value ==
-                                                                                item['tujuan'],
+                                                                                item,
                                                                             orElse: () => MapEntry(
-                                                                              item['tujuan']!,
-                                                                              item['tujuan']!,
+                                                                              item!,
+                                                                              item!,
                                                                             ),
                                                                           )
                                                                           .key,
