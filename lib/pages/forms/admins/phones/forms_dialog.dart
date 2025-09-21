@@ -366,7 +366,7 @@ void showModernTambahSuratFormDialog(
                                               controllers['disposisi']!.text =
                                                   value ?? '';
 
-                                              print(value);
+                                              print(controllers['disposisi']);
                                             },
                                             validator: (value) {
                                               if (value == null ||
@@ -1787,7 +1787,6 @@ void showModernTambahSuratMasukFormDialog(
     'hari_tanggal': TextEditingController(),
     'waktu': TextEditingController(),
     'tempat': TextEditingController(),
-    'disposisi': TextEditingController(),
     'index': TextEditingController(),
     'pengolah': TextEditingController(),
     'sifat': TextEditingController(),
@@ -2810,15 +2809,16 @@ void showModernTambahSuratMasukFormDialog(
                                               tempat:
                                                   controllers['tempat']?.text,
                                               disposisi:
-                                                  controllers['disposisi']
-                                                          !.text
-                                                          .isNotEmpty 
-                                                  ? controllers['disposisi']!
-                                                        .text
-                                                        .split(
-                                                          ',',
-                                                        ) // contoh parsing jadi list
-                                                  : [],
+                                                  selectedDisposisi,
+                                                  // controllers['disposisi']
+                                                  //         !.text
+                                                  //         .isNotEmpty 
+                                                  // ? controllers['disposisi']!
+                                                  //       .text
+                                                  //       .split(
+                                                  //         ',',
+                                                  //       ) // contoh parsing jadi list
+                                                  // : [],
                                               index: controllers['index']?.text,
                                               pengolah:
                                                   controllers['pengolah']?.text,
