@@ -110,6 +110,7 @@ class _PermohonanLettersPageAdminDesktopState
         backgroundColor: Colors.red,
       ),
     );
+    _loadAllData();
   }
 
   void refreshEditState() {
@@ -541,7 +542,7 @@ class _PermohonanLettersPageAdminDesktopState
                                 onTap: () {
                                   tambahSuratMasukDesktop(context, (newSurat) {
                                     setState(() {
-                                      
+                                      refreshAddState();
                                     });
                                   });
                                 },

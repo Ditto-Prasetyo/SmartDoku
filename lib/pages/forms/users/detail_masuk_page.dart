@@ -708,12 +708,20 @@ class _DetailPage extends State<DetailPage>
                           buildInfoCard([
                             buildDetailRow(
                               'Tindak Lanjut 1',
-                              detailData.tindak_lanjut_1 == null ? 'Data Kosong!' : detailData.tindak_lanjut_1.toString(),
+                              detailData.tindak_lanjut_1 == null ? 'Data Kosong!' : detailData.tindak_lanjut_1!.toIso8601String(),
                             ),
                             buildDetailRow(
+                              'Catatan Tindak Lanjut 1',
+                              detailData.tl_notes_1 == null ? 'Data Kosong!' : detailData.tl_notes_1.toString(),
+                              ),
+                            buildDetailRow(
                               'Tindak Lanjut 2',
-                              detailData.tindak_lanjut_2 == null ? 'Data Kosong!' : detailData.tindak_lanjut_2.toString(),
+                              detailData.tindak_lanjut_2 == null ? 'Data Kosong!' : detailData.tindak_lanjut_2!.toIso8601String(),
                             ),
+                            buildDetailRow(
+                              'Catatan Tindak Lanjut 2',
+                              detailData.tl_notes_2 == null ? 'Data Kosong!' : detailData.tl_notes_2.toString(),
+                              ),
                             buildDetailRow(
                               'Status',
                               detailData.status == null ? 'Data Kosong!' : detailData.status,

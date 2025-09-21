@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -3997,11 +3998,13 @@ void showEditSuratDialog(
   final TextEditingController disposisilanjutanController =
       TextEditingController(text: selectedSurat?.disp_lanjut);
   final TextEditingController tindaklanjut1Controller = TextEditingController(
-    text: selectedSurat?.tindak_lanjut_1?.toString().split(' ')[0] ?? '',
+    text: selectedSurat?.tindak_lanjut_1 != null ? (selectedSurat?.tindak_lanjut_1 as DateTime).toUtc().toIso8601String() : ''
   );
   final TextEditingController tindaklanjut2Controller = TextEditingController(
-    text: selectedSurat?.tindak_lanjut_2?.toString().split(' ')[0] ?? '',
+    text: selectedSurat?.tindak_lanjut_2 != null ? (selectedSurat?.tindak_lanjut_2 as DateTime).toUtc().toIso8601String() : ''
   );
+  final TextEditingController notestindaklanjut1Controller = TextEditingController(text: selectedSurat?.tl_notes_1);
+  final TextEditingController notestindaklanjut2Controller = TextEditingController(text: selectedSurat?.tl_notes_2);
 
   final TextEditingController notesDisposisiKadinController =
       TextEditingController(text: selectedSurat?.disp_1_notes);
@@ -4568,6 +4571,42 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
+                              buildDateInputField(
+                               'Tindak Lanjut 1', 
+                               tindaklanjut1Controller, 
+                               FontAwesomeIcons.circleCheck,
+                               context
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Notes Tindak Lanjut 1',
+                                notestindaklanjut1Controller,
+                                Icons.notes,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+                              
+                              buildDateInputField(
+                                'Tindak Lanjut 2',
+                                tindaklanjut2Controller,
+                                FontAwesomeIcons.circleCheck,
+                                context
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Notes Tindak Lanjut 2',
+                                notestindaklanjut2Controller,
+                                Icons.notes,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
                               // Status Dropdown
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -4710,10 +4749,29 @@ void showEditSuratDialog(
                                         DateTime? tindakLanjut2 = parseDateTime(
                                           tindaklanjut2Controller.text,
                                         );
+                                        DateTime? dispKadin = parseDateTime(disposisikadinController.text,);
+                                        DateTime? dispSekdin = parseDateTime(disposisisekdinController.text,);
+                                        DateTime? dispKabid = parseDateTime(disposisikabidController.text,);
+                                        DateTime? dispKasubag = parseDateTime(disposisikasubagController.text,);
 
                                         // Validasi tanggal wajib
                                         if (tanggalSurat == null ||
-                                            tanggalDiterima == null) {
+                                            tanggalDiterima == null || tanggalWaktu == null) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Tanggal Surat dan Tanggal Diterima wajib diisi!',
+                                              ),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        if (dispKadin == null ||
+                                            dispSekdin == null) {
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
@@ -4733,13 +4791,13 @@ void showEditSuratDialog(
                                             nomor_urut:
                                                 selectedSurat.nomor_urut,
                                             disp1Kadin:
-                                                disposisikadinController.text,
+                                                dispKadin,
                                             disp2Sekdin:
-                                                disposisisekdinController.text,
+                                                dispSekdin,
                                             disp3Kabid:
-                                                disposisikabidController.text,
+                                                dispKabid,
                                             disp4Kasubag:
-                                                disposisikasubagController.text,
+                                                dispKasubag,
                                             disp1Notes:
                                                 notesDisposisiKadinController
                                                     .text,
@@ -4775,7 +4833,9 @@ void showEditSuratDialog(
                                             tindakLanjut1:
                                                 tindakLanjut1, // Bisa null
                                             tindakLanjut2:
-                                                tindakLanjut2, // Bisa null
+                                                tindakLanjut2,
+                                            tl1Notes: notestindaklanjut1Controller.text, // Bisa null
+                                            tl2Notes: notestindaklanjut2Controller.text, // Bisa null
                                             disposisi: selectedDisposisi.join(
                                               ',',
                                             ), // Convert list to comma-separated string
