@@ -196,10 +196,10 @@ class SuratMasuk {
         'pengolah': pengolah,
         'sifat': sifat,
         'link_scan': linkScan,
-        'disp_1': disp1Kadin,
-        'disp_2': disp2Sekdin,
-        'disp_3': disp3Kabid,
-        'disp_4': disp4Kasubag,
+        'disp_1': disp1Kadin?.toIso8601String(),
+        'disp_2': disp2Sekdin?.toIso8601String(),
+        'disp_3': disp3Kabid?.toIso8601String(),
+        'disp_4': disp4Kasubag?.toIso8601String(),
         'disp_1_notes': disp1Notes,
         'disp_2_notes': disp2Notes,
         'disp_3_notes': disp3Notes,
@@ -225,11 +225,11 @@ class SuratMasuk {
         final data = jsonDecode(response.body);
         return SuratMasukModel.fromJson(data);
       } else {
-        print('Gagal tambah surat: ${response.body}');
+        print('Gagal edit surat: ${response.body}');
         return null;
       }
     } catch (e) {
-      print('Error addSurat: $e');
+      print('Error editSurat: $e');
       return null;
     }
   }

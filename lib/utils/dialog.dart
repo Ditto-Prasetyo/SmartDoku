@@ -3968,6 +3968,8 @@ void showEditSuratDialog(
         )
         .cast<String>()
         .toList();
+    
+    print(selectedDisposisi);
   }
 
   final TextEditingController indexController = TextEditingController(
@@ -4836,9 +4838,7 @@ void showEditSuratDialog(
                                                 tindakLanjut2,
                                             tl1Notes: notestindaklanjut1Controller.text, // Bisa null
                                             tl2Notes: notestindaklanjut2Controller.text, // Bisa null
-                                            disposisi: selectedDisposisi.join(
-                                              ',',
-                                            ), // Convert list to comma-separated string
+                                            disposisi: selectedDisposisi, // Convert list to comma-separated string
                                           );
 
                                           print(data);
