@@ -594,7 +594,7 @@ void tambahSuratMasukDesktop(BuildContext context, Function(SuratMasukModel?) on
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
-    onSuratKeluarAdded
+    onSuratKeluarAdded,
   );
 }
 

@@ -118,6 +118,10 @@ class _PermohonanLettersPageAdminDesktopState
     setState(() {});
   }
 
+  void refreshAddState() {
+    _loadAllData();
+  }
+
   void _navigateToPage(
     BuildContext context,
     Map<String, dynamic> item,
@@ -536,7 +540,9 @@ class _PermohonanLettersPageAdminDesktopState
                               InkWell(
                                 onTap: () {
                                   tambahSuratMasukDesktop(context, (newSurat) {
-                                    setState(() {});
+                                    setState(() {
+                                      
+                                    });
                                   });
                                 },
                                 child: Icon(
