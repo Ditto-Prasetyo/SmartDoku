@@ -66,9 +66,9 @@ class _UserDashboardState extends State<UserDashboard>
       'route': '/user/desktop/surat_disposisi_page_desktop',
     },
     {
-      'icon': Icons.settings_outlined,
-      'title': 'Pengaturan',
-      'route': '/user/desktop/setting_page',
+      'icon': Icons.people_alt_rounded,
+      'title': 'Profile Anda',
+      'route': '/user/desktop/profile_user_page',
     },
   ];
 
@@ -435,63 +435,69 @@ class _UserDashboardState extends State<UserDashboard>
                     ),
                   ],
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                child: SizedBox(
+                  height: 200,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                data['color'],
-                                data['color'].withValues(alpha: 0.7),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: data['color'].withValues(alpha: 0.7),
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    data['color'],
+                                    data['color'].withValues(alpha: 0.7),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: data['color'].withValues(alpha: 0.7),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
                               ),
-                            ],
+                              child: Icon(
+                                data['icon'],
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Center(
+                          child: Text(
+                            data['value'],
+                            style: TextStyle(
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontFamily: 'Roboto',
+                            ),
                           ),
-                          child: Icon(
-                            data['icon'],
-                            color: Colors.white,
-                            size: 28,
+                        ),
+                        SizedBox(height: 8),
+                        Center(
+                          child: Text(
+                            data['title'],
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white.withValues(alpha: 0.8),
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Roboto',
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
-                    Center(
-                      child: Text(
-                        data['value'],
-                        style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontFamily: 'Roboto',
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Center(
-                      child: Text(
-                        data['title'],
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.8),
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Roboto',
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),

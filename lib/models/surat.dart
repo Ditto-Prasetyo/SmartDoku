@@ -6,11 +6,11 @@ class SuratMasukModel {
   final DateTime tanggal_surat;
   final String kode;
   final String no_agenda;
-  final String no_surat;
+  final String no_surat;  
   final String hal;
   final DateTime tanggal_waktu;
   final String tempat;
-  final List<dynamic> disposisi; // Bisa diganti model khusus
+  final List<dynamic> disposisi;
   final String? index;
   final String pengolah;
   final String? sifat;
@@ -191,7 +191,7 @@ class SuratKeluarModel {
       no_register: json['no_register'],
       tujuan_surat: json['tujuan_surat'],
       perihal: json['perihal'],
-      tanggal_surat: json['tanggal_surat'],
+      tanggal_surat: DateTime.parse(json['tanggal_surat']),
       akses_arsip: json['akses_arsip'],
       pengolah: json['pengolah'],
       pembuat: json['pembuat'],
@@ -201,9 +201,9 @@ class SuratKeluarModel {
       koreksi_2: json['koreksi_2'],
       status: json['status'],
       dok_final: json['dok_final'],
-      dok_dikirim: json['dok_dikirim'],
-      tanda_terima: json['tanda_terima'],
-      timestamp: json['timestamp']
+      dok_dikirim: json['dok_dikirim'] != null ? DateTime.parse(json['dok_dikirim']) : null,
+      tanda_terima: json['tanda_terima'] != null ? DateTime.parse(json['tanda_terima']) : null,
+      timestamp: DateTime.parse(json['timestamp']),
     );
   }
 

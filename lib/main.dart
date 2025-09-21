@@ -7,6 +7,7 @@ import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_before_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/manajemen_pengguna_page.dart';
+import 'package:smart_doku/pages/views/admins/desktop/profile_admin_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/setting_page.dart';
 import 'package:smart_doku/pages/views/admins/desktop/surat_disposisi_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/surat_keluar_page_admin_desktop.dart';
@@ -16,7 +17,7 @@ import 'package:smart_doku/pages/views/admins/phones/surat_disposisi_page_admin.
 import 'package:smart_doku/pages/views/admins/phones/surat_keluar_page_admin.dart';
 import 'package:smart_doku/pages/views/admins/phones/surat_permohonan_page_admin.dart';
 import 'package:smart_doku/pages/views/users/desktop/home_page_desktop.dart';
-import 'package:smart_doku/pages/views/users/desktop/setting_page.dart';
+import 'package:smart_doku/pages/views/users/desktop/profile_user_page.dart';
 import 'package:smart_doku/pages/views/users/desktop/surat_disposisi_page_desktop.dart';
 import 'package:smart_doku/pages/views/users/desktop/surat_keluar_page_desktop.dart';
 import 'package:smart_doku/pages/views/users/desktop/surat_permohonan_page_desktop.dart';
@@ -24,6 +25,7 @@ import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_permohonan_page.dart';
+import 'package:smart_doku/test.dart';
 import 'dart:io' show Platform;
 import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -95,7 +97,7 @@ class SmartDoku extends StatelessWidget {
         '/user/desktop/surat_keluar_page_desktop': (context) => OutgoingLetterPageDesktop(),
         '/user/desktop/surat_disposisi_page_desktop': (context) =>
             DispositionLetterUserDesktop(),
-            '/user/desktop/setting_page' : (context) => SettingPageUser(),
+            '/user/desktop/profile_user_page' : (context) => UserProfile(),
 
         // admins and superadmins phone
         '/admin/phones/home_page_admin_phones': (context) =>
@@ -118,6 +120,7 @@ class SmartDoku extends StatelessWidget {
         '/admin/desktop/manajemen_pengguna_page': (context) =>
             UsersManagementPage(),
         '/admin/desktop/setting_page': (context) => SettingPage(),
+        '/admin/desktop/profile_admin_page' : (context) => AdminProfile(),
 
         // testing
         '/forms/admins/desktop/tables_page_admin' : (context) => TablesPageAdmin()

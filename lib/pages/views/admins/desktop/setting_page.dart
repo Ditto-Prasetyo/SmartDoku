@@ -4,6 +4,7 @@ import 'package:line_icons/line_icons.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/utils/widget.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -25,6 +26,14 @@ class _SettingPageState extends State<SettingPage>
 
   // Selected sidebar item
   int _selectedIndex = 5;
+
+  // Form controllers and variables for three-part code settings
+  final TextEditingController _part1Controller = TextEditingController();
+  final TextEditingController _part2Controller = TextEditingController();
+  final TextEditingController _part3Controller = TextEditingController();
+  String _currentPart1 = '35.07.303'; // Default first part
+  String _currentPart3 = '2025'; // Default third part
+  bool _isEditing = false;
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -57,6 +66,11 @@ class _SettingPageState extends State<SettingPage>
       'title': 'Pengaturan',
       'route': '/admin/desktop/setting_page',
     },
+    {
+      'icon': Icons.people_alt_rounded,
+      'title': 'Profile Anda',
+      'route': '/admin/desktop/profile_admin_page',
+    },
   ];
 
   void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
@@ -71,9 +85,57 @@ class _SettingPageState extends State<SettingPage>
     );
   }
 
+  void _toggleEdit() {
+    setState(() {
+      if (_isEditing) {
+        // Save changes
+        _currentPart1 = _part1Controller.text.isNotEmpty ? _part1Controller.text : _currentPart1;
+        _currentPart3 = _part3Controller.text.isNotEmpty ? _part3Controller.text : _currentPart3;
+        _showSuccessSnackbar('Pengaturan berhasil disimpan!');
+      } else {
+        // Start editing
+        _part1Controller.text = _currentPart1;
+        _part3Controller.text = _currentPart3;
+      }
+      _isEditing = !_isEditing;
+    });
+  }
+
+  void _resetToDefault() {
+    setState(() {
+      _currentPart1 = '35.07.303';
+      _currentPart3 = '2025';
+      _part1Controller.text = _currentPart1;
+      _part3Controller.text = _currentPart3;
+    });
+    _showSuccessSnackbar('Pengaturan direset ke default!');
+  }
+
+  void _showSuccessSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.white, size: 20),
+            SizedBox(width: 10),
+            Text(message, style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        backgroundColor: Color(0xFF10B981),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
+
+    // Initialize controllers with current values
+    _part1Controller.text = _currentPart1;
+    _part3Controller.text = _currentPart3;
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -103,6 +165,9 @@ class _SettingPageState extends State<SettingPage>
   void dispose() {
     _backgroundController.dispose();
     _cardController.dispose();
+    _part1Controller.dispose();
+    _part2Controller.dispose();
+    _part3Controller.dispose();
     super.dispose();
   }
 
@@ -377,8 +442,7 @@ class _SettingPageState extends State<SettingPage>
     );
   }
   
-
-  Widget _buildRecentActivity(Animation<double> _cardAnimation) {
+  Widget buildSetting(Animation<double> _cardAnimation) {
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -409,37 +473,360 @@ class _SettingPageState extends State<SettingPage>
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Aktivitas Terbaru',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Roboto',
-                ),
-              ),
+              buildSectionTitleDisposisiDesktop('Pengaturan Format Kode Suffix Nomor Register dan Agenda'),
               SizedBox(height: 20),
+              
+              // Document Code Format Settings
               Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 12),
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                            Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.1),
-                            Colors.white.withValues(alpha: 0.2),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Current Format Preview
+                      Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.only(bottom: 24),
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Color(0xFF4F46E5).withValues(alpha: 0.1),
+                              Color(0xFF7C3AED).withValues(alpha: 0.05),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Color(0xFF4F46E5).withValues(alpha: 0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.preview_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Format Kode Saat Ini',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 15),
+                            Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                ),
+                              ),
+                              child: Text(
+                                '$_currentPart1/$_currentPart3',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  fontFamily: 'Roboto Mono',
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                            ),
                           ],
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.grey[200]!, width: 1),
+                        ),
+                      ),
+
+                      // Part 1 
+                      Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withValues(alpha: 0.2),
+                              Colors.white.withValues(alpha: 0.1),
+                              Colors.white.withValues(alpha: 0.1),
+                              Colors.white.withValues(alpha: 0.2),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.label_outline_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Bagian Pertama',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Bagian pertama dari kode register dan agenda',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.7),
+                                fontSize: 14,
+                                fontFamily: 'Roboto',
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: _isEditing 
+                                    ? Color(0xFF4F46E5).withValues(alpha: 0.5)
+                                    : Colors.white.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: TextField(
+                                controller: _part1Controller,
+                                enabled: _isEditing,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Roboto',
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Masukkan bagian pertama - Klik tombol edit untuk melanjutkan',
+                                  hintStyle: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.5),
+                                  ),
+                                  contentPadding: EdgeInsets.all(16),
+                                  border: InputBorder.none,
+                                  prefixIcon: Icon(
+                                    Icons.edit_outlined,
+                                    color: Colors.white.withValues(alpha: 0.7),
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Part 2 
+                      Container(
+                        margin: EdgeInsets.only(bottom: 20),
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withValues(alpha: 0.2),
+                              Colors.white.withValues(alpha: 0.1),
+                              Colors.white.withValues(alpha: 0.1),
+                              Colors.white.withValues(alpha: 0.2),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.label_outline_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Bagian Kedua',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Bagian ketiga dari kode register dan agenda',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.7),
+                                fontSize: 14,
+                                fontFamily: 'Roboto',
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: _isEditing 
+                                    ? Color(0xFF4F46E5).withValues(alpha: 0.5)
+                                    : Colors.white.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              child: TextField(
+                                controller: _part3Controller,
+                                enabled: _isEditing,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Roboto',
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Masukkan bagian ketiga - Klik tombol edit untuk melanjutkan',
+                                  hintStyle: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.5),
+                                  ),
+                                  contentPadding: EdgeInsets.all(16),
+                                  border: InputBorder.none,
+                                  prefixIcon: Icon(
+                                    Icons.edit_outlined,
+                                    color: Colors.white.withValues(alpha: 0.7),
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Action Buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: _toggleEdit,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ).copyWith(
+                                  backgroundColor: WidgetStateProperty.all(Colors.transparent),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: _isEditing 
+                                        ? [Color(0xFF10B981), Color(0xFF059669)]
+                                        : [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          _isEditing ? Icons.save_outlined : Icons.edit_outlined,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          _isEditing ? 'Simpan' : 'Edit',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Expanded(
+                            child: Container(
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: _resetToDefault,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ).copyWith(
+                                  backgroundColor: WidgetStateProperty.all(Colors.transparent),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [Color(0xFFDC2626), Color(0xFFEA580C)],
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.refresh_rounded,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'Reset',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  child: Row(),
                 ),
               ),
             ],
@@ -554,7 +941,7 @@ class _SettingPageState extends State<SettingPage>
                         SizedBox(height: 40),
 
                         // Recent activity
-                        Expanded(child: _buildRecentActivity(_cardAnimation)),
+                        Expanded(child: buildSetting(_cardAnimation)),
                       ],
                     ),
                   ),

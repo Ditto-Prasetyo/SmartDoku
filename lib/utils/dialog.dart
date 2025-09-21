@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:smart_doku/utils/widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:line_icons/line_icons.dart';
@@ -9,11 +9,16 @@ import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
-import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/icon.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/utils/map.dart';
+import 'package:intl/intl.dart';
 import 'dart:io' show Platform;
 
-// Auths Section
+// Services Initialize
+SuratKeluar _suratKeluarService = SuratKeluar();
+SuratMasuk _suratMasukService = SuratMasuk();
 
 // -- Login Edition --
 void showErrorDialog(
@@ -59,7 +64,12 @@ void showErrorDialog(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -193,12 +203,14 @@ void showModernErrorDialog(
     },
     pageBuilder: (context, animation, secondaryAnimation) {
       Size size = MediaQuery.of(context).size;
-      
+
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -216,7 +228,12 @@ void showModernErrorDialog(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -354,7 +371,9 @@ void showErrorDialogLengthUsername(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -511,7 +530,9 @@ void showErrorDialogLengthPassword(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -668,7 +689,9 @@ void showErrorDialogLengthEmail(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -824,7 +847,9 @@ void showErrorDialogEmailFormat(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -980,7 +1005,9 @@ void showErrorDialogUsernameSpaceChecker(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1144,7 +1171,9 @@ void showErrorDialogPasswordSpaceChecker(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1308,7 +1337,9 @@ void showErrorDialogEmailSpaceChecker(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -1467,7 +1498,6 @@ void showModernHomeAdminDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
-
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
@@ -1660,7 +1690,6 @@ void showModernLogoutDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
-
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
@@ -1862,7 +1891,9 @@ void showModernLogoutDesktopDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2060,7 +2091,9 @@ void showModernHomeDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2262,7 +2295,9 @@ void showModernActionUserDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2580,7 +2615,9 @@ void showModernActionErrorDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -2718,7 +2755,7 @@ void showModernActionAdminDialog(
   Color accentColor3,
   Color accentColor4,
   BuildContext context,
-  List<Map<String, dynamic>> suratData,
+  List<dynamic> suratData,
   void Function(int) editDokumen,
   void Function(int) viewDetailAdmin,
   void Function(int) hapusDokumen,
@@ -3019,7 +3056,7 @@ void showModernTambahSuratDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratMasukModel?) onSuratAdded,
 ) {
   showGeneralDialog(
     context: context,
@@ -3138,14 +3175,14 @@ void showModernTambahSuratDialog(
                               context,
                               accentColor,
                               accentColor2,
-                              onSuratAdded == null
-                                  ? (data) {
-                                      // Default behavior if no callback provided
-                                      print(
-                                        'Surat baru ditambahkan: ${data['surat_dari']}',
-                                      );
-                                    }
-                                  : onSuratAdded,
+                              onSuratAdded,
+                              // ? (data) {
+                              //     // Default behavior if no callback provided
+                              //     print(
+                              //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                              //     );
+                              //   }
+                              // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -3228,7 +3265,7 @@ void showModernTambahSuratKeluarDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratKeluarModel?) onSuratAdded,
 ) {
   showGeneralDialog(
     context: context,
@@ -3347,14 +3384,14 @@ void showModernTambahSuratKeluarDialog(
                               context,
                               accentColor,
                               accentColor2,
-                              onSuratAdded == null
-                                  ? (data) {
-                                      // Default behavior if no callback provided
-                                      print(
-                                        'Surat baru ditambahkan: ${data['surat_dari']}',
-                                      );
-                                    }
-                                  : onSuratAdded,
+                              onSuratAdded,
+                              // ? (data) {
+                              //     // Default behavior if no callback provided
+                              //     print(
+                              //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                              //     );
+                              //   }
+                              // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -3437,7 +3474,7 @@ void showModernTambahSuratMasukDesktopDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratMasukModel?) onSuratAdded,
 ) {
   Size size = MediaQuery.of(context).size;
   showGeneralDialog(
@@ -3457,7 +3494,9 @@ void showModernTambahSuratMasukDesktopDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -3562,7 +3601,7 @@ void showModernTambahSuratMasukDesktopDialog(
                                   ? (data) {
                                       // Default behavior if no callback provided
                                       print(
-                                        'Surat baru ditambahkan: ${data['surat_dari']}',
+                                        'Surat baru ditambahkan: ${data?.nama_surat}',
                                       );
                                     }
                                   : onSuratAdded,
@@ -3648,7 +3687,7 @@ void showModernTambahSuratKeluarDesktopDialog(
   Color accentColor,
   Color accentColor2,
   BuildContext context,
-  Function(Map<String, dynamic>) onSuratAdded,
+  Function(SuratKeluarModel?) onSuratAdded,
 ) {
   Size size = MediaQuery.of(context).size;
   showGeneralDialog(
@@ -3668,7 +3707,9 @@ void showModernTambahSuratKeluarDesktopDialog(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -3769,14 +3810,14 @@ void showModernTambahSuratKeluarDesktopDialog(
                               context,
                               accentColor,
                               accentColor2,
-                              onSuratAdded == null
-                                  ? (data) {
-                                      // Default behavior if no callback provided
-                                      print(
-                                        'Surat baru ditambahkan: ${data['surat_dari']}',
-                                      );
-                                    }
-                                  : onSuratAdded,
+                              onSuratAdded,
+                              // ? (data) {
+                              //     // Default behavior if no callback provided
+                              //     print(
+                              //       'Surat baru ditambahkan: ${data['surat_dari']}',
+                              //     );
+                              //   }
+                              // : onSuratAdded,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -3853,97 +3894,125 @@ void showModernTambahSuratKeluarDesktopDialog(
   );
 }
 
+// Tambahkan helper function untuk parse DateTime
+DateTime? parseDateTime(String dateStr) {
+  if (dateStr.isEmpty) return null;
+  try {
+    return DateTime.parse(dateStr);
+  } catch (e) {
+    print('Error parsing date: $dateStr - $e');
+    return null;
+  }
+}
+
 void showEditSuratDialog(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel?> suratData,
   void Function() refreshState,
 ) {
   final selectedSurat = suratData[index];
-
   // Controllers untuk form
   final TextEditingController judulController = TextEditingController(
-    text: selectedSurat['surat_dari'],
+    text: selectedSurat?.nama_surat,
   );
   final TextEditingController perihalController = TextEditingController(
-    text: selectedSurat['perihal'],
+    text: selectedSurat?.hal,
   );
   final TextEditingController tanggalController = TextEditingController(
-    text: selectedSurat['diterima_tgl'],
+    text:
+        selectedSurat?.tanggal_diterima?.toUtc().toIso8601String() ??
+        '', // Format ke yyyy-mm-dd aja
   );
   final TextEditingController pengirimController = TextEditingController(
-    text: selectedSurat['pengirim'],
+    text: selectedSurat?.pengolah,
   );
   final TextEditingController tanggalSuratController = TextEditingController(
-    text: selectedSurat['tgl_surat'],
+    text:
+        selectedSurat?.tanggal_surat?.toUtc().toIso8601String() ??
+        '', // Format ke yyyy-mm-dd aja
   );
   final TextEditingController kodeController = TextEditingController(
-    text: selectedSurat['kode'],
+    text: selectedSurat?.kode,
   );
   final TextEditingController noagendaController = TextEditingController(
-    text: selectedSurat['no_agenda'],
-  );
-  final TextEditingController nourutController = TextEditingController(
-    text: selectedSurat['no_urut'],
+    text: selectedSurat?.no_agenda,
   );
   final TextEditingController nosuratController = TextEditingController(
-    text: selectedSurat['no_surat'],
+    text: selectedSurat?.no_surat,
   );
   final TextEditingController haritanggalController = TextEditingController(
-    text: selectedSurat['hari_tanggal'],
+    text: selectedSurat?.tanggal_waktu?.toUtc().toIso8601String() ?? '',
   );
-  final TextEditingController hariTanggalWaktuController = TextEditingController();
+  final TextEditingController hariTanggalWaktuController =
+      TextEditingController(
+        text: selectedSurat?.tanggal_waktu?.toUtc().toIso8601String() ?? '',
+      );
   final TextEditingController waktuController = TextEditingController(
-    text: selectedSurat['waktu'],
+    text: selectedSurat?.tanggal_waktu?.toString(),
   );
   final TextEditingController tempatController = TextEditingController(
-    text: selectedSurat['tempat'],
+    text: selectedSurat?.tempat,
   );
-  final TextEditingController disposisiController = TextEditingController(
-    text: selectedSurat['disposisi'],
-  );
+
+  // Initialize selected disposisi from existing data
+  List<String> selectedDisposisi = [];
+  if (selectedSurat?.disposisi != null && selectedSurat!.disposisi.isNotEmpty) {
+    // Convert existing disposisi to selected list
+    selectedDisposisi = selectedSurat.disposisi
+        .where(
+          (disp) =>
+              workFields.values.contains(disp) ||
+              workFields.keys.contains(disp),
+        )
+        .cast<String>()
+        .toList();
+  }
+
   final TextEditingController indexController = TextEditingController(
-    text: selectedSurat['index'],
+    text: selectedSurat?.index,
   );
   final TextEditingController pengolahController = TextEditingController(
-    text: selectedSurat['pengolah'],
+    text: selectedSurat?.pengolah,
   );
   final TextEditingController sifatController = TextEditingController(
-    text: selectedSurat['sifat'],
+    text: selectedSurat?.sifat,
   );
   final TextEditingController linkscanController = TextEditingController(
-    text: selectedSurat['link_scan'],
+    text: selectedSurat?.link_scan,
   );
   final TextEditingController disposisikadinController = TextEditingController(
-    text: selectedSurat['disposisi_kadin'],
+    text: selectedSurat?.disp_1 != null ? (selectedSurat?.disp_1 as DateTime).toUtc().toIso8601String() : ''
   );
   final TextEditingController disposisisekdinController = TextEditingController(
-    text: selectedSurat['disposisi_sekdin'],
+    text: selectedSurat?.disp_2 != null ? (selectedSurat?.disp_2 as DateTime).toUtc().toIso8601String() : ''
   );
   final TextEditingController disposisikabidController = TextEditingController(
-    text: selectedSurat['disposisi_kabid'],
+    text: selectedSurat?.disp_3 != null ? (selectedSurat?.disp_3 as DateTime).toUtc().toIso8601String() : ''
   );
   final TextEditingController disposisikasubagController =
-      TextEditingController(text: selectedSurat['disposisi_kasubag']);
+      TextEditingController(
+        text: selectedSurat?.disp_4 != null ? (selectedSurat?.disp_4 as DateTime).toUtc().toIso8601String() : ''
+      );
   final TextEditingController disposisilanjutanController =
-      TextEditingController(text: selectedSurat['disposisi_lanjutan']);
+      TextEditingController(text: selectedSurat?.disp_lanjut);
   final TextEditingController tindaklanjut1Controller = TextEditingController(
-    text: selectedSurat['tindak_lanjut_1'],
+    text: selectedSurat?.tindak_lanjut_1?.toString().split(' ')[0] ?? '',
   );
   final TextEditingController tindaklanjut2Controller = TextEditingController(
-    text: selectedSurat['tindak_lanjut_2'],
+    text: selectedSurat?.tindak_lanjut_2?.toString().split(' ')[0] ?? '',
   );
 
   final TextEditingController notesDisposisiKadinController =
-      TextEditingController(text: selectedSurat['notes_disposisi_kadin']);
+      TextEditingController(text: selectedSurat?.disp_1_notes);
   final TextEditingController notesDisposisiSekdinController =
-      TextEditingController(text: selectedSurat['notes_disposisi_sekdin']);
+      TextEditingController(text: selectedSurat?.disp_2_notes);
   final TextEditingController notesDisposisiKabidController =
-      TextEditingController(text: selectedSurat['notes_disposisi_kabid']);
+      TextEditingController(text: selectedSurat?.disp_3_notes);
   final TextEditingController notesDisposisiKasubagController =
-      TextEditingController(text: selectedSurat['notes_disposisi_kasubag']);
+      TextEditingController(text: selectedSurat?.disp_4_notes);
 
-  String selectedStatus = selectedSurat['status'];
+  String selectedStatus = selectedSurat!.status;
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
 
   showGeneralDialog(
@@ -4118,15 +4187,6 @@ void showEditSuratDialog(
                               SizedBox(height: 20),
 
                               buildInputField(
-                                'No Urut',
-                                nourutController,
-                                Icons.format_list_numbered_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
                                 'No Agenda',
                                 noagendaController,
                                 Icons.assignment_rounded,
@@ -4172,11 +4232,226 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
-                                'Disposisi',
-                                disposisiController,
-                                Icons.send_rounded,
-                                maxLines: 1,
+                              // Multi-Select Disposisi Dropdown
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Disposisi',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Display selected disposisi
+                                        if (selectedDisposisi.isNotEmpty) ...[
+                                          Wrap(
+                                            spacing: 8,
+                                            runSpacing: 8,
+                                            children: selectedDisposisi.map((
+                                              disp,
+                                            ) {
+                                              // Find the display name
+                                              String displayName = workFields
+                                                  .entries
+                                                  .firstWhere(
+                                                    (entry) =>
+                                                        entry.value == disp ||
+                                                        entry.key == disp,
+                                                    orElse: () =>
+                                                        MapEntry(disp, disp),
+                                                  )
+                                                  .key;
+
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 6,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(
+                                                        0xFF4F46E5,
+                                                      ).withValues(alpha: 0.3),
+                                                      Color(
+                                                        0xFF7C3AED,
+                                                      ).withValues(alpha: 0.2),
+                                                    ],
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  border: Border.all(
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.3),
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      displayName,
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        decoration:
+                                                            TextDecoration.none,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 6),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectedDisposisi
+                                                              .remove(disp);
+                                                        });
+                                                      },
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        size: 16,
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.8,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }).toList(),
+                                          ),
+                                          SizedBox(height: 12),
+                                        ],
+
+                                        // Dropdown to add more disposisi
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.05,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              hint: Text(
+                                                'Pilih Disposisi',
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.6),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              value: null,
+                                              isExpanded: true,
+                                              dropdownColor: Color(0xFF1F2937),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              icon: Icon(
+                                                Icons.add,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                                size: 20,
+                                              ),
+                                              items: workFields.entries
+                                                  .where(
+                                                    (entry) =>
+                                                        !selectedDisposisi
+                                                            .contains(
+                                                              entry.value,
+                                                            ),
+                                                  )
+                                                  .map((entry) {
+                                                    return DropdownMenuItem<
+                                                      String
+                                                    >(
+                                                      value: entry.value,
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.work_outline,
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.7,
+                                                                ),
+                                                            size: 16,
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Expanded(
+                                                            child: Text(
+                                                              entry.key,
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  })
+                                                  .toList(),
+                                              onChanged: (String? value) {
+                                                if (value != null &&
+                                                    !selectedDisposisi.contains(
+                                                      value,
+                                                    )) {
+                                                  setState(() {
+                                                    selectedDisposisi.add(
+                                                      value,
+                                                    );
+                                                  });
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
 
                               SizedBox(height: 20),
@@ -4276,7 +4551,7 @@ void showEditSuratDialog(
 
                               buildDateInputField(
                                 'Disposisi Kasubag',
-                                judulController,
+                                disposisikasubagController,
                                 Icons.people_alt_rounded,
                                 context,
                                 maxLines: 1,
@@ -4417,40 +4692,140 @@ void showEditSuratDialog(
                                   Expanded(
                                     flex: 2,
                                     child: ElevatedButton(
-                                      onPressed: () {
-                                        // Update data
-                                        suratData[index] = {
-                                          'id': selectedSurat['id'],
-                                          'judul': judulController.text,
-                                          'perihal': perihalController.text,
-                                          'diterima_tgl':
-                                              tanggalController.text,
-                                          'pengirim': pengirimController.text,
-                                          'status': selectedStatus,
-                                        };
-
-                                        // Refresh state
-                                        refreshState();
-
-                                        // Close dialog
-                                        Navigator.pop(context);
-
-                                        // Show success message
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Surat berhasil diperbarui!',
-                                            ),
-                                            backgroundColor: Color(0xFF10B981),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
+                                      onPressed: () async {
+                                        // Parse DateTime dari string controllers
+                                        DateTime? tanggalSurat = parseDateTime(
+                                          tanggalSuratController.text,
                                         );
+                                        DateTime? tanggalDiterima =
+                                            parseDateTime(
+                                              tanggalController.text,
+                                            );
+                                        DateTime? tanggalWaktu = parseDateTime(
+                                          hariTanggalWaktuController.text,
+                                        );
+                                        DateTime? tindakLanjut1 = parseDateTime(
+                                          tindaklanjut1Controller.text,
+                                        );
+                                        DateTime? tindakLanjut2 = parseDateTime(
+                                          tindaklanjut2Controller.text,
+                                        );
+
+                                        // Validasi tanggal wajib
+                                        if (tanggalSurat == null ||
+                                            tanggalDiterima == null) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Tanggal Surat dan Tanggal Diterima wajib diisi!',
+                                              ),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        try {
+                                          // Update data
+                                          final data = await _suratMasukService.editSurat(
+                                            nomor_urut:
+                                                selectedSurat.nomor_urut,
+                                            disp1Kadin:
+                                                disposisikadinController.text,
+                                            disp2Sekdin:
+                                                disposisisekdinController.text,
+                                            disp3Kabid:
+                                                disposisikabidController.text,
+                                            disp4Kasubag:
+                                                disposisikasubagController.text,
+                                            disp1Notes:
+                                                notesDisposisiKadinController
+                                                    .text,
+                                            disp2Notes:
+                                                notesDisposisiSekdinController
+                                                    .text,
+                                            disp3Notes:
+                                                notesDisposisiKabidController
+                                                    .text,
+                                            disp4Notes:
+                                                notesDisposisiKasubagController
+                                                    .text,
+                                            dispLanjut:
+                                                disposisilanjutanController
+                                                    .text,
+                                            hal: perihalController.text,
+                                            index: indexController.text,
+                                            kode: kodeController.text,
+                                            linkScan: linkscanController.text,
+                                            noAgenda: noagendaController.text,
+                                            noSurat: nosuratController.text,
+                                            pengolah: pengolahController.text,
+                                            sifat: sifatController.text,
+                                            suratDari: judulController.text,
+                                            tempat: tempatController.text,
+                                            status: selectedStatus,
+                                            tanggalSurat:
+                                                tanggalSurat, // Udah DateTime
+                                            tanggalDiterima:
+                                                tanggalDiterima, // Udah DateTime
+                                            tanggalWaktu:
+                                                tanggalWaktu, // Bisa null
+                                            tindakLanjut1:
+                                                tindakLanjut1, // Bisa null
+                                            tindakLanjut2:
+                                                tindakLanjut2, // Bisa null
+                                            disposisi: selectedDisposisi.join(
+                                              ',',
+                                            ), // Convert list to comma-separated string
+                                          );
+
+                                          print(data);
+
+                                          // Refresh state
+                                          refreshState();
+
+                                          // Close dialog
+                                          Navigator.pop(context);
+
+                                          // Show success message
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Surat berhasil diperbarui!',
+                                              ),
+                                              backgroundColor: Color(
+                                                0xFF10B981,
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          // Handle error
+                                          print('Error updating surat: $e');
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Error: $e'),
+                                              backgroundColor: Colors.red,
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          );
+                                        }
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Color(0xFF10B981),
@@ -4507,68 +4882,84 @@ void showEditSuratDialog(
 void showEditSuratKeluarDialog(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel?> suratData,
   void Function() refreshState,
 ) {
   final selectedSurat = suratData[index];
 
   // Controllers untuk form
   final TextEditingController klasifikasiController = TextEditingController(
-    text: selectedSurat['klasifikasi'],
+    text: selectedSurat?.klasifikasi,
   );
   final TextEditingController kodeController = TextEditingController(
-    text: selectedSurat['kode'],
+    text: selectedSurat?.kode,
   );
   final TextEditingController noregisterController = TextEditingController(
-    text: selectedSurat['no_register'],
+    text: selectedSurat?.no_register,
   );
   final TextEditingController tujuansuratController = TextEditingController(
-    text: selectedSurat['tujuan_surat'],
+    text: selectedSurat?.tujuan_surat,
   );
   final TextEditingController perihalController = TextEditingController(
-    text: selectedSurat['perihal'],
+    text: selectedSurat?.perihal,
   );
+
+  // FIX: Format tanggal dengan proper formatting
   final TextEditingController tglsuratController = TextEditingController(
-    text: selectedSurat['tgl_surat'],
+    text: selectedSurat?.tanggal_surat != null
+        ? DateFormat('yyyy-MM-dd').format(selectedSurat!.tanggal_surat)
+        : '',
   );
+
   final TextEditingController klasifikasiarsipController =
-      TextEditingController(text: selectedSurat['klasifikasi_arsip']);
+      TextEditingController(text: selectedSurat?.akses_arsip);
   final TextEditingController pengolahController = TextEditingController(
     text: (() {
-      final pengolah = selectedSurat['pengolah'];
+      final pengolah = selectedSurat?.pengolah;
 
       if (pengolah == null) return '';
       if (pengolah is String) return pengolah;
-      if (pengolah is List<String>) return pengolah.join(', ');
       return pengolah.toString();
     })(),
   );
+
+  String? selectedPengolah = selectedSurat?.pengolah?.isNotEmpty == true
+      ? selectedSurat!.pengolah
+      : null;
+
   final TextEditingController pembuatController = TextEditingController(
-    text: selectedSurat['pembuat'],
+    text: selectedSurat?.pembuat,
   );
   final TextEditingController catatanController = TextEditingController(
-    text: selectedSurat['catatan'],
+    text: selectedSurat?.catatan,
   );
   final TextEditingController linksuratController = TextEditingController(
-    text: selectedSurat['link_surat'],
+    text: selectedSurat?.link_surat,
   );
   final TextEditingController koreksi1Controller = TextEditingController(
-    text: selectedSurat['koreksi_1'],
+    text: selectedSurat?.koreksi_1,
   );
   final TextEditingController koreksi2Controller = TextEditingController(
-    text: selectedSurat['koreksi_2'],
+    text: selectedSurat?.koreksi_2,
   );
   final TextEditingController dokfinalController = TextEditingController(
-    text: selectedSurat['dok_final'],
-  );
-  final TextEditingController dokdikirimtglController = TextEditingController(
-    text: selectedSurat['dok_dikirim_tgl'],
-  );
-  final TextEditingController tandaterimaController = TextEditingController(
-    text: selectedSurat['tanda_terima'],
+    text: selectedSurat?.dok_final,
   );
 
-  String selectedStatus = selectedSurat['status'];
+  // FIX: Format tanggal dengan proper formatting
+  final TextEditingController dokdikirimtglController = TextEditingController(
+    text: selectedSurat?.dok_dikirim != null
+        ? DateFormat('yyyy-MM-dd').format(selectedSurat!.dok_dikirim!)
+        : '',
+  );
+
+  final TextEditingController tandaterimaController = TextEditingController(
+    text: selectedSurat?.tanda_terima != null
+        ? DateFormat('yyyy-MM-dd').format(selectedSurat!.tanda_terima!)
+        : '',
+  );
+
+  String selectedStatus = selectedSurat!.status!;
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
 
   showGeneralDialog(
@@ -4748,12 +5139,11 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 20),
 
-                              buildDateInputField(
-                                'Tanggal Surat',
-                                tglsuratController,
-                                Icons.date_range_rounded,
-                                context,
-                                maxLines: 1,
+                              buildDatePickerField(
+                                label: 'Tanggal Surat',
+                                controller: tglsuratController,
+                                icon: Icons.date_range_rounded,
+                                context: context,
                               ),
 
                               SizedBox(height: 20),
@@ -4767,11 +5157,125 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
-                                'Pengolah',
-                                pengolahController,
-                                Icons.manage_accounts_rounded,
-                                maxLines: 1,
+                              // Multi-Select Pengolah Dropdown
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Pengolah',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Dropdown to add more disposisi
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.05,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              hint: Text(
+                                                'Pilih Pengolah',
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.6),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              value: selectedPengolah,
+                                              isExpanded: true,
+                                              dropdownColor: Color(0xFF1F2937),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              icon: Icon(
+                                                Icons
+                                                    .keyboard_arrow_down_rounded,
+                                                color: Colors.white.withValues(alpha: 
+                                                  0.7,
+                                                ),
+                                              ),
+                                              items: workFields.entries.map((
+                                                entry,
+                                              ) {
+                                                return DropdownMenuItem<String>(
+                                                  value: entry.value,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.work_outline,
+                                                        color: Colors.white
+                                                            .withValues(alpha: 0.7),
+                                                        size: 16,
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Expanded(
+                                                        child: Text(
+                                                          entry.key,
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  selectedPengolah = value;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
 
                               SizedBox(height: 20),
@@ -4899,6 +5403,30 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 30),
 
+                              buildInputField(
+                                "Dok Final",
+                                dokfinalController,
+                                Icons.document_scanner,
+                              ),
+
+                              SizedBox(height: 30),
+
+                              buildDatePickerField(
+                                context: context,
+                                controller: dokdikirimtglController,
+                                label: "Dok Dikirim",
+                                icon: Icons.date_range,
+                              ),
+
+                              SizedBox(height: 30),
+
+                              buildDatePickerField(
+                                context: context,
+                                controller: tandaterimaController,
+                                label: "Tanda Terima",
+                                icon: Icons.document_scanner,
+                              ),
+
                               // Action Buttons
                               Row(
                                 children: [
@@ -4936,49 +5464,102 @@ void showEditSuratKeluarDialog(
                                   Expanded(
                                     flex: 2,
                                     child: ElevatedButton(
-                                      onPressed: () {
-                                        // Update data
-                                        suratData[index] = {
-                                          'id': selectedSurat['id'],
-                                          'kode': kodeController.text,
-                                          'klasifikasi':
-                                              klasifikasiController.text,
-                                          'no_register':
-                                              noregisterController.text,
-                                          'tujuan_surat':
-                                              tujuansuratController.text,
-                                          'perihal': perihalController.text,
-                                          'tgl_surat': tglsuratController,
-                                          'klasifikasi_arsip':
-                                              klasifikasiarsipController,
-                                          'pengolah': pengolahController,
-                                          'pembuat': pembuatController,
-                                          'catatan': catatanController,
-                                          'status': selectedStatus,
-                                        };
+                                      onPressed: () async {
+                                        try {
+                                          // Update pengolah controller dengan selected values
+                                          pengolahController.text = selectedPengolah ?? '';
 
-                                        // Refresh state
-                                        refreshState();
+                                          // Update data
+                                          final data = await _suratKeluarService
+                                              .editSurat(
+                                                nomor_urut:
+                                                    selectedSurat.nomor_urut,
+                                                kode: kodeController.text,
+                                                akses_arsip:
+                                                    klasifikasiarsipController
+                                                        .text,
+                                                tanggal_surat: parseDateTime(
+                                                  tglsuratController.text,
+                                                ),
+                                                catatan: catatanController.text,
+                                                status:
+                                                    selectedStatus, // FIX: Gunakan selectedStatus yang sebenarnya
+                                                tujuan_surat:
+                                                    tujuansuratController.text,
+                                                pembuat: pembuatController.text,
+                                                klasifikasi:
+                                                    klasifikasiController.text,
+                                                koreksi_1:
+                                                    koreksi1Controller.text,
+                                                koreksi_2:
+                                                    koreksi2Controller.text,
+                                                link_surat:
+                                                    linksuratController.text,
+                                                no_register:
+                                                    noregisterController.text,
+                                                pengolah:
+                                                    pengolahController.text,
+                                                perihal: perihalController.text,
+                                                tanda_terima: parseDateTime(
+                                                  tandaterimaController.text,
+                                                ),
+                                                dok_final:
+                                                    dokfinalController.text,
+                                                dok_dikirim: parseDateTime(
+                                                  dokdikirimtglController.text,
+                                                ),
+                                              );
 
-                                        // Close dialog
-                                        Navigator.pop(context);
+                                          print(
+                                            "[DEBUG] -> [STATUS] : Edit Status",
+                                          );
+                                          print(data);
 
-                                        // Show success message
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Surat berhasil diperbarui!',
+                                          // Refresh state
+                                          refreshState();
+
+                                          // Close dialog
+                                          Navigator.pop(context);
+
+                                          // Show success message
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Surat berhasil diperbarui!',
+                                              ),
+                                              backgroundColor: Color(
+                                                0xFF10B981,
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
                                             ),
-                                            backgroundColor: Color(0xFF10B981),
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
+                                          );
+                                        } catch (e) {
+                                          // Handle error
+                                          print("[ERROR] -> Edit Surat: $e");
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Gagal memperbarui surat: $e',
+                                              ),
+                                              backgroundColor: Colors.red,
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        }
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Color(0xFF10B981),
@@ -5228,10 +5809,11 @@ void showModernHapusMasukDialogDesktop(
   Color accentColor2,
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel?> suratData,
   void Function(int) onConfirmDelete,
 ) {
   Size size = MediaQuery.of(context).size;
+  final surat = suratData[index];
 
   showGeneralDialog(
     context: context,
@@ -5250,7 +5832,9 @@ void showModernHapusMasukDialogDesktop(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -5372,7 +5956,7 @@ void showModernHapusMasukDialogDesktop(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            onConfirmDelete(index);
+                            onConfirmDelete(surat!.nomor_urut);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
@@ -5412,7 +5996,6 @@ void showModernHapusMasukDialogDesktop(
     },
   );
 }
-
 
 void showModernHapusDialogDesktop(
   String title,
@@ -5421,10 +6004,11 @@ void showModernHapusDialogDesktop(
   Color accentColor2,
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete,
 ) {
   Size size = MediaQuery.of(context).size;
+  final surat = suratData[index];
 
   showGeneralDialog(
     context: context,
@@ -5443,7 +6027,9 @@ void showModernHapusDialogDesktop(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -5565,7 +6151,7 @@ void showModernHapusDialogDesktop(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            onConfirmDelete(index);
+                            onConfirmDelete(surat!.nomor_urut);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
@@ -5605,7 +6191,6 @@ void showModernHapusDialogDesktop(
     },
   );
 }
-
 
 // Action menu detailPage
 void showDetailActionMenu(BuildContext context, VoidCallback onDelete) {
@@ -6406,7 +6991,7 @@ void showDetailActionMenuDisposisiAdmin(
                       ),
                       SizedBox(height: 20),
 
-                      // Edit Button 
+                      // Edit Button
                       buildActionMenuItem(
                         icon: Icons.edit_rounded,
                         title: 'Edit Isi Disposisi',
@@ -6419,8 +7004,7 @@ void showDetailActionMenuDisposisiAdmin(
                             context,
                             nomorUrutController,
                             onSave: onEditSave,
-                            currentValue:
-                                currentNomorUrut, 
+                            currentValue: currentNomorUrut,
                           );
                         },
                       ),
@@ -6450,7 +7034,6 @@ void showDetailActionMenuDisposisiAdmin(
     ),
   );
 }
-
 
 void showDetailActionMenuDisposisiDesktopAdmin(
   BuildContext context,
@@ -6527,7 +7110,7 @@ void showDetailActionMenuDisposisiDesktopAdmin(
 
                       SizedBox(height: 20),
 
-                      // Edit Button 
+                      // Edit Button
                       buildActionMenuItem(
                         icon: Icons.edit_rounded,
                         title: 'Edit Isi Disposisi',
@@ -6540,8 +7123,7 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                             context,
                             nomorUrutController,
                             onSave: onEditSave,
-                            currentValue:
-                                currentNomorUrut, 
+                            currentValue: currentNomorUrut,
                           );
                         },
                       ),
@@ -6632,11 +7214,12 @@ void showDetailActionMenuDisposisiDesktopUser(
                       ),
                       SizedBox(height: 20),
 
-                      // Edit Button 
+                      // Edit Button
                       buildActionMenuItem(
                         icon: Icons.edit_rounded,
                         title: 'Edit Isi Disposisi',
-                        subtitle: 'Edit Nomor Urut untuk melihat preview disposisi',
+                        subtitle:
+                            'Edit Nomor Urut untuk melihat preview disposisi',
                         color: Color(0xFFFACC15),
                         onTap: () {
                           Navigator.pop(context);
@@ -6645,8 +7228,7 @@ void showDetailActionMenuDisposisiDesktopUser(
                             context,
                             nomorUrutController,
                             onSave: onEditSave,
-                            currentValue:
-                                currentNomorUrut, 
+                            currentValue: currentNomorUrut,
                           );
                         },
                       ),
@@ -6661,7 +7243,6 @@ void showDetailActionMenuDisposisiDesktopUser(
     ),
   );
 }
-
 
 void showEditDisposisi(
   BuildContext context,
@@ -7016,7 +7597,12 @@ void showEditDisposisiDesktop(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -7316,7 +7902,12 @@ void showPrintDialog(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -7510,7 +8101,9 @@ void showPrintImageFormat(BuildContext context) {
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -7778,7 +8371,12 @@ void showPrintDocumentFormat(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2 :size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -8209,7 +8807,12 @@ void showDownloadDesktopDialog(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -8387,7 +8990,6 @@ void showDownloadDesktopDialog(BuildContext context) {
     },
   );
 }
-
 
 void showImageFormat(BuildContext context) {
   showGeneralDialog(
@@ -8889,7 +9491,12 @@ void showImageDesktopFormat(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -9140,7 +9747,12 @@ void showDocumentDesktopFormat(BuildContext context) {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width /2:size.width,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                   padding: EdgeInsets.all(25),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -9320,7 +9932,6 @@ void showDocumentDesktopFormat(BuildContext context) {
     },
   );
 }
-
 
 // Share Dialog
 void showShareDownloadDialog(BuildContext context) {
@@ -9977,4 +10588,21 @@ void showDeleteConfirmationDisposisiAdmin(BuildContext context) {
       ),
     ),
   );
+}
+
+Color getStatusColor(String status) {
+  switch (status.toLowerCase()) {
+    case 'selesai':
+      return Color(0xFF10B981);
+    case 'proses':
+      return Color(0xFF3B82F6);
+    case 'terbatas':
+      return Colors.orange;
+    case 'ditolak':
+      return Colors.red;
+    case 'pending':
+      return Colors.yellow;
+    default:
+      return Color(0xFF6B7280);
+  }
 }

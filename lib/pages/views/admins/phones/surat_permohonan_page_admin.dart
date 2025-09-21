@@ -3,7 +3,10 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
+import 'dart:io';
+import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/map.dart';
 
 class PermohonanLetterPageAdmin extends StatefulWidget {
   final Function(Map<String, dynamic>)? onSuratAdded;
@@ -41,12 +44,27 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   SuratMasuk _suratService = SuratMasuk();
   List<SuratMasukModel?> _listSurat = [];
 
-  void _loadAllData() async {
-    final data = await _suratService.listSurat();
+  Future<void> _loadAllData() async {
+    print('[DEBUG] -> [INFO] : Loading all data "surat masuk" ...');
+    try {
+      final data = await _suratService.listSurat();
 
-    setState(() {
-      _listSurat = data;
-    });
+      setState(() {
+        print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
+        _listSurat = data;
+        print(_listSurat.map((e) => e?.toJson()).toList());
+      });
+    } catch (e) {
+      print("[ERROR] -> Gagal load data: $e");
+
+      // Kalau API error (bukan karena internet), tampilkan juga
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Terjadi kesalahan saat mengambil data dari server. \nSilahkan tanyakan masalah ini kepada admin!",
+        Colors.orangeAccent,
+      );
+    }
   }
 
   Future<void> _refreshData() async {
@@ -56,11 +74,26 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
     await Future.delayed(Duration(seconds: 2));
 
-    // API buat call data disini yak..
-
-    setState(() {
-      isRefreshing = false;
-    });
+    try {
+      // Cek koneksi internet dengan ping google
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // ✅ Ada internet → load data dari API
+        await _loadAllData();
+      }
+    } on SocketException catch (_) {
+      // ❌ Tidak ada internet
+      showModernErrorDialog(
+        context,
+        "Koneksi Terputus",
+        "Mohon maaf, data tidak bisa diperbarui karena ketiadaan internet pada device anda saat ini!",
+        Colors.redAccent,
+      );
+    } finally {
+      setState(() {
+        isRefreshing = false;
+      });
+    }
   }
 
   List<Map<String, dynamic>> searchOptions = [
@@ -89,6 +122,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize background animation
     _backgroundController = AnimationController(
@@ -176,7 +210,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
 
   void actionSetState(int index) {
     setState(() {
-      _listSurat.removeAt(index);
+      // _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -1428,28 +1462,28 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    // actionAdmin(
-                                                    //   index,
-                                                    //   context,
-                                                    //   _listSurat,
-                                                    //   (i) => editDokumenAdmin(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     refreshEditState,
-                                                    //   ),
-                                                    //   (i) => viewDetailAdmin(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //   ),
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                    actionAdmin(
+                                                      index,
+                                                      context,
+                                                      _listSurat,
+                                                      (i) => editDokumenAdmin(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                        refreshEditState,
+                                                      ),
+                                                      (i) => viewDetailAdmin(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                      ),
+                                                      (i) => hapusDokumen(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                        actionSetState,
+                                                      ),
+                                                    );
                                                     print(
                                                       'Surat dipilih: ${surat?.nama_surat} \ntanggal : ${surat?.tanggal_surat.toString()}',
                                                     );
@@ -1504,10 +1538,12 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                 gradient: LinearGradient(
                                                                   colors: [
                                                                     getStatusColor(
-                                                                      surat!.status,
+                                                                      surat!
+                                                                          .status,
                                                                     ),
                                                                     getStatusColor(
-                                                                      surat.status,
+                                                                      surat
+                                                                          .status,
                                                                     ).withValues(
                                                                       alpha:
                                                                           0.8,
@@ -1522,7 +1558,8 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                   BoxShadow(
                                                                     color:
                                                                         getStatusColor(
-                                                                          surat.status,
+                                                                          surat
+                                                                              .status,
                                                                         ).withValues(
                                                                           alpha:
                                                                               0.3,
@@ -1553,7 +1590,9 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat.tanggal_diterima.toString(),
+                                                              surat
+                                                                  .tanggal_diterima
+                                                                  .toString(),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1660,7 +1699,29 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      surat?.disposisi == null ? '404 Not Found': surat.disposisi.join(", "),
+                                                                      surat?.disposisi ==
+                                                                              null
+                                                                          ? '404 Not Found'
+                                                                          : (surat.disposisi
+                                                                                    as List)
+                                                                                .map(
+                                                                                  (
+                                                                                    item,
+                                                                                  ) => workFields.entries
+                                                                                      .firstWhere(
+                                                                                        (
+                                                                                          entry,
+                                                                                        ) =>
+                                                                                            entry.value ==
+                                                                                            item['tujuan'],
+                                                                                        orElse: () => MapEntry(
+                                                                                          item['tujuan']!,
+                                                                                          item['tujuan']!,
+                                                                                        ),
+                                                                                      )
+                                                                                      .key,
+                                                                                )
+                                                                                .join(', '),
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
+import 'dart:io';
+import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
 
@@ -23,6 +27,10 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
   // Animation controllers and animations
   late AnimationController _backgroundController;
   late Animation<double> _backgroundAnimation;
+
+  SuratMasuk _suratService = SuratMasuk();
+  List<SuratMasukModel?> _listSurat = [];
+  bool isLoading = true;
 
   Map<String, dynamic> getDisposisiData() {
     final dataBase = widget.suratData ?? {};
@@ -106,9 +114,32 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
 
   Map<String, bool> checkboxStates = {};
 
+  Future<void> _loadAllData() async {
+    print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
+    try {
+      final data = await _suratService.listSurat();
+      setState(() {
+        _listSurat = data;
+        isLoading = false;
+      });
+      print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
+    } catch (e) {
+      setState(() => isLoading = false);
+      print("[ERROR] -> gagal load data: $e");
+      // tampilkan error dialog modern
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Terjadi kesalahan saat mengambil data dari server. \nSilahkan tanyakan masalah ini kepada admin!",
+        Colors.redAccent,
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadAllData(); 
 
     // Initialize background animation
     _backgroundController = AnimationController(
