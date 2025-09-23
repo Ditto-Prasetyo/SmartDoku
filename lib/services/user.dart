@@ -21,7 +21,39 @@ class UserService {
     return null;
   }
 
-  Future<Map<String, List<dynamic>>> getFilteredUsers(String bidang) async {
+  Future<List<UserModel>> listUsers() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = await prefs.getString('jwt_token');
+    
+    if (token == null) throw Exception('Token tidak ditemukan');
+
+    final uri = Uri.parse("${dotenv.env['API_URL']}/user");
+
+    final response = await http.get(
+      uri,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${token}'
+      }
+    );
+
+    print("[DEBUG] :: Showing response body");
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      
+      final List<UserModel> allData = data
+        .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+      return allData;
+    } else {
+      throw Exception('Gagal mengambil data users');
+    }
+  }
+
+  Future<List<UserModel>> getFilteredUsers(String bidang) async {
     final prefs = await SharedPreferences.getInstance();
     final token = await prefs.getString('jwt_token');
     
@@ -40,14 +72,14 @@ class UserService {
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
       
-      final List<dynamic> allData = data.map((e) => UserModel.fromJson(e)).toList();
+      final List<UserModel> allData = data
+        .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+        .toList();
 
-      final Map<String, List<dynamic>> groupedData = groupBy(
-        allData,
-        (user) => user.bidang,
-      );
+      // Filter sesuai bidang
+      final List<UserModel> filtered = allData.where((user) => user.bidang == bidang).toList();
 
-      return groupedData;
+      return filtered;
     } else {
       throw Exception('Gagal mengambil data users');
     }

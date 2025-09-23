@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/user.dart';
+import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/dialog.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';

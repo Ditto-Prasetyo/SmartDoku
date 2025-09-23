@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/user.dart';
+import 'package:smart_doku/services/user.dart';
+import 'package:smart_doku/utils/dialog.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
@@ -18,6 +21,34 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
   var height, width;
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
+  bool isLoading = false;
+
+  // User Services
+  UserService _userService = UserService();
+  List<UserModel> _userData = [];
+
+  Future<void> _loadData() async {
+    print("[DEBUG] -> [INFO] : Loading all data user ...");
+    try {
+      final data = await _userService.listUsers();
+      print(data);
+      setState(() {
+        // _userData = data;
+        isLoading = false;
+      });
+      print("[DEBUG] -> [STATE] : Set data to userData!");
+    } catch (e) {
+      setState(() => isLoading = false);
+      print("[ERROR] -> gagal load data: $e");
+      // tampilkan error dialog modern
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Terjadi kesalahan saat mengambil data dari server. \nSilahkan tanyakan masalah ini kepada admin!",
+        Colors.redAccent,
+      );
+    }
+  }
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -100,7 +131,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
 
   void actionSetState(int index) {
     setState(() {
-      suratData.removeAt(index);
+      // suratData.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -132,6 +163,8 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
   @override
   void initState() {
     super.initState();
+
+    _loadData();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -496,7 +529,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '${suratData.length} Data',
+                                '${_userData.length} Data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -692,7 +725,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                         controller: _verticalScrollController,
                                         scrollDirection: Axis.vertical,
                                         child: Column(
-                                          children: List.generate(suratData.length, (
+                                          children: List.generate(_userData.length, (
                                             index,
                                           ) {
                                             final surat = suratData[index];
