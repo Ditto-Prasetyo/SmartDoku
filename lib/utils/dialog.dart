@@ -8036,43 +8036,6 @@ void showPrintDialog(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            showPrintImageFormat(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF059669),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF059669,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.image, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Print dalam bentuk Gambar',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
                             showPrintDocumentFormat(context);
                           },
                           style: ElevatedButton.styleFrom(
@@ -8142,258 +8105,258 @@ void showPrintDialog(BuildContext context) {
   );
 }
 
-void showPrintImageFormat(BuildContext context) {
-  showGeneralDialog(
-    context: context,
-    barrierDismissible: true,
-    barrierLabel: "PrintImageFormat",
-    barrierColor: Colors.black.withValues(alpha: 0.6),
-    transitionDuration: Duration(milliseconds: 300),
-    transitionBuilder: (context, animation, secondaryAnimation, child) {
-      return ScaleTransition(
-        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-        child: FadeTransition(opacity: animation, child: child),
-      );
-    },
-    pageBuilder: (context, animation, secondaryAnimation) {
-      Size size = MediaQuery.of(context).size;
-      return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Center(
-          child: Container(
-            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                ? size.width / 2
-                : size.width,
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 30,
-                  spreadRadius: 5,
-                  offset: Offset(0, 15),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: Container(
-                  padding: EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.2),
-                        Colors.white.withValues(alpha: 0.1),
-                      ],
-                    ),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF7C2D12).withValues(alpha: 0.8),
-                              Color(0xFF9A3412).withValues(alpha: 0.6),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(Icons.image, color: Colors.white, size: 30),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Format Gambar',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Text(
-                        'Pilih jenis format gambar yang anda inginkan',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      // PNG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle PNG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF059669),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF059669,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PngIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'PNG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // JPG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle JPG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF4F46E5),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF4F46E5,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              JpgIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'JPG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // JPEG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle JPEG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFDC2626),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFFDC2626,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              JpegIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'JPEG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            'Batal',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
+// void showPrintImageFormat(BuildContext context) {
+//   showGeneralDialog(
+//     context: context,
+//     barrierDismissible: true,
+//     barrierLabel: "PrintImageFormat",
+//     barrierColor: Colors.black.withValues(alpha: 0.6),
+//     transitionDuration: Duration(milliseconds: 300),
+//     transitionBuilder: (context, animation, secondaryAnimation, child) {
+//       return ScaleTransition(
+//         scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+//         child: FadeTransition(opacity: animation, child: child),
+//       );
+//     },
+//     pageBuilder: (context, animation, secondaryAnimation) {
+//       Size size = MediaQuery.of(context).size;
+//       return BackdropFilter(
+//         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+//         child: Center(
+//           child: Container(
+//             width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+//                 ? size.width / 2
+//                 : size.width,
+//             margin: EdgeInsets.symmetric(horizontal: 30),
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(24),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: Colors.black.withValues(alpha: 0.3),
+//                   blurRadius: 30,
+//                   spreadRadius: 5,
+//                   offset: Offset(0, 15),
+//                 ),
+//               ],
+//             ),
+//             child: ClipRRect(
+//               borderRadius: BorderRadius.circular(24),
+//               child: BackdropFilter(
+//                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+//                 child: Container(
+//                   padding: EdgeInsets.all(25),
+//                   decoration: BoxDecoration(
+//                     gradient: LinearGradient(
+//                       begin: Alignment.topLeft,
+//                       end: Alignment.bottomRight,
+//                       colors: [
+//                         Colors.white.withValues(alpha: 0.2),
+//                         Colors.white.withValues(alpha: 0.1),
+//                       ],
+//                     ),
+//                     border: Border.all(
+//                       color: Colors.white.withValues(alpha: 0.2),
+//                       width: 1.5,
+//                     ),
+//                     borderRadius: BorderRadius.circular(24),
+//                   ),
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       Container(
+//                         padding: EdgeInsets.all(15),
+//                         decoration: BoxDecoration(
+//                           shape: BoxShape.circle,
+//                           gradient: LinearGradient(
+//                             colors: [
+//                               Color(0xFF7C2D12).withValues(alpha: 0.8),
+//                               Color(0xFF9A3412).withValues(alpha: 0.6),
+//                             ],
+//                           ),
+//                           boxShadow: [
+//                             BoxShadow(
+//                               color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+//                               blurRadius: 15,
+//                               spreadRadius: 2,
+//                             ),
+//                           ],
+//                         ),
+//                         child: Icon(Icons.image, color: Colors.white, size: 30),
+//                       ),
+//                       SizedBox(height: 20),
+//                       Text(
+//                         'Format Gambar',
+//                         textAlign: TextAlign.center,
+//                         style: TextStyle(
+//                           fontSize: 20,
+//                           fontWeight: FontWeight.bold,
+//                           color: Colors.white,
+//                           letterSpacing: 0.5,
+//                           decoration: TextDecoration.none,
+//                         ),
+//                       ),
+//                       SizedBox(height: 15),
+//                       Text(
+//                         'Pilih jenis format gambar yang anda inginkan',
+//                         textAlign: TextAlign.center,
+//                         style: TextStyle(
+//                           fontSize: 16,
+//                           color: Colors.white.withValues(alpha: 0.9),
+//                           height: 1.4,
+//                           decoration: TextDecoration.none,
+//                         ),
+//                       ),
+//                       SizedBox(height: 25),
+//                       // PNG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle PNG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFF059669),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFF059669,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               PngIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'PNG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       // JPG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle JPG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFF4F46E5),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFF4F46E5,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               JpgIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'JPG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       // JPEG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle JPEG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFFDC2626),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFFDC2626,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               JpegIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'JPEG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       Container(
+//                         width: double.infinity,
+//                         child: OutlinedButton(
+//                           onPressed: () => Navigator.pop(context),
+//                           style: OutlinedButton.styleFrom(
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             side: BorderSide(
+//                               color: Colors.white.withValues(alpha: 0.3),
+//                               width: 1.5,
+//                             ),
+//                           ),
+//                           child: Text(
+//                             'Batal',
+//                             style: TextStyle(
+//                               fontSize: 16,
+//                               fontWeight: FontWeight.w600,
+//                               letterSpacing: 0.5,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
 
 void showPrintDocumentFormat(BuildContext context) {
   showGeneralDialog(
@@ -8510,7 +8473,7 @@ void showPrintDocumentFormat(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            // Handle Excel selection
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -8530,45 +8493,7 @@ void showPrintDocumentFormat(BuildContext context) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // Docs Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle Docs selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF2563EB),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF2563EB,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              DocsIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'Docs',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -8720,43 +8645,6 @@ void showDownloadDialog(BuildContext context) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            showImageFormat(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF059669),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF059669,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.image, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Download Gambar',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -8945,43 +8833,6 @@ void showDownloadDesktopDialog(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            showImageDesktopFormat(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF059669),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF059669,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.image, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Download Gambar',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
                             showDocumentDesktopFormat(context);
                           },
                           style: ElevatedButton.styleFrom(
@@ -9051,254 +8902,254 @@ void showDownloadDesktopDialog(BuildContext context) {
   );
 }
 
-void showImageFormat(BuildContext context) {
-  showGeneralDialog(
-    context: context,
-    barrierDismissible: true,
-    barrierLabel: "ImageFormat",
-    barrierColor: Colors.black.withValues(alpha: 0.6),
-    transitionDuration: Duration(milliseconds: 300),
-    transitionBuilder: (context, animation, secondaryAnimation, child) {
-      return ScaleTransition(
-        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-        child: FadeTransition(opacity: animation, child: child),
-      );
-    },
-    pageBuilder: (context, animation, secondaryAnimation) {
-      return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 30,
-                  spreadRadius: 5,
-                  offset: Offset(0, 15),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: Container(
-                  padding: EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.2),
-                        Colors.white.withValues(alpha: 0.1),
-                      ],
-                    ),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF7C2D12).withValues(alpha: 0.8),
-                              Color(0xFF9A3412).withValues(alpha: 0.6),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(Icons.image, color: Colors.white, size: 30),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Format Gambar',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Text(
-                        'Pilih jenis format gambar yang anda inginkan',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      // PNG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle PNG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF059669),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF059669,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PngIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'PNG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // JPG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle JPG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF4F46E5),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF4F46E5,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              JpgIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'JPG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // JPEG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle JPEG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFDC2626),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFFDC2626,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              JpegIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'JPEG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            'Batal',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
+// void showImageFormat(BuildContext context) {
+//   showGeneralDialog(
+//     context: context,
+//     barrierDismissible: true,
+//     barrierLabel: "ImageFormat",
+//     barrierColor: Colors.black.withValues(alpha: 0.6),
+//     transitionDuration: Duration(milliseconds: 300),
+//     transitionBuilder: (context, animation, secondaryAnimation, child) {
+//       return ScaleTransition(
+//         scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+//         child: FadeTransition(opacity: animation, child: child),
+//       );
+//     },
+//     pageBuilder: (context, animation, secondaryAnimation) {
+//       return BackdropFilter(
+//         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+//         child: Center(
+//           child: Container(
+//             margin: EdgeInsets.symmetric(horizontal: 30),
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(24),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: Colors.black.withValues(alpha: 0.3),
+//                   blurRadius: 30,
+//                   spreadRadius: 5,
+//                   offset: Offset(0, 15),
+//                 ),
+//               ],
+//             ),
+//             child: ClipRRect(
+//               borderRadius: BorderRadius.circular(24),
+//               child: BackdropFilter(
+//                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+//                 child: Container(
+//                   padding: EdgeInsets.all(25),
+//                   decoration: BoxDecoration(
+//                     gradient: LinearGradient(
+//                       begin: Alignment.topLeft,
+//                       end: Alignment.bottomRight,
+//                       colors: [
+//                         Colors.white.withValues(alpha: 0.2),
+//                         Colors.white.withValues(alpha: 0.1),
+//                       ],
+//                     ),
+//                     border: Border.all(
+//                       color: Colors.white.withValues(alpha: 0.2),
+//                       width: 1.5,
+//                     ),
+//                     borderRadius: BorderRadius.circular(24),
+//                   ),
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       Container(
+//                         padding: EdgeInsets.all(15),
+//                         decoration: BoxDecoration(
+//                           shape: BoxShape.circle,
+//                           gradient: LinearGradient(
+//                             colors: [
+//                               Color(0xFF7C2D12).withValues(alpha: 0.8),
+//                               Color(0xFF9A3412).withValues(alpha: 0.6),
+//                             ],
+//                           ),
+//                           boxShadow: [
+//                             BoxShadow(
+//                               color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+//                               blurRadius: 15,
+//                               spreadRadius: 2,
+//                             ),
+//                           ],
+//                         ),
+//                         child: Icon(Icons.image, color: Colors.white, size: 30),
+//                       ),
+//                       SizedBox(height: 20),
+//                       Text(
+//                         'Format Gambar',
+//                         textAlign: TextAlign.center,
+//                         style: TextStyle(
+//                           fontSize: 20,
+//                           fontWeight: FontWeight.bold,
+//                           color: Colors.white,
+//                           letterSpacing: 0.5,
+//                           decoration: TextDecoration.none,
+//                         ),
+//                       ),
+//                       SizedBox(height: 15),
+//                       Text(
+//                         'Pilih jenis format gambar yang anda inginkan',
+//                         textAlign: TextAlign.center,
+//                         style: TextStyle(
+//                           fontSize: 16,
+//                           color: Colors.white.withValues(alpha: 0.9),
+//                           height: 1.4,
+//                           decoration: TextDecoration.none,
+//                         ),
+//                       ),
+//                       SizedBox(height: 25),
+//                       // PNG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle PNG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFF059669),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFF059669,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               PngIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'PNG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       // JPG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle JPG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFF4F46E5),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFF4F46E5,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               JpgIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'JPG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       // JPEG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle JPEG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFFDC2626),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFFDC2626,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               JpegIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'JPEG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       Container(
+//                         width: double.infinity,
+//                         child: OutlinedButton(
+//                           onPressed: () => Navigator.pop(context),
+//                           style: OutlinedButton.styleFrom(
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             side: BorderSide(
+//                               color: Colors.white.withValues(alpha: 0.3),
+//                               width: 1.5,
+//                             ),
+//                           ),
+//                           child: Text(
+//                             'Batal',
+//                             style: TextStyle(
+//                               fontSize: 16,
+//                               fontWeight: FontWeight.w600,
+//                               letterSpacing: 0.5,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
 
 void showDocumentFormat(BuildContext context) {
   showGeneralDialog(
@@ -9402,13 +9253,13 @@ void showDocumentFormat(BuildContext context) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      // PDF Button dengan custom icon
+                      // Excell Button dengan custom icon
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            // Handle Excel selection
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -9428,7 +9279,7 @@ void showDocumentFormat(BuildContext context) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -9439,45 +9290,7 @@ void showDocumentFormat(BuildContext context) {
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      // Docs Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle Docs selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF2563EB),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF2563EB,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              DocsIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'Docs',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 10.0),
                       Container(
                         width: double.infinity,
                         child: OutlinedButton(
@@ -9515,261 +9328,261 @@ void showDocumentFormat(BuildContext context) {
   );
 }
 
-void showImageDesktopFormat(BuildContext context) {
-  showGeneralDialog(
-    context: context,
-    barrierDismissible: true,
-    barrierLabel: "ImageFormat",
-    barrierColor: Colors.black.withValues(alpha: 0.6),
-    transitionDuration: Duration(milliseconds: 300),
-    transitionBuilder: (context, animation, secondaryAnimation, child) {
-      return ScaleTransition(
-        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-        child: FadeTransition(opacity: animation, child: child),
-      );
-    },
-    pageBuilder: (context, animation, secondaryAnimation) {
-      Size size = MediaQuery.of(context).size;
-      return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 30,
-                  spreadRadius: 5,
-                  offset: Offset(0, 15),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: Container(
-                  width:
-                      (Platform.isWindows ||
-                          Platform.isLinux ||
-                          Platform.isMacOS)
-                      ? size.width / 2
-                      : size.width,
-                  padding: EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.2),
-                        Colors.white.withValues(alpha: 0.1),
-                      ],
-                    ),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF7C2D12).withValues(alpha: 0.8),
-                              Color(0xFF9A3412).withValues(alpha: 0.6),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(Icons.image, color: Colors.white, size: 30),
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Format Gambar',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Text(
-                        'Pilih jenis format gambar yang anda inginkan',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      // PNG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle PNG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF059669),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF059669,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PngIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'PNG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // JPG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle JPG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF4F46E5),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF4F46E5,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              JpgIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'JPG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // JPEG Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle JPEG selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFDC2626),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFFDC2626,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              JpegIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'JPEG',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            'Batal',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    },
-  );
-}
+// void showImageDesktopFormat(BuildContext context) {
+//   showGeneralDialog(
+//     context: context,
+//     barrierDismissible: true,
+//     barrierLabel: "ImageFormat",
+//     barrierColor: Colors.black.withValues(alpha: 0.6),
+//     transitionDuration: Duration(milliseconds: 300),
+//     transitionBuilder: (context, animation, secondaryAnimation, child) {
+//       return ScaleTransition(
+//         scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+//         child: FadeTransition(opacity: animation, child: child),
+//       );
+//     },
+//     pageBuilder: (context, animation, secondaryAnimation) {
+//       Size size = MediaQuery.of(context).size;
+//       return BackdropFilter(
+//         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+//         child: Center(
+//           child: Container(
+//             margin: EdgeInsets.symmetric(horizontal: 30),
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(24),
+//               boxShadow: [
+//                 BoxShadow(
+//                   color: Colors.black.withValues(alpha: 0.3),
+//                   blurRadius: 30,
+//                   spreadRadius: 5,
+//                   offset: Offset(0, 15),
+//                 ),
+//               ],
+//             ),
+//             child: ClipRRect(
+//               borderRadius: BorderRadius.circular(24),
+//               child: BackdropFilter(
+//                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+//                 child: Container(
+//                   width:
+//                       (Platform.isWindows ||
+//                           Platform.isLinux ||
+//                           Platform.isMacOS)
+//                       ? size.width / 2
+//                       : size.width,
+//                   padding: EdgeInsets.all(25),
+//                   decoration: BoxDecoration(
+//                     gradient: LinearGradient(
+//                       begin: Alignment.topLeft,
+//                       end: Alignment.bottomRight,
+//                       colors: [
+//                         Colors.white.withValues(alpha: 0.2),
+//                         Colors.white.withValues(alpha: 0.1),
+//                       ],
+//                     ),
+//                     border: Border.all(
+//                       color: Colors.white.withValues(alpha: 0.2),
+//                       width: 1.5,
+//                     ),
+//                     borderRadius: BorderRadius.circular(24),
+//                   ),
+//                   child: Column(
+//                     mainAxisSize: MainAxisSize.min,
+//                     children: [
+//                       Container(
+//                         padding: EdgeInsets.all(15),
+//                         decoration: BoxDecoration(
+//                           shape: BoxShape.circle,
+//                           gradient: LinearGradient(
+//                             colors: [
+//                               Color(0xFF7C2D12).withValues(alpha: 0.8),
+//                               Color(0xFF9A3412).withValues(alpha: 0.6),
+//                             ],
+//                           ),
+//                           boxShadow: [
+//                             BoxShadow(
+//                               color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+//                               blurRadius: 15,
+//                               spreadRadius: 2,
+//                             ),
+//                           ],
+//                         ),
+//                         child: Icon(Icons.image, color: Colors.white, size: 30),
+//                       ),
+//                       SizedBox(height: 20),
+//                       Text(
+//                         'Format Gambar',
+//                         textAlign: TextAlign.center,
+//                         style: TextStyle(
+//                           fontSize: 20,
+//                           fontWeight: FontWeight.bold,
+//                           color: Colors.white,
+//                           letterSpacing: 0.5,
+//                           decoration: TextDecoration.none,
+//                         ),
+//                       ),
+//                       SizedBox(height: 15),
+//                       Text(
+//                         'Pilih jenis format gambar yang anda inginkan',
+//                         textAlign: TextAlign.center,
+//                         style: TextStyle(
+//                           fontSize: 16,
+//                           color: Colors.white.withValues(alpha: 0.9),
+//                           height: 1.4,
+//                           decoration: TextDecoration.none,
+//                         ),
+//                       ),
+//                       SizedBox(height: 25),
+//                       // PNG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle PNG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFF059669),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFF059669,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               PngIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'PNG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       // JPG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle JPG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFF4F46E5),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFF4F46E5,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               JpgIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'JPG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       // JPEG Button dengan custom icon
+//                       Container(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           onPressed: () {
+//                             Navigator.pop(context);
+//                             // Handle JPEG selection
+//                           },
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: Color(0xFFDC2626),
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             elevation: 8,
+//                             shadowColor: Color(
+//                               0xFFDC2626,
+//                             ).withValues(alpha: 0.4),
+//                           ),
+//                           child: Row(
+//                             mainAxisAlignment: MainAxisAlignment.center,
+//                             children: [
+//                               JpegIcon(size: 20, color: Colors.white),
+//                               SizedBox(width: 8),
+//                               Text(
+//                                 'JPEG',
+//                                 style: TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.w600,
+//                                   letterSpacing: 0.5,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 10),
+//                       Container(
+//                         width: double.infinity,
+//                         child: OutlinedButton(
+//                           onPressed: () => Navigator.pop(context),
+//                           style: OutlinedButton.styleFrom(
+//                             foregroundColor: Colors.white,
+//                             padding: EdgeInsets.symmetric(vertical: 15),
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(15),
+//                             ),
+//                             side: BorderSide(
+//                               color: Colors.white.withValues(alpha: 0.3),
+//                               width: 1.5,
+//                             ),
+//                           ),
+//                           child: Text(
+//                             'Batal',
+//                             style: TextStyle(
+//                               fontSize: 16,
+//                               fontWeight: FontWeight.w600,
+//                               letterSpacing: 0.5,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//       );
+//     },
+//   );
+// }
 
 void showDocumentDesktopFormat(BuildContext context) {
   showGeneralDialog(
@@ -9880,13 +9693,13 @@ void showDocumentDesktopFormat(BuildContext context) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      // PDF Button dengan custom icon
+                      // Excel Button dengan custom icon
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            // Handle Excel selection
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -9906,45 +9719,7 @@ void showDocumentDesktopFormat(BuildContext context) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // Docs Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle Docs selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF2563EB),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF2563EB,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              DocsIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'Docs',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -10278,7 +10053,7 @@ void showShareDocumentFormat(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            // Handle Excel selection
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -10298,45 +10073,7 @@ void showShareDocumentFormat(BuildContext context) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      // Docs Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Handle Docs selection
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF2563EB),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF2563EB,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              DocsIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'Docs',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
