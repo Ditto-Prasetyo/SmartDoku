@@ -27,7 +27,7 @@ class UserService {
     
     if (token == null) throw Exception('Token tidak ditemukan');
 
-    final uri = Uri.parse("${dotenv.env['API_URL']}/user");
+    final uri = Uri.parse("${dotenv.env['API_URL']}/users");
 
     final response = await http.get(
       uri,
@@ -59,7 +59,7 @@ class UserService {
     
     if (token == null) throw Exception('Token tidak ditemukan');
 
-    final uri = Uri.parse("${dotenv.env['API_URL']}/user");
+    final uri = Uri.parse("${dotenv.env['API_URL']}/users");
 
     final response = await http.get(
       uri,
