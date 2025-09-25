@@ -511,7 +511,7 @@ class _OutgoingLetterPageAdminDesktopState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  buildSectionTitleDisposisiDesktop('Data Surat Keluar'),
+                  buildSectionTitleDisposisiDesktop('Data Surat '),
                   Container(
                     child: Row(
                       children: [

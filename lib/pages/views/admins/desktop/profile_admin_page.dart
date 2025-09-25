@@ -415,12 +415,13 @@ class _AdminProfileState extends State<AdminProfile>
     );
   }
 
-  Widget buildAdminProfilePage(
+  Widget  buildAdminProfilePage(
     Animation<double> _cardAnimation,
     String? role,
     String? name,
     String? username,
     String? email,
+    // String? phone_number,
   ) {
     return Transform.translate(
       offset: Offset(0, 30 * (1 - _cardAnimation.value).clamp(0.0, 1.0)),
@@ -708,6 +709,8 @@ class _AdminProfileState extends State<AdminProfile>
                                           Icons.email_outlined,
                                           Color(0xFF10B981),
                                         ),
+                                        SizedBox(height: 12)
+                                        
                                       ],
                                     ),
                                   ),

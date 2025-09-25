@@ -668,7 +668,7 @@ Widget buildMenuActionDisposisiDesktopAdmin(
                 onTap: () {
                   showDetailActionMenuDisposisiDesktopAdmin(
                     context,
-                    onDelete ?? () => showDeleteConfirmationDisposisiAdmin,
+                    onDelete ?? () => showDeleteConfirmationDisposisi,
                     nomorUrutController,
                     onEditSave: onEditSave, // Pass callback ke dialog
                     currentNomorUrut: currentNomorUrut, // Pass current value
