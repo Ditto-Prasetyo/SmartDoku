@@ -4019,6 +4019,7 @@ void showEditSuratDialog(
 
   String selectedStatus = selectedSurat!.status;
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
+  Size size = MediaQuery.of(context).size;
 
   showGeneralDialog(
     context: context,
@@ -4039,7 +4040,14 @@ void showEditSuratDialog(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.9,
                 ),
@@ -4956,7 +4964,7 @@ void showEditSuratKeluarDialog(
 
   String selectedStatus = selectedSurat!.status!;
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
-
+  Size size = MediaQuery.of(context).size;
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -4976,7 +4984,14 @@ void showEditSuratKeluarDialog(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
               child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20),
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.9,
                 ),

@@ -2221,8 +2221,9 @@ void showModernTambahSuratMasukFormDialog(
                                                             hint: Text(
                                                               'Pilih Disposisi',
                                                               style: TextStyle(
-                                                                color: Colors.white.withValues(alpha: 0.6),
+                                                                color: Colors.white.withValues(alpha: 1),
                                                                 fontSize: 14,
+                                                                fontWeight: FontWeight.bold,
                                                               ),
                                                             ),
                                                             value: null,
