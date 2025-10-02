@@ -4239,225 +4239,160 @@ void showEditSuratDialog(
 
                               // Multi-Select Disposisi Dropdown
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Disposisi',
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.9,
-                                      ),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.none,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Disposisi',
+                                  style: TextStyle(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.white.withValues(alpha: 0.1),
+                                        Colors.white.withValues(alpha: 0.05),
+                                      ],
+                                    ),
+                                    borderRadius: BorderRadius.circular(15),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(alpha: 0.2),
+                                      width: 1,
                                     ),
                                   ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white.withValues(alpha: 0.1),
-                                          Colors.white.withValues(alpha: 0.05),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // Display selected disposisi
-                                        if (selectedDisposisi.isNotEmpty) ...[
-                                          Wrap(
-                                            spacing: 8,
-                                            runSpacing: 8,
-                                            children: selectedDisposisi.map((
-                                              disp,
-                                            ) {
-                                              // Find the display name
-                                              String displayName = workFields
-                                                  .entries
-                                                  .firstWhere(
-                                                    (entry) =>
-                                                        entry.value == disp ||
-                                                        entry.key == disp,
-                                                    orElse: () =>
-                                                        MapEntry(disp, disp),
-                                                  )
-                                                  .key;
-
-                                              return Container(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 6,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // tampilkan disposisi yang sudah ada
+                                      if (selectedDisposisi.isNotEmpty) ...[
+                                        Wrap(
+                                          spacing: 8,
+                                          runSpacing: 8,
+                                          children: selectedDisposisi.map((disp) {
+                                            return Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Color(0xFF4F46E5).withValues(alpha: 0.3),
+                                                    Color(0xFF7C3AED).withValues(alpha: 0.2),
+                                                  ],
                                                 ),
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    colors: [
-                                                      Color(
-                                                        0xFF4F46E5,
-                                                      ).withValues(alpha: 0.3),
-                                                      Color(
-                                                        0xFF7C3AED,
-                                                      ).withValues(alpha: 0.2),
-                                                    ],
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  border: Border.all(
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.3),
-                                                  ),
+                                                borderRadius: BorderRadius.circular(20),
+                                                border: Border.all(
+                                                  color: Colors.white.withValues(alpha: 0.3),
                                                 ),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      displayName,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        decoration:
-                                                            TextDecoration.none,
-                                                      ),
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    disp,
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 12,
+                                                      fontWeight: FontWeight.w500,
+                                                      decoration: TextDecoration.none,
                                                     ),
-                                                    SizedBox(width: 6),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        setState(() {
-                                                          selectedDisposisi
-                                                              .remove(disp);
-                                                        });
-                                                      },
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        size: 16,
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.8,
-                                                            ),
+                                                  ),
+                                                  SizedBox(width: 6),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      setState(() {
+                                                        selectedDisposisi.remove(disp);
+                                                      });
+                                                    },
+                                                    child: Icon(
+                                                      Icons.close,
+                                                      size: 16,
+                                                      color: Colors.white.withValues(alpha: 0.8),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
+                                        SizedBox(height: 12),
+                                      ],
+
+                                      // dropdown untuk tambah disposisi lagi
+                                      Container(
+                                        padding: EdgeInsets.symmetric(horizontal: 12),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(alpha: 0.05),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(alpha: 0.1),
+                                          ),
+                                        ),
+                                        child: DropdownButtonHideUnderline(
+                                          child: DropdownButton<String>(
+                                            hint: Text(
+                                              'Pilih Disposisi',
+                                              style: TextStyle(
+                                                color: Colors.white.withValues(alpha: 0.6),
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            value: null,
+                                            isExpanded: true,
+                                            dropdownColor: Color(0xFF1F2937),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                            icon: Icon(
+                                              Icons.add,
+                                              color: Colors.white.withValues(alpha: 0.7),
+                                              size: 20,
+                                            ),
+                                            items: listWorkfields
+                                                .where((field) => !selectedDisposisi.contains(field))
+                                                .map((field) {
+                                              return DropdownMenuItem<String>(
+                                                value: field,
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.work_outline,
+                                                      color: Colors.white.withValues(alpha: 0.7),
+                                                      size: 16,
+                                                    ),
+                                                    SizedBox(width: 8),
+                                                    Expanded(
+                                                      child: Text(
+                                                        field,
+                                                        style: TextStyle(fontSize: 14),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               );
                                             }).toList(),
-                                          ),
-                                          SizedBox(height: 12),
-                                        ],
-
-                                        // Dropdown to add more disposisi
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.05,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            border: Border.all(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.1,
-                                              ),
-                                            ),
-                                          ),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                              hint: Text(
-                                                'Pilih Disposisi',
-                                                style: TextStyle(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.6),
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              value: null,
-                                              isExpanded: true,
-                                              dropdownColor: Color(0xFF1F2937),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                                fontFamily: 'Roboto',
-                                              ),
-                                              icon: Icon(
-                                                Icons.add,
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.7,
-                                                ),
-                                                size: 20,
-                                              ),
-                                              items: workFields.entries
-                                                  .where(
-                                                    (entry) =>
-                                                        !selectedDisposisi
-                                                            .contains(
-                                                              entry.value,
-                                                            ),
-                                                  )
-                                                  .map((entry) {
-                                                    return DropdownMenuItem<
-                                                      String
-                                                    >(
-                                                      value: entry.value,
-                                                      child: Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons.work_outline,
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.7,
-                                                                ),
-                                                            size: 16,
-                                                          ),
-                                                          SizedBox(width: 8),
-                                                          Expanded(
-                                                            child: Text(
-                                                              entry.key,
-                                                              style: TextStyle(
-                                                                fontSize: 14,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  })
-                                                  .toList(),
-                                              onChanged: (String? value) {
-                                                if (value != null &&
-                                                    !selectedDisposisi.contains(
-                                                      value,
-                                                    )) {
-                                                  setState(() {
-                                                    selectedDisposisi.add(
-                                                      value,
-                                                    );
-                                                  });
-                                                }
-                                              },
-                                            ),
+                                            onChanged: (String? value) {
+                                              if (value != null && !selectedDisposisi.contains(value)) {
+                                                setState(() {
+                                                  selectedDisposisi.add(value);
+                                                });
+                                              }
+                                            },
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
+                            ),
 
                               SizedBox(height: 20),
 

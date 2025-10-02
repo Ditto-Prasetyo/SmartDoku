@@ -6,3 +6,12 @@ final Map<String, String> workFields = {
   'UPT Pengelolaan Air Limbah Domestik': 'UPT_PALD',
   'UPT Pertamanan': 'UPT_Taman',
 };
+
+final List<String> listWorkfields = [
+  'Penataan Ruang dan PB',
+  'Perumahan',
+  'Permukiman',
+  'Sekretariat',
+  'UPT Pengelolaan Air Limbah Domestik',
+  'UPT Pertamanan',
+];

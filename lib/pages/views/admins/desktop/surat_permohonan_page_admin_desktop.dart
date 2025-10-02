@@ -1455,27 +1455,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                     left: 8,
                                                                   ),
                                                               child: Text(
-                                                                (surat.disposisi
-                                                                        as List)
-                                                                    .map(
-                                                                      (
-                                                                        item,
-                                                                      ) => workFields
-                                                                          .entries
-                                                                          .firstWhere(
-                                                                            (
-                                                                              entry,
-                                                                            ) =>
-                                                                                entry.value ==
-                                                                                item,
-                                                                            orElse: () => MapEntry(
-                                                                              item!,
-                                                                              item!,
-                                                                            ),
-                                                                          )
-                                                                          .key,
-                                                                    )
-                                                                    .join(', '),
+                                                                (surat.disposisi as List).join(', '),
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
