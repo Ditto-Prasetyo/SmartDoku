@@ -1501,31 +1501,9 @@ class _PermohonanLettersPageDesktopState
                                                                       left: 8,
                                                                     ),
                                                                 child: Text(
-                                                                  surat?.disposisi ==
-                                                                          null
-                                                                      ? 'Data Tempat Kosong'
-                                                                      : (surat!.disposisi
-                                                                                as List)
-                                                                            .map(
-                                                                              (
-                                                                                item,
-                                                                              ) => workFields.entries
-                                                                                  .firstWhere(
-                                                                                    (
-                                                                                      entry,
-                                                                                    ) =>
-                                                                                        entry.value ==
-                                                                                        item['tujuan'],
-                                                                                    orElse: () => MapEntry(
-                                                                                      item['tujuan']!,
-                                                                                      item['tujuan']!,
-                                                                                    ),
-                                                                                  )
-                                                                                  .key,
-                                                                            )
-                                                                            .join(
-                                                                              ', ',
-                                                                            ),
+                                                                  surat?.disposisi == null
+                                                                      ? '-'
+                                                                      : (surat!.disposisi as List).join(", "),
                                                                   style: TextStyle(
                                                                     color: Colors
                                                                         .white
@@ -1662,12 +1640,9 @@ class _PermohonanLettersPageDesktopState
                                                                       left: 8,
                                                                     ),
                                                                 child: Text(
-                                                                  surat.disp_1 ==
-                                                                          null
+                                                                  surat.disp_1 == null
                                                                       ? 'Data Disposisi Kadin Kosong'
-                                                                      : surat
-                                                                            .disp_1
-                                                                            .toString(),
+                                                                      : surat.disp_1.toString(),
                                                                   style: TextStyle(
                                                                     color: Colors
                                                                         .white
