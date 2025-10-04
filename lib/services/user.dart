@@ -22,6 +22,7 @@ class UserService {
   }
 
   Future<List<UserModel>> listUsers() async {
+    print("[DEBUG] -> [FUNC] : listUsers() used!");
     final prefs = await SharedPreferences.getInstance();
     final token = await prefs.getString('jwt_token');
     
@@ -54,6 +55,7 @@ class UserService {
   }
 
   Future<List<UserModel>> getFilteredUsers(String bidang) async {
+    print("[DEBUG] -> [FUNC] : getFilteredUsers() used!");
     final prefs = await SharedPreferences.getInstance();
     final token = await prefs.getString('jwt_token');
     

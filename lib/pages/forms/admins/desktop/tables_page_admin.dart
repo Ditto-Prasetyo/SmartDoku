@@ -23,6 +23,23 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
   final ScrollController _verticalScrollController = ScrollController();
   bool isLoading = false;
 
+  String? title;
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+
+  //   // Cegah reassign kalau sudah pernah diambil
+  //   if (title == null) {
+  //     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+  //     setState(() {
+  //       title = args?['title'] ?? 'Default Title';
+  //       icon = args?['icon'];
+  //       colors = args?['colors'];
+  //     });
+  //   }
+  // }
+
   // User Services
   UserService _userService = UserService();
   List<UserModel> _userData = [];
@@ -30,10 +47,11 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
   Future<void> _loadData() async {
     print("[DEBUG] -> [INFO] : Loading all data user ...");
     try {
-      final data = await _userService.listUsers();
-      print(data);
+      print("[DEBUG] -> [STATE] : title = $title");
+      final data = await (title != null ? _userService.getFilteredUsers(title!) : _userService.listUsers());
+      print(data.map((e) => e.toJson()).toList());
       setState(() {
-        // _userData = data;
+        _userData = data;
         isLoading = false;
       });
       print("[DEBUG] -> [STATE] : Set data to userData!");
@@ -98,36 +116,36 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
     },
   ];
 
-  List<Map<String, dynamic>> suratData = [
-    {
-      'id': '1',
-      'name': 'Muhammad Annas Bintar Putra',
-      'username': 'BintarKun123',
-      'email': '220605110105@student.uin-malang.ac.id',
-      'role': 'user',
-    },
-    {
-      'id': '2',
-      'name': 'Moch. Minanur Rahman',
-      'username': 'Nanimz123',
-      'email': '220605110112@student.uin-malang.ac.id',
-      'role': 'user',
-    },
-    {
-      'id': '3',
-      'name': 'Muhamad Radiyudin',
-      'username': 'RadiKun123',
-      'email': '220605110120@student.uin-malang.ac.id',
-      'role': 'user',
-    },
-    {
-      'id': '4',
-      'name': 'Anonim',
-      'username': 'Anonim123',
-      'email': 'anonim123@gmail.com',
-      'role': 'user',
-    },
-  ];
+  // List<Map<String, dynamic>> suratData = [
+  //   {
+  //     'id': '1',
+  //     'name': 'Muhammad Annas Bintar Putra',
+  //     'username': 'BintarKun123',
+  //     'email': '220605110105@student.uin-malang.ac.id',
+  //     'role': 'user',
+  //   },
+  //   {
+  //     'id': '2',
+  //     'name': 'Moch. Minanur Rahman',
+  //     'username': 'Nanimz123',
+  //     'email': '220605110112@student.uin-malang.ac.id',
+  //     'role': 'user',
+  //   },
+  //   {
+  //     'id': '3',
+  //     'name': 'Muhamad Radiyudin',
+  //     'username': 'RadiKun123',
+  //     'email': '220605110120@student.uin-malang.ac.id',
+  //     'role': 'user',
+  //   },
+  //   {
+  //     'id': '4',
+  //     'name': 'Anonim',
+  //     'username': 'Anonim123',
+  //     'email': 'anonim123@gmail.com',
+  //     'role': 'user',
+  //   },
+  // ];
 
   void actionSetState(int index) {
     setState(() {
@@ -164,7 +182,17 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
   void initState() {
     super.initState();
 
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+      setState(() {
+        title = args?['title'] ?? 'Default Title';
+      });
+
+      print('[DEBUG] -> [STATE -> INIT] : title = $title');
+      
+      _loadData();
+    });
+
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -728,7 +756,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                           children: List.generate(_userData.length, (
                                             index,
                                           ) {
-                                            final surat = suratData[index];
+                                            final surat = _userData[index];
                                                               
                                             return Container(
                                               padding: EdgeInsets.symmetric(
@@ -748,7 +776,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                               child: InkWell(
                                                 onTap: () {
                                                   print(
-                                                    'Row tapped: ${surat['name']}',
+                                                    'Row tapped: ${surat.name}',
                                                   );
                                                 },
                                                 borderRadius: BorderRadius.circular(
@@ -814,7 +842,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                       Expanded(
                                                         flex: 130,
                                                         child: Text(
-                                                          surat['name'] == null ? 'Nama Tidak Ditemukan' : surat['name'],
+                                                          surat.name == null ? 'Nama Tidak Ditemukan' : surat.name,
                                                           style: TextStyle(
                                                             color: Colors.white,
                                                             fontSize: 13,
@@ -834,8 +862,8 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                       Expanded(
                                                         flex: 90,
                                                         child: Text(
-                                                          surat['username'] == null ?
-                                                              'Username Tidak Ditemukan' : surat['username'],
+                                                          surat.username == null ?
+                                                              'Username Tidak Ditemukan' : surat.username,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -853,7 +881,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                       Expanded(
                                                         flex: 120,
                                                         child: Text(
-                                                          surat['email'] == null ? 'Email Tidak Ditemukan' : surat['email'],
+                                                          surat.email == null ? 'Email Tidak Ditemukan' : surat.email,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(
@@ -873,7 +901,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                       Expanded(
                                                         flex: 60,
                                                         child: Text(
-                                                          surat['role'] == null ? 'Role Tidak Ditemukan' : surat['role'],
+                                                          surat.role == null ? 'Role Tidak Ditemukan' : surat.role,
                                                           style: TextStyle(
                                                             color: Colors.white
                                                                 .withValues(

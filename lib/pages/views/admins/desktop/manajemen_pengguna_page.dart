@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/utils/map.dart';
 
 class UsersManagementPage extends StatefulWidget {
   const UsersManagementPage({super.key});
@@ -448,113 +449,20 @@ class _UsersManagementPageState extends State<UsersManagementPage>
                               ),
                           shrinkWrap: true,
                           physics: BouncingScrollPhysics(),
-                          itemCount: 6,
+                          itemCount: boxData.length,
                           itemBuilder: (context, index) {
-                            List<Map<String, dynamic>> boxData = [
-                              {
-                                'icon': Icons.admin_panel_settings,
-                                'title': 'Penataan Ruang dan PB',
-                                'colors': [
-                                  Color(0xFF3B82F6),
-                                  Color(0xFF2563EB),
-                                ],
-                                'route':
-                                    'tables_page_admin.dart',
-                              },
-                              {
-                                'icon': Icons.location_city,
-                                'title': 'Perumahan',
-                                'colors': [
-                                  Color(0xFF10B981),
-                                  Color(0xFF059669),
-                                ],
-                                'route': 'tables_page_admin.dart',
-                              },
-                              {
-                                'icon': Icons.house_rounded,
-                                'title': 'Permukiman',
-                                'colors': [
-                                  Color(0xFFF97316),
-                                  Color(0xFFEF4444),
-                                ],
-                                'route':
-                                    'tables_page_admin.dart',
-                              },
-                              {
-                                'icon': Icons.map_outlined,
-                                'title': 'Sekretariat',
-                                'colors': [
-                                  Color(0xFF06B6D4),
-                                  Color(0xFF0EA5E9),
-                                ],
-                                'route': 'tables_page_admin.dart',
-                              },
-                              {
-                                'icon': Icons.water_drop_outlined,
-                                'title': 'UPT Pengelolaan Air Limbah Domestik',
-                                'colors': [
-                                  Color(0xFF22C55E),
-                                  Color(0xFF16A34A),
-                                ],
-                                'route': 'tables_page_admin.dart',
-                              },
-                              {
-                                'icon': Icons.park_rounded,
-                                'title': 'UPT Pertamanan',
-                                'colors': [
-                                  Color(0xFF7C2D12),
-                                  Color(0xFF9A3412),
-                                ],
-                                'route': 'tables_page_admin.dart',
-                              },
-                            ];
-
                             return InkWell(
                               onTap: () {
-                                switch (index) {
-                                  case 0:
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/forms/admins/desktop/tables_page_admin',
-                                    );
-                                    break;
-                                  case 1:
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/forms/admins/desktop/tables_page_admin',
-                                    );
-                                    break;
-                                  case 2:
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/forms/admins/desktop/tables_page_admin',
-                                    );
-                                    break;
-                                  case 3:
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/forms/admins/desktop/tables_page_admin',
-                                    );
-                                    break;
-                                  case 4:
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/forms/admins/desktop/tables_page_admin',
-                                    );
-                                    break;
-                                  case 5:
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/forms/admins/desktop/tables_page_admin',
-                                    );
-                                    break;
-                                  case 6:
-                                    Navigator.pushNamed(
-                                      context,
-                                      '/forms/admins/desktop/tables_page_admin',
-                                    );
-                                    break;
-                                }
+                                final titleAssign = boxData[index]['title'];
+                                final mappedTitle = workFields[titleAssign] ?? titleAssign;
+                                print("[DEBUG] -> [EFFECT (onTap)] : title assign? = $titleAssign");
+                                Navigator.pushNamed(
+                                  context,
+                                  '/forms/admins/desktop/tables_page_admin',
+                                  arguments: {
+                                    'title': mappedTitle
+                                  }
+                                );
                               },
                               borderRadius: BorderRadius.circular(20),
                               child: Container(
