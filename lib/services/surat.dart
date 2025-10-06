@@ -3,15 +3,16 @@ import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/utils/map.dart';
 
 class SuratMasuk {
+  final AuthService _authService = AuthService();
+
   Future<List<SuratMasukModel?>> listSurat() async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk');
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('jwt_token');
+    final token = await _authService.getToken();
 
     final response = await http.get(
       url,
@@ -29,10 +30,37 @@ class SuratMasuk {
     }
   }
 
+  Future<List<SuratMasukModel?>> getFilteredListSurat(String disposisi, bool? isSuperAdmin) async {
+    final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk');
+    final token = await _authService.getToken();
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      
+      final List<SuratMasukModel> allData = data
+        .map((e) => SuratMasukModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+      // Filter sesuai disposisi
+      final List<SuratMasukModel> filtered = allData.where((surat) => surat.disposisi.contains(disposisi)).toList();
+
+      return filtered;
+    } else {
+      throw Exception('Gagal mengambil data surat masuk');
+    }
+  }
+
   Future<SuratMasukModel?> getSurat(int number) async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk/$number');
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = await await _authService.getToken();
 
     final response = await http.get(
       url,
@@ -82,8 +110,7 @@ class SuratMasuk {
     String? status,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('jwt_token');
+      final token = await _authService.getToken();
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -174,8 +201,8 @@ class SuratMasuk {
     String? status,
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('jwt_token');
+
+      final token = await _authService.getToken();
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -236,8 +263,8 @@ class SuratMasuk {
 
   Future<SuratMasukModel?> deleteSurat(int nomor_urut) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('jwt_token');
+
+      final token = await _authService.getToken();
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -266,8 +293,7 @@ class SuratMasuk {
 
   // Files services
   Future<bool> uploadFile(int nomor_urut, File file) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = await await _authService.getToken();
 
     final request = http.MultipartRequest(
       'POST',
@@ -281,8 +307,7 @@ class SuratMasuk {
   }
 
   Future<File?> downloadFile(int fileId, String savePath) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = await await _authService.getToken();
 
     final uri = Uri.parse('${dotenv.env['API_URL']}/download/surat/masuk/$fileId');
     final response = await http.get(
@@ -305,10 +330,11 @@ class SuratMasuk {
 }
 
 class SuratKeluar {
+  final AuthService _authService = AuthService();
+
   Future<List<SuratKeluarModel?>> listSurat() async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/keluar');
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = await await _authService.getToken();
 
     final response = await http.get(
       url,
@@ -329,8 +355,7 @@ class SuratKeluar {
 
   Future<SuratKeluarModel?> getSurat(int number) async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/keluar/$number');
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = await await _authService.getToken();
 
     final response = await http.get(
       url,
@@ -375,8 +400,8 @@ class SuratKeluar {
     DateTime? tanda_terima
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('jwt_token');
+
+      final token = await _authService.getToken();
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -445,8 +470,8 @@ class SuratKeluar {
     DateTime? tanda_terima
   }) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('jwt_token');
+
+      final token = await _authService.getToken();
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -496,8 +521,8 @@ class SuratKeluar {
 
   Future<SuratKeluarModel?> deleteSurat(int? nomor_urut) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('jwt_token');
+
+      final token = await _authService.getToken();
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -526,8 +551,7 @@ class SuratKeluar {
 
   // Files services
   Future<bool> uploadFile(int nomor_urut, File file) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = await await _authService.getToken();
 
     final request = http.MultipartRequest(
       'POST',
@@ -541,8 +565,7 @@ class SuratKeluar {
   }
 
   Future<File?> downloadFile(int fileId, String savePath) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('token');
+    final token = await _authService.getToken();
 
     final uri = Uri.parse('${dotenv.env['API_URL']}/download/surat/keluar/$fileId');
     final response = await http.get(

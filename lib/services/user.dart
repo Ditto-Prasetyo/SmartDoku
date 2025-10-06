@@ -4,10 +4,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/utils/map.dart';
 import 'package:collection/collection.dart';
 
 class UserService {
+  AuthService _authService = AuthService();
+
   Future<UserModel?> getCurrentUser() async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = await prefs.getString('user');
@@ -23,8 +26,7 @@ class UserService {
 
   Future<List<UserModel>> listUsers() async {
     print("[DEBUG] -> [FUNC] : listUsers() used!");
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = await _authService.getToken();
     
     if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -56,8 +58,7 @@ class UserService {
 
   Future<List<UserModel>> getFilteredUsers(String bidang) async {
     print("[DEBUG] -> [FUNC] : getFilteredUsers() used!");
-    final prefs = await SharedPreferences.getInstance();
-    final token = await prefs.getString('jwt_token');
+    final token = await _authService.getToken();
     
     if (token == null) throw Exception('Token tidak ditemukan');
 
@@ -85,5 +86,33 @@ class UserService {
     } else {
       throw Exception('Gagal mengambil data users');
     }
+  }
+
+  Future<bool> getSuperAdminStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = await prefs.getString('user');
+
+    if (userData != null) {
+      final user = jsonDecode(userData);
+      final role = user['role'];
+
+      return role == 'SUPERADMIN' ? true : false;
+    } else { 
+      return false;
+    }
+  }
+
+  Future<String?> getBidangDisposisi() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = await prefs.getString('user');
+
+    if (userData != null) {
+      final user = jsonDecode(userData);
+      final bidang = user['bidang'];
+
+      return bidang;
+    }
+
+    return null;
   }
 }
