@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/user.dart';
+import 'package:smart_doku/utils/map.dart';
 
 class AuthService {
   Future<bool> login(String username, String password) async {
@@ -22,6 +23,7 @@ class AuthService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('jwt_token', token);
       await prefs.setString('user', jsonEncode(user.toJson()));
+      await setDisposisi();
       
       return true;
     } else {
@@ -81,5 +83,25 @@ class AuthService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
+  }
+
+  Future<String?> setDisposisi() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userData = await prefs.getString('user');
+    
+    if (userData != null) {
+      final user = jsonDecode(userData);
+      final bidang = user['bidang'];
+
+      final disposisi = workFields.entries.firstWhere(
+        (e) => e.value == bidang,
+        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
+      ).key;
+      await prefs.setString('disposisi', disposisi);
+
+      return disposisi;
+    }
+
+    return null;
   }
 }

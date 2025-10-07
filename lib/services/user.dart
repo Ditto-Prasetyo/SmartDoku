@@ -102,17 +102,9 @@ class UserService {
     }
   }
 
-  Future<String?> getBidangDisposisi() async {
+  Future<String?> getDisposisi() async {
     final prefs = await SharedPreferences.getInstance();
-    final userData = await prefs.getString('user');
-
-    if (userData != null) {
-      final user = jsonDecode(userData);
-      final bidang = user['bidang'];
-
-      return bidang;
-    }
-
-    return null;
+    final disposisi = await prefs.getString('disposisi');
+    return disposisi;
   }
 }
