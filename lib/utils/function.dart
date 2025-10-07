@@ -635,6 +635,19 @@ void tambahSuratKeluarDesktop(BuildContext context, Function(SuratKeluarModel?) 
   );
 }
 
+void tambahUser(BuildContext context, String bidang, Function(UserModel?) onSuratKeluarAdded) {
+  showModernTambahUserDialog(
+    'Tambah User (Tidak Disarankan!)',
+    bidang,
+    'Pilih metode untuk menambahkan user',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    onSuratKeluarAdded,
+  );
+}
+
+
 void hapusDokumen(
   BuildContext context,
   int index,

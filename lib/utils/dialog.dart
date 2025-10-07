@@ -3902,6 +3902,221 @@ void showModernTambahSuratKeluarDesktopDialog(
   );
 }
 
+void showModernTambahUserDialog(
+  String title,
+  String bidang,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+  Function(UserModel?) onSuratAdded,
+) {
+  Size size = MediaQuery.of(context).size;
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Tambah Surat Masuk Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon container
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              accentColor.withValues(alpha: 0.8),
+                              accentColor.withValues(alpha: 0.6),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentColor.withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.add_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+
+                      // Title
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+
+                      // Message
+                      Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.4,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 25),
+
+                      // Button Input Manual
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            showModernTambahUserFormDialog(
+                              context,
+                              bidang,
+                              accentColor,
+                              accentColor2,
+                              onSuratAdded == null
+                                  ? (data) {
+                                      // Default behavior if no callback provided
+                                      print(
+                                        'Surat baru ditambahkan: ${data?.name}',
+                                      );
+                                    }
+                                  : onSuratAdded,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.edit_rounded),
+                              SizedBox(width: 10),
+                              Text(
+                                'Input Manual',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+                      // Button Cancel
+                      Container(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.close),
+                              SizedBox(width: 14),
+                              Text(
+                                'Batal',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 // Tambahkan helper function untuk parse DateTime
 DateTime? parseDateTime(String dateStr) {
   if (dateStr.isEmpty) return null;
@@ -5647,6 +5862,17 @@ void showEditUserManagementDialog(
   final TextEditingController emailController = TextEditingController(
     text: selectedUser?.email,
   );
+  final TextEditingController bidangController = TextEditingController(
+    text: (() {
+      final bidangUser = selectedUser?.bidang;
+      if (bidangUser == null) return '';
+      if (bidangUser is int) return 'Error!';
+      return bidangUser.toString();
+    })(),
+  );
+
+  String? selectedBidang = selectedUser?.bidang?.isNotEmpty == true ? selectedUser!.bidang : null;
+
   final TextEditingController roleController = TextEditingController(
     text: (() {
       final RoleUser = selectedUser?.role;
@@ -5814,7 +6040,7 @@ void showEditUserManagementDialog(
                               buildInputField(
                                 'Nama ${selectedUser?.name}',
                                 nameController,
-                                Icons.title_rounded,
+                                Icons.person,
                                 maxLines: 2,
                               ),
 
@@ -5823,7 +6049,7 @@ void showEditUserManagementDialog(
                               buildInputField(
                                 'Username ${selectedUser?.name}',
                                 usernameController,
-                                Icons.event_available_rounded,
+                                Icons.alternate_email,
                                 maxLines: 1,
                               ),
 
@@ -5832,13 +6058,137 @@ void showEditUserManagementDialog(
                               buildInputField(
                                 'Email ${selectedUser?.name}',
                                 emailController,
-                                Icons.event_note_rounded,
+                                Icons.email,
                                 maxLines: 1,
                               ),
 
                               SizedBox(height: 20),
 
-                              // Multi-Select Pengolah role
+                              // Dropdown user bidang
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Bidang ${selectedUser?.name}',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Dropdown to add more role
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.05,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              hint: Text(
+                                                'Pilih Bidang',
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.6),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              value: selectedBidang,
+                                              isExpanded: true,
+                                              dropdownColor: Color(0xFF1F2937),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              icon: Icon(
+                                                Icons
+                                                    .keyboard_arrow_down_rounded,
+                                                color: Colors.white.withValues(alpha: 
+                                                  0.7,
+                                                ),
+                                              ),
+                                              items: workFields.entries.map((
+                                                entry,
+                                              ) {
+                                                return DropdownMenuItem<String>(
+                                                  value: entry.value,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.work_outline,
+                                                        color: Colors.white
+                                                            .withValues(alpha: 0.7),
+                                                        size: 16,
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Expanded(
+                                                        child: Text(
+                                                          entry.key,
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  selectedBidang = value;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+
+                              SizedBox(height: 20),
+
+                              // Dropdown user role
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -5927,7 +6277,7 @@ void showEditUserManagementDialog(
                                                   child: Row(
                                                     children: [
                                                       Icon(
-                                                        Icons.person,
+                                                        Icons.badge,
                                                         color: Colors.white
                                                             .withValues(alpha: 0.7),
                                                         size: 16,
@@ -5965,7 +6315,7 @@ void showEditUserManagementDialog(
                               buildInputField(
                                 'Alamat ${selectedUser?.name}',
                                 addressController,
-                                Icons.assignment_rounded,
+                                Icons.home,
                                 maxLines: 1,
                               ),
 
@@ -5974,7 +6324,7 @@ void showEditUserManagementDialog(
                               buildInputField(
                                 'Nomor Telepon ${selectedUser?.name}',
                                 phoneController,
-                                Icons.markunread_mailbox_rounded,
+                                Icons.phone,
                                 maxLines: 1,
                               ),
 

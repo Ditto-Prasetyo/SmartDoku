@@ -110,15 +110,16 @@ class UserService {
     return disposisi;
   }
 
-  Future<bool> addUser(
-    String name,
-    String username,
-    String email,
-    String password,
-    String bidang,
-    String address,
-    String phone,
-  ) async {
+  Future<UserModel?> addUser({
+    String? name,
+    String? username,
+    String? email,
+    String? password,
+    String? bidang,
+    String? role,
+    String? address,
+    String? phone,
+  }) async {
     final url = Uri.parse('${dotenv.env['API_URL']}/auth/register');
     final token = _authService.getToken();
 
@@ -134,16 +135,23 @@ class UserService {
         'username': username,
         'name': name,
         'bidang': bidang,
+        'role': role,
         'address': address,
         'phone_number': phone,
       }),
     );
 
     if (response.statusCode == 200) {
-      return true;
+      final data = jsonDecode(response.body);
+
+      if (data != null) {
+        return UserModel.fromJson(data);
+      }
+
+      return null;
     } else {
       print('Register failed: ${response.body}');
-      return false;
+      return null;
     }
   }
 
