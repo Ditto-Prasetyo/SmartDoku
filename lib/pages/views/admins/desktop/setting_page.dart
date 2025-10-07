@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_doku/services/settings.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -17,6 +18,8 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage>
     with TickerProviderStateMixin {
   var height, width;
+
+  final AppSettings _appSettings = AppSettings();
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -39,23 +42,26 @@ class _SettingPageState extends State<SettingPage>
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _currentPart1 = prefs.getString('part1') ?? '35.07.303';
-      _currentPart3 = prefs.getString('part3') ?? '2025';
+      _currentPart1 = _appSettings.part1;
+      _currentPart3 = _appSettings.part3;
       _part1Controller.text = _currentPart1;
       _part3Controller.text = _currentPart3;
     });
   }
 
   Future<void> _saveSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('part1', _currentPart1);
-    await prefs.setString('part3', _currentPart3);
+    await _appSettings.setPart1(_currentPart1);
+    await _appSettings.setPart1(_currentPart3);
   }
 
   Future<void> _resetSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('part1');
-    await prefs.remove('part3');
+    await _appSettings.reset();
+    setState(() {
+      _currentPart1 = _appSettings.part1;
+      _currentPart3 = _appSettings.part3;
+      _part1Controller.text = _currentPart1;
+      _part3Controller.text = _currentPart3;
+    });
   }
 
 

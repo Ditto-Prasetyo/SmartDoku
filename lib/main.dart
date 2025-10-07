@@ -25,6 +25,7 @@ import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_permohonan_page.dart';
+import 'package:smart_doku/services/settings.dart';
 import 'package:smart_doku/test.dart';
 import 'dart:io' show Platform;
 import 'package:window_size/window_size.dart';
@@ -53,6 +54,13 @@ void main() async {
   }
 
   await dotenv.load(fileName: ".config/.env");
+
+  await AppSettings().init(); // init prefs global
+
+  // For Debug
+  final suf1 = AppSettings().part1;
+  final suf2 = AppSettings().part3;
+  print('[DEBUG] :: [STATE] : Suffix code = $suf1/$suf2');
 
   runApp(const SmartDoku());
 }

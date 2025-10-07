@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/utils/map.dart';
@@ -1213,9 +1214,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           Expanded(
                                                             flex: 100,
                                                             child: Text(
-                                                              surat
-                                                                  .tanggal_diterima
-                                                                  .toString(),
+                                                              parseDateFormat(surat.tanggal_diterima),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1234,8 +1233,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           Expanded(
                                                             flex: 100,
                                                             child: Text(
-                                                              surat.tanggal_surat
-                                                                  .toString(),
+                                                              parseDateFormat(surat.tanggal_surat),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1293,15 +1291,16 @@ class _PermohonanLettersPageAdminDesktopState
                                                           Expanded(
                                                             flex: 100,
                                                             child: Text(
-                                                              surat.kode == null
+                                                              surat.no_agenda == null
                                                                   ? '404 Not Found'
-                                                                  : surat.kode +
-                                                                        "/" +
-                                                                        surat
-                                                                            .nomor_urut
-                                                                            .toString() +
-                                                                        "/" +
-                                                                        '35.07.303/2025',
+                                                                  : surat.no_agenda,
+                                                                  // +
+                                                                  //       "/" +
+                                                                  //       surat
+                                                                  //           .nomor_urut
+                                                                  //           .toString() +
+                                                                  //       "/" +
+                                                                  //       '35.07.303/2025',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1369,9 +1368,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                     left: 8.0,
                                                                   ),
                                                               child: Text(
-                                                                surat
-                                                                    .tanggal_waktu
-                                                                    .toString(),
+                                                                parseDateTimeFormat(surat.tanggal_waktu),
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -1391,33 +1388,31 @@ class _PermohonanLettersPageAdminDesktopState
                                                             ),
                                                           ),
                         
-                                                          // 11. Waktu - flex: 100
-                                                          SizedBox(width: 5),
-                                                          Expanded(
-                                                            flex: 100,
-                                                            child: Padding(
-                                                              padding:
-                                                                  EdgeInsets.only(
-                                                                    right: 8,
-                                                                  ),
-                                                              child: Text(
-                                                                surat
-                                                                    .tanggal_waktu
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                  color: Colors
-                                                                      .white
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            0.7,
-                                                                      ),
-                                                                  fontSize: 11,
-                                                                  fontFamily:
-                                                                      'Roboto',
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
+                                                          // // 11. Waktu - flex: 100
+                                                          // SizedBox(width: 5),
+                                                          // Expanded(
+                                                          //   flex: 100,
+                                                          //   child: Padding(
+                                                          //     padding:
+                                                          //         EdgeInsets.only(
+                                                          //           right: 8,
+                                                          //         ),
+                                                          //     child: Text(
+                                                          //       surat.tanggal_waktu.toString(),
+                                                          //       style: TextStyle(
+                                                          //         color: Colors
+                                                          //             .white
+                                                          //             .withValues(
+                                                          //               alpha:
+                                                          //                   0.7,
+                                                          //             ),
+                                                          //         fontSize: 11,
+                                                          //         fontFamily:
+                                                          //             'Roboto',
+                                                          //       ),
+                                                          //     ),
+                                                          //   ),
+                                                          // ),
                         
                                                           // 12. Tempat - flex: 100
                                                           SizedBox(width: 5),
@@ -1596,8 +1591,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                 surat.disp_1 ==
                                                                         null
                                                                     ? '404 Not Found'
-                                                                    : surat.disp_1
-                                                                          .toString(),
+                                                                    : parseDateFormat(surat.disp_1),
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -1623,8 +1617,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.disp_2 == null
                                                                   ? '404 Not Found'
-                                                                  : surat.disp_2
-                                                                        .toString(),
+                                                                  : parseDateFormat(surat.disp_2),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1648,8 +1641,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.disp_3 == null
                                                                   ? '404 Not Found'
-                                                                  : surat.disp_3
-                                                                        .toString(),
+                                                                  : parseDateFormat(surat.disp_3!),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1673,8 +1665,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.disp_4 == null
                                                                   ? '404 Not Found'
-                                                                  : surat.disp_4
-                                                                        .toString(),
+                                                                  : parseDateFormat(surat.disp_4!),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1726,9 +1717,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                               surat.tindak_lanjut_1 ==
                                                                       null
                                                                   ? '404 Not Found'
-                                                                  : surat
-                                                                        .tindak_lanjut_1
-                                                                        .toString(),
+                                                                  : parseDateFormat(surat.tindak_lanjut_1!),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1753,9 +1742,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                               surat.tindak_lanjut_2 ==
                                                                       null
                                                                   ? '404 Not Found'
-                                                                  : surat
-                                                                        .tindak_lanjut_2
-                                                                        .toString(),
+                                                                  : parseDateFormat(surat.tindak_lanjut_2!),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white

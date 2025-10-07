@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/settings.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/utils/map.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -1778,7 +1779,7 @@ void showModernTambahSuratMasukFormDialog(
   Color accentColor2,
 
   Function(SuratMasukModel?) onSuratAdded,
-) {
+) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
     'surat_dari': TextEditingController(),
@@ -1813,6 +1814,11 @@ void showModernTambahSuratMasukFormDialog(
   };
   Size size = MediaQuery.of(context).size;
   List<String> selectedDisposisi = [];
+
+  final _appSettings = await AppSettings();
+  final suffix1 = await _appSettings.part1;
+  final suffix2 = await _appSettings.part3;
+
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -2661,8 +2667,7 @@ void showModernTambahSuratMasukFormDialog(
                                                     )
                                                   : null,
                                               kode: controllers['kode']?.text,
-                                              noAgenda: controllers['no_agenda']
-                                                  ?.text,
+                                              noAgenda: controllers['no_agenda']?.text == null ? null : controllers['no_agenda']!.text + '/' + "$suffix1/$suffix2",
                                               noSurat:
                                                   controllers['no_surat']?.text,
                                               hal: controllers['perihal']?.text,
@@ -2889,7 +2894,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
   Color accentColor,
   Color accentColor2,
   Function(SuratKeluarModel?) onSuratKeluarAdded,
-) {
+) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
     'kode': TextEditingController(),
@@ -2910,6 +2915,11 @@ void showModernTambahSuratKeluarFormDesktopDialog(
     'dok_dikirim_tgl': TextEditingController(),
     'tanda_terima': TextEditingController(),
   };
+
+  final AppSettings _appSettings = AppSettings();
+  final suf1 = _appSettings.part1;
+  final suf2 = _appSettings.part3;
+
   Size size = MediaQuery.of(context).size;
   showGeneralDialog(
     context: context,
@@ -3507,7 +3517,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                           klasifikasi:
                                               controllers['klasifikasi']?.text,
                                           no_register:
-                                              controllers['no_register']?.text,
+                                              controllers['no_register']?.text == null ? null : controllers['no_register']!.text + "/$suf1/$suf2",
                                           tujuan_surat:
                                               controllers['tujuan_surat']?.text,
                                           perihal: controllers['perihal']?.text,
