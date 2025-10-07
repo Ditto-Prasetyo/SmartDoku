@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/models/user.dart';
@@ -48,7 +49,9 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
     print("[DEBUG] -> [INFO] : Loading all data user ...");
     try {
       print("[DEBUG] -> [STATE] : title = $title");
-      final data = await (title != null ? _userService.getFilteredUsers(title!) : _userService.listUsers());
+      final data = await (title != null
+          ? _userService.getFilteredUsers(title!)
+          : _userService.listUsers());
       print(data.map((e) => e.toJson()).toList());
       setState(() {
         _userData = data;
@@ -183,16 +186,16 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
       setState(() {
         title = args?['title'] ?? 'Default Title';
       });
 
       print('[DEBUG] -> [STATE -> INIT] : title = $title');
-      
+
       _loadData();
     });
-
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -576,7 +579,6 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
 
               SizedBox(height: 20),
 
-              // Table Container
               Expanded(
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
@@ -600,488 +602,572 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                           width: 1,
                         ),
                       ),
-                      child: Scrollbar(
-                        controller: _horizontalScrollController,
-                        thumbVisibility: true,
-                        trackVisibility: true,
-                        thickness: 8,
-                        radius: Radius.circular(4),
-                        child: SingleChildScrollView(
-                          controller: _horizontalScrollController,
-                          scrollDirection: Axis.horizontal,
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              minWidth:
-                                  MediaQuery.of(context).size.width / 2, // 240 = padding * 10
-                              maxWidth:
-                                  MediaQuery.of(context).size.width / 1.2,
-                            ),
-                            child: IntrinsicWidth(
-                              child: Column(
-                                children: [
-                                  // Header Row
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                      vertical: 10,
+                      clipBehavior: Clip.hardEdge,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          final double viewport = constraints.maxWidth;
+                          final double maxContentWidth = viewport * 1;
+                          return Scrollbar(
+                            controller: _horizontalScrollController,
+                            thumbVisibility: true,
+                            trackVisibility: true,
+                            thickness: 8,
+                            radius: const Radius.circular(4),
+                            child: SingleChildScrollView(
+                              controller: _horizontalScrollController,
+                              scrollDirection: Axis.horizontal,
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(minWidth: viewport),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: maxContentWidth,
                                     ),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white.withValues(alpha: 0.20),
-                                          Colors.white.withValues(alpha: 0.10),
-                                        ],
-                                      ),
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                          width: 1,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Row(
+                                    child: Column(
                                       children: [
-                                        // 1. No - flex: 1
-                                        SizedBox(width: 10),
+                                        // ================== Header Row ==================
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                            vertical: 10,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.20,
+                                                ),
+                                                Colors.white.withValues(
+                                                  alpha: 0.10,
+                                                ),
+                                              ],
+                                            ),
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.2,
+                                                ),
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const SizedBox(width: 50),
+
+                                              // 1) No (fixed 40)
+                                              const SizedBox(
+                                                width: 40,
+                                                child: Text(
+                                                  'No',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Roboto',
+                                                  ),
+                                                ),
+                                              ),
+
+                                              const SizedBox(width: 10),
+
+                                              // 2) Name
+                                              const Expanded(
+                                                flex: 130,
+                                                child: Text(
+                                                  'Name',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Roboto',
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+
+                                              // 3) Username
+                                              const Expanded(
+                                                flex: 90,
+                                                child: Text(
+                                                  'Username',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Roboto',
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+
+                                              const SizedBox(width: 5),
+
+                                              // 4) Email
+                                              const Expanded(
+                                                flex: 120,
+                                                child: Text(
+                                                  'Email',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Roboto',
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+
+                                              const SizedBox(width: 5),
+
+                                              // 5) Role
+                                              const Expanded(
+                                                flex: 60,
+                                                child: Text(
+                                                  'Role',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Roboto',
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+
+                                              const SizedBox(width: 8),
+
+                                              // 6) Aksi (fixed 100)
+                                              const SizedBox(
+                                                width: 100,
+                                                child: Text(
+                                                  'Aksi',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Roboto',
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+
+                                        // ================== Body (scroll vertikal) ==================
+                                        // NOTE: Jangan pakai Expanded di dalam area scrollable vertikal
                                         SizedBox(
-                                          width: 40,
-                                          child: Text(
-                                            'No',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto',
-                                            ),
-                                          ),
-                                        ),
-                        
-                                        // 2. Name - flex: 200
-                                        SizedBox(width: 10),
-                                        Expanded(
-                                          flex: 130,
-                                          child: Text(
-                                            'Name',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto',
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                        
-                                        // 3. Username - flex: 100
-                                        
-                                        Expanded(
-                                          flex: 90,
-                                          child: Text(
-                                            'Username',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto',
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                        
-                                        // 4. Email - flex: 100
-                                        SizedBox(width: 5),
-                                        Expanded(
-                                          flex: 120,
-                                          child: Text(
-                                            'Email',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto',
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                        
-                                        // 5. Role - flex: 100
-                                        SizedBox(width: 5),
-                                        Expanded(
-                                          flex: 60,
-                                          child: Text(
-                                            'Role',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto',
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                        
-                                        // Actions - width: 100 (fixed)
-                                        SizedBox(width: 8),
-                                        SizedBox(
-                                          width: 100,
-                                          child: Text(
-                                            'Aksi',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Roboto',
+                                          height:
+                                              340, // atur sesuai kebutuhanmu
+                                          child: Scrollbar(
+                                            controller:
+                                                _verticalScrollController,
+                                            thumbVisibility: true,
+                                            trackVisibility: true,
+                                            thickness: 8,
+                                            radius: const Radius.circular(4),
+                                            child: SingleChildScrollView(
+                                              controller:
+                                                  _verticalScrollController,
+                                              scrollDirection: Axis.vertical,
+                                              child: Column(
+                                                children: List.generate(_userData.length, (
+                                                  index,
+                                                ) {
+                                                  final surat =
+                                                      _userData[index];
+
+                                                  return Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 20,
+                                                          vertical: 10,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      border: Border(
+                                                        bottom: BorderSide(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 1,
+                                                              ),
+                                                          width: 0.5,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        print(
+                                                          'Row tapped: ${surat.name}',
+                                                        );
+                                                      },
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              vertical: 4,
+                                                            ),
+                                                        child: Row(
+                                                          children: [
+                                                            // 1) No - fixed 40
+                                                            const SizedBox(
+                                                              width: 40,
+                                                              child: DecoratedBox(
+                                                                decoration:
+                                                                    BoxDecoration(),
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 40,
+                                                              child: Container(
+                                                                padding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          6,
+                                                                      vertical:
+                                                                          2,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  gradient: LinearGradient(
+                                                                    colors: [
+                                                                      const Color(
+                                                                        0xFF4F46E5,
+                                                                      ).withValues(
+                                                                        alpha:
+                                                                            0.5,
+                                                                      ),
+                                                                      const Color(
+                                                                        0xFF7C3AED,
+                                                                      ).withValues(
+                                                                        alpha:
+                                                                            0.3,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        6,
+                                                                      ),
+                                                                  border: Border.all(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    width: 0.2,
+                                                                  ),
+                                                                ),
+                                                                child: Text(
+                                                                  '${index + 1}',
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  style: const TextStyle(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontSize:
+                                                                        12,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontFamily:
+                                                                        'Roboto',
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+
+                                                            const SizedBox(
+                                                              width: 20,
+                                                            ),
+
+                                                            // 2) Name
+                                                            Expanded(
+                                                              flex: 130,
+                                                              child: Text(
+                                                                surat.name ==
+                                                                        null
+                                                                    ? 'Nama Tidak Ditemukan'
+                                                                    : surat
+                                                                          .name,
+                                                                style: const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 13,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                ),
+                                                                maxLines: 1,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                              ),
+                                                            ),
+
+                                                            // 3) Username
+                                                            const SizedBox(
+                                                              width: 0,
+                                                            ),
+                                                            Expanded(
+                                                              flex: 90,
+                                                              child: Text(
+                                                                surat.username ==
+                                                                        null
+                                                                    ? 'Username Tidak Ditemukan'
+                                                                    : surat
+                                                                          .username,
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.7,
+                                                                      ),
+                                                                  fontSize: 11,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                              ),
+                                                            ),
+
+                                                            // 4) Email
+                                                            const SizedBox(
+                                                              width: 5,
+                                                            ),
+                                                            Expanded(
+                                                              flex: 120,
+                                                              child: Text(
+                                                                surat.email ==
+                                                                        null
+                                                                    ? 'Email Tidak Ditemukan'
+                                                                    : surat
+                                                                          .email,
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.7,
+                                                                      ),
+                                                                  fontSize: 11,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                                softWrap: true,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .clip,
+                                                              ),
+                                                            ),
+
+                                                            // 5) Role
+                                                            const SizedBox(
+                                                              width: 5,
+                                                            ),
+                                                            Expanded(
+                                                              flex: 60,
+                                                              child: Text(
+                                                                surat.role ==
+                                                                        null
+                                                                    ? 'Role Tidak Ditemukan'
+                                                                    : surat
+                                                                          .role,
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.7,
+                                                                      ),
+                                                                  fontSize: 11,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                ),
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
+                                                              ),
+                                                            ),
+
+                                                            const SizedBox(
+                                                              width: 8,
+                                                            ),
+
+                                                            // Actions - fixed 100
+                                                            SizedBox(
+                                                              width: 100,
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  // View
+                                                                  Container(
+                                                                    margin:
+                                                                        const EdgeInsets.only(
+                                                                          right:
+                                                                              4,
+                                                                        ),
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                          6,
+                                                                        ),
+                                                                    decoration: BoxDecoration(
+                                                                      gradient: LinearGradient(
+                                                                        colors: [
+                                                                          const Color(
+                                                                            0xFF3B82F6,
+                                                                          ).withValues(
+                                                                            alpha:
+                                                                                0.3,
+                                                                          ),
+                                                                          const Color(
+                                                                            0xFF1D4ED8,
+                                                                          ).withValues(
+                                                                            alpha:
+                                                                                0.2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            6,
+                                                                          ),
+                                                                    ),
+                                                                    child: InkWell(
+                                                                      onTap:
+                                                                          () {},
+                                                                      child: const Icon(
+                                                                        Icons
+                                                                            .visibility_outlined,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        size:
+                                                                            14,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  // Edit
+                                                                  Container(
+                                                                    margin:
+                                                                        const EdgeInsets.only(
+                                                                          right:
+                                                                              4,
+                                                                        ),
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                          6,
+                                                                        ),
+                                                                    decoration: BoxDecoration(
+                                                                      gradient: LinearGradient(
+                                                                        colors: [
+                                                                          const Color(
+                                                                            0xFFF59E0B,
+                                                                          ).withValues(
+                                                                            alpha:
+                                                                                0.3,
+                                                                          ),
+                                                                          const Color(
+                                                                            0xFFD97706,
+                                                                          ).withValues(
+                                                                            alpha:
+                                                                                0.2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            6,
+                                                                          ),
+                                                                    ),
+                                                                    child: InkWell(
+                                                                      onTap:
+                                                                          () {},
+                                                                      child: const Icon(
+                                                                        Icons
+                                                                            .edit_outlined,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        size:
+                                                                            14,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  // Delete
+                                                                  Container(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                          6,
+                                                                        ),
+                                                                    decoration: BoxDecoration(
+                                                                      gradient: LinearGradient(
+                                                                        colors: [
+                                                                          const Color(
+                                                                            0xFFEF4444,
+                                                                          ).withValues(
+                                                                            alpha:
+                                                                                0.3,
+                                                                          ),
+                                                                          const Color(
+                                                                            0xFFDC2626,
+                                                                          ).withValues(
+                                                                            alpha:
+                                                                                0.2,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            6,
+                                                                          ),
+                                                                    ),
+                                                                    child: InkWell(
+                                                                      onTap:
+                                                                          () {},
+                                                                      child: const Icon(
+                                                                        Icons
+                                                                            .delete_outline,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        size:
+                                                                            14,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                        
-                                  // Table Body
-                                  Expanded(
-                                    child: Scrollbar(
-                                      controller: _verticalScrollController,
-                                      thumbVisibility: true,
-                                      trackVisibility: true,
-                                      thickness: 8,
-                                      radius: Radius.circular(4),
-                                      child: SingleChildScrollView(
-                                        controller: _verticalScrollController,
-                                        scrollDirection: Axis.vertical,
-                                        child: Column(
-                                          children: List.generate(_userData.length, (
-                                            index,
-                                          ) {
-                                            final surat = _userData[index];
-                                                              
-                                            return Container(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 20,
-                                                vertical: 10,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Colors.white.withValues(
-                                                      alpha: 1,
-                                                    ),
-                                                    width: 0.5,
-                                                  ),
-                                                ),
-                                              ),
-                                              child: InkWell(
-                                                onTap: () {
-                                                  print(
-                                                    'Row tapped: ${surat.name}',
-                                                  );
-                                                },
-                                                borderRadius: BorderRadius.circular(
-                                                  8,
-                                                ),
-                                                child: Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical: 4,
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      // 1. No - width: 40 (sama kayak header)
-                                                      SizedBox(
-                                                        width: 40,
-                                                        child: Container(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 6,
-                                                                vertical: 2,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            gradient:
-                                                                LinearGradient(
-                                                                  colors: [
-                                                                    Color(
-                                                                      0xFF4F46E5,
-                                                                    ).withValues(
-                                                                      alpha: 0.5,
-                                                                    ),
-                                                                    Color(
-                                                                      0xFF7C3AED,
-                                                                    ).withValues(
-                                                                      alpha: 0.3,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  6,
-                                                                ),
-                                                                border: Border.all(
-                                                                  color: Colors.white,
-                                                                  width: 0.2
-                                                                )
-                                                          ),
-                                                          child: Text(
-                                                            '${index + 1}',
-                                                            textAlign:
-                                                                TextAlign.center,
-                                                            style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight.w600,
-                                                              fontFamily: 'Roboto',
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                              
-                                                      // 2. name - flex: 200
-                                                      SizedBox(width: 20),
-                                                      Expanded(
-                                                        flex: 130,
-                                                        child: Text(
-                                                          surat.name == null ? 'Nama Tidak Ditemukan' : surat.name,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 13,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontFamily: 'Roboto',
-                                                          ),
-                                                          maxLines: 1,
-                                                          overflow:
-                                                              TextOverflow.ellipsis,
-                                                              textAlign: TextAlign.center,
-                                                        ),
-                                                      ),
-                                                              
-                                                      // 3. username - flex: 100
-                                                      SizedBox(width: 0),
-                                                      Expanded(
-                                                        flex: 90,
-                                                        child: Text(
-                                                          surat.username == null ?
-                                                              'Username Tidak Ditemukan' : surat.username,
-                                                          style: TextStyle(
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.7,
-                                                                ),
-                                                            fontSize: 11,
-                                                            fontFamily: 'Roboto',
-                                                          ),
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                      ),
-                                                              
-                                                      // 4. email - flex: 100
-                                                      SizedBox(width: 5),
-                                                      Expanded(
-                                                        flex: 120,
-                                                        child: Text(
-                                                          surat.email == null ? 'Email Tidak Ditemukan' : surat.email,
-                                                          style: TextStyle(
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.7,
-                                                                ),
-                                                            fontSize: 11,
-                                                            fontFamily: 'Roboto',
-                                                          ),
-                                                          textAlign: TextAlign.center,
-                                                          softWrap: true,
-                                                          overflow: TextOverflow.clip,
-                                                        ),
-                                                      ),
-                                                              
-                                                      // 5. role - flex: 100
-                                                      SizedBox(width: 5),
-                                                      Expanded(
-                                                        flex: 60,
-                                                        child: Text(
-                                                          surat.role == null ? 'Role Tidak Ditemukan' : surat.role,
-                                                          style: TextStyle(
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.7,
-                                                                ),
-                                                            fontSize: 11,
-                                                            fontFamily: 'Roboto',
-                                                          ),
-                                                          textAlign: TextAlign.center,
-                                                        ),
-                                                      ),
-                                                      // Actions - width: 100 (sama kayak header)
-                                                      SizedBox(width: 8),
-                                                      SizedBox(
-                                                        width: 100,
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                          children: [
-                                                            // View button
-                                                            Container(
-                                                              margin:
-                                                                  EdgeInsets.only(
-                                                                    right: 4,
-                                                                  ),
-                                                              padding:
-                                                                  EdgeInsets.all(6),
-                                                              decoration: BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                      colors: [
-                                                                        Color(
-                                                                          0xFF3B82F6,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.3,
-                                                                        ),
-                                                                        Color(
-                                                                          0xFF1D4ED8,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.2,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      6,
-                                                                    ),
-                                                              ),
-                                                              child: InkWell(
-                                                                onTap: () {
-                                                                  // viewDetail(
-                                                                  //   context,
-                                                                  //   index,
-                                                                  //   suratData,
-                                                                  // );
-                                                                },
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .visibility_outlined,
-                                                                  color:
-                                                                      Colors.white,
-                                                                  size: 14,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            // Edit button
-                                                            Container(
-                                                              margin:
-                                                                  EdgeInsets.only(
-                                                                    right: 4,
-                                                                  ),
-                                                              padding:
-                                                                  EdgeInsets.all(6),
-                                                              decoration: BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                      colors: [
-                                                                        Color(
-                                                                          0xFFF59E0B,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.3,
-                                                                        ),
-                                                                        Color(
-                                                                          0xFFD97706,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.2,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      6,
-                                                                    ),
-                                                              ),
-                                                              child: InkWell(
-                                                                onTap: () {
-                                                                  // editDokumen(
-                                                                  //   context,
-                                                                  //   index,
-                                                                  //   suratData,
-                                                                  //   refreshEditState,
-                                                                  // );
-                                                                },
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .edit_outlined,
-                                                                  color:
-                                                                      Colors.white,
-                                                                  size: 14,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            // Delete button
-                                                            Container(
-                                                              padding:
-                                                                  EdgeInsets.all(6),
-                                                              decoration: BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                      colors: [
-                                                                        Color(
-                                                                          0xFFEF4444,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.3,
-                                                                        ),
-                                                                        Color(
-                                                                          0xFFDC2626,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.2,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      6,
-                                                                    ),
-                                                              ),
-                                                              child: InkWell(
-                                                                onTap: () {
-                                                                  // hapusDokumen(
-                                                                  //   context,
-                                                                  //   index,
-                                                                  //   suratData,
-                                                                  //   actionSetState,
-                                                                  // );
-                                                                },
-                                                                child: Icon(
-                                                                  Icons
-                                                                      .delete_outline,
-                                                                  color:
-                                                                      Colors.white,
-                                                                  size: 14,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          }),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        },
                       ),
                     ),
                   ),
