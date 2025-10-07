@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:io' show Platform;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/utils/map.dart';
@@ -17,7 +18,7 @@ void showModernTambahSuratFormDialog(
   Color accentColor,
   Color accentColor2,
   Function(SuratMasukModel?) onSuratAdded,
-) {
+) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
     'surat_dari': TextEditingController(),
@@ -50,6 +51,10 @@ void showModernTambahSuratFormDialog(
     'tindak_lanjut_2': TextEditingController(),
     'status': TextEditingController(),
   };
+
+  final prefs = await SharedPreferences.getInstance();
+  final suffix1 = await prefs.getString('part1');
+  final suffix2 = await prefs.getString('part3');
 
   showGeneralDialog(
     context: context,
@@ -765,7 +770,7 @@ void showModernTambahSuratFormDialog(
                                               : null,
                                           kode: controllers['kode']?.text,
                                           noAgenda:
-                                              controllers['no_urut']?.text,
+                                              controllers['no_urut']?.text  == null ? "-" : controllers['no_urut']!.text + "/" + "$suffix1/$suffix2",
                                           noSurat:
                                               controllers['no_surat']?.text,
                                           hal: controllers['perihal']?.text,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -34,6 +35,29 @@ class _SettingPageState extends State<SettingPage>
   String _currentPart1 = '35.07.303'; // Default first part
   String _currentPart3 = '2025'; // Default third part
   bool _isEditing = false;
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _currentPart1 = prefs.getString('part1') ?? '35.07.303';
+      _currentPart3 = prefs.getString('part3') ?? '2025';
+      _part1Controller.text = _currentPart1;
+      _part3Controller.text = _currentPart3;
+    });
+  }
+
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('part1', _currentPart1);
+    await prefs.setString('part3', _currentPart3);
+  }
+
+  Future<void> _resetSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('part1');
+    await prefs.remove('part3');
+  }
+
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -85,7 +109,7 @@ class _SettingPageState extends State<SettingPage>
     );
   }
 
-  void _toggleEdit() {
+  void _toggleEdit() async {
     setState(() {
       if (_isEditing) {
         // Save changes
@@ -99,15 +123,20 @@ class _SettingPageState extends State<SettingPage>
       }
       _isEditing = !_isEditing;
     });
+
+    if (!_isEditing) {
+      await _saveSettings();
+    }
   }
 
-  void _resetToDefault() {
+  void _resetToDefault() async {
     setState(() {
       _currentPart1 = '35.07.303';
       _currentPart3 = '2025';
       _part1Controller.text = _currentPart1;
       _part3Controller.text = _currentPart3;
     });
+    await _resetSettings();
     _showSuccessSnackbar('Pengaturan direset ke default!');
   }
 
@@ -134,8 +163,9 @@ class _SettingPageState extends State<SettingPage>
     super.initState();
 
     // Initialize controllers with current values
-    _part1Controller.text = _currentPart1;
-    _part3Controller.text = _currentPart3;
+    // _part1Controller.text = _currentPart1;
+    // _part3Controller.text = _currentPart3;
+    _loadSettings();
 
     // Initialize animations
     _backgroundController = AnimationController(
