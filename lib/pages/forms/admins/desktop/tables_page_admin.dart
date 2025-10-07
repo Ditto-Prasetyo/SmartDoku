@@ -119,40 +119,9 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
     },
   ];
 
-  // List<Map<String, dynamic>> suratData = [
-  //   {
-  //     'id': '1',
-  //     'name': 'Muhammad Annas Bintar Putra',
-  //     'username': 'BintarKun123',
-  //     'email': '220605110105@student.uin-malang.ac.id',
-  //     'role': 'user',
-  //   },
-  //   {
-  //     'id': '2',
-  //     'name': 'Moch. Minanur Rahman',
-  //     'username': 'Nanimz123',
-  //     'email': '220605110112@student.uin-malang.ac.id',
-  //     'role': 'user',
-  //   },
-  //   {
-  //     'id': '3',
-  //     'name': 'Muhamad Radiyudin',
-  //     'username': 'RadiKun123',
-  //     'email': '220605110120@student.uin-malang.ac.id',
-  //     'role': 'user',
-  //   },
-  //   {
-  //     'id': '4',
-  //     'name': 'Anonim',
-  //     'username': 'Anonim123',
-  //     'email': 'anonim123@gmail.com',
-  //     'role': 'user',
-  //   },
-  // ];
-
-  void actionSetState(int index) {
+  void actionSetState(String index) {
     setState(() {
-      // suratData.removeAt(index);
+      _userService.deleteUser(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -160,6 +129,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
         backgroundColor: Colors.red,
       ),
     );
+    _loadData();
   }
 
   void refreshEditState() {
@@ -757,10 +727,9 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                         ),
 
                                         // ================== Body (scroll vertikal) ==================
-                                        // NOTE: Jangan pakai Expanded di dalam area scrollable vertikal
                                         SizedBox(
                                           height:
-                                              340, // atur sesuai kebutuhanmu
+                                              340, 
                                           child: Scrollbar(
                                             controller:
                                                 _verticalScrollController,
@@ -1049,7 +1018,9 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                                     ),
                                                                     child: InkWell(
                                                                       onTap:
-                                                                          () {},
+                                                                          () {
+                                                                             viewDetailUserManagement(context, index, _userData);
+                                                                          },
                                                                       child: const Icon(
                                                                         Icons
                                                                             .visibility_outlined,
@@ -1095,7 +1066,9 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                                     ),
                                                                     child: InkWell(
                                                                       onTap:
-                                                                          () {},
+                                                                          () {
+                                                                            editUserManagement(context, index, _userData, refreshEditState);
+                                                                          },
                                                                       child: const Icon(
                                                                         Icons
                                                                             .edit_outlined,
@@ -1136,7 +1109,9 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                                     ),
                                                                     child: InkWell(
                                                                       onTap:
-                                                                          () {},
+                                                                          () {
+                                                                            hapusUserDesktop(context, index, _userData, actionSetState);
+                                                                          },
                                                                       child: const Icon(
                                                                         Icons
                                                                             .delete_outline,

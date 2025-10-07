@@ -76,3 +76,9 @@ List<Map<String, dynamic>> boxData = [
     'route': 'tables_page_admin.dart',
   },
 ];
+
+final Map<String, String> roleField = {
+  'User': 'USER',
+  'Admin': 'ADMIN',
+  'SuperAdmin': 'SUPERADMIN',
+};

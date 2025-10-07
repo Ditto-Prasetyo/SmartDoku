@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/auth/register_cred_page.dart';
+import 'package:smart_doku/pages/forms/admins/desktop/detail_page_userManagement.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_keluar.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_phones.dart';
 import 'package:smart_doku/pages/forms/users/detail_keluar_page.dart';
 import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/services/auth.dart';
-import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/dialog.dart';
 
 // Auths Section
@@ -531,6 +532,20 @@ void viewDetailAdminKeluar(
   );
 }
 
+void viewDetailUserManagement(
+  BuildContext context,
+  int index,
+  List<UserModel?> userData,
+) {
+  final data = userData[index];
+  print('View Detail - id: ${data!.id}, Name: ${data.name}, Role: ${data.bidang}');
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => DetailPageUsermanagement(userModel: data)),
+  );
+}
+
   void editDokumen(
     BuildContext context,
     int index, 
@@ -562,6 +577,17 @@ void viewDetailAdminKeluar(
     final surat = suratData[index];
     print('Edit Document - ID: ${surat?.id}, Judul: ${surat?.klasifikasi}, \nPembuat : ${surat?.pembuat}');
     showEditSuratKeluarDialog(context, index, suratData, refreshEditState);
+  }
+
+  void editUserManagement(
+    BuildContext context,
+    int index, 
+    List<UserModel?> userData,
+    void Function() refreshEditState
+    ) {
+    final data = userData[index];
+    print('Edit Document - ID: ${data?.id}, Judul: ${data?.name}, \nPengolah : ${data?.bidang}');
+    showEditUserManagementDialog(context, index, userData, refreshEditState);
   }
 
   
@@ -681,6 +707,25 @@ void hapusDokumenKeluarDesktop(
     context,
     index,
     suratData,
+    onConfirmDelete,
+  );
+}
+
+void hapusUserDesktop(
+  BuildContext context,
+  int index,
+  List<UserModel?> userData,
+  void Function(String) onConfirmDelete, 
+) {
+  final user = userData[index];
+  showModernHapusUserManagementDesktop(
+    '⚠️ Konfirmasi Hapus',
+    'Apakah Anda yakin ingin menghapus User "${user?.name}"?',
+    Colors.orange,
+    Colors.deepOrange,
+    context,
+    index,
+    userData,
     onConfirmDelete,
   );
 }

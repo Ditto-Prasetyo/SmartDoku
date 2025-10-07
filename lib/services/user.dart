@@ -27,7 +27,7 @@ class UserService {
   Future<List<UserModel>> listUsers() async {
     print("[DEBUG] -> [FUNC] : listUsers() used!");
     final token = await _authService.getToken();
-    
+
     if (token == null) throw Exception('Token tidak ditemukan');
 
     final uri = Uri.parse("${dotenv.env['API_URL']}/users");
@@ -36,8 +36,8 @@ class UserService {
       uri,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${token}'
-      }
+        'Authorization': 'Bearer ${token}',
+      },
     );
 
     print("[DEBUG] :: Showing response body");
@@ -45,10 +45,10 @@ class UserService {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      
+
       final List<UserModel> allData = data
-        .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+          .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
       return allData;
     } else {
@@ -59,7 +59,7 @@ class UserService {
   Future<List<UserModel>> getFilteredUsers(String bidang) async {
     print("[DEBUG] -> [FUNC] : getFilteredUsers() used!");
     final token = await _authService.getToken();
-    
+
     if (token == null) throw Exception('Token tidak ditemukan');
 
     final uri = Uri.parse("${dotenv.env['API_URL']}/users");
@@ -68,19 +68,21 @@ class UserService {
       uri,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${token}'
-      }
+        'Authorization': 'Bearer ${token}',
+      },
     );
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      
+
       final List<UserModel> allData = data
-        .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+          .map((e) => UserModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
       // Filter sesuai bidang
-      final List<UserModel> filtered = allData.where((user) => user.bidang == bidang).toList();
+      final List<UserModel> filtered = allData
+          .where((user) => user.bidang == bidang)
+          .toList();
 
       return filtered;
     } else {
@@ -97,7 +99,7 @@ class UserService {
       final role = user['role'];
 
       return role == 'SUPERADMIN' ? true : false;
-    } else { 
+    } else {
       return false;
     }
   }
@@ -106,5 +108,100 @@ class UserService {
     final prefs = await SharedPreferences.getInstance();
     final disposisi = await prefs.getString('disposisi');
     return disposisi;
+  }
+
+  Future<bool> addUser(
+    String name,
+    String username,
+    String email,
+    String password,
+    String bidang,
+    String address,
+    String phone,
+  ) async {
+    final url = Uri.parse('${dotenv.env['API_URL']}/auth/register');
+    final token = _authService.getToken();
+
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'email': email,
+        'password': password,
+        'username': username,
+        'name': name,
+        'bidang': bidang,
+        'address': address,
+        'phone_number': phone,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Register failed: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> editUser({
+    String? id,
+    String? name,
+    String? username,
+    String? email,
+    String? bidang,
+    String? address,
+    String? phone,
+    String? role,
+  }) async {
+    final url = Uri.parse('${dotenv.env['API_URL']}/users/$id');
+    final token = _authService.getToken();
+
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'email': email,
+        'username': username,
+        'name': name,
+        'bidang': bidang,
+        'address': address,
+        'phone_number': phone,
+        'role': role,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Register failed: ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> deleteUser(String id) async {
+    final url = Uri.parse('${dotenv.env['API_URL']}/users/$id');
+    final token = _authService.getToken();
+
+    final response = await http.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      print('Register failed: ${response.body}');
+      return false;
+    }
   }
 }

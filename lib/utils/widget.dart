@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/models/user.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:intl/intl.dart';
@@ -217,7 +218,10 @@ Widget buildDayDateTimeInputField(
                 );
 
                 String dayName = DateFormat('EEEE', 'id_ID').format(dateTime);
-                String datePart = DateFormat('dd MMMM yyyy', 'id_ID').format(dateTime);
+                String datePart = DateFormat(
+                  'dd MMMM yyyy',
+                  'id_ID',
+                ).format(dateTime);
                 String timePart = DateFormat('HH:mm').format(dateTime);
 
                 controller.text = "$dayName, $datePart - $timePart";
@@ -243,7 +247,6 @@ Widget buildDayDateTimeInputField(
     ],
   );
 }
-
 
 // Widget Surat Disposisi
 Widget buildSuratDisposisi(
@@ -759,7 +762,6 @@ Widget buildMenuActionDisposisiDesktopUser(
   );
 }
 
-
 Widget buildBorderedText(String text) {
   return Container(
     width: double.infinity, // penuh sesuai Expanded
@@ -1219,7 +1221,9 @@ Widget buildHeaderCardKeluar(SuratKeluarModel? data) {
                       gradient: LinearGradient(
                         colors: [
                           getStatusColor(data?.status ?? "Pending"),
-                          getStatusColor(data?.status ?? "Pending").withValues(alpha: 0.8),
+                          getStatusColor(
+                            data?.status ?? "Pending",
+                          ).withValues(alpha: 0.8),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(20),
@@ -1249,6 +1253,112 @@ Widget buildHeaderCardKeluar(SuratKeluarModel? data) {
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 14,
                       fontFamily: 'Roboto',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Widget buildHeaderUserManagementCard(UserModel? data) {
+  return Container(
+    width: double.infinity,
+    margin: EdgeInsets.only(bottom: 10),
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+        child: Container(
+          padding: EdgeInsets.all(25),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.white.withValues(alpha: 0.25),
+                Colors.white.withValues(alpha: 0.1),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.3),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 20,
+                offset: Offset(0, 10),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color(0xFF4F46E5).withValues(alpha: 0.4),
+                          blurRadius: 10,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Icon(
+                      Icons.description_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data?.name ?? 'User',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontFamily: 'Roboto',
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Bidang: ${data?.bidang}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withValues(alpha: 0.8),
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          'Role : ${data?.role}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white.withValues(alpha: 0.8),
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

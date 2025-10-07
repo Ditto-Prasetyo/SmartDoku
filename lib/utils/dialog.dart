@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
@@ -12,6 +13,7 @@ import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/utils/icon.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/utils/map.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +22,7 @@ import 'dart:io' show Platform;
 // Services Initialize
 SuratKeluar _suratKeluarService = SuratKeluar();
 SuratMasuk _suratMasukService = SuratMasuk();
+UserService _userService = UserService();
 
 // -- Login Edition --
 void showErrorDialog(
@@ -5623,6 +5626,511 @@ void showEditSuratKeluarDialog(
   );
 }
 
+void showEditUserManagementDialog(
+  BuildContext context,
+  int index,
+  List<UserModel?> userData,
+  void Function() refreshState,
+) {
+  final selectedUser = userData[index];
+  // Controllers untuk form
+  final TextEditingController nameController = TextEditingController(
+    text: selectedUser?.name,
+  );
+  final TextEditingController usernameController = TextEditingController(
+    text: selectedUser?.username,
+  );
+  final TextEditingController emailController = TextEditingController(
+    text: selectedUser?.email,
+  );
+  final TextEditingController roleController = TextEditingController(
+    text: (() {
+      final RoleUser = selectedUser?.role;
+
+      if (RoleUser == null) return '';
+      if (RoleUser is int) return 'Error!';
+      return RoleUser.toString();
+    })(),
+  );
+
+  String? selectedRole = selectedUser?.role?.isNotEmpty == true
+      ? selectedUser!.role
+      : null;
+      
+  final TextEditingController addressController = TextEditingController(
+    text:
+        selectedUser?.id,
+  );
+  final TextEditingController phoneController = TextEditingController(
+    text: selectedUser?.phone_number,
+  );
+
+  Size size = MediaQuery.of(context).size;
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Edit Surat Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.9,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: Offset(0, 15),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Container(
+                        padding: EdgeInsets.all(25),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Colors.white.withValues(alpha: 0.2),
+                              Colors.white.withValues(alpha: 0.1),
+                            ],
+                          ),
+                          border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            width: 1.5,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Header
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Color(
+                                            0xFF4F46E5,
+                                          ).withValues(alpha: 0.3),
+                                          Color(
+                                            0xFF7C3AED,
+                                          ).withValues(alpha: 0.2),
+                                        ],
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(
+                                            0xFF4F46E5,
+                                          ).withValues(alpha: 0.3),
+                                          blurRadius: 15,
+                                          spreadRadius: 2,
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.edit_document,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Expanded(
+                                    child: Text(
+                                      'Edit Data User ${selectedUser?.name}',
+                                      style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () => Navigator.pop(context),
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.1,
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.8,
+                                        ),
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                              SizedBox(height: 25),
+
+                              // Form Fields
+                              buildInputField(
+                                'Nama ${selectedUser?.name}',
+                                nameController,
+                                Icons.title_rounded,
+                                maxLines: 2,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildDateInputField(
+                                'Username ${selectedUser?.name}',
+                                usernameController,
+                                Icons.event_available_rounded,
+                                context,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildDateInputField(
+                                'Email ${selectedUser?.name}',
+                                emailController,
+                                Icons.event_note_rounded,
+                                context,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              // Multi-Select Pengolah role
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Role ${selectedUser?.name}',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Dropdown to add more role
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.05,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              hint: Text(
+                                                'Pilih Role',
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.6),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              value: selectedRole,
+                                              isExpanded: true,
+                                              dropdownColor: Color(0xFF1F2937),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              icon: Icon(
+                                                Icons
+                                                    .keyboard_arrow_down_rounded,
+                                                color: Colors.white.withValues(alpha: 
+                                                  0.7,
+                                                ),
+                                              ),
+                                              items: roleField.entries.map((
+                                                entry,
+                                              ) {
+                                                return DropdownMenuItem<String>(
+                                                  value: entry.value,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.person,
+                                                        color: Colors.white
+                                                            .withValues(alpha: 0.7),
+                                                        size: 16,
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Expanded(
+                                                        child: Text(
+                                                          entry.key,
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? value) {
+                                                setState(() {
+                                                  selectedRole = value;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Alamat ${{selectedUser?.name}}',
+                                addressController,
+                                Icons.assignment_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 20),
+
+                              buildInputField(
+                                'Nomor Telepon ${selectedUser?.name}',
+                                phoneController,
+                                Icons.markunread_mailbox_rounded,
+                                maxLines: 1,
+                              ),
+
+                              SizedBox(height: 30),
+
+                              // Action Buttons
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: OutlinedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        side: BorderSide(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          width: 1.5,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Batal',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 15),
+                                  Expanded(
+                                    flex: 2,
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        try {
+                                          // Update data
+                                          final data = await _userService.editUser(
+                                            name:
+                                                nameController.text,
+                                            username:
+                                                usernameController.text,
+                                            email:
+                                                emailController.text,
+                                            address:
+                                                addressController.text,
+                                            phone:
+                                                phoneController.text,
+                                            role:
+                                                roleController.text,
+                                          );
+
+                                          print(data);
+
+                                          // Refresh state
+                                          refreshState();
+
+                                          // Close dialog
+                                          Navigator.pop(context);
+
+                                          // Show success message
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Surat berhasil diperbarui!',
+                                              ),
+                                              backgroundColor: Color(
+                                                0xFF10B981,
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          // Handle error
+                                          print('Error updating surat: $e');
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text('Error: $e'),
+                                              backgroundColor: Colors.red,
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Color(0xFF10B981),
+                                        foregroundColor: Colors.white,
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 15,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                        ),
+                                        elevation: 8,
+                                        shadowColor: Color(
+                                          0xFF10B981,
+                                        ).withValues(alpha: 0.4),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(Icons.save_rounded, size: 20),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            'Simpan Perubahan',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 void showModernHapusDialog(
   String title,
   String message,
@@ -6162,6 +6670,201 @@ void showModernHapusDialogDesktop(
                           onPressed: () {
                             Navigator.of(context).pop();
                             onConfirmDelete(surat!.nomor_urut);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor2,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor2.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.check),
+                              SizedBox(width: 10),
+                              Text(
+                                'Yes',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernHapusUserManagementDesktop(
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+  int index,
+  List<UserModel?> userData,
+  void Function(String) onConfirmDelete,
+) {
+  Size size = MediaQuery.of(context).size;
+  final data = userData[index];
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Error Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              accentColor.withValues(alpha: 0.8),
+                              accentColor.withValues(alpha: 0.6),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: accentColor.withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.warning_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.4,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 25),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.cancel),
+                              SizedBox(width: 10),
+                              Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            onConfirmDelete(data!.id);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
