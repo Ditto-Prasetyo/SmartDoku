@@ -1694,10 +1694,14 @@ void showModernLogoutDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      Size size = MediaQuery.of(context).size;
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2
+                : size.width,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -5659,7 +5663,7 @@ void showEditUserManagementDialog(
       
   final TextEditingController addressController = TextEditingController(
     text:
-        selectedUser?.id,
+        selectedUser?.address,
   );
   final TextEditingController phoneController = TextEditingController(
     text: selectedUser?.phone_number,
@@ -5816,21 +5820,19 @@ void showEditUserManagementDialog(
 
                               SizedBox(height: 20),
 
-                              buildDateInputField(
+                              buildInputField(
                                 'Username ${selectedUser?.name}',
                                 usernameController,
                                 Icons.event_available_rounded,
-                                context,
                                 maxLines: 1,
                               ),
 
                               SizedBox(height: 20),
 
-                              buildDateInputField(
+                              buildInputField(
                                 'Email ${selectedUser?.name}',
                                 emailController,
                                 Icons.event_note_rounded,
-                                context,
                                 maxLines: 1,
                               ),
 
@@ -5961,7 +5963,7 @@ void showEditUserManagementDialog(
                               SizedBox(height: 20),
 
                               buildInputField(
-                                'Alamat ${{selectedUser?.name}}',
+                                'Alamat ${selectedUser?.name}',
                                 addressController,
                                 Icons.assignment_rounded,
                                 maxLines: 1,

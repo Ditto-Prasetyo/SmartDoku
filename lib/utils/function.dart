@@ -586,7 +586,7 @@ void viewDetailUserManagement(
     void Function() refreshEditState
     ) {
     final data = userData[index];
-    print('Edit Document - ID: ${data?.id}, Judul: ${data?.name}, \nPengolah : ${data?.bidang}');
+    print('Edit Document - ID: ${data?.id}, User: ${data?.name}, \nBidang : ${data?.bidang}');
     showEditUserManagementDialog(context, index, userData, refreshEditState);
   }
 

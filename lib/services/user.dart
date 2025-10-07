@@ -187,20 +187,21 @@ class UserService {
 
   Future<bool> deleteUser(String id) async {
     final url = Uri.parse('${dotenv.env['API_URL']}/users/$id');
-    final token = _authService.getToken();
+    final token = await _authService.getToken();
 
     final response = await http.delete(
       url,
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
     );
+    
+    print('[DEBUG] :: [STATE] : ID = $id');
 
     if (response.statusCode == 200) {
       return true;
     } else {
-      print('Register failed: ${response.body}');
+      print('Delete failed: ${response.body}');
       return false;
     }
   }

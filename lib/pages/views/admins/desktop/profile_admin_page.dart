@@ -709,8 +709,19 @@ class _AdminProfileState extends State<AdminProfile>
                                           Icons.email_outlined,
                                           Color(0xFF10B981),
                                         ),
-                                        SizedBox(height: 12)
-                                        
+                                        SizedBox(height: 12),
+                                        _buildAdminInfoCard(
+                                          'Alamat', 
+                                          _user?.address ?? 'none', 
+                                          Icons.home, 
+                                          Colors.yellow.withValues(alpha: 0.6),
+                                          ),
+                                          SizedBox(height: 12),
+                                        _buildAdminInfoCard(
+                                          'Nomor Telepon', 
+                                          _user?.phone_number ?? 'none', 
+                                          Icons.phone, 
+                                          Colors.deepPurple.withValues(alpha: 0.6))
                                       ],
                                     ),
                                   ),

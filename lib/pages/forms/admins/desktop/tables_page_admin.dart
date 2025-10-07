@@ -119,17 +119,17 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
     },
   ];
 
-  void actionSetState(String index) {
+  void actionSetState(String index) async {
     setState(() {
       _userService.deleteUser(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Dokumen berhasil dihapus'),
+        content: Text('User berhasil dihapus'),
         backgroundColor: Colors.red,
       ),
     );
-    _loadData();
+    await _loadData();
   }
 
   void refreshEditState() {
@@ -494,11 +494,12 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              
               // Header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  buildSectionTitleDisposisiDesktop('Data Surat Masuk'),
+                  buildSectionTitleDisposisiDesktop('Data Akun Bidang ${title}'),
                   Container(
                     child: Row(
                       children: [

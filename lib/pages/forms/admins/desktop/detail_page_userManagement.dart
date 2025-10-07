@@ -600,7 +600,7 @@ class _DetailPageUsermanagement extends State<DetailPageUsermanagement> with Tic
                           buildInfoCard([
                             buildDetailRow(
                               'Alamat',
-                              userData!.address == null ? 'Data Kosong!' : userData.id,
+                              userData!.address == null ? 'Data Kosong!' : userData.address,
                             ),
                             buildDetailRow('Nomor Telepon', userData!.phone_number == null ? 'Data Kosong!' : userData.phone_number),
                           ]),

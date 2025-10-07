@@ -89,7 +89,7 @@ class _OutgoingLetterPageAdminDesktopState
     {'id': 'p8', 'nama_pengolah': 'UKP'},
   ];
 
-  void actionSetState(int index) {
+  void actionSetState(int index) async {
     setState(() {
       _suratService.deleteSurat(index);
     });
@@ -100,6 +100,7 @@ class _OutgoingLetterPageAdminDesktopState
         backgroundColor: Colors.red,
       ),
     );
+    await _loadAllData();
   }
 
   // String? getNamaPengolah(
@@ -139,13 +140,14 @@ class _OutgoingLetterPageAdminDesktopState
     }
   }
 
-  void refreshEditState() {
-    _loadAllData();
-
+  void refreshEditState() async {
     setState(() {
       // Refresh ListView setelah edit data
       // Data suratData udah diupdate di modal
     });
+
+    await _loadAllData();
+
   }
 
   void _navigateToPage(

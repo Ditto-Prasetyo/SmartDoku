@@ -101,7 +101,7 @@ class _PermohonanLettersPageAdminDesktopState
     },
   ];
 
-  void actionSetState(int index) {
+  void actionSetState(int index) async {
     setState(() {
       _suratService.deleteSurat(index);
     });
@@ -111,17 +111,17 @@ class _PermohonanLettersPageAdminDesktopState
         backgroundColor: Colors.red,
       ),
     );
-    _loadAllData();
+    await _loadAllData();
   }
 
-  void refreshEditState() {
-    _loadAllData();
-
+  void refreshEditState() async {
     setState(() {});
+
+    await _loadAllData();
   }
 
-  void refreshAddState() {
-    _loadAllData();
+  void refreshAddState() async {
+    await _loadAllData();
   }
 
   void _navigateToPage(
