@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -1215,9 +1216,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           Expanded(
                                                             flex: 50,
                                                             child: Text(
-                                                              surat?.tanggal_surat
-                                                                      .toString() ??
-                                                                  '',
+                                                              surat?.tanggal_surat == null ? '-' : parseDateFormat(surat!.tanggal_surat),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1388,8 +1387,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           Expanded(
                                                             flex: 27,
                                                             child: Text(
-                                                              surat!.dok_dikirim
-                                                                  .toString(),
+                                                              surat?.dok_dikirim == null ? "-" : parseDateFormat(surat!.dok_dikirim!),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1405,7 +1403,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           Expanded(
                                                             flex: 27,
                                                             child: Text(
-                                                              surat.dok_final!,
+                                                              surat?.dok_final == null ? "-" : surat!.dok_final!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1421,9 +1419,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           Expanded(
                                                             flex: 27,
                                                             child: Text(
-                                                              surat.tanda_terima
-                                                                      .toString() ??
-                                                                  "-",
+                                                              surat?.tanda_terima == null ? "-" : parseDateFormat(surat!.tanda_terima!),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
