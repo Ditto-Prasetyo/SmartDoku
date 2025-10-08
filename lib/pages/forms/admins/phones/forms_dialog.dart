@@ -3830,6 +3830,7 @@ void showModernTambahUserFormDialog(
     'role': TextEditingController(),
     'address': TextEditingController(),
     'phone_number': TextEditingController(),
+    'password': TextEditingController()
   };
   controllers['bidang']!.text = bidang;
   Size size = MediaQuery.of(context).size;
@@ -4199,6 +4200,15 @@ void showModernTambahUserFormDialog(
                                                 ),
                                               ],
                                             ),
+                                            SizedBox(height: 30),
+
+                                            _buildModernTextField(
+                                              controller:
+                                                  controllers['password']!,
+                                              label: 'Password User',
+                                              icon: Icons.phone,
+                                              required: true,
+                                            ),
 
                                             SizedBox(height: 30),
                                           ],
@@ -4247,6 +4257,7 @@ void showModernTambahUserFormDialog(
                                                   controllers['address']?.text,
                                               phone: controllers['phone_number']
                                                   ?.text,
+                                              password: controllers['password']?.text
                                             );
 
                                             // Call the callback function

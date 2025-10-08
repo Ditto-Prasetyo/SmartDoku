@@ -26,21 +26,6 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
 
   String? title;
 
-  // @override
-  // void didChangeDependencies() {
-  //   super.didChangeDependencies();
-
-  //   // Cegah reassign kalau sudah pernah diambil
-  //   if (title == null) {
-  //     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-  //     setState(() {
-  //       title = args?['title'] ?? 'Default Title';
-  //       icon = args?['icon'];
-  //       colors = args?['colors'];
-  //     });
-  //   }
-  // }
-
   // User Services
   UserService _userService = UserService();
   List<UserModel> _userData = [];
@@ -132,11 +117,8 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
     await _loadData();
   }
 
-  void refreshEditState() {
-    setState(() {
-      // Refresh ListView setelah edit data
-      // Data suratData udah diupdate di modal
-    });
+  void refreshEditState() async {
+    await _loadData();  
   }
 
   void _navigateToPage(
@@ -565,12 +547,9 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               InkWell(
-                                onTap: () {
-                                  tambahUser(context, title!, (newSurat) {
-                                    setState(() {
-                                      
-                                    });
-                                  });
+                                onTap: () async {
+                                  tambahUser(context, title!, (newUser) {});
+                                  await _loadData();
                                 },
                                 child: Icon(
                                   Icons.add,

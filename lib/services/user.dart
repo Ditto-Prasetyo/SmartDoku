@@ -120,8 +120,8 @@ class UserService {
     String? address,
     String? phone,
   }) async {
-    final url = Uri.parse('${dotenv.env['API_URL']}/auth/register');
-    final token = _authService.getToken();
+    final url = Uri.parse('${dotenv.env['API_URL']}/users');
+    final token = await _authService.getToken();
 
     final response = await http.post(
       url,

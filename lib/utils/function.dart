@@ -635,7 +635,7 @@ void tambahSuratKeluarDesktop(BuildContext context, Function(SuratKeluarModel?) 
   );
 }
 
-void tambahUser(BuildContext context, String bidang, Function(UserModel?) onSuratKeluarAdded) {
+void tambahUser(BuildContext context, String bidang, Function(UserModel?) onUserAdded) {
   showModernTambahUserDialog(
     'Tambah User (Tidak Disarankan!)',
     bidang,
@@ -643,7 +643,7 @@ void tambahUser(BuildContext context, String bidang, Function(UserModel?) onSura
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
-    onSuratKeluarAdded,
+    onUserAdded,
   );
 }
 
