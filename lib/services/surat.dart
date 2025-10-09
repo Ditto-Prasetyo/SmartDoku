@@ -60,7 +60,7 @@ class SuratMasuk {
 
   Future<SuratMasukModel?> getSurat(int number) async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk/$number');
-    final token = await await _authService.getToken();
+    final token = await _authService.getToken();
 
     final response = await http.get(
       url,
@@ -293,7 +293,7 @@ class SuratMasuk {
 
   // Files services
   Future<bool> uploadFile(int nomor_urut, File file) async {
-    final token = await await _authService.getToken();
+    final token = await _authService.getToken();
 
     final request = http.MultipartRequest(
       'POST',
@@ -307,7 +307,7 @@ class SuratMasuk {
   }
 
   Future<File?> downloadFile(int fileId, String savePath) async {
-    final token = await await _authService.getToken();
+    final token = await _authService.getToken();
 
     final uri = Uri.parse('${dotenv.env['API_URL']}/download/surat/masuk/$fileId');
     final response = await http.get(
@@ -334,7 +334,7 @@ class SuratKeluar {
 
   Future<List<SuratKeluarModel?>> listSurat() async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/keluar');
-    final token = await await _authService.getToken();
+    final token = await _authService.getToken();
 
     final response = await http.get(
       url,
@@ -355,7 +355,7 @@ class SuratKeluar {
 
   Future<SuratKeluarModel?> getSurat(int number) async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/keluar/$number');
-    final token = await await _authService.getToken();
+    final token = await _authService.getToken();
 
     final response = await http.get(
       url,
@@ -551,7 +551,7 @@ class SuratKeluar {
 
   // Files services
   Future<bool> uploadFile(int nomor_urut, File file) async {
-    final token = await await _authService.getToken();
+    final token = await _authService.getToken();
 
     final request = http.MultipartRequest(
       'POST',
