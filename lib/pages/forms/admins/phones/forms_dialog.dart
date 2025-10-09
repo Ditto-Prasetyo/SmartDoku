@@ -4572,7 +4572,7 @@ Widget buildDatePickerField({
           lastDate: DateTime(2100),
         );
 
-        final selectedDate = pickedDate?.toUtc().toIso8601String();
+        final selectedDate = pickedDate?.toIso8601String() == null ? null : pickedDate!.toIso8601String() + "Z";
 
         if (pickedDate != null) {
           controller.text = selectedDate!;
@@ -4620,7 +4620,7 @@ Widget buildTimePickerField({
             pickedTime.minute,
           );
 
-          final selectedTimeIso = selectedTime.toUtc().toIso8601String();
+          final selectedTimeIso = selectedTime.toIso8601String() + "Z";
           controller.text = selectedTimeIso;
         }
       },
@@ -4721,7 +4721,7 @@ Widget buildDayDateTimePickerField({
               pickedTime.minute,
             );
 
-            final selectedDateTime = combinedDateTime.toUtc().toIso8601String();
+            final selectedDateTime = combinedDateTime.toIso8601String() + "Z";
 
             controller.text = selectedDateTime;
           }
