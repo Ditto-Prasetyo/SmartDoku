@@ -85,7 +85,6 @@ class SuratMasuk {
     DateTime? tanggalDiterima,
     DateTime? tanggalSurat,
     String? kode,
-    String? noAgenda,
     String? noSurat,
     String? hal,
     DateTime? tanggalWaktu,
@@ -125,7 +124,6 @@ class SuratMasuk {
         'tanggal_diterima': tanggalDiterima?.toIso8601String(),
         'tanggal_surat': tanggalSurat?.toIso8601String(),
         'kode': kode,
-        'no_agenda': noAgenda,
         'no_surat': noSurat,
         'hal': hal,
         'tanggal_waktu': tanggalWaktu?.toIso8601String(),
@@ -388,7 +386,6 @@ class SuratKeluar {
   Future<SuratKeluarModel?> addSurat({
     String? kode,
     String? klasifikasi,
-    String? no_register,
     String? tujuan_surat,
     String? perihal,
     DateTime? tanggal_surat,
@@ -418,7 +415,6 @@ class SuratKeluar {
       final body = {
         'kode': kode,
         'klasifikasi': klasifikasi,
-        'no_register': no_register,
         'tujuan_surat': tujuan_surat,
         'perihal': perihal,
         'tanggal_surat': tanggal_surat?.toIso8601String(),
