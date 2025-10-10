@@ -6793,6 +6793,8 @@ void showModernHapusDialog(
   List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete,
 ) {
+  final surat = suratData[index];
+
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -6931,7 +6933,7 @@ void showModernHapusDialog(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            onConfirmDelete(index);
+                            onConfirmDelete(surat!.nomor_urut);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,

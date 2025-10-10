@@ -218,10 +218,9 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
     searchFocusNode.unfocus();
   }
 
-  void actionSetState(int index) {
-    setState(() {
-      _listSurat.removeAt(index);
-    });
+  void actionSetState(int index) async {
+    await _suratService.deleteSurat(index);
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Dokumen berhasil dihapus'),
