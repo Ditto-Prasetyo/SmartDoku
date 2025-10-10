@@ -208,10 +208,9 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
     searchFocusNode.unfocus();
   }
 
-  void actionSetState(int index) {
-    setState(() {
-      // _listSurat.removeAt(index);
-    });
+  void actionSetState(int index) async {
+    await _suratService.deleteSurat(index);
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Dokumen berhasil dihapus'),
@@ -1702,26 +1701,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                                       surat?.disposisi ==
                                                                               null
                                                                           ? '404 Not Found'
-                                                                          : (surat.disposisi
-                                                                                    as List)
-                                                                                .map(
-                                                                                  (
-                                                                                    item,
-                                                                                  ) => workFields.entries
-                                                                                      .firstWhere(
-                                                                                        (
-                                                                                          entry,
-                                                                                        ) =>
-                                                                                            entry.value ==
-                                                                                            item['tujuan'],
-                                                                                        orElse: () => MapEntry(
-                                                                                          item['tujuan']!,
-                                                                                          item['tujuan']!,
-                                                                                        ),
-                                                                                      )
-                                                                                      .key,
-                                                                                )
-                                                                                .join(', '),
+                                                                          : (surat.disposisi as List).join(', '),
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white

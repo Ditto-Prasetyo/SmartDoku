@@ -633,13 +633,7 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                             buildDetailRow(
                               'Disposisi',
                               detailData.disposisi == null ? 'Data Kosong!' 
-                                : (detailData.disposisi as List)
-                                  .map((item) => workFields.entries
-                                    .firstWhere((entry) => entry.value == item['tujuan'],
-                                      orElse: () => MapEntry(item['tujuan']!, item['tujuan']!)
-                                    ).key
-                                  )
-                                  .join(', '),
+                                : (detailData.disposisi as List).join(', '),
                             ),
                             buildDetailRow('Index', detailData.index!),
                             buildDetailRow('Pengolah', detailData.pengolah == null ? 'Data Kosong!' : detailData.pengolah),

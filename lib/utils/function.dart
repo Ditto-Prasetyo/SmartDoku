@@ -653,16 +653,16 @@ void hapusDokumen(
   void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
 ) {
   final surat = suratData[index];
-  // showModernHapusDialog(
-  //   '⚠️ Konfirmasi Hapus',
-  //   'Apakah Anda yakin ingin menghapus surat "${surat['judul']}"?',
-  //   Colors.orange,
-  //   Colors.deepOrange,
-  //   context,
-  //   index,
-  //   suratData,
-  //   onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
-  // );
+  showModernHapusSuratMasukDialog(
+    '⚠️ Konfirmasi Hapus',
+    'Apakah Anda yakin ingin menghapus surat "${surat!.nama_surat}"?',
+    Colors.orange,
+    Colors.deepOrange,
+    context,
+    index,
+    suratData,
+    onConfirmDelete, // ⬅️ Callback buat jalanin setState nanti
+  );
 }
 
 void hapusDokumenDesktop(
