@@ -220,7 +220,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
 
   void actionSetState(int index) {
     setState(() {
-      // suratData.removeAt(index);
+      _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
