@@ -3808,14 +3808,6 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                           kode: controllers['kode']?.text,
                                           klasifikasi:
                                               controllers['klasifikasi']?.text,
-                                          no_register:
-                                              controllers['no_register']
-                                                      ?.text ==
-                                                  null
-                                              ? null
-                                              : controllers['no_register']!
-                                                        .text +
-                                                    "/$suf1/$suf2",
                                           tujuan_surat:
                                               controllers['tujuan_surat']?.text,
                                           perihal: controllers['perihal']?.text,
