@@ -2754,7 +2754,7 @@ void showModernActionErrorDialog(
   );
 }
 
-void showModernActionAdminDialog(
+void showModernActionAdminMasukDialog(
   int selectedIndex,
   String title,
   String message,
@@ -2763,14 +2763,13 @@ void showModernActionAdminDialog(
   Color accentColor3,
   Color accentColor4,
   BuildContext context,
-  List<dynamic> suratData,
+  List<SuratMasukModel?> listSurat,
   void Function(int) editDokumen,
   void Function(int) viewDetailAdmin,
   void Function(int) hapusDokumen,
   void Function(BuildContext) pickDocument,
-  void Function(BuildContext) pickImage,
 ) {
-  final selectedSurat = suratData[selectedIndex];
+  final selectedSurat = listSurat[selectedIndex];
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -2877,7 +2876,308 @@ void showModernActionAdminDialog(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            showUploadDialog(context, pickDocument, pickImage);
+                            showUploadDialog(context, pickDocument);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor4,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor3.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.cloud_upload),
+                              SizedBox(width: 14),
+                              Text(
+                                'Upload Dokumen',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            viewDetailAdmin(selectedIndex);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.search, size: 20),
+                              SizedBox(width: 14),
+                              Text(
+                                'Lihat Detail',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            editDokumen(selectedIndex);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor2,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor2.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.edit),
+                              SizedBox(width: 14),
+                              Text(
+                                'Edit Dokumen',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            hapusDokumen(selectedIndex);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accentColor3,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            elevation: 8,
+                            shadowColor: accentColor3.withValues(alpha: 0.4),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.delete_forever),
+                              SizedBox(width: 14),
+                              Text(
+                                'Hapus Dokumen',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.close),
+                              SizedBox(width: 14),
+                              Text(
+                                'Batal',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernActionAdminKeluarDialog(
+  int selectedIndex,
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  Color accentColor3,
+  Color accentColor4,
+  BuildContext context,
+  List<SuratKeluarModel?> listSurat,
+  void Function(int) editDokumen,
+  void Function(int) viewDetailAdmin,
+  void Function(int) hapusDokumen,
+  void Function(BuildContext) pickDocument,
+) {
+  final selectedSurat = listSurat[selectedIndex];
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Error Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(25),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFF10B981).withValues(alpha: 0.3),
+                              Color(0xFF059669).withValues(alpha: 0.2),
+                            ],
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0xFF10B981).withValues(alpha: 0.3),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          LineIcons.envelopeOpen,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 15),
+                      Text(
+                        message,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withValues(alpha: 0.9),
+                          height: 1.4,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 25),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            showUploadDialog(context, pickDocument);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor4,
@@ -6490,7 +6790,7 @@ void showModernHapusDialog(
   Color accentColor2,
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete,
 ) {
   showGeneralDialog(
@@ -7487,7 +7787,6 @@ void showDeleteConfirmation(BuildContext context) {
 void showUploadDialog(
   BuildContext context,
   void Function(BuildContext) pickDocument,
-  void Function(BuildContext) pickImage,
 ) {
   showGeneralDialog(
     context: context,
@@ -7590,43 +7889,6 @@ void showUploadDialog(
                         ),
                       ),
                       SizedBox(height: 25),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            pickImage(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF059669),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFF059669,
-                            ).withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.image, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Upload Gambar',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(

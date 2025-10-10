@@ -424,7 +424,7 @@ void actionAdmin(
       ? '${perihal.substring(0, 30)}...'
       : perihal;
   print('Anda Menggunakan Admin \nAnda memilih surat ${surat?.nama_surat}');
-  showModernActionAdminDialog(
+  showModernActionAdminMasukDialog(
     index,
     '${surat?.nama_surat}',
     'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat?.tanggal_surat.toString()}',
@@ -438,40 +438,38 @@ void actionAdmin(
     viewDetailAdmin,
     hapusDokumen,
     pickDocument,
-    pickImage,
   );
 }
 
 void actionAdminKeluar(
   int index,
   BuildContext context,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel?> listSurat,
   void Function(int) editDokumenAdmin,
   void Function(int) viewDetailAdmin,
   void Function(int) hapusDokumen,
 ) {
-  final surat = suratData[index];
+  final surat = listSurat[index];
 
-  String perihal = surat['perihal'].isEmpty ? 'Data Kosong!' : surat['perihal'];
-  String perihalPendek = perihal.length > 30
-      ? '${perihal.substring(0, 30)}...'
-      : perihal;
-  print('Anda Menggunakan Admin \nAnda memilih surat ${surat['klasifikasi']}');
-  showModernActionAdminDialog(
+  String newPerihal = surat?.perihal ?? '';
+  String perihalPendek = newPerihal.length > 30
+      ? '${newPerihal.substring(0, 30)}...'
+      : newPerihal;
+  print('Anda Menggunakan Admin \nAnda memilih surat ${surat?.perihal}');
+  showModernActionAdminKeluarDialog(
     index,
-    '${surat['klasifikasi']}',
-    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat['tgl_surat']}',
+    '${surat?.perihal}',
+    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat?.tanggal_surat}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
     Color(0xFF10B981).withValues(alpha: 0.4),
     context,
-    suratData,
+    listSurat,
     editDokumenAdmin,
     viewDetailAdmin,
     hapusDokumen,
     pickDocument,
-    pickImage,
   );
 }
 
@@ -520,10 +518,10 @@ void viewDetailAdmin(
 void viewDetailAdminKeluar(
   BuildContext context,
   int index,
-  List<SuratKeluarModel> suratData,
+  List<SuratKeluarModel?> suratData,
 ) {
   final surat = suratData[index];
-  print('View Detail - ID: ${surat.nomor_urut}, Judul: ${surat.klasifikasi}');
+  print('View Detail - ID: ${surat?.nomor_urut}, Judul: ${surat?.klasifikasi}');
   print('Anda memakai Detail Surat Keluar');
 
   Navigator.push(
@@ -689,13 +687,13 @@ void hapusDokumenDesktop(
 void hapusDokumenKeluar(
   BuildContext context,
   int index,
-  List<Map<String, dynamic>> suratData,
+  List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
 ) {
-  final surat = suratData[index];
+  final surat = suratData?[index];
   showModernHapusDialog(
     '⚠️ Konfirmasi Hapus',
-    'Apakah Anda yakin ingin menghapus surat "${surat['klasifikasi']}"?',
+    'Apakah Anda yakin ingin menghapus surat "${surat?.klasifikasi}"?',
     Colors.orange,
     Colors.deepOrange,
     context,

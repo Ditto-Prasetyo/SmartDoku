@@ -1470,57 +1470,62 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    // actionAdminKeluar(
-                                                    //   index,
-                                                    //   context,
-                                                    //   suratData,
-                                                    //   (i) =>
-                                                    //       editDokumenAdminKeluar(
-                                                    //         context,
-                                                    //         index,
-                                                    //         suratData,
-                                                    //         refreshEditState,
-                                                    //       ),
-                                                    //   (i) =>
-                                                    //       viewDetailAdminKeluar(
-                                                    //         context,
-                                                    //         index,
-                                                    //         suratData,
-                                                    //       ),
-                                                    //   (i) => hapusDokumenKeluar(
-                                                    //     context,
-                                                    //     index,
-                                                    //     suratData,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                    actionAdminKeluar(
+                                                      index,
+                                                      context,
+                                                      _listSurat,
+                                                      (i) =>
+                                                          editDokumenAdminKeluar(
+                                                            context,
+                                                            index,
+                                                            _listSurat,
+                                                            refreshEditState,
+                                                          ),
+                                                      (i) =>
+                                                          viewDetailAdminKeluar(
+                                                            context,
+                                                            index,
+                                                            _listSurat,
+                                                          ),
+                                                      (i) => hapusDokumenKeluar(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                        actionSetState,
+                                                      ),
+                                                    );
                                                     print(
                                                       'Surat dipilih: ${surat?.klasifikasi}',
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    // actionAdmin(
-                                                    //   index,
-                                                    //   context,
-                                                    //   suratData,
-                                                    //   (i) => editDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     suratData,
-                                                    //     refreshEditState,
-                                                    //   ),
-                                                    //   (i) => viewDetailAdmin(
-                                                    //     context,
-                                                    //     index,
-                                                    //     suratData,
-                                                    //   ),
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     suratData,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                    actionAdminKeluar(
+                                                      index,
+                                                      context,
+                                                      _listSurat,
+                                                      (i) =>
+                                                          editDokumenAdminKeluar(
+                                                            context,
+                                                            index,
+                                                            _listSurat,
+                                                            refreshEditState,
+                                                          ),
+                                                      (i) =>
+                                                          viewDetailAdminKeluar(
+                                                            context,
+                                                            index,
+                                                            _listSurat,
+                                                          ),
+                                                      (i) => hapusDokumenKeluar(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                        actionSetState,
+                                                      ),
+                                                    );
+                                                    print(
+                                                      'Surat dipilih: ${surat?.klasifikasi}',
+                                                    );
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
