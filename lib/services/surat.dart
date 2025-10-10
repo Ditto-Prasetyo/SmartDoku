@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/auth.dart';
+import 'package:smart_doku/services/settings.dart';
 import 'package:smart_doku/utils/map.dart';
 
 class SuratMasuk {
@@ -116,6 +117,9 @@ class SuratMasuk {
 
       final url = Uri.parse("${dotenv.env['API_URL']}/surat/masuk");
 
+      final _settings = await AppSettings();
+      final _suffix = "${_settings.part1}/${_settings.part3}";
+
       final body = {
         'nama_surat': suratDari,
         'tanggal_diterima': tanggalDiterima?.toIso8601String(),
@@ -145,6 +149,7 @@ class SuratMasuk {
         'tl_notes_1': tl1Notes,
         'tl_notes_2': tl2Notes,
         'status': status,
+        'suffix_code': _suffix
       };
 
       final response = await http.post(
@@ -407,6 +412,9 @@ class SuratKeluar {
 
       final url = Uri.parse("${dotenv.env['API_URL']}/surat/keluar");
 
+      final _settings = await AppSettings();
+      final _suffix = "${_settings.part1}/${_settings.part3}";
+
       final body = {
         'kode': kode,
         'klasifikasi': klasifikasi,
@@ -424,7 +432,8 @@ class SuratKeluar {
         'status': status,
         'dok_final': dok_final,
         'dok_dikirim': dok_dikirim?.toIso8601String(),
-        'tanda_terima': tanda_terima?.toIso8601String()
+        'tanda_terima': tanda_terima?.toIso8601String(),
+        'suffix_code': _suffix
       };
 
       final response = await http.post(
