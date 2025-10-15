@@ -689,18 +689,10 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
                             buildDetailRow(
                               'Dokumen Dikirim',
                               detailData?.dok_dikirim == null ? 'Data Dokumen Dikirim Kosong' : detailData!.dok_dikirim.toString(),
-                              isStatus: true,
-                              statusColor: getYesNoColor(
-                                detailData?.dok_dikirim == null ? 'Data Dokumen Dikirim Kosong' : detailData!.dok_dikirim.toString(),
-                              ),
                             ),
                             buildDetailRow(
                               'Tanda Terima',
                               detailData?.tanda_terima == null ? 'Data Tanda Terima Kosong' : detailData!.tanda_terima.toString(),
-                              isStatus: true,
-                              statusColor: getTandaTerimaColor(
-                                detailData?.tanda_terima == null ? 'Data Tanda Terima Kosong' : detailData!.tanda_terima.toString(),
-                              ),
                             ),
                           ]),
                         ],

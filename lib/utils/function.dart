@@ -378,34 +378,58 @@ void homeAdmin(BuildContext context) {
   );
 }
 
-void action(
+void actionUserMasuk(
   int index,
   BuildContext context,
-  List<Map<String, dynamic>> suratData,
+  List<SuratMasukModel?> listData,
   void Function(int) editDokumen,
   void Function(int) viewDetail,
   void Function(int) hapusDokumen,
 ) {
-  final surat = suratData[index];
+  final tempSurat = listData[index];
 
-  String perihal = surat['perihal'] ?? '';
-  String perihalPendek = perihal.length > 30
-      ? '${perihal.substring(0, 30)}...'
-      : perihal;
+  String namaSurat = tempSurat?.nama_surat ?? '';
+  String namaSuratPendek = namaSurat.length > 30
+      ? '${namaSurat.substring(0, 30)}...'
+      : namaSurat;
   print('Anda Menggunakan User');
-  showModernActionUserDialog(
+  showActionSuratMasukForUserDialog(
     index,
-    '${surat['judul']}',
-    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat['tanggal']}',
+    '${tempSurat?.nama_surat}',
+    'Surat ini berisi $namaSuratPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_diterima}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
     Color(0xFF10B981).withValues(alpha: 0.4),
     context,
-    suratData,
-    editDokumen,
+    listData,
     viewDetail,
-    hapusDokumen,
+  );
+}
+
+void actionUserKeluar(
+  int index,
+  BuildContext context,
+  List<SuratKeluarModel?> listSurat,
+  void Function(int) viewDetail,
+) {
+  final tempSurat = listSurat[index];
+
+  String perihalText = tempSurat?.perihal ?? '';
+  String perihalPendek = perihalText.length > 30
+      ? '${perihalText.substring(0, 30)}...'
+      : perihalText;
+  showActionSuratKeluarForUserDialog(
+    index,
+    '${tempSurat?.perihal}',
+    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_surat}',
+    Colors.indigo.withValues(alpha: 0.9),
+    Colors.orange,
+    Colors.deepOrange,
+    Color(0xFF10B981).withValues(alpha: 0.4),
+    context,
+    listSurat,
+    viewDetail,
   );
 }
 

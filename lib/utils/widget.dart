@@ -1536,25 +1536,29 @@ Widget buildDetailRow(
         ),
         Expanded(
           child: isStatus
-              ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: statusColor?.withValues(alpha: 0.2),
-                    border: Border.all(
-                      color:
-                          statusColor?.withValues(alpha: 0.5) ??
-                          Colors.transparent,
-                      width: 1,
+              ? Align(
+                  alignment:
+                      Alignment.centerLeft, 
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: statusColor?.withValues(alpha: 0.2),
+                      border: Border.all(
+                        color:
+                            statusColor?.withValues(alpha: 0.5) ??
+                            Colors.transparent,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    value,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: statusColor ?? Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Roboto',
+                    child: Text(
+                      value,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: statusColor ?? Colors.white,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Roboto',
+                      ),
                     ),
                   ),
                 )

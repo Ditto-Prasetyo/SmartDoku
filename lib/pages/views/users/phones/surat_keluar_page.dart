@@ -1460,55 +1460,32 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    // action(
-                                                    //   index,
-                                                    //   context,
-                                                    //   suratData,
-                                                    //   (i) => editDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     suratData,
-                                                    //     refreshEditState
-                                                    //   ),
-                                                    //   (i) => viewDetail(
-                                                    //     context,
-                                                    //     index,
-                                                    //     suratData,
-                                                    //   ),
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     suratData,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                    actionUserKeluar(
+                                                      index,
+                                                      context,
+                                                      _listSurat,
+                                                      
+                                                      (i) => viewDetailKeluar(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                      ),
+                                                    );
                                                     print(
                                                       'Surat dipilih: ${surat?.perihal}',
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    // actionAdmin(
-                                                    //   index,
-                                                    //   context,
-                                                    //   _listSurat,
-                                                    //   (i) => editDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     refreshEditState
-                                                    //   ),
-                                                    //   (i) => viewDetail(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //   ),
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                    actionUserKeluar(
+                                                      index,
+                                                      context,
+                                                      _listSurat,
+                                                      (i) => viewDetailKeluar(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                      ),
+                                                    );
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
