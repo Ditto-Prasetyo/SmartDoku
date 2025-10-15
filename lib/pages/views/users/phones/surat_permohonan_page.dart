@@ -1696,28 +1696,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                                   ),
                                                                   Expanded(
                                                                     child: Text(
-                                                                      (surat.disposisi
-                                                                              as List)
-                                                                          .map(
-                                                                            (
-                                                                              item,
-                                                                            ) => workFields.entries
-                                                                                .firstWhere(
-                                                                                  (
-                                                                                    entry,
-                                                                                  ) =>
-                                                                                      entry.value ==
-                                                                                      item['tujuan'],
-                                                                                  orElse: () => MapEntry(
-                                                                                    item['tujuan']!,
-                                                                                    item['tujuan']!,
-                                                                                  ),
-                                                                                )
-                                                                                .key,
-                                                                          )
-                                                                          .join(
-                                                                            ', ',
-                                                                          ),
+                                                                      (surat.disposisi as List).join(', ', ),
                                                                       style: TextStyle(
                                                                         color: Colors
                                                                             .white
