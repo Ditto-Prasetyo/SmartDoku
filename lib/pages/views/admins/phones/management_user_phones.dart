@@ -1488,13 +1488,12 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                       index,
                                                       context,
                                                       _listUser,
-                                                      (i) =>
-                                                          editUserManagement(
-                                                            context,
-                                                            index,
-                                                            _listUser,
-                                                            refreshEditState,
-                                                          ),
+                                                      (i) => editUserManagement(
+                                                        context,
+                                                        index,
+                                                        _listUser,
+                                                        refreshEditState,
+                                                      ),
                                                       (i) =>
                                                           viewDetailUserManagement(
                                                             context,
@@ -1517,13 +1516,12 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                       index,
                                                       context,
                                                       _listUser,
-                                                      (i) =>
-                                                          editUserManagement(
-                                                            context,
-                                                            index,
-                                                            _listUser,
-                                                            refreshEditState,
-                                                          ),
+                                                      (i) => editUserManagement(
+                                                        context,
+                                                        index,
+                                                        _listUser,
+                                                        refreshEditState,
+                                                      ),
                                                       (i) =>
                                                           viewDetailUserManagement(
                                                             context,
@@ -1551,17 +1549,18 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                               .start,
                                                       children: [
                                                         // Header dengan status badge
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                        // Header + footer content (GANTI block Row lama ini)
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
                                                           children: [
                                                             // nama
                                                             Text(
                                                               user?.name == null
                                                                   ? 'Data Kosong!'
                                                                   : user!.name,
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                 color: Colors
                                                                     .white,
                                                                 fontSize: 18,
@@ -1578,7 +1577,9 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                                       .ellipsis,
                                                             ),
 
-                                                            SizedBox(height: 8),
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
 
                                                             // email
                                                             Text(
@@ -1604,7 +1605,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                                       .ellipsis,
                                                             ),
 
-                                                            SizedBox(
+                                                            const SizedBox(
                                                               height: 15,
                                                             ),
 
@@ -1633,34 +1634,31 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                                       .ellipsis,
                                                             ),
 
-                                                            SizedBox(
+                                                            const SizedBox(
                                                               height: 15,
                                                             ),
 
-                                                            // Footer dengan role dan icon
+                                                            // Footer: role (kiri) + more_vert (kanan)
                                                             Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
                                                               children: [
-                                                                // Pengirim
+                                                                // kiri (role + icon) ngisi sisa space
                                                                 Expanded(
                                                                   child: Row(
                                                                     children: [
                                                                       Container(
                                                                         padding:
-                                                                            EdgeInsets.all(
+                                                                            const EdgeInsets.all(
                                                                               6,
                                                                             ),
                                                                         decoration: BoxDecoration(
                                                                           gradient: LinearGradient(
                                                                             colors: [
-                                                                              Color(
+                                                                              const Color(
                                                                                 0xFF4F46E5,
                                                                               ).withValues(
                                                                                 alpha: 0.3,
                                                                               ),
-                                                                              Color(
+                                                                              const Color(
                                                                                 0xFF7C3AED,
                                                                               ).withValues(
                                                                                 alpha: 0.2,
@@ -1672,7 +1670,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                                                 8,
                                                                               ),
                                                                         ),
-                                                                        child: Icon(
+                                                                        child: const Icon(
                                                                           Icons
                                                                               .person_outline_rounded,
                                                                           color:
@@ -1681,16 +1679,17 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                                               14,
                                                                         ),
                                                                       ),
-                                                                      SizedBox(
+                                                                      const SizedBox(
                                                                         width:
                                                                             8,
                                                                       ),
                                                                       Expanded(
                                                                         child: Text(
+                                                                          // kalau role nullable, pakai null check aman
                                                                           user?.role ==
                                                                                   null
                                                                               ? 'Tidak Memiliki Tujuan Akhir'
-                                                                              : user!.role!,
+                                                                              : user!.role,
                                                                           style: TextStyle(
                                                                             color: Colors.white.withValues(
                                                                               alpha: 0.7,
@@ -1708,10 +1707,14 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                                   ),
                                                                 ),
 
-                                                                // Arrow icon
+                                                                const SizedBox(
+                                                                  width: 12,
+                                                                ),
+
+                                                                // kanan (more icon) ukuran fix
                                                                 Container(
                                                                   padding:
-                                                                      EdgeInsets.all(
+                                                                      const EdgeInsets.all(
                                                                         6,
                                                                       ),
                                                                   decoration: BoxDecoration(

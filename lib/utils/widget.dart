@@ -1418,7 +1418,7 @@ Widget buildSectionTitleDisposisi(String title) {
         Text(
           title,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
             color: Colors.white,
             fontFamily: 'Roboto',
@@ -1442,13 +1442,16 @@ Widget buildSectionTitleDisposisiDesktop(String title) {
               colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
             ),
             borderRadius: BorderRadius.circular(2),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.1),
+            )
           ),
         ),
         SizedBox(width: 10),
         Text(
           title,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 17,
             fontWeight: FontWeight.bold,
             color: Colors.white,
             fontFamily: 'Roboto',

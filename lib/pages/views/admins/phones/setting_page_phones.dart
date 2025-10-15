@@ -1,47 +1,155 @@
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:line_icons/line_icons.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:smart_doku/pages/views/admins/phones/setting_page_phones.dart';
-import 'package:smart_doku/services/user.dart';
-import 'package:smart_doku/models/user.dart';
+import 'dart:io';
 import 'dart:ui';
-import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_doku/services/settings.dart';
 import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/widget.dart';
 
-class HomePageAdminPhones extends StatefulWidget {
-  const HomePageAdminPhones({super.key});
+class SettingPagePhones extends StatefulWidget {
+  const SettingPagePhones({super.key});
 
   @override
-  State<HomePageAdminPhones> createState() => _HomePageAdminPhones();
+  State<SettingPagePhones> createState() => _SettingPagePhones();
 }
 
-class _HomePageAdminPhones extends State<HomePageAdminPhones>
+class _SettingPagePhones extends State<SettingPagePhones>
     with TickerProviderStateMixin {
   var height, width;
+  String _currentPart1 = '35.07.303';
+  String _currentPart3 = '2025';
+  bool _isEditing = false;
+  bool isRefreshing = false;
+  bool isSearchActive = false;
+
+  final AppSettings _appSettings = AppSettings();
 
   // Animation controllers and animations
   late AnimationController _backgroundController;
   late Animation<double> _backgroundAnimation;
 
-  // Profile expansion animation
-  late AnimationController _profileController;
-  late Animation<double> _profileAnimation;
-  late Animation<double> _profileOpacityAnimation;
-  late Animation<double> _arrowRotationAnimation;
-  late Animation<double> _dashboardOpacityAnimation;
+  late AnimationController _cardController;
+  late Animation<double> _cardAnimation;
 
-  bool _showProfileContent = false;
-  bool _isProfileExpanded = false;
+  final TextEditingController _part1Controller = TextEditingController();
+  final TextEditingController _part2Controller = TextEditingController();
+  final TextEditingController _part3Controller = TextEditingController();
+
+  Future<void> _refreshData() async {
+    setState(() {
+      isRefreshing = true;
+    });
+
+    await Future.delayed(Duration(seconds: 2));
+
+    try {
+      // Cek koneksi internet dengan ping google
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // ✅ Ada internet → load data dari API
+        await _loadSettings();
+      }
+    } on SocketException catch (_) {
+      // ❌ Tidak ada internet
+      showModernErrorDialog(
+        context,
+        "Koneksi Terputus",
+        "Mohon maaf, data tidak bisa diperbarui karena ketiadaan internet pada device anda saat ini!",
+        Colors.redAccent,
+      );
+    } finally {
+      setState(() {
+        isRefreshing = false;
+      });
+    }
+  }
+
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _currentPart1 = _appSettings.part1;
+      _currentPart3 = _appSettings.part3;
+      _part1Controller.text = _currentPart1;
+      _part3Controller.text = _currentPart3;
+    });
+  }
+
+  Future<void> _saveSettings() async {
+    await _appSettings.setPart1(_currentPart1);
+    await _appSettings.setPart1(_currentPart3);
+  }
+
+  Future<void> _resetSettings() async {
+    await _appSettings.reset();
+    setState(() {
+      _currentPart1 = _appSettings.part1;
+      _currentPart3 = _appSettings.part3;
+      _part1Controller.text = _currentPart1;
+      _part3Controller.text = _currentPart3;
+    });
+  }
+
+  void _showSuccessSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.white, size: 20),
+            SizedBox(width: 10),
+            Text(message, style: TextStyle(color: Colors.white)),
+          ],
+        ),
+        backgroundColor: Color(0xFF10B981),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  void _toggleEdit() async {
+    setState(() {
+      if (_isEditing) {
+        // Save changes
+        _currentPart1 = _part1Controller.text.isNotEmpty
+            ? _part1Controller.text
+            : _currentPart1;
+        _currentPart3 = _part3Controller.text.isNotEmpty
+            ? _part3Controller.text
+            : _currentPart3;
+        _showSuccessSnackbar('Pengaturan berhasil disimpan!');
+      } else {
+        // Start editing
+        _part1Controller.text = _currentPart1;
+        _part3Controller.text = _currentPart3;
+      }
+      _isEditing = !_isEditing;
+    });
+
+    if (!_isEditing) {
+      await _saveSettings();
+    }
+  }
+
+  void _resetToDefault() async {
+    setState(() {
+      _currentPart1 = '35.07.303';
+      _currentPart3 = '2025';
+      _part1Controller.text = _currentPart1;
+      _part3Controller.text = _currentPart3;
+    });
+    await _resetSettings();
+    _showSuccessSnackbar('Pengaturan direset ke default!');
+  }
 
   @override
   void initState() {
     super.initState();
-    _loadUser();
 
-    // Initialize background animation
+    _loadSettings();
+
     _backgroundController = AnimationController(
       duration: Duration(seconds: 5),
       vsync: this,
@@ -53,77 +161,298 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
       ),
     );
 
-    // Initialize profile expansion animation
-    _profileController = AnimationController(
-      duration: Duration(milliseconds: 800),
+    _cardController = AnimationController(
+      duration: Duration(milliseconds: 1200),
       vsync: this,
     );
-
-    _profileAnimation = Tween<double>(begin: 0.25, end: 0.80).animate(
-      CurvedAnimation(parent: _profileController, curve: Curves.easeInOutCubic),
+    _cardAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
-
-    _profileOpacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _profileController,
-        curve: Interval(0.3, 1.0, curve: Curves.easeOut),
-      ),
-    );
-
-    _arrowRotationAnimation = Tween<double>(begin: 0.0, end: 0.5).animate(
-      CurvedAnimation(parent: _profileController, curve: Curves.easeInOutCubic),
-    );
-
-    _dashboardOpacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(
-        parent: _profileController,
-        curve: Interval(0.0, 0.5, curve: Curves.easeOut),
-      ),
-    );
-
-    _profileController.addStatusListener((status) {
-      if (status == AnimationStatus.forward) {
-        setState(() {
-          _showProfileContent = true;
-        });
-      } else if (status == AnimationStatus.dismissed) {
-        setState(() {
-          _showProfileContent = false;
-        });
-      }
-    });
 
     _backgroundController.repeat(reverse: true);
+    _cardController.forward();
   }
 
   @override
   void dispose() {
     _backgroundController.dispose();
-    _profileController.dispose();
+    _part1Controller.dispose();
+    _part2Controller.dispose();
+    _part3Controller.dispose();
+    _cardController.dispose();
     super.dispose();
   }
 
-  void _toggleProfile() {
-    setState(() {
-      _isProfileExpanded = !_isProfileExpanded;
-    });
+  // ==================== WIDGET buildSetting (REFACTORED) ====================
+  // Ganti widget buildSetting lu jadi kayak gini:
 
-    if (_isProfileExpanded) {
-      _profileController.forward();
-    } else {
-      _profileController.reverse();
-    }
+  Widget buildSetting(Animation<double> _cardAnimation) {
+    return Transform.translate(
+      offset: Offset(0, 50 * (1 - _cardAnimation.value)),
+      child: Opacity(
+        opacity: _cardAnimation.value.clamp(0.0, 1.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Current Format Preview
+              Container(
+                width: double.infinity,
+                margin: EdgeInsets.only(bottom: 24),
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color(0xFF4F46E5).withValues(alpha: 0.1),
+                      Color(0xFF7C3AED).withValues(alpha: 0.05),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: Color(0xFF4F46E5).withValues(alpha: 0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.preview_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Format Kode Saat Ini',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                        ),
+                      ),
+                      child: Text(
+                        '$_currentPart1/$_currentPart3',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Roboto Mono',
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Part 1
+              _buildInputCard(
+                icon: Icons.label_outline_rounded,
+                title: 'Bagian Pertama',
+                description: 'Bagian pertama dari kode register dan agenda',
+                controller: _part1Controller,
+                hintText:
+                    'Masukkan bagian pertama - Klik tombol edit untuk melanjutkan',
+              ),
+
+              // Part 2 (Bagian Kedua/Ketiga - sesuain sama kebutuhan lu)
+              _buildInputCard(
+                icon: Icons.label_outline_rounded,
+                title: 'Bagian Kedua',
+                description: 'Bagian ketiga dari kode register dan agenda',
+                controller: _part3Controller,
+                hintText:
+                    'Masukkan bagian ketiga - Klik tombol edit untuk melanjutkan',
+              ),
+
+              SizedBox(height: 10),
+
+              // Action Buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildActionButton(
+                      onPressed: _toggleEdit,
+                      icon: _isEditing
+                          ? Icons.save_outlined
+                          : Icons.edit_outlined,
+                      label: _isEditing ? 'Simpan' : 'Edit',
+                      gradientColors: _isEditing
+                          ? [Color(0xFF10B981), Color(0xFF059669)]
+                          : [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Expanded(
+                    child: _buildActionButton(
+                      onPressed: _resetToDefault,
+                      icon: Icons.refresh_rounded,
+                      label: 'Reset',
+                      gradientColors: [Color(0xFFDC2626), Color(0xFFEA580C)],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  UserService _userService = UserService();
-  UserModel? _user;
+  Widget _buildInputCard({
+    required IconData icon,
+    required String title,
+    required String description,
+    required TextEditingController controller,
+    required String hintText,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: 0.2),
+            Colors.white.withValues(alpha: 0.1),
+            Colors.white.withValues(alpha: 0.1),
+            Colors.white.withValues(alpha: 0.2),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: Colors.white, size: 20),
+              SizedBox(width: 10),
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Roboto',
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 8),
+          Text(
+            description,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.7),
+              fontSize: 14,
+              fontFamily: 'Roboto',
+            ),
+          ),
+          SizedBox(height: 15),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: _isEditing
+                    ? Color(0xFF4F46E5).withValues(alpha: 0.5)
+                    : Colors.white.withValues(alpha: 0.3),
+              ),
+            ),
+            child: TextField(
+              controller: controller,
+              enabled: _isEditing,
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontFamily: 'Roboto',
+              ),
+              decoration: InputDecoration(
+                hintText: hintText,
+                hintStyle: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.5),
+                ),
+                contentPadding: EdgeInsets.all(16),
+                border: InputBorder.none,
+                prefixIcon: Icon(
+                  Icons.edit_outlined,
+                  color: Colors.white.withValues(alpha: 0.7),
+                  size: 20,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-  void _loadUser() async {
-    final user = await _userService.getCurrentUser();
-
-    setState(() {
-      _user = user;
-    });
+  Widget _buildActionButton({
+    required VoidCallback onPressed,
+    required IconData icon,
+    required String label,
+    required List<Color> gradientColors,
+  }) {
+    return Container(
+      height: 50,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style:
+            ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ).copyWith(
+              backgroundColor: WidgetStateProperty.all(Colors.transparent),
+            ),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: gradientColors),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, color: Colors.white, size: 20),
+                SizedBox(width: 8),
+                Text(
+                  label,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -156,7 +485,7 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                     top: 15,
                     left: 10,
                     right: 10,
-                    bottom: 10,
+                    bottom: 15,
                   ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -234,8 +563,8 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                                       'images/Icon_App.png',
                                       width: 180,
                                       height: 180,
-                                      fit: BoxFit.cover,
                                       color: Colors.white,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
@@ -353,7 +682,7 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                                     ),
                                   ),
                                   onTap: () {
-                                    Navigator.of(context).pop();
+                                    homeAdmin(context);
                                   },
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15),
@@ -534,55 +863,25 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
             ),
             child: Column(
               children: [
-                AnimatedBuilder(
-                  animation: _profileAnimation,
-                  builder: (context, child) {
-                    return Container(
-                      decoration: BoxDecoration(),
-                      height: height * _profileAnimation.value,
-                      width: width,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // Top Navigation Bar
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: 30,
-                              left: 15,
-                              right: 15,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Builder(
-                                  builder: (context) => InkWell(
-                                    onTap: () {
-                                      Scaffold.of(context).openDrawer();
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      padding: EdgeInsets.all(4.5),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.1,
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.menu_rounded,
-                                        color: Color.fromRGBO(255, 255, 255, 1),
-                                        size: 24,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
+                Container(
+                  decoration: BoxDecoration(),
+                  height: height * 0.25,
+                  width: width,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 30, left: 15, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Builder(
+                              builder: (context) => InkWell(
+                                onTap: () {
+                                  Scaffold.of(context).openDrawer();
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
                                   padding: EdgeInsets.all(4.5),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withValues(alpha: 0.1),
@@ -594,326 +893,90 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                                       width: 1,
                                     ),
                                   ),
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context, 
-                                        MaterialPageRoute(
-                                          builder: (context) => SettingPagePhones(),
-                                        ),
-                                      );
-                                    },
-                                    child: Icon(
-                                      Icons.settings,
-                                      color: Color.fromRGBO(255, 255, 255, 1),
-                                      size: 24,
-                                    ),
+                                  child: Icon(
+                                    Icons.menu_rounded,
+                                    color: Color.fromRGBO(255, 255, 255, 1),
+                                    size: 24,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-
-                          // Dashboard Title
-                          Padding(
-                            padding: EdgeInsets.only(
-                              top: 35,
-                              left: 15,
-                              right: 15,
-                            ),
-                            child: Column(
-                              children: [
-                                AnimatedBuilder(
-                                  animation: _dashboardOpacityAnimation,
-                                  builder: (context, child) {
-                                    return Opacity(
-                                      opacity: _dashboardOpacityAnimation.value,
-                                      child: Text(
-                                        "Dashboard Admin",
-                                        style: TextStyle(
-                                          fontSize: 30,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          letterSpacing: 1,
-                                          fontFamily: 'Roboto',
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          if (_showProfileContent)
-                            Flexible(
-                              child: buildProfileSection(
-                                _profileOpacityAnimation,
-                                _user?.name,
-                                _user?.role
                               ),
                             ),
-                        ],
+                            InkWell(
+                              onTap: () => Navigator.pop(context),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: EdgeInsets.all(4.5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Color.fromRGBO(255, 255, 255, 1),
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  },
+
+                      // Dashboard Title
+                      Padding(
+                        padding: EdgeInsets.only(top: 35, left: 15, right: 15),
+                        child: Center(
+                          child: Text(
+                            "Pengaturan",
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 // Main Content Container
                 Expanded(
                   child: Container(
+                    width: width,
+                    padding: EdgeInsets.all(24), // ✅ Padding di container utama
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Color.fromRGBO(255, 255, 255, 0.2),
-                          Color.fromRGBO(248, 250, 252, 0.05),
-                          Color.fromRGBO(241, 245, 249, 0.05),
-                          Color.fromRGBO(255, 255, 255, 0.2),
+                          Color.fromRGBO(255, 255, 255, 0.3),
+                          Color.fromRGBO(248, 250, 252, 0.1),
+                          Color.fromRGBO(241, 245, 249, 0.1),
+                          Color.fromRGBO(255, 255, 255, 0.3),
                         ],
                       ),
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
                       ),
-                      border: Border.all(color: Colors.white.withAlpha(150)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withValues(alpha: 0.1),
-                          blurRadius: 8,
-                          spreadRadius: 1,
-                          offset: Offset(0, -10),
-                        ),
-                      ],
                     ),
-                    width: width,
-                    padding: EdgeInsets.only(bottom: 30),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GestureDetector(
-                          onTap: _toggleProfile,
-                          onPanUpdate: (details) {
-                            if (details.delta.dy > 2) {
-                              if (!_isProfileExpanded) {
-                                _toggleProfile();
-                              }
-                            } else if (details.delta.dy < -2) {
-                              if (_isProfileExpanded) {
-                                _toggleProfile();
-                              }
-                            }
-                          },
-                          child: AnimatedBuilder(
-                            animation: _arrowRotationAnimation,
-                            builder: (context, child) {
-                              return Container(
-                                margin: EdgeInsets.only(top: 12, bottom: 16),
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.grey[700]!,
-                                      Colors.grey[500]!,
-                                      Colors.grey[700]!,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.6,
-                                      ),
-                                      blurRadius: 4,
-                                      offset: Offset(0, -5),
-                                    ),
-                                    BoxShadow(
-                                      color: Colors.black.withValues(
-                                        alpha: 0.2,
-                                      ),
-                                      blurRadius: 6,
-                                      offset: Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
-                                child: Transform.rotate(
-                                  angle: _arrowRotationAnimation.value * 2 * pi,
-                                  child: Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                        // Section Title
+                        buildSectionTitleDisposisiDesktop(
+                          'Pengaturan Format Kode Suffix',
                         ),
+                        SizedBox(height: 20),
 
-                        SizedBox(height: 25),
-
-                        Flexible(
-                          child: GridView.builder(
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 1.1,
-                                  mainAxisSpacing: 25,
-                                  crossAxisSpacing: 0,
-                                ),
-                            shrinkWrap: true,
-                            physics: BouncingScrollPhysics(),
-                            itemCount: 4,
-                            itemBuilder: (context, index) {
-                              List<Map<String, dynamic>> boxData = [
-                                {
-                                  'icon': LineIcons.envelopeOpen,
-                                  'title': 'Surat Masuk',
-                                  'colors': [
-                                    Color(0xFF4F46E5),
-                                    Color(0xFF7C3AED),
-                                  ],
-                                  'route':
-                                      'surat_permohonan_page_admin_phones.dart',
-                                },
-                                {
-                                  'icon': FontAwesomeIcons.envelopeCircleCheck,
-                                  'title': 'Surat Keluar',
-                                  'colors': [
-                                    Color(0xFF059669),
-                                    Color(0xFF0D9488),
-                                  ],
-                                  'route':
-                                      'surat_keluar_page_admin_phones.dart',
-                                },
-                                {
-                                  'icon': Icons.assignment_turned_in_rounded,
-                                  'title': 'Surat Disposisi',
-                                  'colors': [
-                                    Color(0xFFDC2626),
-                                    Color(0xFFEA580C),
-                                  ],
-                                  'route':
-                                      'surat_disposisi_page_admin_phones.dart',
-                                },
-                                {
-                                  'icon': Icons.manage_accounts,
-                                  'title': 'Manajemen Akun Pengguna',
-                                  'colors': [
-                                    Color(0xFF7C2D12),
-                                    Color(0xFF9A3412),
-                                  ],
-                                  'route': 'management_user_phones.dart',
-                                },
-                              ];
-
-                              return InkWell(
-                                onTap: () {
-                                  switch (index) {
-                                    case 0:
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/admin/phones/surat_permohonan_page_admin',
-                                      );
-                                      break;
-                                    case 1:
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/admin/phones/surat_keluar_page_admin',
-                                      );
-                                      break;
-                                    case 2:
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/admin/phones/surat_disposisi_page_admin',
-                                      );
-                                      break;
-                                    case 3:
-                                      Navigator.pushNamed(
-                                        context, 
-                                        '/admin/phones/management_user_phones'
-                                      );
-                                      break;
-                                  }
-                                },
-                                borderRadius: BorderRadius.circular(20),
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(
-                                    vertical: 8,
-                                    horizontal: 20,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Color.fromRGBO(255, 255, 255, 0.2),
-                                        Color.fromRGBO(248, 250, 252, 0.05),
-                                        Color.fromRGBO(241, 245, 249, 0.05),
-                                        Color.fromRGBO(255, 255, 255, 0.2),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: Colors.white.withAlpha(150),
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.white.withAlpha(25),
-                                        blurRadius: 8,
-                                        spreadRadius: 1,
-                                        offset: Offset(0, -4),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: boxData[index]['colors'],
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            16,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: boxData[index]['colors'][0]
-                                                  .withValues(alpha: 0.8),
-                                              blurRadius: 8,
-                                              offset: Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Icon(
-                                          boxData[index]['icon'],
-                                          color: Colors.white,
-                                          size: 32,
-                                        ),
-                                      ),
-                                      SizedBox(height: 12),
-                                      Text(
-                                        boxData[index]['title'],
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                          fontFamily: 'Roboto',
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
+                        // ✅ Content - langsung panggil buildSetting tanpa container luar
+                        Expanded(child: buildSetting(_cardAnimation)),
                       ],
                     ),
                   ),
