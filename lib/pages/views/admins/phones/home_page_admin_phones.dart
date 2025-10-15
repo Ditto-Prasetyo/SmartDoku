@@ -789,13 +789,13 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                                       'surat_disposisi_page_admin_phones.dart',
                                 },
                                 {
-                                  'icon': Icons.support_agent,
-                                  'title': 'Support',
+                                  'icon': Icons.manage_accounts,
+                                  'title': 'Manajemen Akun Pengguna',
                                   'colors': [
                                     Color(0xFF7C2D12),
                                     Color(0xFF9A3412),
                                   ],
-                                  'route': 'support',
+                                  'route': 'management_user_phones.dart',
                                 },
                               ];
 
@@ -821,7 +821,10 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                                       );
                                       break;
                                     case 3:
-                                      showSupportDialog(context);
+                                      Navigator.pushNamed(
+                                        context, 
+                                        '/admin/phones/management_user_phones'
+                                      );
                                       break;
                                   }
                                 },

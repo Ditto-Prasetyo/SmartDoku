@@ -13,6 +13,7 @@ import 'package:smart_doku/pages/views/admins/desktop/surat_disposisi_page_admin
 import 'package:smart_doku/pages/views/admins/desktop/surat_keluar_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/desktop/surat_permohonan_page_admin_desktop.dart';
 import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
+import 'package:smart_doku/pages/views/admins/phones/management_user_phones.dart';
 import 'package:smart_doku/pages/views/admins/phones/surat_disposisi_page_admin.dart';
 import 'package:smart_doku/pages/views/admins/phones/surat_keluar_page_admin.dart';
 import 'package:smart_doku/pages/views/admins/phones/surat_permohonan_page_admin.dart';
@@ -116,6 +117,8 @@ class SmartDoku extends StatelessWidget {
             OutgoingLetterPageAdmin(),
         '/admin/phones/surat_disposisi_page_admin': (context) =>
             DispositionLetterPageAdmin(),
+        '/admin/phones/management_user_phones': (context) =>
+            ManagementUserPhones(),
 
         // admins and superadmins desktop
         '/admin/desktop/home_page_admin_desktop': (context) => AdminDashboard(),

@@ -497,6 +497,37 @@ void actionAdminKeluar(
   );
 }
 
+void actionAdminManagementUser(
+  int index,
+  BuildContext context,
+  List<UserModel?> listSurat,
+  void Function(int) editUserAccount,
+  void Function(int) viewDetailUserAccount,
+  void Function(int) hapusUserAccount,
+) {
+  final userData = listSurat[index];
+
+  String newName = userData?.name ?? '';
+  String perihalPendek = newName.length > 30
+      ? '${newName.substring(0, 30)}...'
+      : newName;
+  print('Anda Menggunakan Admin \nAnda memilih user ${userData?.name}');
+  showModernActionManagementUserDialog(
+    index,
+    '${userData?.name}',
+    'User $perihalPendek\n\ndari bidang ${userData?.bidang}',
+    Colors.indigo.withValues(alpha: 0.9),
+    Colors.orange,
+    Colors.deepOrange,
+    Color(0xFF10B981).withValues(alpha: 0.4),
+    context,
+    listSurat,
+    editUserAccount,
+    viewDetailUserAccount,
+    hapusUserAccount,
+  );
+}
+
 void viewDetail(
   BuildContext context,
   int index,
@@ -608,7 +639,7 @@ void viewDetailUserManagement(
     void Function() refreshEditState
     ) {
     final data = userData[index];
-    print('Edit Document - ID: ${data?.id}, User: ${data?.name}, \nBidang : ${data?.bidang}');
+    print('Edit User - ID: ${data?.id}, User: ${data?.name}, \nBidang : ${data?.bidang}');
     showEditUserManagementDialog(context, index, userData, refreshEditState);
   }
 
