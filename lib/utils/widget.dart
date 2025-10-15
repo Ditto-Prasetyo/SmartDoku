@@ -123,10 +123,7 @@ Widget buildDateInputField(
             );
 
             if (pickedDate != null) {
-              controller.text = DateFormat(
-                'dd MMMM yyyy',
-                'id_ID',
-              ).format(pickedDate);
+              controller.text = pickedDate.toIso8601String() + "Z";
             }
           },
           decoration: InputDecoration(
@@ -224,7 +221,7 @@ Widget buildDayDateTimeInputField(
                 ).format(dateTime);
                 String timePart = DateFormat('HH:mm').format(dateTime);
 
-                controller.text = "$dayName, $datePart - $timePart";
+                controller.text = dateTime.toIso8601String() + "Z";
               }
             }
           },
