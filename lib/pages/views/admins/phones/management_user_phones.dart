@@ -76,9 +76,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
     print("[DEBUG] -> [INFO] : Loading all data user ...");
     try {
       print("[DEBUG] -> [STATE] : title = $title");
-      final data = await (title != null
-          ? _serviceUser.getFilteredUsers(title!)
-          : _serviceUser.listUsers());
+      final data = await _serviceUser.listUsers();
       print(data.map((e) => e.toJson()).toList());
       setState(() {
         _listUser = data;
