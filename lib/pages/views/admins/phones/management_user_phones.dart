@@ -147,7 +147,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
     await _loadAllData();
   }
 
-  void refreshEditState() async {
+  void refreshState() async {
     await _loadAllData();
   }
 
@@ -1492,7 +1492,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                         context,
                                                         index,
                                                         _listUser,
-                                                        refreshEditState,
+                                                        refreshState,
                                                       ),
                                                       (i) =>
                                                           viewDetailUserManagement(
@@ -1505,6 +1505,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                         index,
                                                         _listUser,
                                                         actionSetState,
+                                                        refreshState
                                                       ),
                                                     );
                                                     print(
@@ -1520,7 +1521,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                         context,
                                                         index,
                                                         _listUser,
-                                                        refreshEditState,
+                                                        refreshState,
                                                       ),
                                                       (i) =>
                                                           viewDetailUserManagement(
@@ -1533,6 +1534,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                                         index,
                                                         _listUser,
                                                         actionSetState,
+                                                        refreshState
                                                       ),
                                                     );
                                                     print(
