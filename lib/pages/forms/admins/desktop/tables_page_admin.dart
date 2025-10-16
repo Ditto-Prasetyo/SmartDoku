@@ -114,7 +114,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
         backgroundColor: Colors.red,
       ),
     );
-    await _loadData();
+    refreshState();
   }
 
   void refreshState() async {
@@ -547,9 +547,8 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               InkWell(
-                                onTap: () async {
+                                onTap: ()  {
                                   tambahUser(context, title!, (newUser) {}, refreshState);
-                                  await _loadData();
                                 },
                                 child: Icon(
                                   Icons.add,
