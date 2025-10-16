@@ -1227,6 +1227,7 @@ void showModernTambahSuratKeluarFormDialog(
   BuildContext context,
   Color accentColor,
   Color accentColor2,
+  List<SuratKeluarModel?> listSurat,
   Function(SuratKeluarModel?) onSuratKeluarAdded,
   void Function() refreshState,
 ) async {
@@ -1249,6 +1250,18 @@ void showModernTambahSuratKeluarFormDialog(
     'dok_dikirim_tgl': TextEditingController(),
     'tanda_terima': TextEditingController(),
   };
+
+  controllers['kode']!.addListener(() {
+    final inputKode = controllers['kode']!.text.trim();
+
+    final surat = listSurat.firstWhereOrNull((item) => item?.kode == inputKode);
+
+    if (surat != null) {
+      controllers['klasifikasi']!.text = surat.klasifikasi;
+    } else {
+      controllers['klasifikasi']!.clear();
+    }
+  });
 
   final AppSettings _appSettings = AppSettings();
   final suf1 = _appSettings.part1;

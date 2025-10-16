@@ -610,9 +610,11 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                     FadeTransition(
                       opacity: _helloFadeAnimation,
                       child: Container(
-                        padding: EdgeInsets.all(20),
+                        width: size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         child: Text(
                           "Hello ${_user?.name}",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 45.0,
                             fontWeight: FontWeight.w900,

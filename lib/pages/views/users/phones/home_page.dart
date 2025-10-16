@@ -367,8 +367,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
                         SizedBox(height: 10),
 
-                        SizedBox(height: 10),
-
                         Container(
                           margin: EdgeInsets.symmetric(
                             horizontal: 15,
@@ -430,7 +428,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                                       ],
                                     ),
                                     child: Icon(
-                                      Icons.logout_rounded,
+                                      Icons.person_2_outlined,
                                       color: Colors.white,
                                       size: 20,
                                     ),

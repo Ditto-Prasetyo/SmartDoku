@@ -6,7 +6,6 @@ import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'package:smart_doku/pages/forms/admins/desktop/detail_page_userManagement.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_keluar.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_phones.dart';
-import 'package:smart_doku/pages/forms/admins/phones/forms_dialog.dart';
 import 'package:smart_doku/pages/forms/users/detail_keluar_page.dart';
 import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
@@ -25,7 +24,10 @@ void handleLogin(
   final passwordChecker = passwordController.text.trim();
 
   AuthService _auth = AuthService();
-  final session = await _auth.login(usernameController.text, passwordController.text);
+  final session = await _auth.login(
+    usernameController.text,
+    passwordController.text,
+  );
 
   if (usernameChecker.isEmpty && passwordChecker.isEmpty) {
     showModernErrorDialog(
@@ -184,7 +186,13 @@ void handleSession(
   // Lanjut ke halaman register
   Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) => RegisterCredPage(username: usernameController.text, password: passwordController.text, email: emailController.text)),
+    MaterialPageRoute(
+      builder: (context) => RegisterCredPage(
+        username: usernameController.text,
+        password: passwordController.text,
+        email: emailController.text,
+      ),
+    ),
   );
 }
 
@@ -261,11 +269,24 @@ void handleRegister(
     return;
   }
 
-  final session = await _auth.register(_nameController.text, username!, email!, password!, selectedWorkField, _addressController.text, _phoneController.text);
+  final session = await _auth.register(
+    _nameController.text,
+    username!,
+    email!,
+    password!,
+    selectedWorkField,
+    _addressController.text,
+    _phoneController.text,
+  );
 
   if (!session) {
-    showModernErrorDialog(context, '❌ Register Error', "Ada masalah dalam server, mohon tunggu beberapa saat!", Colors.redAccent);
-    
+    showModernErrorDialog(
+      context,
+      '❌ Register Error',
+      "Ada masalah dalam server, mohon tunggu beberapa saat!",
+      Colors.redAccent,
+    );
+
     return;
   }
 
@@ -582,7 +603,9 @@ void viewDetailAdminKeluar(
 
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DetailPageAdminKeluar(suratData: surat)),
+    MaterialPageRoute(
+      builder: (context) => DetailPageAdminKeluar(suratData: surat),
+    ),
   );
 }
 
@@ -592,60 +615,75 @@ void viewDetailUserManagement(
   List<UserModel?> userData,
 ) {
   final data = userData[index];
-  print('View Detail - id: ${data!.id}, Name: ${data.name}, Role: ${data.bidang}');
+  print(
+    'View Detail - id: ${data!.id}, Name: ${data.name}, Role: ${data.bidang}',
+  );
 
   Navigator.push(
     context,
-    MaterialPageRoute(builder: (context) => DetailPageUsermanagement(userModel: data)),
+    MaterialPageRoute(
+      builder: (context) => DetailPageUsermanagement(userModel: data),
+    ),
   );
 }
 
-  void editDokumen(
-    BuildContext context,
-    int index, 
-    List<SuratMasukModel?> suratData,
-    void Function() refreshEditState
-    ) {
-    final surat = suratData[index];
-    print('Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengolah : ${surat?.pengolah}');
-    showEditSuratDialog(context, index, suratData, refreshEditState);
-  }
+void editDokumen(
+  BuildContext context,
+  int index,
+  List<SuratMasukModel?> suratData,
+  void Function() refreshEditState,
+) {
+  final surat = suratData[index];
+  print(
+    'Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengolah : ${surat?.pengolah}',
+  );
+  showEditSuratDialog(context, index, suratData, refreshEditState);
+}
 
-  void editDokumenAdmin(
-    BuildContext context,
-    int index, 
-    List<SuratMasukModel?> suratData,
-    void Function() refreshEditState
-    ) {
-    final surat = suratData[index];
-    print('[DEBUG] -> [STATE] :: Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengirim : ${surat?.pengolah}');
-    showEditSuratDialog(context, index, suratData, refreshEditState);
-  }
+void editDokumenAdmin(
+  BuildContext context,
+  int index,
+  List<SuratMasukModel?> suratData,
+  void Function() refreshEditState,
+) {
+  final surat = suratData[index];
+  print(
+    '[DEBUG] -> [STATE] :: Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengirim : ${surat?.pengolah}',
+  );
+  showEditSuratDialog(context, index, suratData, refreshEditState);
+}
 
-  void editDokumenAdminKeluar(
-    BuildContext context,
-    int index, 
-    List<SuratKeluarModel?> suratData,
-    void Function() refreshEditState
-    ) {
-    final surat = suratData[index];
-    print('Edit Document - ID: ${surat?.id}, Judul: ${surat?.klasifikasi}, \nPembuat : ${surat?.pembuat}');
-    showEditSuratKeluarDialog(context, index, suratData, refreshEditState);
-  }
+void editDokumenAdminKeluar(
+  BuildContext context,
+  int index,
+  List<SuratKeluarModel?> suratData,
+  void Function() refreshEditState,
+) {
+  final surat = suratData[index];
+  print(
+    'Edit Document - ID: ${surat?.id}, Judul: ${surat?.klasifikasi}, \nPembuat : ${surat?.pembuat}',
+  );
+  showEditSuratKeluarDialog(context, index, suratData, refreshEditState);
+}
 
-  void editUserManagement(
-    BuildContext context,
-    int index, 
-    List<UserModel?> userData,
-    void Function() refreshEditState
-    ) {
-    final data = userData[index];
-    print('Edit User - ID: ${data?.id}, User: ${data?.name}, \nBidang : ${data?.bidang}');
-    showEditUserManagementDialog(context, index, userData, refreshEditState);
-  }
+void editUserManagement(
+  BuildContext context,
+  int index,
+  List<UserModel?> userData,
+  void Function() refreshEditState,
+) {
+  final data = userData[index];
+  print(
+    'Edit User - ID: ${data?.id}, User: ${data?.name}, \nBidang : ${data?.bidang}',
+  );
+  showEditUserManagementDialog(context, index, userData, refreshEditState);
+}
 
-  
-void tambahSuratMasuk(BuildContext context, Function(SuratMasukModel?) onSuratAdded, refreshState) {
+void tambahSuratMasuk(
+  BuildContext context,
+  Function(SuratMasukModel?) onSuratAdded,
+  refreshState,
+) {
   showModernTambahSuratDialog(
     'Tambah Surat Masuk',
     'Pilih metode untuk menambahkan surat masuk baru',
@@ -653,22 +691,33 @@ void tambahSuratMasuk(BuildContext context, Function(SuratMasukModel?) onSuratAd
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
     onSuratAdded,
-    refreshState
+    refreshState,
   );
 }
 
-void tambahSuratKeluar(BuildContext context, List<SuratKeluarModel?> listSurat, Function(SuratKeluarModel?) onSuratKeluarAdded, refreshState) {
-  showModernTambahSuratKeluarFormDesktopDialog(
-    context,
+void tambahSuratKeluar(
+  BuildContext context,
+  List<SuratKeluarModel?> listSurat,
+  Function(SuratKeluarModel?) onSuratKeluarAdded,
+  refreshState,
+) {
+  showModernTambahSuratKeluarDialog(
+    'Tambah Surat Keluar',
+    'Pilih metode untuk menambahkan surat keluar baru',
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    listSurat,
     onSuratKeluarAdded,
     refreshState,
-    listSurat
   );
 }
 
-void tambahSuratMasukDesktop(BuildContext context, Function(SuratMasukModel?) onSuratKeluarAdded, refreshState) {
+void tambahSuratMasukDesktop(
+  BuildContext context,
+  Function(SuratMasukModel?) onSuratKeluarAdded,
+  refreshState,
+) {
   showModernTambahSuratMasukDesktopDialog(
     'Tambah Surat Masuk',
     'Pilih metode untuk menambahkan surat masuk baru',
@@ -680,7 +729,12 @@ void tambahSuratMasukDesktop(BuildContext context, Function(SuratMasukModel?) on
   );
 }
 
-void tambahSuratKeluarDesktop(BuildContext context, List<SuratKeluarModel?> listSurat, Function(SuratKeluarModel?) onSuratKeluarAdded, refreshState) {
+void tambahSuratKeluarDesktop(
+  BuildContext context,
+  List<SuratKeluarModel?> listSurat,
+  Function(SuratKeluarModel?) onSuratKeluarAdded,
+  refreshState,
+) {
   showModernTambahSuratKeluarDesktopDialog(
     'Tambah Surat Keluar',
     'Pilih metode untuk menambahkan surat keluar baru',
@@ -689,11 +743,16 @@ void tambahSuratKeluarDesktop(BuildContext context, List<SuratKeluarModel?> list
     context,
     onSuratKeluarAdded,
     refreshState,
-    listSurat
+    listSurat,
   );
 }
 
-void tambahUser(BuildContext context, String bidang, Function(UserModel?) onUserAdded, refreshState) {
+void tambahUser(
+  BuildContext context,
+  String bidang,
+  Function(UserModel?) onUserAdded,
+  refreshState,
+) {
   showModernTambahUserDialog(
     'Tambah User (Tidak Disarankan!)',
     bidang,
@@ -706,7 +765,11 @@ void tambahUser(BuildContext context, String bidang, Function(UserModel?) onUser
   );
 }
 
-void tambahUserPhone(BuildContext context, Function(UserModel?) onUserAdded, refreshState) {
+void tambahUserPhone(
+  BuildContext context,
+  Function(UserModel?) onUserAdded,
+  refreshState,
+) {
   showModernTambahUserPhoneDialog(
     'Tambah User (Tidak Disarankan!)',
     'Pilih metode untuk menambahkan user',
@@ -717,7 +780,6 @@ void tambahUserPhone(BuildContext context, Function(UserModel?) onUserAdded, ref
     refreshState,
   );
 }
-
 
 void hapusDokumen(
   BuildContext context,
@@ -780,7 +842,7 @@ void hapusDokumenKeluarDesktop(
   BuildContext context,
   int index,
   List<SuratKeluarModel?> suratData,
-  void Function(int) onConfirmDelete, 
+  void Function(int) onConfirmDelete,
 ) {
   final surat = suratData[index];
   showModernHapusDialogDesktop(
@@ -799,7 +861,7 @@ void hapusUserDesktop(
   BuildContext context,
   int index,
   List<UserModel?> userData,
-  void Function(String) onConfirmDelete, 
+  void Function(String) onConfirmDelete,
   void Function() refreshState,
 ) {
   final user = userData[index];

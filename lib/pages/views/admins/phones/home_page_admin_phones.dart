@@ -430,7 +430,7 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                                       ],
                                     ),
                                     child: Icon(
-                                      Icons.logout_rounded,
+                                      Icons.person_2_outlined,
                                       color: Colors.white,
                                       size: 20,
                                     ),

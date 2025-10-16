@@ -963,55 +963,55 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                 ),
                                                 child: InkWell(
                                                   onTap: () {
-                                                    // action(
-                                                    //   index,
-                                                    //   context,
-                                                    //   _listSurat,
-                                                    //   (i) => editDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     refreshEditState
-                                                    //   ),
+                                                    actionUserMasuk(
+                                                      index,
+                                                      context,
+                                                      _listSurat!,
+                                                      (i) => editDokumen(
+                                                        context,
+                                                        index,
+                                                        _listSurat!,
+                                                        refreshEditState
+                                                      ),
                                                       (i) => viewDetail(
                                                         context,
                                                         index,
                                                         _listSurat!,
-                                                      );
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                      ),
+                                                      (i) => hapusDokumen(
+                                                        context,
+                                                        index,
+                                                        _listSurat!,
+                                                        actionSetState,
+                                                      ),
+                                                    );
                                                     print(
                                                       'Surat dipilih: ${surat?.nama_surat}',
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    // action(
-                                                    //   index,
-                                                    //   context,
-                                                    //   _listSurat,
-                                                    //   (i) => editDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     refreshEditState
-                                                    //   ),
-                                                    //   (i) => viewDetail(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //   ),
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                    actionUserMasuk(
+                                                      index,
+                                                      context,
+                                                      _listSurat!,
+                                                      (i) => editDokumen(
+                                                        context,
+                                                        index,
+                                                        _listSurat!,
+                                                        refreshEditState
+                                                      ),
+                                                      (i) => viewDetail(
+                                                        context,
+                                                        index,
+                                                        _listSurat!,
+                                                      ),
+                                                      (i) => hapusDokumen(
+                                                        context,
+                                                        index,
+                                                        _listSurat!,
+                                                        actionSetState,
+                                                      ),
+                                                    );
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
