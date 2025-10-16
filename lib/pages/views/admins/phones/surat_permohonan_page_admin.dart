@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
@@ -42,12 +43,20 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   late Animation<double> _optionsAnimation;
 
   SuratMasuk _suratService = SuratMasuk();
+  UserService _userService = UserService();
   List<SuratMasukModel?> _listSurat = [];
 
   Future<void> _loadAllData() async {
     print('[DEBUG] -> [INFO] : Loading all data "surat masuk" ...');
     try {
-      final data = await _suratService.listSurat();
+      final disposisi = await _userService.getDisposisi();
+      final mappedDisposisi = workFields.entries.firstWhere(
+        (e) => e.value == disposisi,
+        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
+      ).key;
+      final isSU = await _userService.getSuperAdminStatus();
+      print("[DEBUG] -> [STATE] :: SU Status : $isSU");
+      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : await _suratService.listSurat();
 
       setState(() {
         print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');

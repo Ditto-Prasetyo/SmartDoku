@@ -3,11 +3,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
+import 'package:smart_doku/utils/map.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -35,6 +37,7 @@ class _OutgoingLetterPageAdminDesktopState
   late Animation<double> _cardAnimation;
 
   SuratKeluar _suratService = SuratKeluar();
+  UserService _userService = UserService();
   List<SuratKeluarModel?> _listSurat = [];
 
   // Selected sidebar item
@@ -121,7 +124,14 @@ class _OutgoingLetterPageAdminDesktopState
   Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
     try {
-      final data = await _suratService.listSurat();
+      final disposisi = await _userService.getDisposisi();
+      final mappedDisposisi = workFields.entries.firstWhere(
+        (e) => e.value == disposisi,
+        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
+      ).key;
+      final isSU = await _userService.getSuperAdminStatus();
+      print("[DEBUG] -> [STATE] :: SU Status : $isSU");
+      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : await _suratService.listSurat();
       setState(() {
         _listSurat = data;
         isLoading = false;
@@ -572,7 +582,7 @@ class _OutgoingLetterPageAdminDesktopState
                             children: [
                               InkWell(
                                 onTap: () {
-                                  tambahSuratKeluarDesktop(context, (newSurat) {
+                                  tambahSuratKeluarDesktop(context, _listSurat, (newSurat) {
                                   }, refreshState);
                                 },
                                 child: Icon(

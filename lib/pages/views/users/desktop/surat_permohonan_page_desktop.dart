@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
@@ -35,14 +36,22 @@ class _PermohonanLettersPageDesktopState
   late Animation<double> _cardAnimation;
 
   SuratMasuk _suratService = SuratMasuk();
-  List<SuratMasukModel?> _listSurat = [];
+  UserService _userService = UserService();
+  List<SuratMasukModel?>? _listSurat = [];
 
   Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
     try {
-      final data = await _suratService.listSurat();
+      final disposisi = await _userService.getDisposisi();
+      final mappedDisposisi = workFields.entries.firstWhere(
+        (e) => e.value == disposisi,
+        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
+      ).key;
+      final isSU = await _userService.getSuperAdminStatus();
+      print("[DEBUG] -> [STATE] :: SU Status : $isSU");
+      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : null;
       setState(() {
-        _listSurat = data;
+        _listSurat = data ?? null;
         isLoading = false;
       });
       print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
@@ -92,7 +101,7 @@ class _PermohonanLettersPageDesktopState
 
   void actionSetState(int index) {
     setState(() {
-      _listSurat.removeAt(index);
+      // _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -486,7 +495,7 @@ class _PermohonanLettersPageDesktopState
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '${_listSurat.length} Data',
+                                '${_listSurat?.length ?? 0} Data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -1064,7 +1073,7 @@ class _PermohonanLettersPageDesktopState
                                                         ),
                                                   ),
                                                 ]
-                                              : _listSurat.isEmpty
+                                              : _listSurat == null
                                               ? [
                                                   // 👇 Kalau kosong
                                                   Container(
@@ -1085,11 +1094,11 @@ class _PermohonanLettersPageDesktopState
                                                     ),
                                                   ),
                                                 ]
-                                              : List.generate(_listSurat.length, (
+                                              : List.generate(_listSurat?.length ?? 0, (
                                                   index,
                                                 ) {
                                                   final surat =
-                                                      _listSurat[index];
+                                                      _listSurat?[index] ?? null;
                                                   return Container(
                                                     padding:
                                                         EdgeInsets.symmetric(
@@ -1611,8 +1620,7 @@ class _PermohonanLettersPageDesktopState
                                                             Expanded(
                                                               flex: 200,
                                                               child: Text(
-                                                                surat
-                                                                    .link_scan!,
+                                                                surat.link_scan ?? "-",
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -2029,7 +2037,7 @@ class _PermohonanLettersPageDesktopState
                                                                         viewDetail(
                                                                           context,
                                                                           index,
-                                                                          _listSurat,
+                                                                          _listSurat!,
                                                                         );
                                                                       },
                                                                       child: Icon(

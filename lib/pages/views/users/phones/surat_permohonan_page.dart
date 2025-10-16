@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/function.dart';
@@ -39,17 +40,25 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
   late Animation<double> _optionsAnimation;
 
   SuratMasuk _suratService = SuratMasuk();
-  List<SuratMasukModel?> _listSurat = [];
+  UserService _userService = UserService();
+  List<SuratMasukModel?>? _listSurat = [];
 
   Future<void> _loadAllData() async {
     print('[DEBUG] -> [INFO] : Loading all data "surat masuk" ...');
     try {
-      final data = await _suratService.listSurat();
+      final disposisi = await _userService.getDisposisi();
+      final mappedDisposisi = workFields.entries.firstWhere(
+        (e) => e.value == disposisi,
+        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
+      ).key;
+      final isSU = await _userService.getSuperAdminStatus();
+      print("[DEBUG] -> [STATE] :: SU Status : $isSU");
+      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : null;
 
       setState(() {
         print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
-        _listSurat = data;
-        print(_listSurat.map((e) => e?.toJson()).toList());
+        _listSurat = data ?? null;
+        // print(_listSurat!.map((e) => e?.toJson()).toList());
       });
     } catch (e) {
       print("[ERROR] -> Gagal load data: $e");
@@ -1398,10 +1407,10 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                       physics: AlwaysScrollableScrollPhysics(
                                         parent: BouncingScrollPhysics(),
                                       ), // Enable pull to refresh even when list is short
-                                      itemCount: _listSurat.length,
+                                      itemCount: _listSurat?.length ?? 0,
                                       padding: EdgeInsets.only(bottom: 20),
                                       itemBuilder: (context, index) {
-                                        final surat = _listSurat[index];
+                                        final surat = _listSurat?[index] ?? null;
 
                                         return Container(
                                           margin: EdgeInsets.only(bottom: 15),

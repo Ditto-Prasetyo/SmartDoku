@@ -6,6 +6,7 @@ import 'package:smart_doku/pages/auth/register_cred_page.dart';
 import 'package:smart_doku/pages/forms/admins/desktop/detail_page_userManagement.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_keluar.dart';
 import 'package:smart_doku/pages/forms/admins/phones/detail_page_admin_phones.dart';
+import 'package:smart_doku/pages/forms/admins/phones/forms_dialog.dart';
 import 'package:smart_doku/pages/forms/users/detail_keluar_page.dart';
 import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
@@ -656,15 +657,14 @@ void tambahSuratMasuk(BuildContext context, Function(SuratMasukModel?) onSuratAd
   );
 }
 
-void tambahSuratKeluar(BuildContext context, Function(SuratKeluarModel?) onSuratKeluarAdded, refreshState) {
-  showModernTambahSuratKeluarDialog(
-    'Tambah Surat Keluar',
-    'Pilih metode untuk menambahkan surat keluar baru',
+void tambahSuratKeluar(BuildContext context, List<SuratKeluarModel?> listSurat, Function(SuratKeluarModel?) onSuratKeluarAdded, refreshState) {
+  showModernTambahSuratKeluarFormDesktopDialog(
+    context,
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
-    context,
     onSuratKeluarAdded,
     refreshState,
+    listSurat
   );
 }
 
@@ -680,7 +680,7 @@ void tambahSuratMasukDesktop(BuildContext context, Function(SuratMasukModel?) on
   );
 }
 
-void tambahSuratKeluarDesktop(BuildContext context, Function(SuratKeluarModel?) onSuratKeluarAdded, refreshState) {
+void tambahSuratKeluarDesktop(BuildContext context, List<SuratKeluarModel?> listSurat, Function(SuratKeluarModel?) onSuratKeluarAdded, refreshState) {
   showModernTambahSuratKeluarDesktopDialog(
     'Tambah Surat Keluar',
     'Pilih metode untuk menambahkan surat keluar baru',
@@ -688,7 +688,8 @@ void tambahSuratKeluarDesktop(BuildContext context, Function(SuratKeluarModel?) 
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
     onSuratKeluarAdded,
-    refreshState
+    refreshState,
+    listSurat
   );
 }
 
