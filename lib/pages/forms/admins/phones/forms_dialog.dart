@@ -84,7 +84,7 @@ void showModernTambahSuratFormDialog(
               child: Center(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                  height: MediaQuery.of(context).size.height * 0.9,  
+                  height: MediaQuery.of(context).size.height * 0.9,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: [
@@ -3984,7 +3984,6 @@ void showModernTambahUserFormDialog(
   Color accentColor2,
   Function(UserModel?) onUserAdded,
   void Function() refreshState,
-  
 ) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -4365,13 +4364,690 @@ void showModernTambahUserFormDialog(
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: 30),
+                                            SizedBox(height: 15),
 
                                             _buildModernTextField(
                                               controller:
                                                   controllers['password']!,
                                               label: 'Password User',
-                                              icon: Icons.phone,
+                                              icon: Icons.password,
+                                              required: true,
+                                            ),
+
+                                            SizedBox(height: 30),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(height: 10),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Bottom Buttons
+                              Container(
+                                padding: EdgeInsets.all(25),
+                                child: Column(
+                                  children: [
+                                    // Save Button
+                                    Container(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            UserModel?
+                                            data = await _userService.addUser(
+                                              name: controllers['name']?.text,
+                                              username:
+                                                  controllers['username']?.text,
+                                              email: controllers['email']?.text,
+                                              bidang:
+                                                  controllers['bidang']?.text,
+                                              role: controllers['role']?.text,
+                                              address:
+                                                  controllers['address']?.text,
+                                              phone: controllers['phone_number']
+                                                  ?.text,
+                                              password:
+                                                  controllers['password']?.text,
+                                            );
+
+                                            // Call the callback function
+                                            onUserAdded(data);
+
+                                            refreshState();
+
+                                            Navigator.pop(context);
+
+                                            // Show success message
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  'Surat berhasil ditambahkan!',
+                                                ),
+                                                backgroundColor: accentColor,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: accentColor,
+                                          foregroundColor: Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 15,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                          ),
+                                          elevation: 8,
+                                          shadowColor: accentColor.withValues(
+                                            alpha: 0.4,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.save_rounded),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              'Simpan Surat',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0.5,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 10),
+
+                                    // Cancel Button
+                                    Container(
+                                      width: double.infinity,
+                                      child: OutlinedButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 15,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                          ),
+                                          side: BorderSide(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.close_rounded),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              'Batal',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0.5,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+void showModernTambahUserFormPhoneDialog(
+  BuildContext context,
+  Color accentColor,
+  Color accentColor2,
+  Function(UserModel?) onUserAdded,
+  void Function() refreshState,
+) async {
+  final _formKey = GlobalKey<FormState>();
+  final Map<String, TextEditingController> controllers = {
+    'name': TextEditingController(),
+    'username': TextEditingController(),
+    'email': TextEditingController(),
+    'bidang': TextEditingController(),
+    'role': TextEditingController(),
+    'address': TextEditingController(),
+    'phone_number': TextEditingController(),
+    'password': TextEditingController(),
+  };
+  Size size = MediaQuery.of(context).size;
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Form Tambah User",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          final ScrollController _scrollController = ScrollController();
+          return SafeArea(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Center(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  width:
+                      (Platform.isWindows ||
+                          Platform.isLinux ||
+                          Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 30,
+                        spreadRadius: 5,
+                        offset: Offset(0, 15),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.white.withValues(alpha: 0.2),
+                                Colors.white.withValues(alpha: 0.1),
+                              ],
+                            ),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Column(
+                            children: [
+                              // Header
+                              Container(
+                                padding: EdgeInsets.all(25),
+                                child: Column(
+                                  children: [
+                                    // Icon container
+                                    Container(
+                                      padding: EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            accentColor.withValues(alpha: 0.8),
+                                            accentColor.withValues(alpha: 0.6),
+                                          ],
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: accentColor.withValues(
+                                              alpha: 0.4,
+                                            ),
+                                            blurRadius: 15,
+                                            spreadRadius: 2,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Icon(
+                                        Icons.note_add_rounded,
+                                        color: Colors.white,
+                                        size: 30,
+                                      ),
+                                    ),
+                                    SizedBox(height: 15),
+
+                                    // Title
+                                    Text(
+                                      'Form Tambah User',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+
+                                    Text(
+                                      'Lengkapi data user di bawah ini',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.8,
+                                        ),
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                    Text(
+                                      '\nData selengkapnya anda bisa scroll ke bawah!',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white.withValues(
+                                          alpha: 0.9,
+                                        ),
+                                        height: 1.4,
+                                        decoration: TextDecoration.none,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              // Form Content
+                              Expanded(
+                                child: Form(
+                                  key: _formKey,
+                                  child: ScrollbarTheme(
+                                    data: ScrollbarThemeData(
+                                      thumbColor: WidgetStateProperty.all(
+                                        Colors.white,
+                                      ),
+                                      thickness: WidgetStateProperty.all(6),
+                                    ),
+                                    child: Scrollbar(
+                                      thumbVisibility: true,
+                                      controller: _scrollController,
+                                      child: SingleChildScrollView(
+                                        controller: _scrollController,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 25,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            // Basic Info Section
+                                            _buildSectionTitle(
+                                              'Informasi User',
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: _buildModernTextField(
+                                                    controller:
+                                                        controllers['name']!,
+                                                    label: 'Nama User',
+                                                    icon: Icons.person,
+                                                    required: true,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                  child: _buildModernTextField(
+                                                    controller:
+                                                        controllers['username']!,
+                                                    label: 'Username User',
+                                                    icon: Icons.alternate_email,
+                                                    required: true,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 5),
+                                            _buildModernTextField(
+                                              controller: controllers['email']!,
+                                              label: 'Email User',
+                                              icon: Icons.email,
+                                              required: true,
+                                            ),
+                                            SizedBox(height: 5),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                  ),
+                                              child: DropdownButtonFormField<String>(
+                                                isExpanded: true,
+                                                value:
+                                                    controllers['bidang']!
+                                                        .text
+                                                        .isNotEmpty
+                                                    ? controllers['bidang']!.text
+                                                    : null,
+                                                items: workFields.entries
+                                                    .map(
+                                                      (entry) =>
+                                                          DropdownMenuItem(
+                                                            value: entry.value,
+                                                            child: Text(
+                                                              entry.key,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.9,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                    )
+                                                    .toList(),
+                                                onChanged: (value) {
+                                                  controllers['bidang']!.text =
+                                                      value ?? '';
+                                                },
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Bidang harus diisi';
+                                                  }
+                                                  return null;
+                                                },
+                                                decoration: InputDecoration(
+                                                  labelText: 'Bidang',
+                                                  labelStyle: TextStyle(
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.8),
+                                                  ),
+                                                  prefixIcon: Icon(
+                                                    Icons.work,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.9),
+                                                  ),
+                                                  filled: true,
+                                                  fillColor: Colors.white
+                                                      .withValues(alpha: 0.05),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.2,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.4,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                  errorBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  focusedErrorBorder:
+                                                      OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Colors.red
+                                                              .withValues(
+                                                                alpha: 0.9,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                ),
+                                                dropdownColor: Colors.black
+                                                    .withValues(alpha: 0.7),
+                                                iconEnabledColor: Colors.white
+                                                    .withValues(alpha: 0.9),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+
+                                            SizedBox(height: 5),
+                                            // Dropdwon untuk add user role
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    vertical: 10,
+                                                  ),
+                                              child: DropdownButtonFormField<String>(
+                                                value:
+                                                    controllers['role']!
+                                                        .text
+                                                        .isNotEmpty
+                                                    ? controllers['role']!.text
+                                                    : null,
+                                                items: roleField.entries
+                                                    .map(
+                                                      (entry) =>
+                                                          DropdownMenuItem(
+                                                            value: entry.value,
+                                                            child: Text(
+                                                              entry.key,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.9,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                    )
+                                                    .toList(),
+                                                onChanged: (value) {
+                                                  controllers['role']!.text =
+                                                      value ?? '';
+                                                },
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Role harus diisi';
+                                                  }
+                                                  return null;
+                                                },
+                                                decoration: InputDecoration(
+                                                  labelText: 'Role',
+                                                  labelStyle: TextStyle(
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.8),
+                                                  ),
+                                                  prefixIcon: Icon(
+                                                    Icons.badge,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.9),
+                                                  ),
+                                                  filled: true,
+                                                  fillColor: Colors.white
+                                                      .withValues(alpha: 0.05),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.2,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.4,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                  errorBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          15,
+                                                        ),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  focusedErrorBorder:
+                                                      OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Colors.red
+                                                              .withValues(
+                                                                alpha: 0.9,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                ),
+                                                dropdownColor: Colors.black
+                                                    .withValues(alpha: 0.7),
+                                                iconEnabledColor: Colors.white
+                                                    .withValues(alpha: 0.9),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+
+                                            // More info user
+                                            _buildSectionTitle(
+                                              'Informasi Tambahan User',
+                                            ),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: _buildModernTextField(
+                                                    controller:
+                                                        controllers['address']!,
+                                                    label: 'Alamat User',
+                                                    icon: Icons.home,
+                                                    required: true,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                  child: _buildModernTextField(
+                                                    controller:
+                                                        controllers['phone_number']!,
+                                                    label: 'Nomor Telepon User',
+                                                    icon: Icons.phone,
+                                                    required: true,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 15),
+
+                                            _buildModernTextField(
+                                              controller:
+                                                  controllers['password']!,
+                                              label: 'Password User',
+                                              icon: Icons.password,
                                               required: true,
                                             ),
 

@@ -705,6 +705,18 @@ void tambahUser(BuildContext context, String bidang, Function(UserModel?) onUser
   );
 }
 
+void tambahUserPhone(BuildContext context, Function(UserModel?) onUserAdded, refreshState) {
+  showModernTambahUserPhoneDialog(
+    'Tambah User (Tidak Disarankan!)',
+    'Pilih metode untuk menambahkan user',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    onUserAdded,
+    refreshState,
+  );
+}
+
 
 void hapusDokumen(
   BuildContext context,
