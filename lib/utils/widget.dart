@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 
 // Widget Surat Masuk dan Keluar
 Widget buildInputField(
@@ -1103,7 +1104,7 @@ Widget buildHeaderCard(SuratMasukModel? data) {
                     ),
                   ),
                   Text(
-                    data.tanggal_surat.toString(),
+                    parseDateFormat(data.tanggal_surat),
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 14,
@@ -1245,7 +1246,7 @@ Widget buildHeaderCardKeluar(SuratKeluarModel? data) {
                     ),
                   ),
                   Text(
-                    data!.tanggal_surat.toString(),
+                    parseDateFormat(data.tanggal_surat),
                     style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.7),
                       fontSize: 14,

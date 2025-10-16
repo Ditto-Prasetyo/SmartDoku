@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/utils/map.dart';
@@ -1257,12 +1258,9 @@ class _PermohonanLettersPageDesktopState
                                                             Expanded(
                                                               flex: 100,
                                                               child: Text(
-                                                                surat?.tanggal_diterima ==
-                                                                        null
+                                                                surat?.tanggal_diterima == null
                                                                     ? 'Data Tanggal \nDiterima Kosong'
-                                                                    : surat!
-                                                                          .tanggal_diterima
-                                                                          .toString(),
+                                                                    : parseDateFormat(surat!.tanggal_diterima),
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -1285,9 +1283,7 @@ class _PermohonanLettersPageDesktopState
                                                                 surat?.tanggal_surat ==
                                                                         null
                                                                     ? 'Data Tanggal \nSurat Kosong'
-                                                                    : surat!
-                                                                          .tanggal_surat
-                                                                          .toString(),
+                                                                    : parseDateFormat(surat!.tanggal_surat),
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -1445,9 +1441,7 @@ class _PermohonanLettersPageDesktopState
                                                                   surat?.tanggal_waktu ==
                                                                           null
                                                                       ? 'Data Hari Tanggal Waktu Kosong'
-                                                                      : surat!
-                                                                            .tanggal_waktu
-                                                                            .toString(),
+                                                                      : parseDateTimeFormat(surat!.tanggal_waktu),
                                                                   style: TextStyle(
                                                                     color: Colors
                                                                         .white
@@ -1650,7 +1644,7 @@ class _PermohonanLettersPageDesktopState
                                                                 child: Text(
                                                                   surat.disp_1 == null
                                                                       ? 'Data Disposisi Kadin Kosong'
-                                                                      : surat.disp_1.toString(),
+                                                                      : parseDateFormat(surat.disp_1),
                                                                   style: TextStyle(
                                                                     color: Colors
                                                                         .white
@@ -1676,12 +1670,9 @@ class _PermohonanLettersPageDesktopState
                                                             Expanded(
                                                               flex: 100,
                                                               child: Text(
-                                                                surat.disp_2 ==
-                                                                        null
+                                                                surat.disp_2 == null
                                                                     ? 'Data Disposisi Sekdin Kosong'
-                                                                    : surat
-                                                                          .disp_2
-                                                                          .toString(),
+                                                                    : parseDateFormat(surat.disp_2),
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -1704,8 +1695,7 @@ class _PermohonanLettersPageDesktopState
                                                             Expanded(
                                                               flex: 100,
                                                               child: Text(
-                                                                surat.disp_3
-                                                                    .toString(),
+                                                                surat.disp_3 != null ? parseDateFormat(surat.disp_3!) : "-",
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -1728,8 +1718,7 @@ class _PermohonanLettersPageDesktopState
                                                             Expanded(
                                                               flex: 100,
                                                               child: Text(
-                                                                surat.disp_4
-                                                                    .toString(),
+                                                                surat.disp_4 != null ? parseDateFormat(surat.disp_4!) : "-",
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -1868,9 +1857,7 @@ class _PermohonanLettersPageDesktopState
                                                             Expanded(
                                                               flex: 100,
                                                               child: Text(
-                                                                surat
-                                                                    .tindak_lanjut_1
-                                                                    .toString(),
+                                                                surat.tindak_lanjut_1 != null ? parseDateFormat(surat.tindak_lanjut_1!) : "-",
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white
@@ -1893,9 +1880,7 @@ class _PermohonanLettersPageDesktopState
                                                             Expanded(
                                                               flex: 110,
                                                               child: Text(
-                                                                surat
-                                                                    .tindak_lanjut_2
-                                                                    .toString(),
+                                                                surat.tindak_lanjut_2 != null ? parseDateFormat(surat.tindak_lanjut_2!) : "-",
                                                                 style: TextStyle(
                                                                   color: Colors
                                                                       .white

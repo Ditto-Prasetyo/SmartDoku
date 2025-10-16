@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/map.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
@@ -594,11 +595,11 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                             ),
                             buildDetailRow(
                               'Diterima Tanggal',
-                              detailData.tanggal_diterima == null ? 'Data Kosong!' : detailData.tanggal_diterima.toString(),
+                              detailData.tanggal_diterima == null ? 'Data Kosong!' : parseDateFormat(detailData.tanggal_diterima),
                             ),
                             buildDetailRow(
                               'Tanggal Surat',
-                              detailData.tanggal_surat == null ? 'Data Kosong!' : detailData.tanggal_surat.toString(),
+                              detailData.tanggal_surat == null ? 'Data Kosong!' : parseDateFormat(detailData.tanggal_surat),
                             ),
                             buildDetailRow('Kode', detailData.kode == null ? 'Data Kosong!' : detailData.kode),
                             buildDetailRow('No. Urut', detailData.nomor_urut == null ? 'Data Kosong!' : detailData.nomor_urut.toString()),
@@ -618,9 +619,9 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                             buildDetailRow('Hal', detailData.hal == null ? 'Data Kosong!' : detailData.hal),
                             buildDetailRow(
                               'Hari/Tanggal',
-                              detailData.tanggal_waktu == null ? 'Data Kosong!' : detailData.tanggal_waktu.toString(),
+                              detailData.tanggal_waktu == null ? 'Data Kosong!' : parseDateFormat(detailData.tanggal_waktu),
                             ),
-                            buildDetailRow('Waktu', detailData.tanggal_waktu == null ? 'Data Kosong!' : detailData.tanggal_waktu.toString()),
+                            buildDetailRow('Waktu', detailData.tanggal_waktu == null ? 'Data Kosong!' : parseTimeFormat(detailData.tanggal_waktu)),
                             buildDetailRow('Tempat', detailData.tempat == null ? 'Data Kosong!' : detailData.tempat),
                           ]),
 
@@ -658,19 +659,19 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildInfoCard([
                             buildDetailRow(
                               'Disposisi Kadin',
-                              detailData.disp_1 == null ? 'Data Kosong!' : detailData.disp_1.toString(),
+                              detailData.disp_1 == null ? 'Data Kosong!' : parseDateFormat(detailData.disp_1),
                             ),
                             buildDetailRow(
                               'Disposisi Sekdin',
-                              detailData.disp_2 == null ? 'Data Kosong!' : detailData.disp_2.toString(),
+                              detailData.disp_2 == null ? 'Data Kosong!' : parseDateFormat(detailData.disp_2),
                             ),
                             buildDetailRow(
                               'Disposisi Kabid / KaUPT',
-                              detailData.disp_3 == null ? 'Data Kosong!' : detailData.disp_3.toString(),
+                              detailData.disp_3 == null ? 'Data Kosong!' : parseDateFormat(detailData.disp_3!),
                             ),
                             buildDetailRow(
                               'Disposisi Kasubag / Kasi',
-                              detailData.disp_4 == null ? 'Data Kosong!' : detailData.disp_4.toString(),
+                              detailData.disp_4 == null ? 'Data Kosong!' : parseDateFormat(detailData.disp_4!),
                             ),
                           ]),
 

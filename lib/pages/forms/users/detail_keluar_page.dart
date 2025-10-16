@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
@@ -608,7 +609,7 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
                               'Tanggal Surat',
                               detailData?.tanggal_surat == null
                                   ? 'Data Kosong!'
-                                  : detailData!.tanggal_surat.toString(),
+                                  : parseDateFormat(detailData!.tanggal_surat),
                             ),
                           ]),
 
@@ -688,11 +689,11 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
                             ),
                             buildDetailRow(
                               'Dokumen Dikirim',
-                              detailData?.dok_dikirim == null ? 'Data Dokumen Dikirim Kosong' : detailData!.dok_dikirim.toString(),
+                              detailData?.dok_dikirim == null ? 'Data Dokumen Dikirim Kosong' : parseDateFormat(detailData!.dok_dikirim!),
                             ),
                             buildDetailRow(
                               'Tanda Terima',
-                              detailData?.tanda_terima == null ? 'Data Tanda Terima Kosong' : detailData!.tanda_terima.toString(),
+                              detailData?.tanda_terima == null ? 'Data Tanda Terima Kosong' : parseDateFormat(detailData!.tanda_terima!),
                             ),
                           ]),
                         ],

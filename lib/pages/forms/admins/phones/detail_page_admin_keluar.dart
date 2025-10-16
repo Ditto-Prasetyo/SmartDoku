@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:smart_doku/utils/function.dart';
 
@@ -608,7 +609,7 @@ class _DetailPageAdminKeluar extends State<DetailPageAdminKeluar>
                               'Tanggal Surat',
                               detailData?.tanggal_surat == null
                                   ? 'Data Kosong!'
-                                  : detailData!.tanggal_surat.toString(),
+                                  : parseDateFormat(detailData!.tanggal_surat),
                             ),
                           ]),
 

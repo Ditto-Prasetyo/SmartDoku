@@ -6,6 +6,7 @@ import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/map.dart';
 import 'package:smart_doku/utils/dialog.dart';
 
@@ -1478,11 +1479,11 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                     //     _listSurat,
                                                     //     refreshEditState
                                                     //   ),
-                                                    //   (i) => viewDetail(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //   ),
+                                                      (i) => viewDetail(
+                                                        context,
+                                                        index,
+                                                        _listSurat!,
+                                                      );
                                                     //   (i) => hapusDokumen(
                                                     //     context,
                                                     //     index,
@@ -1596,9 +1597,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat
-                                                                  .tanggal_surat
-                                                                  .toString(),
+                                                              parseDateFormat(surat.tanggal_surat),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
