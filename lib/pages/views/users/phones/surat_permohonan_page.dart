@@ -20,25 +20,13 @@ class PermohonanLetterPage extends StatefulWidget {
 class _PermohonanLetterPage extends State<PermohonanLetterPage>
     with TickerProviderStateMixin {
   var height, width;
-  OverlayEntry? _overlayEntry;
 
   bool isRefreshing = false;
-  bool isSearchActive = false;
-  bool showSearchOptions = false;
-  String selectedSearchType = 'judul';
-
-  TextEditingController searchController = TextEditingController();
-
-  FocusNode searchFocusNode = FocusNode();
 
   // Animation controllers and animations
   late AnimationController _backgroundController;
-  late AnimationController _searchController;
-  late AnimationController _optionsController;
 
   late Animation<double> _backgroundAnimation;
-  late Animation<double> _searchAnimation;
-  late Animation<double> _optionsAnimation;
 
   SuratMasuk _suratService = SuratMasuk();
   UserService _userService = UserService();
@@ -103,18 +91,6 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
     }
   }
 
-  List<Map<String, dynamic>> searchOptions = [
-    {'value': 'judul', 'label': 'Judul Surat', 'icon': Icons.title_rounded},
-    {'value': 'perihal', 'label': 'Perihal', 'icon': Icons.description_rounded},
-    {
-      'value': 'tanggal',
-      'label': 'Tanggal',
-      'icon': Icons.calendar_today_rounded,
-    },
-    {'value': 'status', 'label': 'Pengirim', 'icon': Icons.person_rounded},
-    {'value': 'status', 'label': 'Status', 'icon': Icons.flag_rounded},
-  ];
-
   Color getStatusColor(String status) {
     switch (status.toLowerCase()) {
       case 'proses':
@@ -142,77 +118,8 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
         curve: Curves.easeInOutCubic,
       ),
     );
-    _searchController = AnimationController(
-      duration: Duration(milliseconds: 300),
-      vsync: this,
-    );
-    _searchAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _searchController, curve: Curves.easeInOutCubic),
-    );
-    _optionsController = AnimationController(
-      duration: Duration(milliseconds: 250),
-      vsync: this,
-    );
-    _optionsAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _optionsController, curve: Curves.easeOutBack),
-    );
 
     _backgroundController.repeat(reverse: true);
-  }
-
-  // Function toggle search options
-  void _toggleSearchOptions() {
-    if (showSearchOptions) {
-      // Hide overlay
-      _overlayEntry?.remove();
-      _overlayEntry = null;
-      _optionsController.reverse().then((_) {
-        setState(() {
-          showSearchOptions = false;
-        });
-      });
-    } else {
-      // Show overlay
-      setState(() {
-        showSearchOptions = true;
-      });
-      _overlayEntry = _createOverlayEntry();
-      Overlay.of(context).insert(_overlayEntry!);
-      _optionsController.forward();
-    }
-  }
-
-  // Function select search type
-  void _selectSearchType(String type) {
-    setState(() {
-      selectedSearchType = type;
-      showSearchOptions = false;
-      isSearchActive = true;
-    });
-
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    _optionsController.reverse();
-    _searchController.forward();
-
-    Future.delayed(Duration(milliseconds: 150), () {
-      searchFocusNode.requestFocus();
-    });
-  }
-
-  // Close search function
-  void _closeSearch() {
-    setState(() {
-      isSearchActive = false;
-      showSearchOptions = false;
-    });
-
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    _searchController.reverse();
-    _optionsController.reverse();
-    searchController.clear();
-    searchFocusNode.unfocus();
   }
 
   void actionSetState(int index) {
@@ -234,197 +141,9 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
     });
   }
 
-  OverlayEntry _createOverlayEntry() {
-    RenderBox renderBox = context.findRenderObject() as RenderBox;
-    var size = renderBox.size;
-    var offset = renderBox.localToGlobal(Offset.zero);
-
-    return OverlayEntry(
-      builder: (context) => Positioned(
-        top: offset.dy + 85, // Adjust position sesuai header
-        right: 15,
-        child: Material(
-          color: Colors.transparent,
-          elevation: 20,
-          borderRadius: BorderRadius.circular(16),
-          child: AnimatedBuilder(
-            animation: _optionsAnimation,
-            builder: (context, child) {
-              print("Opacity Value ${_optionsAnimation.value}");
-              return Transform.scale(
-                scale: _optionsAnimation.value,
-                alignment: Alignment.topRight,
-                child: Opacity(
-                  opacity: _optionsAnimation.value.clamp(0.0, 1.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                      child: Container(
-                        width: 220,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withValues(alpha: 0.3),
-                              Colors.white.withValues(alpha: 0.1),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.4),
-                            width: 1.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 40,
-                              offset: Offset(0, 15),
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Header
-                            Container(
-                              padding: EdgeInsets.all(15),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFF4F46E5).withValues(alpha: 0.3),
-                                    Color(0xFF7C3AED).withValues(alpha: 0.2),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(16),
-                                  topRight: Radius.circular(16),
-                                ),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.tune_rounded,
-                                    color: Colors.white,
-                                    size: 18,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Cari Berdasarkan',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: 'Roboto',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // Options List
-                            ...searchOptions.map((option) {
-                              bool isSelected =
-                                  selectedSearchType == option['value'];
-                              return InkWell(
-                                onTap: () => _selectSearchType(option['value']),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 15,
-                                    vertical: 12,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    gradient: isSelected
-                                        ? LinearGradient(
-                                            colors: [
-                                              Color(
-                                                0xFF10B981,
-                                              ).withValues(alpha: 0.3),
-                                              Color(
-                                                0xFF059669,
-                                              ).withValues(alpha: 0.2),
-                                            ],
-                                          )
-                                        : null,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(6),
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: isSelected
-                                                ? [
-                                                    Color(0xFF10B981),
-                                                    Color(0xFF059669),
-                                                  ]
-                                                : [
-                                                    Colors.white.withValues(
-                                                      alpha: 0.2,
-                                                    ),
-                                                    Colors.white.withValues(
-                                                      alpha: 0.1,
-                                                    ),
-                                                  ],
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            8,
-                                          ),
-                                        ),
-                                        child: Icon(
-                                          option['icon'],
-                                          color: Colors.white,
-                                          size: 16,
-                                        ),
-                                      ),
-                                      SizedBox(width: 12),
-                                      Expanded(
-                                        child: Text(
-                                          option['label'],
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
-                                            fontWeight: isSelected
-                                                ? FontWeight.w600
-                                                : FontWeight.w400,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
-                                      ),
-                                      if (isSelected)
-                                        Icon(
-                                          Icons.check_circle_rounded,
-                                          color: Color(0xFF10B981),
-                                          size: 18,
-                                        ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   void dispose() {
     _backgroundController.dispose();
-    _overlayEntry?.remove();
-    _searchController.dispose();
-    _optionsController.dispose();
-    searchController.dispose();
-    searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -844,314 +563,89 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AnimatedBuilder(
-                        animation: _searchAnimation,
-                        builder: (context, child) {
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              top: 30,
-                              left: 15,
-                              right: 15,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                // Menu Button
-                                Transform.translate(
-                                  offset: Offset(
-                                    -60 * _searchAnimation.value,
-                                    0,
-                                  ),
-                                  child: Opacity(
-                                    opacity: 1 - _searchAnimation.value,
-                                    child: Builder(
-                                      builder: (context) => InkWell(
-                                        onTap: isSearchActive
-                                            ? null
-                                            : () {
-                                                Scaffold.of(
-                                                  context,
-                                                ).openDrawer();
-                                              },
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: Container(
-                                          padding: EdgeInsets.all(4.5),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.1,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                            border: Border.all(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.2,
-                                              ),
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Icon(
-                                            Icons.menu_rounded,
-                                            color: Color.fromRGBO(
-                                              255,
-                                              255,
-                                              255,
-                                              1,
-                                            ),
-                                            size: 24,
-                                          ),
-                                        ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 30,
+                          left: 15,
+                          right: 15,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Menu Button
+                            Builder(
+                              builder: (context) => InkWell(
+                                onTap: () {
+                                  Scaffold.of(context).openDrawer();
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: EdgeInsets.all(4.5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
                                       ),
+                                      width: 1,
                                     ),
                                   ),
-                                ),
-
-                                // Search Box Container
-                                Expanded(
-                                  child: Container(
-                                    margin: EdgeInsets.only(
-                                      left: 60 * (1 - _searchAnimation.value),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        // Search Input Field
-                                        if (isSearchActive)
-                                          Expanded(
-                                            child: Transform.scale(
-                                              scale: _searchAnimation.value,
-                                              alignment: Alignment.centerRight,
-                                              child: Opacity(
-                                                opacity: _searchAnimation.value,
-                                                child: Container(
-                                                  height: 42,
-                                                  margin: EdgeInsets.only(
-                                                    right: 10,
-                                                  ),
-                                                  child: ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          12,
-                                                        ),
-                                                    child: BackdropFilter(
-                                                      filter: ImageFilter.blur(
-                                                        sigmaX: 15,
-                                                        sigmaY: 15,
-                                                      ),
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                          gradient: LinearGradient(
-                                                            begin: Alignment
-                                                                .topLeft,
-                                                            end: Alignment
-                                                                .bottomRight,
-                                                            colors: [
-                                                              Colors.white
-                                                                  .withValues(
-                                                                    alpha: 0.25,
-                                                                  ),
-                                                              Colors.white
-                                                                  .withValues(
-                                                                    alpha: 0.1,
-                                                                  ),
-                                                            ],
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                          border: Border.all(
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.3,
-                                                                ),
-                                                            width: 1.5,
-                                                          ),
-                                                        ),
-                                                        child: TextField(
-                                                          controller:
-                                                              searchController,
-                                                          focusNode:
-                                                              searchFocusNode,
-                                                          cursorColor:
-                                                              Colors.white,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                          ),
-                                                          decoration: InputDecoration(
-                                                            hintText:
-                                                                'Cari berdasarkan ${searchOptions.firstWhere((option) => option['value'] == selectedSearchType)['label'].toString().toLowerCase()}...',
-                                                            hintStyle: TextStyle(
-                                                              color: Colors
-                                                                  .white
-                                                                  .withValues(
-                                                                    alpha: 0.6,
-                                                                  ),
-                                                              fontSize: 14,
-                                                              fontFamily:
-                                                                  'Roboto',
-                                                            ),
-                                                            border: InputBorder
-                                                                .none,
-                                                            contentPadding:
-                                                                EdgeInsets.symmetric(
-                                                                  horizontal:
-                                                                      15,
-                                                                  vertical: 6,
-                                                                ),
-                                                            prefixIcon: Icon(
-                                                              searchOptions.firstWhere(
-                                                                (option) =>
-                                                                    option['value'] ==
-                                                                    selectedSearchType,
-                                                              )['icon'],
-                                                              color: Colors
-                                                                  .white
-                                                                  .withValues(
-                                                                    alpha: 0.7,
-                                                                  ),
-                                                              size: 20,
-                                                            ),
-                                                          ),
-                                                          onChanged: (value) {
-                                                            print(
-                                                              'Searching $selectedSearchType: $value',
-                                                            );
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-
-                                        if (!isSearchActive) Spacer(),
-
-                                        // Search/Close Button
-                                        InkWell(
-                                          onTap: isSearchActive
-                                              ? _closeSearch
-                                              : _toggleSearchOptions,
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          child: Container(
-                                            padding: EdgeInsets.all(4.5),
-                                            decoration: BoxDecoration(
-                                              color: isSearchActive
-                                                  ? Color(
-                                                      0xFFEF4444,
-                                                    ).withValues(alpha: 0.2)
-                                                  : showSearchOptions
-                                                  ? Color(
-                                                      0xFF10B981,
-                                                    ).withValues(alpha: 0.2)
-                                                  : Colors.white.withValues(
-                                                      alpha: 0.1,
-                                                    ),
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              border: Border.all(
-                                                color: isSearchActive
-                                                    ? Color(
-                                                        0xFFEF4444,
-                                                      ).withValues(alpha: 0.4)
-                                                    : showSearchOptions
-                                                    ? Color(
-                                                        0xFF10B981,
-                                                      ).withValues(alpha: 0.4)
-                                                    : Colors.white.withValues(
-                                                        alpha: 0.2,
-                                                      ),
-                                                width: 1,
-                                              ),
-                                              boxShadow:
-                                                  (isSearchActive ||
-                                                      showSearchOptions)
-                                                  ? [
-                                                      BoxShadow(
-                                                        color: isSearchActive
-                                                            ? Color(
-                                                                0xFFEF4444,
-                                                              ).withValues(
-                                                                alpha: 0.3,
-                                                              )
-                                                            : Color(
-                                                                0xFF10B981,
-                                                              ).withValues(
-                                                                alpha: 0.3,
-                                                              ),
-                                                        blurRadius: 8,
-                                                        offset: Offset(0, 2),
-                                                      ),
-                                                    ]
-                                                  : null,
-                                            ),
-                                            child: AnimatedSwitcher(
-                                              duration: Duration(
-                                                milliseconds: 200,
-                                              ),
-                                              child: Icon(
-                                                isSearchActive
-                                                    ? Icons.close_rounded
-                                                    : Icons.search,
-                                                key: ValueKey(isSearchActive),
-                                                color: Color.fromRGBO(
-                                                  255,
-                                                  255,
-                                                  255,
-                                                  1,
-                                                ),
-                                                size: 24,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-
-                      // Title
-                      AnimatedBuilder(
-                        animation: _searchAnimation,
-                        builder: (context, child) {
-                          return Transform.translate(
-                            offset: Offset(0, -20 * _searchAnimation.value),
-                            child: Opacity(
-                              opacity: 1 - (_searchAnimation.value * 0.7),
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: 35,
-                                  left: 15,
-                                  right: 15,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    "Surat Masuk",
-                                    style: TextStyle(
-                                      fontSize:
-                                          30 - (8 * _searchAnimation.value),
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                      letterSpacing: 1,
-                                      fontFamily: 'Roboto',
-                                    ),
+                                  child: Icon(
+                                    Icons.menu_rounded,
+                                    color: Colors.white,
+                                    size: 24,
                                   ),
                                 ),
                               ),
                             ),
-                          );
-                        },
+
+                            // Search Button (Trigger dialog)
+                            InkWell(
+                              onTap: () => showFeatureNotAvailableDialog(context),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: EdgeInsets.all(4.5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Title
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 35,
+                          left: 15,
+                          right: 15,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Manajemen Pengguna",
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),

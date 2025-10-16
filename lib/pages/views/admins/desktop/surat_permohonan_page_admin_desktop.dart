@@ -2104,30 +2104,35 @@ class _PermohonanLettersPageAdminDesktopState
                                 ),
                               ],
                             ),
-                            Container(
-                              padding: EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFF4F46E5),
-                                    Color(0xFF7C3AED),
+                            InkWell(
+                              onTap: () =>
+                                  showFeatureNotAvailableDialog(context),
+                              borderRadius: BorderRadius.circular(15),
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFF4F46E5),
+                                      Color(0xFF7C3AED),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(
+                                        0xFF4F46E5,
+                                      ).withValues(alpha: 0.3),
+                                      blurRadius: 10,
+                                      offset: Offset(0, 4),
+                                    ),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(
-                                      0xFF4F46E5,
-                                    ).withValues(alpha: 0.3),
-                                    blurRadius: 10,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.search,
-                                color: Colors.white,
-                                size: 24,
+                                child: Icon(
+                                  LineIcons.search,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
                               ),
                             ),
                           ],

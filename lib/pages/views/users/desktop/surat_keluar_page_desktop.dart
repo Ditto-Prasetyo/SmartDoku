@@ -112,13 +112,17 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
     try {
       final disposisi = await _userService.getDisposisi();
-      final mappedDisposisi = workFields.entries.firstWhere(
-        (e) => e.value == disposisi,
-        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
-      ).key;
+      final mappedDisposisi = workFields.entries
+          .firstWhere(
+            (e) => e.value == disposisi,
+            orElse: () => const MapEntry('Tidak Diketahui', 'Unknown'),
+          )
+          .key;
       final isSU = await _userService.getSuperAdminStatus();
       print("[DEBUG] -> [STATE] :: SU Status : $isSU");
-      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : null;
+      final data = disposisi != null
+          ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
+          : null;
       setState(() {
         _listSurat = data;
         isLoading = false;
@@ -926,7 +930,8 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                             : List.generate(_listSurat?.length ?? 0, (
                                                 index,
                                               ) {
-                                                final surat = _listSurat?[index] ?? null;
+                                                final surat =
+                                                    _listSurat?[index] ?? null;
                                                 return Container(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
@@ -1205,7 +1210,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                               surat?.tanggal_surat ==
                                                                       null
                                                                   ? 'Data Tanggal Surat Kosong'
-                                                                  : parseDateFormat(surat.tanggal_surat),
+                                                                  : parseDateFormat(
+                                                                      surat
+                                                                          .tanggal_surat,
+                                                                    ),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1352,7 +1360,13 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           Expanded(
                                                             flex: 27,
                                                             child: Text(
-                                                              surat.dok_dikirim != null ? parseDateFormat(surat.dok_dikirim!) : "-",
+                                                              surat.dok_dikirim !=
+                                                                      null
+                                                                  ? parseDateFormat(
+                                                                      surat
+                                                                          .dok_dikirim!,
+                                                                    )
+                                                                  : "-",
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1386,7 +1400,13 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           Expanded(
                                                             flex: 27,
                                                             child: Text(
-                                                              surat.tanda_terima != null ? parseDateFormat(surat.tanda_terima!) : "-",
+                                                              surat.tanda_terima !=
+                                                                      null
+                                                                  ? parseDateFormat(
+                                                                      surat
+                                                                          .tanda_terima!,
+                                                                    )
+                                                                  : "-",
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1655,30 +1675,35 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                 ),
                               ],
                             ),
-                            Container(
-                              padding: EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xFF4F46E5),
-                                    Color(0xFF7C3AED),
+                            InkWell(
+                              onTap: () =>
+                                  showFeatureNotAvailableDialog(context),
+                              borderRadius: BorderRadius.circular(15),
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFF4F46E5),
+                                      Color(0xFF7C3AED),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(
+                                        0xFF4F46E5,
+                                      ).withValues(alpha: 0.3),
+                                      blurRadius: 10,
+                                      offset: Offset(0, 4),
+                                    ),
                                   ],
                                 ),
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(
-                                      0xFF4F46E5,
-                                    ).withValues(alpha: 0.3),
-                                    blurRadius: 10,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.search,
-                                color: Colors.white,
-                                size: 24,
+                                child: Icon(
+                                  LineIcons.search,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
                               ),
                             ),
                           ],
