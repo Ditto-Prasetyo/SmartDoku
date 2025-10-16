@@ -617,8 +617,8 @@ void viewDetailUserManagement(
     void Function() refreshEditState
     ) {
     final surat = suratData[index];
-    print('Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengirim : ${surat?.pengolah}');
-    // showEditSuratDialog(context, index, suratData, refreshEditState);
+    print('[DEBUG] -> [STATE] :: Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengirim : ${surat?.pengolah}');
+    showEditSuratDialog(context, index, suratData, refreshEditState);
   }
 
   void editDokumenAdminKeluar(

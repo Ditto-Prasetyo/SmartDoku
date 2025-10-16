@@ -5024,7 +5024,7 @@ void showEditSuratDialog(
   );
   final TextEditingController tanggalController = TextEditingController(
     text:
-        selectedSurat?.tanggal_diterima?.toUtc().toIso8601String() ??
+        selectedSurat?.tanggal_diterima.toUtc().toIso8601String() ??
         '', // Format ke yyyy-mm-dd aja
   );
   final TextEditingController pengirimController = TextEditingController(
@@ -5032,7 +5032,7 @@ void showEditSuratDialog(
   );
   final TextEditingController tanggalSuratController = TextEditingController(
     text:
-        selectedSurat?.tanggal_surat?.toUtc().toIso8601String() ??
+        selectedSurat?.tanggal_surat.toUtc().toIso8601String() ??
         '', // Format ke yyyy-mm-dd aja
   );
   final TextEditingController kodeController = TextEditingController(
@@ -5045,14 +5045,14 @@ void showEditSuratDialog(
     text: selectedSurat?.no_surat,
   );
   final TextEditingController haritanggalController = TextEditingController(
-    text: selectedSurat?.tanggal_waktu?.toUtc().toIso8601String() ?? '',
+    text: selectedSurat?.tanggal_waktu.toIso8601String() ?? '',
   );
   final TextEditingController hariTanggalWaktuController =
       TextEditingController(
-        text: selectedSurat?.tanggal_waktu?.toUtc().toIso8601String() ?? '',
+        text: selectedSurat?.tanggal_waktu.toIso8601String() ?? '',
       );
   final TextEditingController waktuController = TextEditingController(
-    text: selectedSurat?.tanggal_waktu?.toString(),
+    text: selectedSurat?.tanggal_waktu.toIso8601String(),
   );
   final TextEditingController tempatController = TextEditingController(
     text: selectedSurat?.tempat,
