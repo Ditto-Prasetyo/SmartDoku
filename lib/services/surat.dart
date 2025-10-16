@@ -54,8 +54,10 @@ class SuratMasuk {
 
       // Filter sesuai disposisi
       final List<SuratMasukModel> filtered = allData.where((surat) => surat.disposisi.contains(disposisi)).toList();
-
-      return filtered;
+      if (isSuperAdmin == false)
+        return filtered;
+      else 
+        return allData;
     } else {
       throw Exception('Gagal mengambil data surat masuk');
     }

@@ -23,7 +23,8 @@ class AuthService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('jwt_token', token);
       await prefs.setString('user', jsonEncode(user.toJson()));
-      await setDisposisi();
+      final bidang = await setDisposisi();
+      print("[DEBUG] -> [STATE] :: Disposisi = $bidang");
       
       print('[INFO] Login successful, token saved');
       return true;
@@ -173,16 +174,18 @@ class AuthService {
       final user = jsonDecode(userData);
       final bidang = user['bidang'];
 
-      final disposisi = workFields.entries.firstWhere(
-        (e) => e.value == bidang,
-        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
-      ).key;
-      await prefs.setString('disposisi', disposisi);
+      await prefs.setString('disposisi', bidang);
 
-      return disposisi;
+      return bidang;
     }
 
     return null;
+  }
+
+  Future<String?> getDisposisi() async {
+    final prefs = await SharedPreferences.getInstance();
+    final disposisi = await prefs.getString('disposisi');
+    return disposisi;
   }
   
   // NEW: Get current user data
