@@ -3,10 +3,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/map.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -33,7 +35,8 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
   late Animation<double> _cardAnimation;
 
   SuratKeluar _suratService = SuratKeluar();
-  List<SuratKeluarModel?> _listSurat = [];
+  UserService _userService = UserService();
+  List<SuratKeluarModel?>? _listSurat = [];
 
   // Selected sidebar item
   int _selectedIndex = 2;
@@ -79,7 +82,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
 
   void actionSetState(int index) {
     setState(() {
-      _listSurat.removeAt(index);
+      // _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -107,7 +110,14 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
   Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
     try {
-      final data = await _suratService.listSurat();
+      final disposisi = await _userService.getDisposisi();
+      final mappedDisposisi = workFields.entries.firstWhere(
+        (e) => e.value == disposisi,
+        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
+      ).key;
+      final isSU = await _userService.getSuperAdminStatus();
+      print("[DEBUG] -> [STATE] :: SU Status : $isSU");
+      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : null;
       setState(() {
         _listSurat = data;
         isLoading = false;
@@ -528,7 +538,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '${_listSurat.length} Data',
+                                '${_listSurat?.length ?? 0} Data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -892,7 +902,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                       ),
                                                 ),
                                               ]
-                                            : _listSurat.isEmpty
+                                            : _listSurat == null
                                             ? [
                                                 // 👇 Kalau kosong
                                                 Container(
@@ -912,10 +922,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                   ),
                                                 ),
                                               ]
-                                            : List.generate(_listSurat.length, (
+                                            : List.generate(_listSurat?.length ?? 0, (
                                                 index,
                                               ) {
-                                                final surat = _listSurat[index];
+                                                final surat = _listSurat?[index] ?? null;
                                                 return Container(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
@@ -1534,7 +1544,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                       viewDetailKeluar(
                                                                         context,
                                                                         index,
-                                                                        _listSurat,
+                                                                        _listSurat!,
                                                                       );
                                                                     },
                                                                     child: Icon(

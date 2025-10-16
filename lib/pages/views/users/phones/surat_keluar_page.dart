@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/map.dart';
 
 class OutgoingLetterPage extends StatefulWidget {
   const OutgoingLetterPage({super.key});
@@ -38,7 +40,8 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
   late Animation<double> _optionsAnimation;
 
   SuratKeluar _suratService = SuratKeluar();
-  List<SuratKeluarModel?> _listSurat = [];
+  UserService _userService = UserService();
+  List<SuratKeluarModel?>? _listSurat = [];
 
   Future<void> _refreshData() async {
     setState(() {
@@ -72,12 +75,19 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
   Future<void> _loadAllData() async {
     print('[DEBUG] -> [INFO] : Loading all data "surat masuk" ...');
     try {
-      final data = await _suratService.listSurat();
+      final disposisi = await _userService.getDisposisi();
+      final mappedDisposisi = workFields.entries.firstWhere(
+        (e) => e.value == disposisi,
+        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
+      ).key;
+      final isSU = await _userService.getSuperAdminStatus();
+      print("[DEBUG] -> [STATE] :: SU Status : $isSU");
+      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : await _suratService.listSurat();
 
       setState(() {
         print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
         _listSurat = data;
-        print(_listSurat.map((e) => e?.toJson()).toList());
+        // print(_listSurat.map((e) => e?.toJson()).toList());
       });
     } catch (e) {
       print("[ERROR] -> Gagal load data: $e");
@@ -210,7 +220,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
 
   void actionSetState(int index) {
     setState(() {
-      _listSurat.removeAt(index);
+      // _listSurat.removeAt(index);
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -1399,10 +1409,10 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                       physics: AlwaysScrollableScrollPhysics(
                                         parent: BouncingScrollPhysics(),
                                       ), // Enable pull to refresh even when list is short
-                                      itemCount: _listSurat.length,
+                                      itemCount: _listSurat?.length ?? 0,
                                       padding: EdgeInsets.only(bottom: 20),
                                       itemBuilder: (context, index) {
-                                        final surat = _listSurat[index];
+                                        final surat = _listSurat?[index] ?? null;
 
                                         return Container(
                                           margin: EdgeInsets.only(bottom: 15),
@@ -1463,12 +1473,12 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                     actionUserKeluar(
                                                       index,
                                                       context,
-                                                      _listSurat,
+                                                      _listSurat!,
                                                       
                                                       (i) => viewDetailKeluar(
                                                         context,
                                                         index,
-                                                        _listSurat,
+                                                        _listSurat!,
                                                       ),
                                                     );
                                                     print(
@@ -1479,11 +1489,11 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                     actionUserKeluar(
                                                       index,
                                                       context,
-                                                      _listSurat,
+                                                      _listSurat!,
                                                       (i) => viewDetailKeluar(
                                                         context,
                                                         index,
-                                                        _listSurat,
+                                                        _listSurat!,
                                                       ),
                                                     );
                                                   },

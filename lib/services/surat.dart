@@ -427,6 +427,36 @@ class SuratKeluar {
     }
   }
 
+  Future<List<SuratKeluarModel?>> getFilteredListSurat(String disposisi, bool? isSuperAdmin) async {
+    final url = Uri.parse('${dotenv.env['API_URL']}/surat/keluar');
+    final token = await _authService.getToken();
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      
+      final List<SuratKeluarModel> allData = data
+        .map((e) => SuratKeluarModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+      // Filter sesuai disposisi
+      final List<SuratKeluarModel> filtered = allData.where((surat) => surat.pengolah == disposisi).toList();
+      if (isSuperAdmin == false)
+        return filtered;
+      else 
+        return allData;
+    } else {
+      throw Exception('Gagal mengambil data surat keluar');
+    }
+  }
+
   Future<SuratKeluarModel?> getSurat(int number) async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/keluar/$number');
     final token = await _authService.getToken();
