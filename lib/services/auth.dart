@@ -25,9 +25,10 @@ class AuthService {
       await prefs.setString('user', jsonEncode(user.toJson()));
       await setDisposisi();
       
+      print('[INFO] Login successful, token saved');
       return true;
     } else {
-      print('Login failed: ${response.body}');
+      print('[ERROR] Login failed: ${response.body}');
       return false;
     }
   }
@@ -60,7 +61,7 @@ class AuthService {
     if (response.statusCode == 200) {
       return true;
     } else {
-      print('Register failed: ${response.body}');
+      print('[ERROR] Register failed: ${response.body}');
       return false;
     }
   }
@@ -70,11 +71,90 @@ class AuthService {
     print("[DEBUG] -> [STATE] Logging out ... ");
     await prefs.remove('jwt_token');
     await prefs.remove('user');
+    await prefs.remove('disposisi');
   }
 
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('jwt_token');
+    final token = prefs.getString('jwt_token');
+    
+    if (token == null) {
+      print('[WARNING] No token found in SharedPreferences');
+    }
+    
+    return token;
+  }
+
+  // NEW: Check if token is valid (basic check)
+  Future<bool> isTokenValid() async {
+    final token = await getToken();
+    if (token == null || token.isEmpty) {
+      print('[ERROR] Token is null or empty');
+      return false;
+    }
+    
+    // Try to decode JWT and check expiration
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) {
+        print('[ERROR] Invalid token format');
+        return false;
+      }
+      
+      // Decode payload
+      final payload = json.decode(
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1])))
+      );
+      
+      // Check expiration
+      final exp = payload['exp'];
+      if (exp == null) {
+        print('[WARNING] Token has no expiration');
+        return true; // Assume valid if no exp claim
+      }
+      
+      final expiryDate = DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+      final isValid = DateTime.now().isBefore(expiryDate);
+      
+      if (!isValid) {
+        print('[ERROR] Token expired at: $expiryDate');
+      } else {
+        print('[INFO] Token valid until: $expiryDate');
+      }
+      
+      return isValid;
+    } catch (e) {
+      print('[ERROR] Token validation failed: $e');
+      return false;
+    }
+  }
+
+  // NEW: Verify token with backend
+  Future<bool> verifyTokenWithBackend() async {
+    try {
+      final token = await getToken();
+      if (token == null) return false;
+      
+      final url = Uri.parse('${dotenv.env['API_URL']}/auth/verify');
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+      
+      if (response.statusCode == 200) {
+        print('[INFO] Token verified with backend');
+        return true;
+      } else {
+        print('[ERROR] Token verification failed: ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('[ERROR] Backend verification error: $e');
+      return false;
+    }
   }
 
   Future<Map<String, String>> getAuthHeaders() async {
@@ -103,5 +183,21 @@ class AuthService {
     }
 
     return null;
+  }
+  
+  // NEW: Get current user data
+  Future<UserModel?> getCurrentUser() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userData = prefs.getString('user');
+      
+      if (userData != null) {
+        return UserModel.fromJson(jsonDecode(userData));
+      }
+      return null;
+    } catch (e) {
+      print('[ERROR] Failed to get current user: $e');
+      return null;
+    }
   }
 }

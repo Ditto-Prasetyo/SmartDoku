@@ -2918,7 +2918,6 @@ void showModernActionErrorDialog(
   Color accentColor,
   BuildContext context,
 ) {
-
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -5070,7 +5069,7 @@ void showEditSuratDialog(
         )
         .cast<String>()
         .toList();
-    
+
     print(selectedDisposisi);
   }
 
@@ -5087,28 +5086,42 @@ void showEditSuratDialog(
     text: selectedSurat?.link_scan,
   );
   final TextEditingController disposisikadinController = TextEditingController(
-    text: selectedSurat?.disp_1 != null ? (selectedSurat?.disp_1 as DateTime).toUtc().toIso8601String() : ''
+    text: selectedSurat?.disp_1 != null
+        ? (selectedSurat?.disp_1 as DateTime).toUtc().toIso8601String()
+        : '',
   );
   final TextEditingController disposisisekdinController = TextEditingController(
-    text: selectedSurat?.disp_2 != null ? (selectedSurat?.disp_2 as DateTime).toUtc().toIso8601String() : ''
+    text: selectedSurat?.disp_2 != null
+        ? (selectedSurat?.disp_2 as DateTime).toUtc().toIso8601String()
+        : '',
   );
   final TextEditingController disposisikabidController = TextEditingController(
-    text: selectedSurat?.disp_3 != null ? (selectedSurat?.disp_3 as DateTime).toUtc().toIso8601String() : ''
+    text: selectedSurat?.disp_3 != null
+        ? (selectedSurat?.disp_3 as DateTime).toUtc().toIso8601String()
+        : '',
   );
   final TextEditingController disposisikasubagController =
       TextEditingController(
-        text: selectedSurat?.disp_4 != null ? (selectedSurat?.disp_4 as DateTime).toUtc().toIso8601String() : ''
+        text: selectedSurat?.disp_4 != null
+            ? (selectedSurat?.disp_4 as DateTime).toUtc().toIso8601String()
+            : '',
       );
   final TextEditingController disposisilanjutanController =
       TextEditingController(text: selectedSurat?.disp_lanjut);
   final TextEditingController tindaklanjut1Controller = TextEditingController(
-    text: selectedSurat?.tindak_lanjut_1 != null ? (selectedSurat?.tindak_lanjut_1 as DateTime).toUtc().toIso8601String() : ''
+    text: selectedSurat?.tindak_lanjut_1 != null
+        ? (selectedSurat?.tindak_lanjut_1 as DateTime).toUtc().toIso8601String()
+        : '',
   );
   final TextEditingController tindaklanjut2Controller = TextEditingController(
-    text: selectedSurat?.tindak_lanjut_2 != null ? (selectedSurat?.tindak_lanjut_2 as DateTime).toUtc().toIso8601String() : ''
+    text: selectedSurat?.tindak_lanjut_2 != null
+        ? (selectedSurat?.tindak_lanjut_2 as DateTime).toUtc().toIso8601String()
+        : '',
   );
-  final TextEditingController notestindaklanjut1Controller = TextEditingController(text: selectedSurat?.tl_notes_1);
-  final TextEditingController notestindaklanjut2Controller = TextEditingController(text: selectedSurat?.tl_notes_2);
+  final TextEditingController notestindaklanjut1Controller =
+      TextEditingController(text: selectedSurat?.tl_notes_1);
+  final TextEditingController notestindaklanjut2Controller =
+      TextEditingController(text: selectedSurat?.tl_notes_2);
 
   final TextEditingController notesDisposisiKadinController =
       TextEditingController(text: selectedSurat?.disp_1_notes);
@@ -5143,13 +5156,11 @@ void showEditSuratDialog(
             child: Center(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  width:
-                      (Platform.isWindows ||
-                          Platform.isLinux ||
-                          Platform.isMacOS)
-                      ? size.width / 2
-                      : size.width,
+                height: MediaQuery.of(context).size.height * 0.9,
+                width:
+                    (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                    ? size.width / 2
+                    : size.width,
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.9,
                 ),
@@ -5349,160 +5360,211 @@ void showEditSuratDialog(
 
                               // Multi-Select Disposisi Dropdown
                               Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Disposisi',
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.9),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.all(15),
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.white.withValues(alpha: 0.1),
-                                        Colors.white.withValues(alpha: 0.05),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(15),
-                                    border: Border.all(
-                                      color: Colors.white.withValues(alpha: 0.2),
-                                      width: 1,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Disposisi',
+                                    style: TextStyle(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.none,
                                     ),
                                   ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // tampilkan disposisi yang sudah ada
-                                      if (selectedDisposisi.isNotEmpty) ...[
-                                        Wrap(
-                                          spacing: 8,
-                                          runSpacing: 8,
-                                          children: selectedDisposisi.map((disp) {
-                                            return Container(
-                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                              decoration: BoxDecoration(
-                                                gradient: LinearGradient(
-                                                  colors: [
-                                                    Color(0xFF4F46E5).withValues(alpha: 0.3),
-                                                    Color(0xFF7C3AED).withValues(alpha: 0.2),
-                                                  ],
-                                                ),
-                                                borderRadius: BorderRadius.circular(20),
-                                                border: Border.all(
-                                                  color: Colors.white.withValues(alpha: 0.3),
-                                                ),
-                                              ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    disp,
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 12,
-                                                      fontWeight: FontWeight.w500,
-                                                      decoration: TextDecoration.none,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 6),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      setState(() {
-                                                        selectedDisposisi.remove(disp);
-                                                      });
-                                                    },
-                                                    child: Icon(
-                                                      Icons.close,
-                                                      size: 16,
-                                                      color: Colors.white.withValues(alpha: 0.8),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          }).toList(),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white.withValues(alpha: 0.1),
+                                          Colors.white.withValues(alpha: 0.05),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.2,
                                         ),
-                                        SizedBox(height: 12),
-                                      ],
-
-                                      // dropdown untuk tambah disposisi lagi
-                                      Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 12),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withValues(alpha: 0.05),
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: Border.all(
-                                            color: Colors.white.withValues(alpha: 0.1),
-                                          ),
-                                        ),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            hint: Text(
-                                              'Pilih Disposisi',
-                                              style: TextStyle(
-                                                color: Colors.white.withValues(alpha: 0.6),
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            value: null,
-                                            isExpanded: true,
-                                            dropdownColor: Color(0xFF1F2937),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 14,
-                                              fontFamily: 'Roboto',
-                                            ),
-                                            icon: Icon(
-                                              Icons.add,
-                                              color: Colors.white.withValues(alpha: 0.7),
-                                              size: 20,
-                                            ),
-                                            items: listWorkfields
-                                                .where((field) => !selectedDisposisi.contains(field))
-                                                .map((field) {
-                                              return DropdownMenuItem<String>(
-                                                value: field,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // tampilkan disposisi yang sudah ada
+                                        if (selectedDisposisi.isNotEmpty) ...[
+                                          Wrap(
+                                            spacing: 8,
+                                            runSpacing: 8,
+                                            children: selectedDisposisi.map((
+                                              disp,
+                                            ) {
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 6,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Color(
+                                                        0xFF4F46E5,
+                                                      ).withValues(alpha: 0.3),
+                                                      Color(
+                                                        0xFF7C3AED,
+                                                      ).withValues(alpha: 0.2),
+                                                    ],
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  border: Border.all(
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.3),
+                                                  ),
+                                                ),
                                                 child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
-                                                    Icon(
-                                                      Icons.work_outline,
-                                                      color: Colors.white.withValues(alpha: 0.7),
-                                                      size: 16,
+                                                    Text(
+                                                      disp,
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        decoration:
+                                                            TextDecoration.none,
+                                                      ),
                                                     ),
-                                                    SizedBox(width: 8),
-                                                    Expanded(
-                                                      child: Text(
-                                                        field,
-                                                        style: TextStyle(fontSize: 14),
+                                                    SizedBox(width: 6),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectedDisposisi
+                                                              .remove(disp);
+                                                        });
+                                                      },
+                                                      child: Icon(
+                                                        Icons.close,
+                                                        size: 16,
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.8,
+                                                            ),
                                                       ),
                                                     ),
                                                   ],
                                                 ),
                                               );
                                             }).toList(),
-                                            onChanged: (String? value) {
-                                              if (value != null && !selectedDisposisi.contains(value)) {
-                                                setState(() {
-                                                  selectedDisposisi.add(value);
-                                                });
-                                              }
-                                            },
+                                          ),
+                                          SizedBox(height: 12),
+                                        ],
+
+                                        // dropdown untuk tambah disposisi lagi
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.05,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              hint: Text(
+                                                'Pilih Disposisi',
+                                                style: TextStyle(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.6),
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              value: null,
+                                              isExpanded: true,
+                                              dropdownColor: Color(0xFF1F2937),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              icon: Icon(
+                                                Icons.add,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                                size: 20,
+                                              ),
+                                              items: listWorkfields
+                                                  .where(
+                                                    (field) =>
+                                                        !selectedDisposisi
+                                                            .contains(field),
+                                                  )
+                                                  .map((field) {
+                                                    return DropdownMenuItem<
+                                                      String
+                                                    >(
+                                                      value: field,
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.work_outline,
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.7,
+                                                                ),
+                                                            size: 16,
+                                                          ),
+                                                          SizedBox(width: 8),
+                                                          Expanded(
+                                                            child: Text(
+                                                              field,
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  })
+                                                  .toList(),
+                                              onChanged: (String? value) {
+                                                if (value != null &&
+                                                    !selectedDisposisi.contains(
+                                                      value,
+                                                    )) {
+                                                  setState(() {
+                                                    selectedDisposisi.add(
+                                                      value,
+                                                    );
+                                                  });
+                                                }
+                                              },
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
+                                ],
+                              ),
 
                               SizedBox(height: 20),
 
@@ -5619,10 +5681,10 @@ void showEditSuratDialog(
                               SizedBox(height: 20),
 
                               buildDateInputField(
-                               'Tindak Lanjut 1', 
-                               tindaklanjut1Controller, 
-                               FontAwesomeIcons.circleCheck,
-                               context
+                                'Tindak Lanjut 1',
+                                tindaklanjut1Controller,
+                                FontAwesomeIcons.circleCheck,
+                                context,
                               ),
 
                               SizedBox(height: 20),
@@ -5635,12 +5697,12 @@ void showEditSuratDialog(
                               ),
 
                               SizedBox(height: 20),
-                              
+
                               buildDateInputField(
                                 'Tindak Lanjut 2',
                                 tindaklanjut2Controller,
                                 FontAwesomeIcons.circleCheck,
-                                context
+                                context,
                               ),
 
                               SizedBox(height: 20),
@@ -5796,14 +5858,23 @@ void showEditSuratDialog(
                                         DateTime? tindakLanjut2 = parseDateTime(
                                           tindaklanjut2Controller.text,
                                         );
-                                        DateTime? dispKadin = parseDateTime(disposisikadinController.text,);
-                                        DateTime? dispSekdin = parseDateTime(disposisisekdinController.text,);
-                                        DateTime? dispKabid = parseDateTime(disposisikabidController.text,);
-                                        DateTime? dispKasubag = parseDateTime(disposisikasubagController.text,);
+                                        DateTime? dispKadin = parseDateTime(
+                                          disposisikadinController.text,
+                                        );
+                                        DateTime? dispSekdin = parseDateTime(
+                                          disposisisekdinController.text,
+                                        );
+                                        DateTime? dispKabid = parseDateTime(
+                                          disposisikabidController.text,
+                                        );
+                                        DateTime? dispKasubag = parseDateTime(
+                                          disposisikasubagController.text,
+                                        );
 
                                         // Validasi tanggal wajib
                                         if (tanggalSurat == null ||
-                                            tanggalDiterima == null || tanggalWaktu == null) {
+                                            tanggalDiterima == null ||
+                                            tanggalWaktu == null) {
                                           ScaffoldMessenger.of(
                                             context,
                                           ).showSnackBar(
@@ -5837,14 +5908,10 @@ void showEditSuratDialog(
                                           final data = await _suratMasukService.editSurat(
                                             nomor_urut:
                                                 selectedSurat.nomor_urut,
-                                            disp1Kadin:
-                                                dispKadin,
-                                            disp2Sekdin:
-                                                dispSekdin,
-                                            disp3Kabid:
-                                                dispKabid,
-                                            disp4Kasubag:
-                                                dispKasubag,
+                                            disp1Kadin: dispKadin,
+                                            disp2Sekdin: dispSekdin,
+                                            disp3Kabid: dispKabid,
+                                            disp4Kasubag: dispKasubag,
                                             disp1Notes:
                                                 notesDisposisiKadinController
                                                     .text,
@@ -5879,11 +5946,15 @@ void showEditSuratDialog(
                                                 tanggalWaktu, // Bisa null
                                             tindakLanjut1:
                                                 tindakLanjut1, // Bisa null
-                                            tindakLanjut2:
-                                                tindakLanjut2,
-                                            tl1Notes: notestindaklanjut1Controller.text, // Bisa null
-                                            tl2Notes: notestindaklanjut2Controller.text, // Bisa null
-                                            disposisi: selectedDisposisi, // Convert list to comma-separated string
+                                            tindakLanjut2: tindakLanjut2,
+                                            tl1Notes:
+                                                notestindaklanjut1Controller
+                                                    .text, // Bisa null
+                                            tl2Notes:
+                                                notestindaklanjut2Controller
+                                                    .text, // Bisa null
+                                            disposisi:
+                                                selectedDisposisi, // Convert list to comma-separated string
                                           );
 
                                           print(data);
@@ -6087,13 +6158,11 @@ void showEditSuratKeluarDialog(
             child: Center(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  width:
-                      (Platform.isWindows ||
-                          Platform.isLinux ||
-                          Platform.isMacOS)
-                      ? size.width / 2
-                      : size.width,
+                height: MediaQuery.of(context).size.height * 0.9,
+                width:
+                    (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                    ? size.width / 2
+                    : size.width,
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.9,
                 ),
@@ -6346,8 +6415,8 @@ void showEditSuratKeluarDialog(
                                               icon: Icon(
                                                 Icons
                                                     .keyboard_arrow_down_rounded,
-                                                color: Colors.white.withValues(alpha: 
-                                                  0.7,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
                                                 ),
                                               ),
                                               items: workFields.entries.map((
@@ -6360,7 +6429,9 @@ void showEditSuratKeluarDialog(
                                                       Icon(
                                                         Icons.work_outline,
                                                         color: Colors.white
-                                                            .withValues(alpha: 0.7),
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
                                                         size: 16,
                                                       ),
                                                       SizedBox(width: 8),
@@ -6579,7 +6650,8 @@ void showEditSuratKeluarDialog(
                                       onPressed: () async {
                                         try {
                                           // Update pengolah controller dengan selected values
-                                          pengolahController.text = selectedPengolah ?? '';
+                                          pengolahController.text =
+                                              selectedPengolah ?? '';
 
                                           // Update data
                                           final data = await _suratKeluarService
@@ -6732,6 +6804,8 @@ void showEditUserManagementDialog(
   void Function() refreshState,
 ) {
   final selectedUser = userData[index];
+  final userService = UserService();
+
   // Controllers untuk form
   final TextEditingController nameController = TextEditingController(
     text: selectedUser?.name,
@@ -6742,34 +6816,18 @@ void showEditUserManagementDialog(
   final TextEditingController emailController = TextEditingController(
     text: selectedUser?.email,
   );
-  final TextEditingController bidangController = TextEditingController(
-    text: (() {
-      final bidangUser = selectedUser?.bidang;
-      if (bidangUser == null) return '';
-      if (bidangUser is int) return 'Error!';
-      return bidangUser.toString();
-    })(),
-  );
 
-  String? selectedBidang = selectedUser?.bidang?.isNotEmpty == true ? selectedUser!.bidang : null;
-
-  final TextEditingController roleController = TextEditingController(
-    text: (() {
-      final RoleUser = selectedUser?.role;
-
-      if (RoleUser == null) return '';
-      if (RoleUser is int) return 'Error!';
-      return RoleUser.toString();
-    })(),
-  );
+  // IMPORTANT: Initialize dropdown values properly
+  String? selectedBidang = selectedUser?.bidang?.isNotEmpty == true
+      ? selectedUser!.bidang
+      : null;
 
   String? selectedRole = selectedUser?.role?.isNotEmpty == true
       ? selectedUser!.role
       : null;
-      
+
   final TextEditingController addressController = TextEditingController(
-    text:
-        selectedUser?.address,
+    text: selectedUser?.address,
   );
   final TextEditingController phoneController = TextEditingController(
     text: selectedUser?.phone_number,
@@ -6780,7 +6838,7 @@ void showEditUserManagementDialog(
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
-    barrierLabel: "Edit Surat Dialog",
+    barrierLabel: "Edit User Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -6797,13 +6855,11 @@ void showEditUserManagementDialog(
             child: Center(
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                  height: MediaQuery.of(context).size.height * 0.9,
-                  width:
-                      (Platform.isWindows ||
-                          Platform.isLinux ||
-                          Platform.isMacOS)
-                      ? size.width / 2
-                      : size.width,
+                height: MediaQuery.of(context).size.height * 0.9,
+                width:
+                    (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                    ? size.width / 2
+                    : size.width,
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.9,
                 ),
@@ -6918,16 +6974,16 @@ void showEditUserManagementDialog(
 
                               // Form Fields
                               buildInputField(
-                                'Nama ${selectedUser?.name}',
+                                'Nama',
                                 nameController,
                                 Icons.person,
-                                maxLines: 2,
+                                maxLines: 1,
                               ),
 
                               SizedBox(height: 20),
 
                               buildInputField(
-                                'Username ${selectedUser?.name}',
+                                'Username',
                                 usernameController,
                                 Icons.alternate_email,
                                 maxLines: 1,
@@ -6936,7 +6992,7 @@ void showEditUserManagementDialog(
                               SizedBox(height: 20),
 
                               buildInputField(
-                                'Email ${selectedUser?.name}',
+                                'Email',
                                 emailController,
                                 Icons.email,
                                 maxLines: 1,
@@ -6944,12 +7000,12 @@ void showEditUserManagementDialog(
 
                               SizedBox(height: 20),
 
-                              // Dropdown user bidang
+                              // Dropdown Bidang
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Bidang ${selectedUser?.name}',
+                                    'Bidang',
                                     style: TextStyle(
                                       color: Colors.white.withValues(
                                         alpha: 0.9,
@@ -6978,102 +7034,92 @@ void showEditUserManagementDialog(
                                         width: 1,
                                       ),
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // Dropdown to add more role
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.05,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            border: Border.all(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.1,
-                                              ),
-                                            ),
-                                          ),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                              hint: Text(
-                                                'Pilih Bidang',
-                                                style: TextStyle(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.6),
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              value: selectedBidang,
-                                              isExpanded: true,
-                                              dropdownColor: Color(0xFF1F2937),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                                fontFamily: 'Roboto',
-                                              ),
-                                              icon: Icon(
-                                                Icons
-                                                    .keyboard_arrow_down_rounded,
-                                                color: Colors.white.withValues(alpha: 
-                                                  0.7,
-                                                ),
-                                              ),
-                                              items: workFields.entries.map((
-                                                entry,
-                                              ) {
-                                                return DropdownMenuItem<String>(
-                                                  value: entry.value,
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.work_outline,
-                                                        color: Colors.white
-                                                            .withValues(alpha: 0.7),
-                                                        size: 16,
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                      Expanded(
-                                                        child: Text(
-                                                          entry.key,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }).toList(),
-                                              onChanged: (String? value) {
-                                                setState(() {
-                                                  selectedBidang = value;
-                                                });
-                                              },
-                                            ),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.05,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.1,
                                           ),
                                         ),
-                                      ],
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton<String>(
+                                          hint: Text(
+                                            'Pilih Bidang',
+                                            style: TextStyle(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.6,
+                                              ),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          value: selectedBidang,
+                                          isExpanded: true,
+                                          dropdownColor: Color(0xFF1F2937),
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                          icon: Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                          ),
+                                          items: workFields.entries.map((
+                                            entry,
+                                          ) {
+                                            return DropdownMenuItem<String>(
+                                              value: entry.value,
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.work_outline,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.7),
+                                                    size: 16,
+                                                  ),
+                                                  SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: Text(
+                                                      entry.key,
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedBidang = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-
 
                               SizedBox(height: 20),
 
-                              // Dropdown user role
+                              // Dropdown Role
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Role ${selectedUser?.name}',
+                                    'Role',
                                     style: TextStyle(
                                       color: Colors.white.withValues(
                                         alpha: 0.9,
@@ -7102,107 +7148,95 @@ void showEditUserManagementDialog(
                                         width: 1,
                                       ),
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        // Dropdown to add more role
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.05,
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                            border: Border.all(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.1,
-                                              ),
-                                            ),
-                                          ),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                              hint: Text(
-                                                'Pilih Role',
-                                                style: TextStyle(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.6),
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              value: selectedRole,
-                                              isExpanded: true,
-                                              dropdownColor: Color(0xFF1F2937),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                                fontFamily: 'Roboto',
-                                              ),
-                                              icon: Icon(
-                                                Icons
-                                                    .keyboard_arrow_down_rounded,
-                                                color: Colors.white.withValues(alpha: 
-                                                  0.7,
-                                                ),
-                                              ),
-                                              items: roleField.entries.map((
-                                                entry,
-                                              ) {
-                                                return DropdownMenuItem<String>(
-                                                  value: entry.value,
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.badge,
-                                                        color: Colors.white
-                                                            .withValues(alpha: 0.7),
-                                                        size: 16,
-                                                      ),
-                                                      SizedBox(width: 8),
-                                                      Expanded(
-                                                        child: Text(
-                                                          entry.key,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              }).toList(),
-                                              onChanged: (String? value) {
-                                                setState(() {
-                                                  selectedRole = value;
-                                                });
-                                              },
-                                            ),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.05,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.1,
                                           ),
                                         ),
-                                      ],
+                                      ),
+                                      child: DropdownButtonHideUnderline(
+                                        child: DropdownButton<String>(
+                                          hint: Text(
+                                            'Pilih Role',
+                                            style: TextStyle(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.6,
+                                              ),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          value: selectedRole,
+                                          isExpanded: true,
+                                          dropdownColor: Color(0xFF1F2937),
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                          icon: Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                          ),
+                                          items: roleField.entries.map((entry) {
+                                            return DropdownMenuItem<String>(
+                                              value: entry.value,
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.badge,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.7),
+                                                    size: 16,
+                                                  ),
+                                                  SizedBox(width: 8),
+                                                  Expanded(
+                                                    child: Text(
+                                                      entry.key,
+                                                      style: TextStyle(
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }).toList(),
+                                          onChanged: (String? value) {
+                                            setState(() {
+                                              selectedRole = value;
+                                            });
+                                          },
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
                               ),
-
 
                               SizedBox(height: 20),
 
                               buildInputField(
-                                'Alamat ${selectedUser?.name}',
+                                'Alamat',
                                 addressController,
                                 Icons.home,
-                                maxLines: 1,
+                                maxLines: 2,
                               ),
 
                               SizedBox(height: 20),
 
                               buildInputField(
-                                'Nomor Telepon ${selectedUser?.name}',
+                                'Nomor Telepon',
                                 phoneController,
                                 Icons.phone,
                                 maxLines: 1,
@@ -7249,66 +7283,82 @@ void showEditUserManagementDialog(
                                     child: ElevatedButton(
                                       onPressed: () async {
                                         try {
-                                          // Update data
-                                          final data = await _userService.editUser(
-                                            name:
-                                                nameController.text,
-                                            username:
-                                                usernameController.text,
-                                            email:
-                                                emailController.text,
-                                            address:
-                                                addressController.text,
-                                            phone:
-                                                phoneController.text,
-                                            role:
-                                                roleController.text,
+                                          print(
+                                            '[INFO] Starting user update process...',
                                           );
 
-                                          print(data);
+                                          // CRITICAL: Pass context and all parameters
+                                          final success = await _userService
+                                              .editUser(
+                                                context: context, // Important!
+                                                id: selectedUser?.id,
+                                                email: emailController.text,
+                                                username:
+                                                    usernameController.text,
+                                                name: nameController.text,
+                                                bidang: selectedBidang,
+                                                address: addressController.text,
+                                                phone: phoneController.text,
+                                                role: selectedRole,
+                                              );
 
-                                          // Refresh state
-                                          refreshState();
+                                          if (success) {
+                                            print(
+                                              '[SUCCESS] Refreshing state...',
+                                            );
+                                            refreshState();
+                                            Navigator.pop(context);
 
-                                          // Close dialog
-                                          Navigator.pop(context);
-
-                                          // Show success message
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Surat berhasil diperbarui!',
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  '✓ User berhasil diperbarui!',
+                                                ),
+                                                backgroundColor: Color(
+                                                  0xFF10B981,
+                                                ),
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                duration: Duration(seconds: 2),
                                               ),
-                                              backgroundColor: Color(
-                                                0xFF10B981,
-                                              ),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                          );
+                                            );
+                                          }
                                         } catch (e) {
-                                          // Handle error
-                                          print('Error updating surat: $e');
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text('Error: $e'),
-                                              backgroundColor: Colors.red,
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            ),
+                                          print(
+                                            '[ERROR] Update process failed: $e',
                                           );
+
+                                          // Only show error if it's not auth error (auth error has its own dialog)
+                                          if (!e.toString().contains(
+                                                'Token invalid',
+                                              ) &&
+                                              !e.toString().contains(
+                                                'Authentication failed',
+                                              )) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  '✗ Gagal memperbarui user: ${e.toString()}',
+                                                ),
+                                                backgroundColor: Colors.red,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                duration: Duration(seconds: 3),
+                                              ),
+                                            );
+                                          }
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
