@@ -4802,7 +4802,7 @@ void showModernTambahUserDialog(
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
-    barrierLabel: "Modern Tambah Surat Masuk Dialog",
+    barrierLabel: "Modern Tambah User Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -5018,7 +5018,7 @@ void showModernTambahUserPhoneDialog(
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
-    barrierLabel: "Modern Tambah Surat Masuk Dialog",
+    barrierLabel: "Modern Tambah User Phone Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -5139,7 +5139,7 @@ void showModernTambahUserPhoneDialog(
                                   ? (data) {
                                       // Default behavior if no callback provided
                                       print(
-                                        'Surat baru ditambahkan: ${data?.name}',
+                                        'User baru ditambahkan: ${data?.name}',
                                       );
                                     }
                                   : onSuratAdded, refreshState

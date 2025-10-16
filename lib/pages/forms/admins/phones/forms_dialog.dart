@@ -4221,6 +4221,14 @@ void showModernTambahUserFormDialog(
                                               required: true,
                                             ),
                                             SizedBox(height: 5),
+                                            _buildModernTextField(
+                                              controller:
+                                                  controllers['password']!,
+                                              label: 'Password User',
+                                              icon: Icons.password,
+                                              required: true,
+                                            ),
+                                            SizedBox(height: 5),
                                             _buildModernTextUserBidangField(
                                               controller:
                                                   controllers['bidang']!,
@@ -4378,15 +4386,6 @@ void showModernTambahUserFormDialog(
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: 15),
-
-                                            _buildModernTextField(
-                                              controller:
-                                                  controllers['password']!,
-                                              label: 'Password User',
-                                              icon: Icons.password,
-                                              required: true,
-                                            ),
 
                                             SizedBox(height: 30),
                                           ],
@@ -4452,7 +4451,7 @@ void showModernTambahUserFormDialog(
                                             ).showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                  'Surat berhasil ditambahkan!',
+                                                  'User berhasil ditambahkan!',
                                                 ),
                                                 backgroundColor: accentColor,
                                                 behavior:
@@ -4488,7 +4487,7 @@ void showModernTambahUserFormDialog(
                                             Icon(Icons.save_rounded),
                                             SizedBox(width: 10),
                                             Text(
-                                              'Simpan Surat',
+                                              'Simpan Data User',
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w600,
@@ -4788,6 +4787,14 @@ void showModernTambahUserFormPhoneDialog(
                                               required: true,
                                             ),
                                             SizedBox(height: 5),
+                                            _buildModernTextField(
+                                              controller:
+                                                  controllers['password']!,
+                                              label: 'Password User',
+                                              icon: Icons.password,
+                                              required: true,
+                                            ),
+                                            SizedBox(height: 5),
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -5055,15 +5062,6 @@ void showModernTambahUserFormPhoneDialog(
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(height: 15),
-
-                                            _buildModernTextField(
-                                              controller:
-                                                  controllers['password']!,
-                                              label: 'Password User',
-                                              icon: Icons.password,
-                                              required: true,
-                                            ),
 
                                             SizedBox(height: 30),
                                           ],
@@ -5129,7 +5127,7 @@ void showModernTambahUserFormPhoneDialog(
                                             ).showSnackBar(
                                               SnackBar(
                                                 content: Text(
-                                                  'Surat berhasil ditambahkan!',
+                                                  'User berhasil ditambahkan!',
                                                 ),
                                                 backgroundColor: accentColor,
                                                 behavior:
@@ -5165,7 +5163,7 @@ void showModernTambahUserFormPhoneDialog(
                                             Icon(Icons.save_rounded),
                                             SizedBox(width: 10),
                                             Text(
-                                              'Simpan Surat',
+                                              'Simpan Data User',
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w600,
