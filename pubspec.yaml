@@ -53,6 +53,7 @@ dependencies:
   path: ^1.9.1
   path_provider: ^2.1.5
   collection: ^1.19.1
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +82,8 @@ flutter:
     - images/background_images.jpg
     - images/Icon_App.png
     - images/LogoKabupatenMalang.png
+    - images/smartdoku_logo.jpeg
+
   fonts:
     - family: TimesNewRoman
       fonts:
@@ -94,6 +97,12 @@ flutter:
           weight: 700
           style: italic
 
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "images/smartdoku_logo.jpeg"
+  adaptive_icon_background: "#ffffff"
+  adaptive_icon_foreground: "images/smartdoku_logo.jpeg"
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
