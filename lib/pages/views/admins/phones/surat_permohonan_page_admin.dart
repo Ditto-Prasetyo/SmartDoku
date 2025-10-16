@@ -220,10 +220,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   }
 
   void refreshEditState() {
-    setState(() {
-      // Refresh ListView setelah edit data
-      // Data suratData udah diupdate di modal
-    });
+    _loadAllData();
   }
 
   OverlayEntry _createOverlayEntry() {
@@ -1828,7 +1825,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
               //   _listSurat.add(newSurat);
               // });
               // Logic tambahan kalo ada
-            });
+            }, refreshEditState);
           },
           backgroundColor: Colors.transparent,
           elevation: 0,

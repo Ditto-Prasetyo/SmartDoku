@@ -114,13 +114,7 @@ class _PermohonanLettersPageAdminDesktopState
     await _loadAllData();
   }
 
-  void refreshEditState() async {
-    setState(() {});
-
-    await _loadAllData();
-  }
-
-  void refreshAddState() async {
+  void refreshState() async {
     await _loadAllData();
   }
 
@@ -541,11 +535,7 @@ class _PermohonanLettersPageAdminDesktopState
                             children: [
                               InkWell(
                                 onTap: () {
-                                  tambahSuratMasukDesktop(context, (newSurat) {
-                                    setState(() {
-                                      refreshAddState();
-                                    });
-                                  });
+                                  tambahSuratMasukDesktop(context, (newSurat) {}, refreshState);
                                 },
                                 child: Icon(
                                   Icons.add,
@@ -1931,7 +1921,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                         context,
                                                                         index,
                                                                         _listSurat,
-                                                                        refreshEditState,
+                                                                        refreshState,
                                                                       );
                                                                     },
                                                                     child: Icon(

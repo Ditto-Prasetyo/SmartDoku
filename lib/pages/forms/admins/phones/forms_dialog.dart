@@ -23,6 +23,7 @@ void showModernTambahSuratFormDialog(
   Color accentColor2,
 
   Function(SuratMasukModel?) onSuratAdded,
+  void Function() refreshState,
 ) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -1226,6 +1227,7 @@ void showModernTambahSuratKeluarFormDialog(
   Color accentColor,
   Color accentColor2,
   Function(SuratKeluarModel?) onSuratKeluarAdded,
+  void Function() refreshState,
 ) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -1876,6 +1878,7 @@ void showModernTambahSuratKeluarFormDialog(
 
                                         // Call the callback function
                                         onSuratKeluarAdded(data);
+                                        refreshState();
 
                                         Navigator.pop(context);
 
@@ -1992,6 +1995,7 @@ void showModernTambahSuratMasukFormDialog(
   Color accentColor2,
 
   Function(SuratMasukModel?) onSuratAdded,
+  void Function() refreshState,
 ) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -3081,6 +3085,8 @@ void showModernTambahSuratMasukFormDialog(
                                             // Call the callback function
                                             onSuratAdded(data);
 
+                                            refreshState();
+
                                             Navigator.pop(context);
 
                                             // Show success message
@@ -3202,6 +3208,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
   Color accentColor,
   Color accentColor2,
   Function(SuratKeluarModel?) onSuratKeluarAdded,
+  void Function() refreshState,
 ) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -3859,6 +3866,8 @@ void showModernTambahSuratKeluarFormDesktopDialog(
                                         // Call the callback function
                                         onSuratKeluarAdded(data);
 
+                                        refreshState();
+
                                         Navigator.pop(context);
 
                                         // Show success message
@@ -3974,6 +3983,8 @@ void showModernTambahUserFormDialog(
   Color accentColor,
   Color accentColor2,
   Function(UserModel?) onUserAdded,
+  void Function() addState,
+  
 ) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {

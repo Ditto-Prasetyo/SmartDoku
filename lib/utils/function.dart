@@ -644,29 +644,31 @@ void viewDetailUserManagement(
   }
 
   
-void tambahSuratMasuk(BuildContext context, Function(SuratMasukModel?) onSuratAdded) {
+void tambahSuratMasuk(BuildContext context, Function(SuratMasukModel?) onSuratAdded, refreshState) {
   showModernTambahSuratDialog(
     'Tambah Surat Masuk',
     'Pilih metode untuk menambahkan surat masuk baru',
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
-    onSuratAdded
+    onSuratAdded,
+    refreshState
   );
 }
 
-void tambahSuratKeluar(BuildContext context, Function(SuratKeluarModel?) onSuratKeluarAdded) {
+void tambahSuratKeluar(BuildContext context, Function(SuratKeluarModel?) onSuratKeluarAdded, refreshState) {
   showModernTambahSuratKeluarDialog(
     'Tambah Surat Keluar',
     'Pilih metode untuk menambahkan surat keluar baru',
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
-    onSuratKeluarAdded
+    onSuratKeluarAdded,
+    refreshState,
   );
 }
 
-void tambahSuratMasukDesktop(BuildContext context, Function(SuratMasukModel?) onSuratKeluarAdded) {
+void tambahSuratMasukDesktop(BuildContext context, Function(SuratMasukModel?) onSuratKeluarAdded, refreshState) {
   showModernTambahSuratMasukDesktopDialog(
     'Tambah Surat Masuk',
     'Pilih metode untuk menambahkan surat masuk baru',
@@ -674,21 +676,23 @@ void tambahSuratMasukDesktop(BuildContext context, Function(SuratMasukModel?) on
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
     onSuratKeluarAdded,
+    refreshState,
   );
 }
 
-void tambahSuratKeluarDesktop(BuildContext context, Function(SuratKeluarModel?) onSuratKeluarAdded) {
+void tambahSuratKeluarDesktop(BuildContext context, Function(SuratKeluarModel?) onSuratKeluarAdded, refreshState) {
   showModernTambahSuratKeluarDesktopDialog(
     'Tambah Surat Keluar',
     'Pilih metode untuk menambahkan surat keluar baru',
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
-    onSuratKeluarAdded
+    onSuratKeluarAdded,
+    refreshState
   );
 }
 
-void tambahUser(BuildContext context, String bidang, Function(UserModel?) onUserAdded) {
+void tambahUser(BuildContext context, String bidang, Function(UserModel?) onUserAdded, refreshState) {
   showModernTambahUserDialog(
     'Tambah User (Tidak Disarankan!)',
     bidang,
@@ -697,6 +701,7 @@ void tambahUser(BuildContext context, String bidang, Function(UserModel?) onUser
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
     onUserAdded,
+    refreshState
   );
 }
 

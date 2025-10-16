@@ -117,7 +117,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
     await _loadData();
   }
 
-  void refreshEditState() async {
+  void refreshState() async {
     await _loadData();  
   }
 
@@ -548,7 +548,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                             children: [
                               InkWell(
                                 onTap: () async {
-                                  tambahUser(context, title!, (newUser) {});
+                                  tambahUser(context, title!, (newUser) {}, refreshState);
                                   await _loadData();
                                 },
                                 child: Icon(
@@ -1086,7 +1086,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                                     child: InkWell(
                                                                       onTap:
                                                                           () {
-                                                                            editUserManagement(context, index, _userData, refreshEditState);
+                                                                            editUserManagement(context, index, _userData, refreshState);
                                                                           },
                                                                       child: const Icon(
                                                                         Icons

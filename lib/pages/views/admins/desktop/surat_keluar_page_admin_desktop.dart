@@ -93,7 +93,7 @@ class _OutgoingLetterPageAdminDesktopState
     setState(() {
       _suratService.deleteSurat(index);
     });
-    refreshEditState();
+    refreshState();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Dokumen berhasil dihapus'),
@@ -140,14 +140,8 @@ class _OutgoingLetterPageAdminDesktopState
     }
   }
 
-  void refreshEditState() async {
-    setState(() {
-      // Refresh ListView setelah edit data
-      // Data suratData udah diupdate di modal
-    });
-
+  void refreshState() async {
     await _loadAllData();
-
   }
 
   void _navigateToPage(
@@ -579,8 +573,7 @@ class _OutgoingLetterPageAdminDesktopState
                               InkWell(
                                 onTap: () {
                                   tambahSuratKeluarDesktop(context, (newSurat) {
-                                    refreshEditState();
-                                  });
+                                  }, refreshState);
                                 },
                                 child: Icon(
                                   Icons.add,
@@ -1607,7 +1600,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                                         context,
                                                                         index,
                                                                         _listSurat,
-                                                                        refreshEditState,
+                                                                        refreshState,
                                                                       );
                                                                     },
                                                                     child: Icon(

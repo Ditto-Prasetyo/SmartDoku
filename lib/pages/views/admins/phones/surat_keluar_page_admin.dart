@@ -229,11 +229,8 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
     );
   }
 
-  void refreshEditState() {
-    setState(() {
-      // Refresh ListView setelah edit data
-      // Data suratData udah diupdate di modal
-    });
+  void refreshState() {
+    _loadAllData();
   }
 
   OverlayEntry _createOverlayEntry() {
@@ -1478,7 +1475,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                             context,
                                                             index,
                                                             _listSurat,
-                                                            refreshEditState,
+                                                            refreshState,
                                                           ),
                                                       (i) =>
                                                           viewDetailAdminKeluar(
@@ -1507,7 +1504,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                                             context,
                                                             index,
                                                             _listSurat,
-                                                            refreshEditState,
+                                                            refreshState,
                                                           ),
                                                       (i) =>
                                                           viewDetailAdminKeluar(
@@ -1858,7 +1855,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
               //   // Tambahin ke list suratData lu
               //   suratData.add(newSurat);
               // });
-            });
+            }, refreshState);
           },
           backgroundColor: Colors.transparent,
           elevation: 0,

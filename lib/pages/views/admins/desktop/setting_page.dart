@@ -51,7 +51,7 @@ class _SettingPageState extends State<SettingPage>
 
   Future<void> _saveSettings() async {
     await _appSettings.setPart1(_currentPart1);
-    await _appSettings.setPart1(_currentPart3);
+    await _appSettings.setPart3(_currentPart3);
   }
 
   Future<void> _resetSettings() async {
