@@ -5,7 +5,7 @@ import 'dart:ui';
 
 class WhatsappService {
   Future<bool> launchWhatsApp() async {
-    final adminNumber = "6285161015745";
+    final adminNumber = "6281330030369";
     final message =
         "Selamat pagi Admin, saya lupa password akun saya. Mohon bantuannya. Terima kasih.";
     final url =

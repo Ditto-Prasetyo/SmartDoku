@@ -116,7 +116,7 @@ class _PermohonanLettersPageAdminDesktopState
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Dokumen berhasil dihapus'),
+        content: Text('Dokumen berhasil dihapus!'),
         backgroundColor: Colors.red,
       ),
     );

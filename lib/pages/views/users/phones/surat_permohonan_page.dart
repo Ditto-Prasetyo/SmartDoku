@@ -128,7 +128,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Dokumen berhasil dihapus'),
+        content: Text('Dokumen berhasil dihapus!'),
         backgroundColor: Colors.red,
       ),
     );
