@@ -11603,9 +11603,7 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
                                 "$dirPath/disposisi_$nomor_urut.xlsx";
                             final data = await _suratMasukService
                                 .downloadDisposisi(
-                                  (nomor_urut == null
-                                      ? 0
-                                      : int.parse(nomor_urut)),
+                                  (nomor_urut != null ? int.parse(nomor_urut) : 0),
                                   savePath,
                                 );
 

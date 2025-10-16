@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/map.dart';
 
 class OutgoingLetterPage extends StatefulWidget {
@@ -1066,9 +1067,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                                                             ),
                                                             // Tanggal
                                                             Text(
-                                                              surat
-                                                                  .tanggal_surat
-                                                                  .toString(),
+                                                              parseDateFormat(surat.tanggal_surat),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white

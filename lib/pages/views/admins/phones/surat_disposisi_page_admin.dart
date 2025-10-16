@@ -717,7 +717,7 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                 onEditSave:
                                     updateNomorUrut, // Pass callback untuk save
                                 currentNomorUrut:
-                                    surat?.nomor_urut.toString() ?? "-", // Pass current value
+                                    surat?.nomor_urut.toString(), // Pass current value
                               ),
                             ],
                           ),
