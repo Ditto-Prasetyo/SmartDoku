@@ -1860,7 +1860,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
         child: FloatingActionButton.extended(
           onPressed: () {
             // Fungsi untuk tambah surat masuk
-            tambahSuratKeluar(context, (newSurat) {
+            tambahSuratKeluar(context, _listSurat, (newSurat) {
               // setState(() {
               //   // Tambahin ke list suratData lu
               //   suratData.add(newSurat);

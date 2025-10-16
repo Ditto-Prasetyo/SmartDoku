@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:io' show Platform;
@@ -3209,6 +3210,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
   Color accentColor2,
   Function(SuratKeluarModel?) onSuratKeluarAdded,
   void Function() refreshState,
+  List<SuratKeluarModel?> listSurat
 ) async {
   final _formKey = GlobalKey<FormState>();
   final Map<String, TextEditingController> controllers = {
@@ -3234,6 +3236,18 @@ void showModernTambahSuratKeluarFormDesktopDialog(
   final AppSettings _appSettings = AppSettings();
   final suf1 = _appSettings.part1;
   final suf2 = _appSettings.part3;
+
+  controllers['kode']!.addListener(() {
+    final inputKode = controllers['kode']!.text.trim();
+
+    final surat = listSurat.firstWhereOrNull((item) => item?.kode == inputKode);
+
+    if (surat != null) {
+      controllers['klasifikasi']!.text = surat.klasifikasi;
+    } else {
+      controllers['klasifikasi']!.clear();
+    }
+  });
 
   Size size = MediaQuery.of(context).size;
   showGeneralDialog(

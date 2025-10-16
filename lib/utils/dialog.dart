@@ -4581,7 +4581,7 @@ void showModernTambahSuratKeluarDesktopDialog(
   BuildContext context,
   Function(SuratKeluarModel?) onSuratAdded,
   void Function() refreshState,
-  
+  List<SuratKeluarModel?> listSurat
 ) {
   Size size = MediaQuery.of(context).size;
   showGeneralDialog(
@@ -4704,7 +4704,7 @@ void showModernTambahSuratKeluarDesktopDialog(
                               context,
                               accentColor,
                               accentColor2,
-                              onSuratAdded, refreshState,
+                              onSuratAdded, refreshState, listSurat
                               // ? (data) {
                               //     // Default behavior if no callback provided
                               //     print(

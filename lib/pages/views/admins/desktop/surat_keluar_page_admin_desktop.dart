@@ -582,7 +582,7 @@ class _OutgoingLetterPageAdminDesktopState
                             children: [
                               InkWell(
                                 onTap: () {
-                                  tambahSuratKeluarDesktop(context, (newSurat) {
+                                  tambahSuratKeluarDesktop(context, _listSurat, (newSurat) {
                                   }, refreshState);
                                 },
                                 child: Icon(
