@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -27,22 +28,40 @@ class _UserDashboardState extends State<UserDashboard>
   int _selectedIndex = 0;
 
   // Sample data for dashboard
-  final List<Map<String, dynamic>> _statsData = [
-    {
-      'title': 'Total Surat Masuk',
-      'value': '245',
-      'icon': LineIcons.envelopeOpen,
-      'color': Color(0xFF4F46E5),
-      'isPositive': true,
-    },
-    {
-      'title': 'Surat Keluar',
-      'value': '189',
-      'icon': FontAwesomeIcons.envelopeCircleCheck,
-      'color': Color(0xFF059669),
-      'isPositive': true,
-    },
-  ];
+  List<Map<String, dynamic>> _statsData = [];
+  SuratMasuk _suratMasukService = SuratMasuk();
+  SuratKeluar _suratKeluarService = SuratKeluar();
+
+  int? totalSuratMasuk;
+  int? totalSuratKeluar;
+
+  Future<void> _loadAllData() async {
+    final suratMasuk = await _suratMasukService.listSurat();
+    final SuratKeluar = await _suratKeluarService.listSurat();
+    
+    setState(() {
+      totalSuratMasuk = suratMasuk.length;
+      totalSuratKeluar = SuratKeluar.length;
+
+      // Sample data for dashboard
+      _statsData = [
+        {
+          'title': 'Total Surat Masuk',
+          'value': totalSuratMasuk,
+          'icon': LineIcons.envelopeOpen,
+          'color': Color(0xFF4F46E5),
+          'isPositive': true,
+        },
+        {
+          'title': 'Surat Keluar',
+          'value': totalSuratKeluar,
+          'icon': FontAwesomeIcons.envelopeCircleCheck,
+          'color': Color(0xFF059669),
+          'isPositive': true,
+        }
+      ];
+    });
+  }
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -87,6 +106,7 @@ class _UserDashboardState extends State<UserDashboard>
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -474,7 +494,7 @@ class _UserDashboardState extends State<UserDashboard>
                         SizedBox(height: 20),
                         Center(
                           child: Text(
-                            data['value'],
+                            data['value'].toString(),
                             style: TextStyle(
                               fontSize: 36,
                               fontWeight: FontWeight.bold,

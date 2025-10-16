@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -26,37 +28,58 @@ class _AdminDashboardState extends State<AdminDashboard>
   // Selected sidebar item
   int _selectedIndex = 0;
 
-  // Sample data for dashboard
-  final List<Map<String, dynamic>> _statsData = [
-    {
-      'title': 'Total Surat Masuk',
-      'value': '245',
-      'icon': LineIcons.envelopeOpen,
-      'color': Color(0xFF4F46E5),
-      'isPositive': true,
-    },
-    {
-      'title': 'Surat Keluar',
-      'value': '189',
-      'icon': FontAwesomeIcons.envelopeCircleCheck,
-      'color': Color(0xFF059669),
-      'isPositive': true,
-    },
-    {
-      'title': 'Total Pengguna',
-      'value': '156',
-      'icon': Icons.people_outline_rounded,
-      'color': Color(0xFF7C2D12),
-      'isPositive': true,
-    },
-    {
-      'title': 'Total Bidang',
-      'value': '6',
-      'icon': Icons.work_rounded,
-      'color': Colors.lightBlue,
-      'isPositive': true,
-    },
-  ];
+  List<Map<String, dynamic>> _statsData = [];
+  UserService _userService = UserService();
+  SuratMasuk _suratMasukService = SuratMasuk();
+  SuratKeluar _suratKeluarService = SuratKeluar();
+
+  int? totalUsers;
+  int? totalSuratMasuk;
+  int? totalSuratKeluar;
+
+  Future<void> _loadAllData() async {
+    final users = await _userService.listUsers();
+    final suratMasuk = await _suratMasukService.listSurat();
+    final SuratKeluar = await _suratKeluarService.listSurat();
+    
+    setState(() {
+      totalUsers = users.length;
+      totalSuratMasuk = suratMasuk.length;
+      totalSuratKeluar = SuratKeluar.length;
+
+      // Sample data for dashboard
+      _statsData = [
+        {
+          'title': 'Total Surat Masuk',
+          'value': totalSuratMasuk,
+          'icon': LineIcons.envelopeOpen,
+          'color': Color(0xFF4F46E5),
+          'isPositive': true,
+        },
+        {
+          'title': 'Surat Keluar',
+          'value': totalSuratKeluar,
+          'icon': FontAwesomeIcons.envelopeCircleCheck,
+          'color': Color(0xFF059669),
+          'isPositive': true,
+        },
+        {
+          'title': 'Total Pengguna',
+          'value': totalUsers ?? 0,
+          'icon': Icons.people_outline_rounded,
+          'color': Color(0xFF7C2D12),
+          'isPositive': true,
+        },
+        {
+          'title': 'Total Bidang',
+          'value': '6',
+          'icon': Icons.work_rounded,
+          'color': Colors.lightBlue,
+          'isPositive': true,
+        },
+      ];
+    });
+  }
 
   final List<Map<String, dynamic>> _sidebarItems = [
     {
@@ -111,6 +134,7 @@ class _AdminDashboardState extends State<AdminDashboard>
   @override
   void initState() {
     super.initState();
+    _loadAllData();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -520,7 +544,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                         SizedBox(height: 20),
                         Center(
                           child: Text(
-                            data['value'],
+                            data['value'].toString(),
                             style: TextStyle(
                               fontSize: 36,
                               fontWeight: FontWeight.bold,
