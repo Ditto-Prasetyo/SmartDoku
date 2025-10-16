@@ -857,6 +857,7 @@ Widget buildProfileSection(
   Animation<double> profileOpacityAnimation,
   String? name,
   String? role,
+  String? email,
 ) {
   return AnimatedBuilder(
     animation: profileOpacityAnimation,
@@ -926,15 +927,15 @@ Widget buildProfileSection(
                 ),
               ),
 
-              SizedBox(height: 20),
+              SizedBox(height: 8),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildStatItem('Dokumen', '12', Icons.description),
-                  buildStatItem('Proses', '5', Icons.hourglass_empty),
-                  buildStatItem('Selesai', '7', Icons.check_circle),
-                ],
+              Text(
+                email!.toLowerCase(),
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  fontSize: 16,
+                  fontFamily: 'Roboto',
+                ),
               ),
             ],
           ),
