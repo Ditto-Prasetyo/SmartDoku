@@ -635,7 +635,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
                         ),
                         child: Center(
                           child: Text(
-                            "Manajemen Pengguna",
+                            "Surat Keluar",
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,
