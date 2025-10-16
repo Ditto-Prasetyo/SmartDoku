@@ -8391,7 +8391,7 @@ void showModernHapusUserManagementDesktop(
 }
 
 // Action menu detailPage
-void showDetailActionMenu(BuildContext context, VoidCallback onDelete) {
+void showDetailActionMenu(BuildContext context, String? nomor_urut, VoidCallback onDelete) {
   showModalBottomSheet(
     context: context,
     backgroundColor: Colors.transparent,
@@ -8453,7 +8453,7 @@ void showDetailActionMenu(BuildContext context, VoidCallback onDelete) {
                       color: Color(0xFF10B981),
                       onTap: () {
                         Navigator.pop(context);
-                        showDownloadDialog(context);
+                        showDownloadDialog(context, nomor_urut);
                       },
                     ),
 
@@ -9180,7 +9180,7 @@ void showDetailActionMenuDisposisiAdmin(
                         color: Color(0xFF10B981),
                         onTap: () {
                           Navigator.pop(context);
-                          showDownloadDialog(context);
+                          showDownloadDialog(context, currentNomorUrut);
                         },
                       ),
                     ],
@@ -10390,7 +10390,7 @@ void showPrintDocumentFormat(BuildContext context) {
 }
 
 // Download Dialog
-void showDownloadDialog(BuildContext context) {
+void showDownloadDialog(BuildContext context, String? nomor_urut) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -10497,7 +10497,7 @@ void showDownloadDialog(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            showDocumentFormat(context);
+                            showDocumentFormat(context, nomor_urut);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF2962FF),
@@ -10998,7 +10998,7 @@ void showImageFormat(BuildContext context) {
   );
 }
 
-void showDocumentFormat(BuildContext context) {
+void showDocumentFormat(BuildContext context, String? nomor_urut) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -11104,7 +11104,11 @@ void showDocumentFormat(BuildContext context) {
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            final dirPath = await _suratMasukService.getDefaultDownloadPath();
+                            final savePath = "$dirPath/disposisi_$nomor_urut.xlsx";
+                            final data = await _suratMasukService.downloadDisposisi((nomor_urut == null ? 0 : int.parse(nomor_urut)), savePath);
+
                             Navigator.pop(context);
                             // Handle PDF selection
                           },

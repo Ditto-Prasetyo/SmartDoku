@@ -478,7 +478,7 @@ Widget buildBackButtonSection(BuildContext context) {
                 child: InkWell(
                   onTap: () {
                     // Show action menu (Edit, Delete, etc.)
-                    showDetailActionMenu(context, () => showDeleteConfirmation);
+                    // showDetailActionMenu(context, () => showDeleteConfirmation);
                   },
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
