@@ -64,9 +64,10 @@ class SuratMasuk {
   }
 
   Future<SuratMasukModel?> getSurat(int number) async {
-    final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk/$number');
-    final token = await _authService.getToken();
+  final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk/$number');
+  final token = await _authService.getToken();
 
+  try {
     final response = await http.get(
       url,
       headers: {
@@ -76,13 +77,35 @@ class SuratMasuk {
     );
 
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+      final body = response.body.trim();
+      if (body.isEmpty) return null;
+
+      final data = jsonDecode(body);
+
+      // Cek apakah data valid (misal Map dan punya key tertentu)
+      if (data == null || data is! Map<String, dynamic>) return null;
 
       return SuratMasukModel.fromJson(data);
+    } else if (response.statusCode == 404) {
+      // Data tidak ditemukan
+      print('Surat dengan nomor $number tidak ditemukan');
+      return null;
+    } else if (response.statusCode == 401) {
+      // Token invalid/expired
+      print('Token kadaluarsa atau tidak valid');
+      return null;
     } else {
+      // Error umum
+      print('Error ${response.statusCode}: ${response.body}');
       return null;
     }
+  } catch (e) {
+    // Handler kalau server down, timeout, atau error parsing JSON
+    print('Terjadi kesalahan: $e');
+    return null;
   }
+}
+
 
   Future<SuratMasukModel?> addSurat({
     String? suratDari,

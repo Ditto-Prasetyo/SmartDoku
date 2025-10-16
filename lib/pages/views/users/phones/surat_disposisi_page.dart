@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/widget.dart';
 
 class DispositionLetterPage extends StatefulWidget {
@@ -29,6 +30,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
   late Animation<double> _backgroundAnimation;
 
   SuratMasuk _suratService = SuratMasuk();
+  SuratMasukModel? _targetSurat;
   List<SuratMasukModel?> _listSurat = [];
   bool isLoading = true;
 
@@ -166,7 +168,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
   Widget build(BuildContext context) {
     height = MediaQuery.of(context).size.height;
     width = MediaQuery.of(context).size.width;
-    final surat = getDisposisiData();
+    final surat = _targetSurat ?? null;
     return Scaffold(
       drawer: SizedBox(
         width: 250,
@@ -760,7 +762,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                     ),
                                     child: Center(
                                       child: Text(
-                                        surat['judulsurat'] ?? '404 Not Found',
+                                        surat?.nama_surat ?? '404 Not Found',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.white,
@@ -795,7 +797,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Surat Dari: ${surat['surat_dari'] ?? '404 Not Found'}',
+                                                'Surat Dari: ${surat?.nama_surat ?? '404 Not Found'}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -826,7 +828,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Diterima Tanggal: ${surat['diterima_tgl'] ?? '404 Not Found'}',
+                                                'Diterima Tanggal: ${surat?.tanggal_diterima != null ? parseDateFormat(surat!.tanggal_diterima) : "-"}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -868,7 +870,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Surat Dari: ${surat['surat_dari'] ?? '404 Not Found'}',
+                                                  'Surat Dari: ${surat?.nama_surat ?? '404 Not Found'}',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 10,
@@ -913,7 +915,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Diterima Tanggal: ${surat['diterima_tgl'] ?? '404 Not Found'}',
+                                                  'Diterima Tanggal: ${surat?.tanggal_diterima != null ? parseDateFormat(surat!.tanggal_diterima) : "-"}',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 10,
@@ -950,7 +952,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Nomor Urut: ${surat['nomor_surat'] ?? '404 Not Found'}',
+                                                'Nomor Urut: ${surat?.no_surat ?? '404 Not Found'}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -981,7 +983,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Nomor Agenda: ${surat['nomor_agenda'] ?? '404 Not Found'}',
+                                                'Nomor Agenda: ${surat?.no_agenda ?? '404 Not Found'}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -1023,7 +1025,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Nomor Surat: ${surat['nomor_surat'] ?? '404 Not Found'}',
+                                                  'Nomor Surat: ${surat?.no_agenda ?? '404 Not Found'}',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 10,
@@ -1068,7 +1070,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Nomor Agenda: ${surat['nomor_agenda'] ?? '404 Not Found'}',
+                                                  'Nomor Agenda: ${surat?.no_agenda ?? '404 Not Found'}',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 10,
@@ -1117,7 +1119,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Tanggal Surat: ${surat['tgl_surat'] ?? '404 Not Found'}',
+                                                'Tanggal Surat: ${surat?.tanggal_surat != null ? parseDateFormat(surat!.tanggal_surat) : "-"}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -1366,7 +1368,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Tanggal Surat: ${surat['tgl_surat'] ?? '404 Not Found'}',
+                                                  'Tanggal Surat: ${surat?.tanggal_surat != null ? parseDateFormat(surat!.tanggal_surat) : "-"}',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 10,
@@ -1613,16 +1615,16 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                             CrossAxisAlignment.start,
                                         children: [
                                           buildBorderedText(
-                                            'Hal : ${surat['hal'] ?? '404 Not Found'}',
+                                            'Hal : ${surat?.hal ?? '404 Not Found'}',
                                           ),
                                           buildBorderedText(
-                                            'Hari / Tanggal : ${surat['hari_tanggal'] ?? '404 Not Found'}',
+                                            'Hari / Tanggal : ${surat?.tanggal_waktu != null ? parseDateFormat(surat!.tanggal_waktu) : "-"}',
                                           ),
                                           buildBorderedText(
-                                            'Waktu : ${surat['waktu'] ?? '404 Not Found'}',
+                                            'Waktu : ${surat?.tanggal_waktu != null ? parseTimeFormat(surat!.tanggal_waktu) : "-"}',
                                           ),
                                           buildBorderedText(
-                                            'Tempat : ${surat['tempat'] ?? '404 Not Found'}',
+                                            'Tempat : ${surat?.tempat ?? '404 Not Found'}',
                                           ),
                                         ],
                                       ),

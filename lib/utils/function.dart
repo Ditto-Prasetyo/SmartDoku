@@ -11,6 +11,7 @@ import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/utils/handlers/dateparser.dart';
 
 // Auths Section
 
@@ -473,7 +474,7 @@ void actionAdmin(
   showModernActionAdminMasukDialog(
     index,
     '${surat?.nama_surat}',
-    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat?.tanggal_surat.toString()}',
+    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat?.tanggal_surat != null ? parseDateFormat(surat!.tanggal_surat) : "-"}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
