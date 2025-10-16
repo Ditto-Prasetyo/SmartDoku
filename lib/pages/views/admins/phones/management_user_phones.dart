@@ -100,7 +100,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('User berhasil dihapus'),
+        content: Text('User berhasil dihapus!'),
         backgroundColor: Colors.red,
       ),
     );

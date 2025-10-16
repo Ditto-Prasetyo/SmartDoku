@@ -122,7 +122,7 @@ void showFeatureNotAvailableDialog(BuildContext context) {
                       ),
                       SizedBox(height: 15),
                       Text(
-                        'Mohon maaf, fitur pencarian belum tersedia saat ini. Kami sedang mengembangkan fitur ini untuk memberikan pengalaman terbaik.',
+                        'Mohon maaf, fitur ini belum tersedia saat ini!',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
@@ -9756,7 +9756,7 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                         onTap: () {
                           Navigator.pop(context);
 
-                          showPrintDialog(context);
+                          showFeatureNotAvailableDialog(context);
                         },
                       ),
 
@@ -11603,12 +11603,20 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
                                 "$dirPath/disposisi_$nomor_urut.xlsx";
                             final data = await _suratMasukService
                                 .downloadDisposisi(
-                                  (nomor_urut != null ? int.parse(nomor_urut) : 0),
+                                  (nomor_urut != null
+                                      ? int.parse(nomor_urut)
+                                      : 0),
                                   savePath,
                                 );
 
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Dokumen berhasil didownload!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -11804,7 +11812,13 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
                                 );
 
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Dokumen berhasil didownload!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
