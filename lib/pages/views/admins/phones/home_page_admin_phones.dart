@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/pages/forms/admins/desktop/detail_page_userDetail.dart';
+import 'package:smart_doku/pages/forms/admins/desktop/detail_page_userManagement.dart';
+import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/views/admins/phones/setting_page_phones.dart';
 import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/models/user.dart';
@@ -381,6 +384,111 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
+                                      Colors.blue.withValues(alpha: 0.2),
+                                      Colors.blue.withValues(alpha: 0.1),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Colors.blue.withValues(alpha: 0.4),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.blue.withValues(alpha: 0.2),
+                                      blurRadius: 15,
+                                      offset: Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      blurRadius: 5,
+                                      offset: Offset(0, -1),
+                                    ),
+                                  ],
+                                ),
+                                child: ListTile(
+                                  leading: Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Colors.blue,
+                                          Colors.blue,
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.blue.withValues(alpha: 0.5),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.logout_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    'Detail Profile',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontFamily: 'Roboto',
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          blurRadius: 5,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () {
+                                      Navigator.push(
+                                        context, 
+                                        MaterialPageRoute(
+                                          builder: (context) => profileDetail(
+                                             userModel: _user,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 10),
+
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 5,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
                                       Color(0xFFDC2626).withValues(alpha: 0.2),
                                       Color(0xFFEA580C).withValues(alpha: 0.1),
                                     ],
@@ -650,7 +758,8 @@ class _HomePageAdminPhones extends State<HomePageAdminPhones>
                               child: buildProfileSection(
                                 _profileOpacityAnimation,
                                 _user?.name,
-                                _user?.role
+                                _user?.role,
+                                _user?.email
                               ),
                             ),
                         ],
