@@ -9297,7 +9297,7 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                         color: Color(0xFF10B981),
                         onTap: () {
                           Navigator.pop(context);
-                          showDownloadDesktopDialog(context);
+                          showDownloadDesktopDialog(context, currentNomorUrut);
                         },
                       ),
                     ],
@@ -10564,7 +10564,7 @@ void showDownloadDialog(BuildContext context) {
   );
 }
 
-void showDownloadDesktopDialog(BuildContext context) {
+void showDownloadDesktopDialog(BuildContext context, String? nomor_urut) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -10678,7 +10678,7 @@ void showDownloadDesktopDialog(BuildContext context) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            showDocumentDesktopFormat(context);
+                            showDocumentDesktopFormat(context, nomor_urut);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFF2962FF),
@@ -11173,7 +11173,7 @@ void showDocumentFormat(BuildContext context) {
   );
 }
 
-void showDocumentDesktopFormat(BuildContext context) {
+void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -11286,7 +11286,11 @@ void showDocumentDesktopFormat(BuildContext context) {
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            final dirPath = await _suratMasukService.getDefaultDownloadPath();
+                            final savePath = '$dirPath/disposisi_$nomor_urut.xlsx';
+                            final data = await _suratMasukService.downloadDisposisi((nomor_urut == null ? 0 : int.parse(nomor_urut)), savePath);
+
                             Navigator.pop(context);
                             // Handle PDF selection
                           },

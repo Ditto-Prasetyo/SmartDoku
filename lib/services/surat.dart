@@ -3,10 +3,12 @@ import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/services/settings.dart';
 import 'package:smart_doku/utils/map.dart';
+import 'package:path/path.dart' as p;
 
 class SuratMasuk {
   final AuthService _authService = AuthService();
@@ -329,6 +331,73 @@ class SuratMasuk {
       print("Download gagal: ${response.body}");
       return null;
     }
+  }
+
+  Future<File?> downloadDisposisi(int fileId, String savePath) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('${dotenv.env['API_URL']}/download/disposisi/$fileId');
+    final response = await http.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final file = File(savePath);
+      await file.writeAsBytes(response.bodyBytes);
+      print("Download berhasil: $savePath");
+      return file;
+    } else {
+      print("Download gagal: ${response.body}");
+      return null;
+    }
+  }
+
+  Future<String> getDefaultDownloadPath() async {
+    Directory? dir;
+
+    if (Platform.isAndroid) {
+      // Di Android 10 ke atas, kamu bisa pakai ini (tapi perlu permission)
+      dir = Directory('/storage/emulated/0/Download');
+      if (!await dir.exists()) {
+        dir = await getExternalStorageDirectory();
+      }
+    } else if (Platform.isWindows) {
+      final downloadsDir = Directory(
+        p.join(
+          Platform.environment['USERPROFILE'] ?? '',
+          'Downloads',
+        ),
+      );
+      dir = downloadsDir;
+    } else if (Platform.isLinux) {
+      final downloadsDir = Directory(
+        p.join(
+          Platform.environment['HOME'] ?? '',
+          'Downloads',
+        ),
+      );
+      dir = downloadsDir;
+    } else if (Platform.isMacOS) {
+      final downloadsDir = Directory(
+        p.join(
+          Platform.environment['HOME'] ?? '',
+          'Downloads',
+        ),
+      );
+      dir = downloadsDir;
+    } else {
+      dir = await getApplicationDocumentsDirectory();
+    }
+
+    // Pastikan folder ada
+    if (!await dir!.exists()) {
+      await dir.create(recursive: true);
+    }
+
+    return dir.path;
   }
 }
 

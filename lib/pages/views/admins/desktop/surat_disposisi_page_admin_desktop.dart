@@ -142,7 +142,7 @@ class _DispositionLetterAdminDesktopState
   Widget buildNomorUrutDisplay() {
     final surat = getDisposisiData();
     return Text(
-      'Nomor Urut: ${surat['nomor_surat'] == null ? 'Data Kosong!' : surat['nomor_surat']}',
+      'Nomor Urut: ${surat['nomor_surat'] == null ? '-' : surat['nomor_surat']}',
       style: TextStyle(color: Colors.white, fontSize: 10),
       textAlign: TextAlign.center,
     );
@@ -535,7 +535,7 @@ class _DispositionLetterAdminDesktopState
       );
     }
 
-    final surat = _targetSurat ?? _listSurat[0];
+    final surat = _targetSurat ?? null;
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -839,7 +839,7 @@ class _DispositionLetterAdminDesktopState
                                           child: Column(
                                             children: [
                                               Text(
-                                                'Nomor Urut: ${disposisiData['nomor_surat'] == null ? 'Data Kosong!' : disposisiData['nomor_surat']}',
+                                                'Nomor Urut: ${disposisiData['nomor_surat'] == null ? '-' : disposisiData['nomor_surat']}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 14,
@@ -1471,7 +1471,7 @@ class _DispositionLetterAdminDesktopState
                                         'Waktu : ${surat?.tanggal_waktu != null ? parseTimeFormat(surat!.tanggal_waktu) : '-'}',
                                       ),
                                       buildBorderedText(
-                                        'Tempat : ${surat?.tempat ?? 'Data Kosong!'}',
+                                        'Tempat : ${surat?.tempat ?? '-'}',
                                       ),
                                     ],
                                   ),
