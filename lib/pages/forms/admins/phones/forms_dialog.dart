@@ -3983,7 +3983,7 @@ void showModernTambahUserFormDialog(
   Color accentColor,
   Color accentColor2,
   Function(UserModel?) onUserAdded,
-  void Function() addState,
+  void Function() refreshState,
   
 ) async {
   final _formKey = GlobalKey<FormState>();
@@ -4428,6 +4428,8 @@ void showModernTambahUserFormDialog(
 
                                             // Call the callback function
                                             onUserAdded(data);
+
+                                            refreshState();
 
                                             Navigator.pop(context);
 

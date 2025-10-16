@@ -114,7 +114,6 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
         backgroundColor: Colors.red,
       ),
     );
-    refreshState();
   }
 
   void refreshState() async {
@@ -1128,7 +1127,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                                                                     child: InkWell(
                                                                       onTap:
                                                                           () {
-                                                                            hapusUserDesktop(context, index, _userData, actionSetState);
+                                                                            hapusUserDesktop(context, index, _userData, actionSetState, refreshState);
                                                                           },
                                                                       child: const Icon(
                                                                         Icons

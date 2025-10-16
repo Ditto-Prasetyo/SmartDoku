@@ -8202,6 +8202,7 @@ void showModernHapusUserManagementDesktop(
   int index,
   List<UserModel?> userData,
   void Function(String) onConfirmDelete,
+  void Function() refreshState,
 ) {
   Size size = MediaQuery.of(context).size;
   final data = userData[index];
@@ -8348,6 +8349,7 @@ void showModernHapusUserManagementDesktop(
                           onPressed: () {
                             Navigator.of(context).pop();
                             onConfirmDelete(data!.id);
+                            refreshState();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,

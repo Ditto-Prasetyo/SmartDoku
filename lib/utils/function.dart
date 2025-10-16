@@ -701,7 +701,7 @@ void tambahUser(BuildContext context, String bidang, Function(UserModel?) onUser
     Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
     onUserAdded,
-    refreshState
+    refreshState,
   );
 }
 
@@ -787,6 +787,7 @@ void hapusUserDesktop(
   int index,
   List<UserModel?> userData,
   void Function(String) onConfirmDelete, 
+  void Function() refreshState,
 ) {
   final user = userData[index];
   showModernHapusUserManagementDesktop(
@@ -798,6 +799,7 @@ void hapusUserDesktop(
     index,
     userData,
     onConfirmDelete,
+    refreshState,
   );
 }
 
