@@ -1,6 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:smart_doku/pages/views/home_page.dart';
+import 'package:smart_doku/models/user.dart';
+import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
+import 'package:smart_doku/pages/views/users/desktop/home_page_desktop.dart';
+import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'dart:math';
+
+import 'package:smart_doku/services/user.dart';
 
 class Splash extends StatefulWidget {
   const Splash({Key? key}) : super(key: key);
@@ -33,9 +41,22 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
   bool _showLoadingDots = false;
   int _dotCount = 0;
 
+  // User Services
+  UserService _userService = UserService();
+  UserModel? _user;
+
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+    setState(() {
+      _user = user;
+      print(_user?.name);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    _loadUser();
 
     // Initialize animation controllers
     _fadeOutController = AnimationController(
@@ -147,10 +168,43 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
     // Detik ke-6: Navigate ke HomePage
     await Future.delayed(Duration(seconds: 2));
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => HomePage()),
-    );
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      if (_user?.role == "USER") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => UserDashboard()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => AdminDashboard()),
+        );
+      }
+    } else if (Platform.isAndroid || Platform.isIOS) {
+      if (_user?.role == "USER") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePageAdminPhones()),
+        );
+      }
+    } else {
+      if (_user?.role == "USER") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePageAdminPhones()),
+        );
+      }
+    }
   }
 
   void _startLoadingAnimation() async {
@@ -556,9 +610,11 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                     FadeTransition(
                       opacity: _helloFadeAnimation,
                       child: Container(
-                        padding: EdgeInsets.all(20),
+                        width: size.width,
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                         child: Text(
-                          "Hello",
+                          "Hello ${_user?.name}",
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 45.0,
                             fontWeight: FontWeight.w900,

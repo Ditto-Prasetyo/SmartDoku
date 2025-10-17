@@ -1,14 +1,27 @@
-import 'package:smart_doku/pages/auth/login_page.dart';
+import 'dart:io';
+
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:smart_doku/utils/formatter.dart';
 import 'package:smart_doku/utils/hover.dart';
+import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/map.dart';
 import 'dart:ui';
 import 'dart:math';
 
 class RegisterCredPage extends StatefulWidget {
-  const RegisterCredPage({super.key});
+  final String? username;
+  final String? password;
+  final String? email;
+
+  const RegisterCredPage({
+    Key? key,
+    required this.username,
+    required this.password,
+    required this.email,
+  }) : super(key: key);
 
   @override
   State<RegisterCredPage> createState() => RegisterCredPageState();
@@ -27,24 +40,13 @@ class RegisterCredPageState extends State<RegisterCredPage>
   final _addressController = TextEditingController();
   final _sectionWorkController = TextEditingController();
 
-  final int _maxLengthname = 16;
-  final int _maxLengthphone = 30;
-  final int _maxLengthaddress = 191;
-
   final _nameFocus = FocusNode();
   final _phoneFocus = FocusNode();
   final _addressFocus = FocusNode();
   final _sectionWorkFocus = FocusNode();
 
   String? _selectedWorkField;
-  final List<String> _workFields = [
-    'Sekretariat',
-    'Permukiman',
-    'Perumahan',
-    'Penataan Ruang dan PB',
-    'UPT Air Limbah Domestik',
-    'UPT Pertamanan',
-  ];
+  String? _workFieldError;
 
   final List<IconData> _workFieldIcons = [
     Icons.admin_panel_settings,
@@ -117,395 +119,6 @@ class RegisterCredPageState extends State<RegisterCredPage>
     _formController.forward();
     _particleController.repeat();
     _pulseController.repeat(reverse: true);
-  }
-
-  void _handleSession() {
-    final NameChecker = _nameController.text.trim();
-    final PhoneChecker = _phoneController.text.trim();
-    final AddressChecker = _addressController.text.trim();
-
-    if (NameChecker.isEmpty && PhoneChecker.isEmpty && AddressChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Login Error',
-        'Name, Phone, dan Address tidak boleh kosong!',
-        Colors.redAccent,
-      );
-      return;
-    } else if (NameChecker.isEmpty && PhoneChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Name and Phone Required',
-        'Nama dan Nomor Telepon tidak boleh kosong!',
-        Colors.orange,
-      );
-      return;
-    } else if (PhoneChecker.isEmpty && AddressChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Phone and Address Required',
-        'Nomor Telepon dan Alamat Rumah tidak boleh kosong!',
-        Colors.orange,
-      );
-      return;
-    } else if (NameChecker.isEmpty && AddressChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Name and Address Required',
-        'Nama dan Alamat Rumah tidak boleh kosong',
-        Colors.orange,
-      );
-      return;
-    } else if (NameChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Name Required',
-        'Nama tidak boleh kosong',
-        Colors.orange,
-      );
-      return;
-    } else if (PhoneChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Phone Required',
-        'Nomor Telepon tidak boleh kosong',
-        Colors.orange,
-      );
-      return;
-    } else if (AddressChecker.isEmpty) {
-      _showModernErrorDialog(
-        '❌ Address Required',
-        'Alamat Rumah tidak boleh kosong',
-        Colors.orange,
-      );
-      return;
-    }
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginPage()),
-    );
-  }
-
-  void _checkLengthName(String value) {
-    if (value.length > _maxLengthname) {
-      _nameController.text = value.substring(0, _maxLengthname);
-      _nameController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _nameController.text.length),
-      );
-      _showErrorDialog(
-        '⛔ Error',
-        'Pastikan Bahwa Anda Mengisi Nama Dengan Benar!',
-        Colors.deepOrange,
-        Icons.warning_rounded,
-      );
-    }
-  }
-
-  void _checkLengthPhone(String value) {
-    if (value.length > _maxLengthphone) {
-      _phoneController.text = value.substring(0, _maxLengthphone);
-      _phoneController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _phoneController.text.length),
-      );
-      _showErrorDialog(
-        '⛔ Error',
-        'Pastikan Bahwa Anda Mengisi Nomor Telepon Dengan Benar!',
-        Colors.deepOrange,
-        Icons.warning_rounded,
-      );
-    }
-  }
-
-  void _checkLengthAddress(String value) {
-    if (value.length > _maxLengthaddress) {
-      _addressController.text = value.substring(0, _maxLengthaddress);
-      _addressController.selection = TextSelection.fromPosition(
-        TextPosition(offset: _addressController.text.length),
-      );
-      _showErrorDialog(
-        '⛔ Error',
-        'Pastikan Bahwa Anda Mengisi Alamat Rumah Dengan Benar!',
-        Colors.deepOrange,
-        Icons.warning_rounded,
-      );
-    }
-  }
-
-  void _checkLengthSectionWork(String value) {}
-
-  void _showErrorDialog(
-    String title,
-    String message,
-    Color accentColor,
-    IconData icon,
-  ) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(icon, color: Colors.white, size: 30),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              _nameController.clear();
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _showModernErrorDialog(String title, String message, Color accentColor) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Modern Error Dialog",
-      barrierColor: Colors.black.withValues(alpha: 0.6),
-      transitionDuration: Duration(milliseconds: 300),
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
-          child: FadeTransition(opacity: animation, child: child),
-        );
-      },
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 30),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Container(
-                    padding: EdgeInsets.all(25),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.2),
-                          Colors.white.withValues(alpha: 0.1),
-                        ],
-                      ),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                accentColor.withValues(alpha: 0.8),
-                                accentColor.withValues(alpha: 0.6),
-                              ],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: accentColor.withValues(alpha: 0.4),
-                                blurRadius: 15,
-                                spreadRadius: 2,
-                              ),
-                            ],
-                          ),
-                          child: Icon(
-                            Icons.warning_rounded,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Text(
-                          title,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 15),
-                        Text(
-                          message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white.withValues(alpha: 0.9),
-                            height: 1.4,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(height: 25),
-                        Container(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accentColor,
-                              foregroundColor: Colors.white,
-                              padding: EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              elevation: 8,
-                              shadowColor: accentColor.withValues(alpha: 0.4),
-                            ),
-                            child: Text(
-                              'Got it!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -613,641 +226,701 @@ class RegisterCredPageState extends State<RegisterCredPage>
             }),
 
             // Main content
-            Container(
-              height: size.height,
-              width: size.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  // Modern title with glow effect
-                  AnimatedBuilder(
-                    animation: _formAnimation,
-                    builder: (context, child) {
-                      return Transform.translate(
-                        offset: Offset(0, 50 * (1 - _formAnimation.value)),
-                        child: Opacity(
-                          opacity: _formAnimation.value.clamp(0.0, 1.0),
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 50),
-                            child: Text(
-                              "Fill your biodata to complete",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.w900,
-                                letterSpacing: 2,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    blurRadius: 20.0,
-                                    color: Color(
-                                      0xFF00D4FF,
-                                    ).withValues(alpha: 0.6),
-                                    offset: Offset(0, 0),
-                                  ),
-                                  Shadow(
-                                    blurRadius: 40.0,
-                                    color: Color(
-                                      0xFF667eea,
-                                    ).withValues(alpha: 0.4),
-                                    offset: Offset(0, 0),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  AnimatedBuilder(
-                    animation: _formAnimation,
-                    builder: (context, child) {
-                      return Transform.scale(
-                        scale: 0.8 + (0.2 * _formAnimation.value),
-                        child: Opacity(
-                          opacity: _formAnimation.value.clamp(0.0, 1.0),
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 30),
-                            padding: EdgeInsets.all(30),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  Colors.white.withValues(alpha: 0.15),
-                                  Colors.white.withValues(alpha: 0.08),
-                                ],
-                              ),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                width: 1.5,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.2),
-                                  blurRadius: 30,
-                                  offset: Offset(0, 15),
-                                ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 10,
-                                  sigmaY: 10,
-                                ),
-                                child: Column(
-                                  children: [
-                                    // Name field
-                                    Container(
-                                      margin: EdgeInsets.only(bottom: 20),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.white.withValues(alpha: 0.1),
-                                            Colors.white.withValues(
-                                              alpha: 0.05,
-                                            ),
-                                          ],
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                        ),
-                                      ),
-                                      child: TextFormField(
-                                        controller: _nameController,
-                                        cursorColor: Colors.white,
-                                        onChanged: (value) {
-                                          _checkLengthName(value);
-
-                                          int spaceCount = RegExp(
-                                            r' ',
-                                          ).allMatches(value).length;
-                                          if (spaceCount > 5) {
-                                            _showErrorDialog(
-                                              '⛔ Gunakan Nama Asli Anda',
-                                              "Nama Anda Tidak Boleh Lebih Dari Lima Spasi!",
-                                              Colors.deepOrange,
-                                              Icons.warning_rounded,
-                                            );
-                                          }
-
-                                          if (spaceCount <= 5) {
-                                            _hasShownNameSpaceDialog = false;
-                                          }
-                                        },
-                                        focusNode: _nameFocus,
-                                        keyboardType: TextInputType.name,
-                                        inputFormatters: [
-                                          NoDigitsFormatter(
-                                            onInvalidInput: (msg) =>
-                                                _showModernErrorDialog(
-                                                  '⚠️ Gunakan Nama Asli Anda',
-                                                  'Nama Asli Tidak Mungkin Memiliki Angka!',
-                                                  Colors.orange,
-                                                ),
-                                          ),
-                                        ],
-                                        textInputAction: TextInputAction.next,
-                                        onFieldSubmitted: (value) {
-                                          FocusScope.of(
-                                            context,
-                                          ).requestFocus(_phoneFocus);
-                                        },
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                            vertical: 20,
-                                            horizontal: 20,
-                                          ),
-                                          prefixIcon: Container(
-                                            padding: EdgeInsets.only(
-                                              left: 16,
-                                              right: 14,
-                                              top: 12,
-                                              bottom: 12,
-                                            ),
-                                            child: Icon(
-                                              Icons.person_outline_rounded,
-                                              color: Color(0xFF00D4FF),
-                                              size: 24,
-                                            ),
-                                          ),
-                                          hintText: "Nama Anda",
-                                          hintStyle: TextStyle(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.6,
-                                            ),
-                                            fontSize: 16,
-                                          ),
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                        ),
-                                      ),
+            Center(
+              child: Container(
+                height: size.height,
+                width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    // Modern title with glow effect
+                    AnimatedBuilder(
+                      animation: _formAnimation,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(0, 50 * (1 - _formAnimation.value)),
+                          child: Opacity(
+                            opacity: _formAnimation.value.clamp(0.0, 1.0),
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: 50),
+                              child: Text(
+                                "Fill your biodata to complete",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 2,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 20.0,
+                                      color: Color(
+                                        0xFF00D4FF,
+                                      ).withValues(alpha: 0.6),
+                                      offset: Offset(0, 0),
                                     ),
-
-                                    // Phone field
-                                    Container(
-                                      margin: EdgeInsets.only(bottom: 30),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.white.withValues(alpha: 0.1),
-                                            Colors.white.withValues(
-                                              alpha: 0.05,
-                                            ),
-                                          ],
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                        ),
-                                      ),
-                                      child: TextFormField(
-                                        controller: _phoneController,
-                                        cursorColor: Colors.white,
-                                        onChanged: _checkLengthPhone,
-                                        focusNode: _phoneFocus,
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: [
-                                          DigitOnlyWithErrorFormatter(
-                                            onInvalidInput: (msg) =>
-                                                _showModernErrorDialog(
-                                                  '⚠️ Gunakan Nomor Asli Anda',
-                                                  'Pastikan Anda Hanya Memasukkan Angka Sesuai Nomor Anda!',
-                                                  Colors.orange,
-                                                ),
-                                          ),
-                                        ],
-                                        textInputAction: TextInputAction.next,
-                                        onFieldSubmitted: (value) {
-                                          FocusScope.of(
-                                            context,
-                                          ).requestFocus(_addressFocus);
-                                        },
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                            vertical: 20,
-                                            horizontal: 20,
-                                          ),
-                                          prefixIcon: Container(
-                                            padding: EdgeInsets.only(
-                                              left: 16,
-                                              right: 14,
-                                              top: 12,
-                                              bottom: 12,
-                                            ),
-                                            child: Icon(
-                                              Icons.phone_android_rounded,
-                                              color: Color(0xFF00D4FF),
-                                              size: 24,
-                                            ),
-                                          ),
-                                          hintText: "Nomor Telepon Anda",
-                                          hintStyle: TextStyle(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.6,
-                                            ),
-                                            fontSize: 16,
-                                          ),
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                    // Address field
-                                    Container(
-                                      margin: EdgeInsets.only(bottom: 30),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.white.withValues(alpha: 0.1),
-                                            Colors.white.withValues(
-                                              alpha: 0.05,
-                                            ),
-                                          ],
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                        ),
-                                      ),
-                                      child: TextFormField(
-                                        controller: _addressController,
-                                        cursorColor: Colors.white,
-                                        onChanged: _checkLengthAddress,
-                                        focusNode: _addressFocus,
-                                        keyboardType:
-                                            TextInputType.streetAddress,
-                                        inputFormatters: [
-                                          NormalAddressFormatter(
-                                            onInvalidInput: (msg) =>
-                                                _showModernErrorDialog(
-                                                  '⛔ Error',
-                                                  'Pastikan Anda Memasukkan Alamat Sesuai Dengan Lokasi Anda Sebenarnya!',
-                                                  Colors.deepOrange,
-                                                ),
-                                          ),
-                                        ],
-                                        textInputAction: TextInputAction.done,
-                                        onFieldSubmitted: (value) {
-                                          _handleSession();
-                                        },
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                        decoration: InputDecoration(
-                                          contentPadding: EdgeInsets.symmetric(
-                                            vertical: 20,
-                                            horizontal: 20,
-                                          ),
-                                          prefixIcon: Container(
-                                            padding: EdgeInsets.only(
-                                              left: 16,
-                                              right: 14,
-                                              top: 12,
-                                              bottom: 12,
-                                            ),
-                                            child: Icon(
-                                              Icons.home,
-                                              color: Color(0xFF00D4FF),
-                                              size: 24,
-                                            ),
-                                          ),
-                                          hintText: "Alamat Rumah Anda",
-                                          hintStyle: TextStyle(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.6,
-                                            ),
-                                            fontSize: 16,
-                                          ),
-                                          border: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                        ),
-                                      ),
-                                    ),
-                                    // Section of Work field
-                                    Container(
-                                      margin: EdgeInsets.only(bottom: 30),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(15),
-                                        gradient: LinearGradient(
-                                          colors: [
-                                            Colors.white.withValues(alpha: 0.1),
-                                            Colors.white.withValues(
-                                              alpha: 0.05,
-                                            ),
-                                          ],
-                                        ),
-                                        border: Border.all(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.2,
-                                          ),
-                                        ),
-                                      ),
-                                      child: DropdownButtonHideUnderline(
-                                        child: DropdownButton2<String>(
-                                          alignment:
-                                              AlignmentDirectional.centerStart,
-                                          isExpanded: true,
-                                          value: _selectedWorkField,
-                                          hint: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.work,
-                                                color: Color(0xFF00D4FF),
-                                                size: 24,
-                                              ),
-                                              SizedBox(width: 18),
-                                              Expanded(
-                                                child: Text(
-                                                  "Bidang Pekerjaan Anda",
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.6),
-                                                  ),
-                                                  softWrap:
-                                                      true,
-                                                  overflow: TextOverflow
-                                                      .visible,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          items: _workFields.asMap().entries.map((
-                                            entry,
-                                          ) {
-                                            int index = entry.key;
-                                            String value = entry.value;
-
-                                            return DropdownMenuItem<String>(
-                                              value: value,
-                                              // Gunakan widget HoverMenuItem sebagai child
-                                              child: HoverMenuItem(
-                                                label: value,
-                                                icon: _workFieldIcons[index],
-                                                onTap: () {
-                                                  setState(() {
-                                                    _selectedWorkField = value;
-                                                    _sectionWorkController
-                                                            .text =
-                                                        value;
-                                                    _checkLengthSectionWork(
-                                                      value,
-                                                    );
-                                                  });
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            );
-                                          }).toList(),
-                                          dropdownStyleData: DropdownStyleData(
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                colors: [
-                                                  Colors.white.withValues(
-                                                    alpha: 0.1,
-                                                  ),
-                                                  Colors.white.withValues(
-                                                    alpha: 0.05,
-                                                  ),
-                                                ],
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              border: Border.all(
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.2,
-                                                ),
-                                              ),
-                                            ),
-                                            elevation: 8,
-                                            padding: EdgeInsets.only(
-                                              top: 6,
-                                              bottom: 6,
-                                            ),
-                                          ),
-                                          iconStyleData: IconStyleData(
-                                            icon: Icon(
-                                              Icons.keyboard_arrow_down_rounded,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          buttonStyleData: ButtonStyleData(
-                                            padding: EdgeInsets.only(right: 20),
-                                            height: 60,
-                                            decoration: BoxDecoration(
-                                              color: Colors.transparent,
-                                            ),
-                                          ),
-                                          dropdownSearchData:
-                                              DropdownSearchData(
-                                                searchInnerWidget: null,
-                                                searchInnerWidgetHeight: null,
-                                              ),
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              _selectedWorkField = newValue!;
-                                              _sectionWorkController.text =
-                                                  newValue;
-                                              _checkLengthSectionWork(newValue);
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    AnimatedBuilder(
-                                      animation: _pulseAnimation,
-                                      builder: (context, child) {
-                                        return Transform.scale(
-                                          scale: _pulseAnimation.value,
-                                          child: Container(
-                                            width: double.infinity,
-                                            height: 55,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              gradient: LinearGradient(
-                                                begin: Alignment.centerLeft,
-                                                end: Alignment.centerRight,
-                                                colors: [
-                                                  Color(0xFF667eea),
-                                                  Color(0xFF764ba2),
-                                                ],
-                                              ),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  color: Color(
-                                                    0xFF667eea,
-                                                  ).withValues(alpha: 0.4),
-                                                  blurRadius: 20,
-                                                  spreadRadius: 2,
-                                                  offset: Offset(0, 8),
-                                                ),
-                                                if (_isButtonHovered)
-                                                  BoxShadow(
-                                                    color: Color(
-                                                      0xFF00D4FF,
-                                                    ).withValues(alpha: 0.6),
-                                                    blurRadius: 40,
-                                                    spreadRadius: 8,
-                                                    offset: Offset(
-                                                      (_buttonCursorPosition
-                                                                  .dx -
-                                                              200) *
-                                                          0.2,
-                                                      (_buttonCursorPosition
-                                                                  .dy -
-                                                              400) *
-                                                          0.2,
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                            child: ElevatedButton(
-                                              onPressed: _handleSession,
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                foregroundColor: Colors.white,
-                                                shadowColor: Colors.transparent,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(15),
-                                                ),
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.arrow_forward_rounded,
-                                                    size: 20,
-                                                  ),
-                                                  SizedBox(width: 10),
-                                                  Text(
-                                                    'Register',
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      letterSpacing: 1,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
+                                    Shadow(
+                                      blurRadius: 40.0,
+                                      color: Color(
+                                        0xFF667eea,
+                                      ).withValues(alpha: 0.4),
+                                      offset: Offset(0, 0),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  // Register link
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          // Bagian teks non-interaktif
-                          TextSpan(
-                            text: "Already have an account? ",
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              fontSize: 16,
-                            ),
-                          ),
-                          WidgetSpan(
-                            alignment: PlaceholderAlignment.baseline,
-                            baseline: TextBaseline.alphabetic,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              onEnter: (_) =>
-                                  setState(() => _isSignInHovered = true),
-                              onExit: (_) =>
-                                  setState(() => _isSignInHovered = false),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => RegisterPage(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  "Go Back",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: _isSignInHovered
-                                        ? Color(0xFFFF8A8A)
-                                        : Color(0xFFFF6B6B),
-                                    fontWeight: FontWeight.w800,
-                                    decoration: _isSignInHovered
-                                        ? TextDecoration.underline
-                                        : TextDecoration.none,
-                                    decorationColor: _isSignInHovered
-                                        ? Color(0xFFFF8A8A)
-                                        : Color(0xFFFF6B6B),
-                                    shadows: _isSignInHovered
-                                        ? [
-                                            Shadow(
-                                              blurRadius: 12.0,
-                                              color: Color(
-                                                0xFFFF8A8A,
-                                              ).withValues(alpha: 0.7),
-                                              offset: Offset(0, 0),
+                        );
+                      },
+                    ),
+                    AnimatedBuilder(
+                      animation: _formAnimation,
+                      builder: (context, child) {
+                        return Transform.scale(
+                          scale: 0.8 + (0.2 * _formAnimation.value),
+                          child: Opacity(
+                            opacity: _formAnimation.value.clamp(0.0, 1.0),
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 30),
+                              padding: EdgeInsets.all(30),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.15),
+                                    Colors.white.withValues(alpha: 0.08),
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  width: 1.5,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.2),
+                                    blurRadius: 30,
+                                    offset: Offset(0, 15),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(
+                                    sigmaX: 10,
+                                    sigmaY: 10,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      // Name field
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 20),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white.withValues(alpha: 0.1),
+                                              Colors.white.withValues(
+                                                alpha: 0.05,
+                                              ),
+                                            ],
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.2,
                                             ),
-                                          ]
-                                        : [
-                                            Shadow(
-                                              blurRadius: 10.0,
-                                              color: Color(
-                                                0xFFFF6B6B,
-                                              ).withValues(alpha: 0.5),
-                                              offset: Offset(0, 0),
+                                          ),
+                                        ),
+                                        child: TextFormField(
+                                          controller: _nameController,
+                                          cursorColor: Colors.white,
+                                          onChanged: (value) {
+                                            checkLengthName(
+                                              context,
+                                              value,
+                                              _nameController,
+                                            );
+              
+                                            int spaceCount = RegExp(
+                                              r' ',
+                                            ).allMatches(value).length;
+                                            if (spaceCount > 5) {
+                                              showErrorDialog(
+                                                context,
+                                                '⛔ Gunakan Nama Asli Anda',
+                                                "Nama Anda Tidak Boleh Lebih Dari Lima Spasi!",
+                                                Colors.deepOrange,
+                                                _nameController,
+                                              );
+                                            }
+              
+                                            if (spaceCount <= 5) {
+                                              _hasShownNameSpaceDialog = false;
+                                            }
+                                          },
+                                          focusNode: _nameFocus,
+                                          keyboardType: TextInputType.name,
+                                          inputFormatters: [
+                                            FullNameFormatter(
+                                              onInvalidInput: (msg) {
+                                                showModernErrorDialog(
+                                                  context,
+                                                  '⚠️ Gunakan Nama Asli Anda',
+                                                  msg,
+                                                  Colors.orange,
+                                                );
+                                              },
                                             ),
                                           ],
+                                          textInputAction: TextInputAction.next,
+                                          onFieldSubmitted: (value) {
+                                            FocusScope.of(
+                                              context,
+                                            ).requestFocus(_phoneFocus);
+                                          },
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.symmetric(
+                                              vertical: 20,
+                                              horizontal: 20,
+                                            ),
+                                            prefixIcon: Container(
+                                              padding: EdgeInsets.only(
+                                                left: 16,
+                                                right: 14,
+                                                top: 12,
+                                                bottom: 12,
+                                              ),
+                                              child: Icon(
+                                                Icons.person_outline_rounded,
+                                                color: Color(0xFF00D4FF),
+                                                size: 24,
+                                              ),
+                                            ),
+                                            hintText: "Nama Anda",
+                                            hintStyle: TextStyle(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.6,
+                                              ),
+                                              fontSize: 16,
+                                            ),
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+              
+                                      // Phone field
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 30),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white.withValues(alpha: 0.1),
+                                              Colors.white.withValues(
+                                                alpha: 0.05,
+                                              ),
+                                            ],
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                          ),
+                                        ),
+                                        child: TextFormField(
+                                          controller: _phoneController,
+                                          cursorColor: Colors.white,
+                                          onChanged: (value) {
+                                            checkLengthPhone(
+                                              context,
+                                              value,
+                                              _phoneController,
+                                            );
+                                          },
+                                          focusNode: _phoneFocus,
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: [
+                                            DigitOnlyWithErrorFormatter(
+                                              onInvalidInput: (msg) =>
+                                                  showModernErrorDialog(
+                                                    context,
+                                                    '⚠️ Gunakan Nomor Asli Anda',
+                                                    'Pastikan Anda Hanya Memasukkan Angka Sesuai Nomor Anda!',
+                                                    Colors.orange,
+                                                  ),
+                                            ),
+                                          ],
+                                          textInputAction: TextInputAction.next,
+                                          onFieldSubmitted: (value) {
+                                            FocusScope.of(
+                                              context,
+                                            ).requestFocus(_addressFocus);
+                                          },
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.symmetric(
+                                              vertical: 20,
+                                              horizontal: 20,
+                                            ),
+                                            prefixIcon: Container(
+                                              padding: EdgeInsets.only(
+                                                left: 16,
+                                                right: 14,
+                                                top: 12,
+                                                bottom: 12,
+                                              ),
+                                              child: Icon(
+                                                Icons.phone_android_rounded,
+                                                color: Color(0xFF00D4FF),
+                                                size: 24,
+                                              ),
+                                            ),
+                                            hintText: "Nomor Telepon Anda",
+                                            hintStyle: TextStyle(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.6,
+                                              ),
+                                              fontSize: 16,
+                                            ),
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                      // Address field
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 30),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white.withValues(alpha: 0.1),
+                                              Colors.white.withValues(
+                                                alpha: 0.05,
+                                              ),
+                                            ],
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                          ),
+                                        ),
+                                        child: TextFormField(
+                                          controller: _addressController,
+                                          cursorColor: Colors.white,
+                                          onChanged: (value) {
+                                            checkLengthAddress(
+                                              context,
+                                              value,
+                                              _addressController,
+                                            );
+                                          },
+                                          focusNode: _addressFocus,
+                                          keyboardType:
+                                              TextInputType.streetAddress,
+                                          inputFormatters: [
+                                            NormalAddressFormatter(
+                                              onInvalidInput: (msg) =>
+                                                  showModernErrorDialog(
+                                                    context,
+                                                    '⛔ Error',
+                                                    'Pastikan Anda Memasukkan Alamat Sesuai Dengan Lokasi Anda Sebenarnya!',
+                                                    Colors.deepOrange,
+                                                  ),
+                                            ),
+                                          ],
+              
+                                          textInputAction: TextInputAction.next,
+                                          onFieldSubmitted: (value) {
+                                            FocusScope.of(
+                                              context,
+                                            ).requestFocus(_sectionWorkFocus);
+                                          },
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                          decoration: InputDecoration(
+                                            contentPadding: EdgeInsets.symmetric(
+                                              vertical: 20,
+                                              horizontal: 20,
+                                            ),
+                                            prefixIcon: Container(
+                                              padding: EdgeInsets.only(
+                                                left: 16,
+                                                right: 14,
+                                                top: 12,
+                                                bottom: 12,
+                                              ),
+                                              child: Icon(
+                                                Icons.home,
+                                                color: Color(0xFF00D4FF),
+                                                size: 24,
+                                              ),
+                                            ),
+                                            hintText: "Alamat Rumah Anda",
+                                            hintStyle: TextStyle(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.6,
+                                              ),
+                                              fontSize: 16,
+                                            ),
+                                            border: InputBorder.none,
+                                            focusedBorder: InputBorder.none,
+                                            enabledBorder: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                      // Section of Work field
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 30),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white.withValues(alpha: 0.1),
+                                              Colors.white.withValues(
+                                                alpha: 0.05,
+                                              ),
+                                            ],
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                          ),
+                                        ),
+                                        child: DropdownButtonHideUnderline(
+                                          child: DropdownButton2<String>(
+                                            alignment:
+                                                AlignmentDirectional.centerStart,
+                                            isExpanded: true,
+                                            value: _selectedWorkField,
+                                            hint: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.work,
+                                                  color: Color(0xFF00D4FF),
+                                                  size: 24,
+                                                ),
+                                                SizedBox(width: 18),
+                                                Expanded(
+                                                  child: Text(
+                                                    "Bidang Pekerjaan Anda",
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white
+                                                          .withValues(alpha: 0.6),
+                                                    ),
+                                                    softWrap: true,
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            items: workFields.entries
+                                                .toList()
+                                                .asMap()
+                                                .entries
+                                                .map((indexedEntry) {
+                                                  final index = indexedEntry.key;
+                                                  final entry =
+                                                      indexedEntry.value;
+              
+                                                  final label = entry
+                                                      .key; // "Penataan Ruang dan PB"
+                                                  final value =
+                                                      entry.value; // "PRPB"
+              
+                                                  return DropdownMenuItem<String>(
+                                                    value: value,
+                                                    child: HoverMenuItem(
+                                                      label: label,
+                                                      icon:
+                                                          _workFieldIcons[index],
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _selectedWorkField =
+                                                              value;
+                                                          _sectionWorkController
+                                                                  .text =
+                                                              value;
+                                                          _workFieldError = null;
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  );
+                                                })
+                                                .toList(),
+              
+                                            dropdownStyleData: DropdownStyleData(
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Colors.white.withValues(
+                                                      alpha: 0.1,
+                                                    ),
+                                                    Colors.white.withValues(
+                                                      alpha: 0.05,
+                                                    ),
+                                                  ],
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                border: Border.all(
+                                                  color: Colors.white.withValues(
+                                                    alpha: 0.2,
+                                                  ),
+                                                ),
+                                              ),
+                                              elevation: 8,
+                                              padding: EdgeInsets.only(
+                                                top: 6,
+                                                bottom: 6,
+                                              ),
+                                            ),
+                                            iconStyleData: IconStyleData(
+                                              icon: Icon(
+                                                Icons.keyboard_arrow_down_rounded,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            buttonStyleData: ButtonStyleData(
+                                              padding: EdgeInsets.only(right: 20),
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                color: Colors.transparent,
+                                              ),
+                                            ),
+                                            dropdownSearchData:
+                                                DropdownSearchData(
+                                                  searchInnerWidget: null,
+                                                  searchInnerWidgetHeight: null,
+                                                ),
+                                            onChanged: (String? newValue) {
+                                              setState(() {
+                                                _selectedWorkField = newValue;
+                                                _sectionWorkController.text =
+                                                    newValue!;
+                                                _workFieldError = null;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      if (_workFieldError != null)
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 5,
+                                            left: 12,
+                                          ),
+                                          child: Text(
+                                            _workFieldError!,
+                                            style: TextStyle(
+                                              color: Colors.redAccent,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                      AnimatedBuilder(
+                                        animation: _pulseAnimation,
+                                        builder: (context, child) {
+                                          return Transform.scale(
+                                            scale: _pulseAnimation.value,
+                                            child: Container(
+                                              width: double.infinity,
+                                              height: 55,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.centerLeft,
+                                                  end: Alignment.centerRight,
+                                                  colors: [
+                                                    Color(0xFF667eea),
+                                                    Color(0xFF764ba2),
+                                                  ],
+                                                ),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Color(
+                                                      0xFF667eea,
+                                                    ).withValues(alpha: 0.4),
+                                                    blurRadius: 20,
+                                                    spreadRadius: 2,
+                                                    offset: Offset(0, 8),
+                                                  ),
+                                                  if (_isButtonHovered)
+                                                    BoxShadow(
+                                                      color: Color(
+                                                        0xFF00D4FF,
+                                                      ).withValues(alpha: 0.6),
+                                                      blurRadius: 40,
+                                                      spreadRadius: 8,
+                                                      offset: Offset(
+                                                        (_buttonCursorPosition
+                                                                    .dx -
+                                                                200) *
+                                                            0.2,
+                                                        (_buttonCursorPosition
+                                                                    .dy -
+                                                                400) *
+                                                            0.2,
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  handleRegister(
+                                                    context,
+                                                    _selectedWorkField,
+                                                    widget.username,
+                                                    widget.email,
+                                                    widget.password,
+                                                    _nameController,
+                                                    _phoneController,
+                                                    _addressController,
+                                                  );
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  foregroundColor: Colors.white,
+                                                  shadowColor: Colors.transparent,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(15),
+                                                  ),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.arrow_forward_rounded,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Text(
+                                                      'Register',
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        letterSpacing: 1,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ],
+                        );
+                      },
+                    ),
+              
+                    // Register link
+                    Container(
+                      margin: EdgeInsets.only(top: 20),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            // Bagian teks non-interaktif
+                            TextSpan(
+                              text: "Already have an account? ",
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.7),
+                                fontSize: 16,
+                              ),
+                            ),
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.baseline,
+                              baseline: TextBaseline.alphabetic,
+                              child: MouseRegion(
+                                cursor: SystemMouseCursors.click,
+                                onEnter: (_) =>
+                                    setState(() => _isSignInHovered = true),
+                                onExit: (_) =>
+                                    setState(() => _isSignInHovered = false),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RegisterPage(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Go Back",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: _isSignInHovered
+                                          ? Color(0xFFFF8A8A)
+                                          : Color(0xFFFF6B6B),
+                                      fontWeight: FontWeight.w800,
+                                      decoration: _isSignInHovered
+                                          ? TextDecoration.underline
+                                          : TextDecoration.none,
+                                      decorationColor: _isSignInHovered
+                                          ? Color(0xFFFF8A8A)
+                                          : Color(0xFFFF6B6B),
+                                      shadows: _isSignInHovered
+                                          ? [
+                                              Shadow(
+                                                blurRadius: 12.0,
+                                                color: Color(
+                                                  0xFFFF8A8A,
+                                                ).withValues(alpha: 0.7),
+                                                offset: Offset(0, 0),
+                                              ),
+                                            ]
+                                          : [
+                                              Shadow(
+                                                blurRadius: 10.0,
+                                                color: Color(
+                                                  0xFFFF6B6B,
+                                                ).withValues(alpha: 0.5),
+                                                offset: Offset(0, 0),
+                                              ),
+                                            ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],

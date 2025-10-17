@@ -1,0 +1,1318 @@
+import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/models/user.dart';
+import 'dart:ui';
+import 'dart:io';
+
+import 'package:smart_doku/services/user.dart';
+import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/utils/function.dart';
+
+class ManagementUserPhones extends StatefulWidget {
+  const ManagementUserPhones({super.key});
+
+  @override
+  State<ManagementUserPhones> createState() => _ManagementUserPhones();
+}
+
+class _ManagementUserPhones extends State<ManagementUserPhones>
+    with TickerProviderStateMixin {
+  var height, width;
+
+  bool isRefreshing = false;
+  bool isLoading = false;
+  String? title;
+
+  // Animation controllers (cuma background aja sekarang)
+  late AnimationController _backgroundController;
+  late Animation<double> _backgroundAnimation;
+
+  UserService _serviceUser = UserService();
+  List<UserModel?> _listUser = [];
+
+  Future<void> _refreshData() async {
+    setState(() {
+      isRefreshing = true;
+    });
+
+    await Future.delayed(Duration(seconds: 2));
+
+    try {
+      // Cek koneksi internet dengan ping google
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        // ✅ Ada internet → load data dari API
+        await _loadAllData();
+      }
+    } on SocketException catch (_) {
+      // ❌ Tidak ada internet
+      showModernErrorDialog(
+        context,
+        "Koneksi Terputus",
+        "Mohon maaf, data tidak bisa diperbarui karena ketiadaan internet pada device anda saat ini!",
+        Colors.redAccent,
+      );
+    } finally {
+      setState(() {
+        isRefreshing = false;
+      });
+    }
+  }
+
+  Future<void> _loadAllData() async {
+    print("[DEBUG] -> [INFO] : Loading all data user ...");
+    try {
+      print("[DEBUG] -> [STATE] : title = $title");
+      final data = await _serviceUser.listUsers();
+      print(data.map((e) => e.toJson()).toList());
+      setState(() {
+        _listUser = data;
+        isLoading = false;
+      });
+      print("[DEBUG] -> [STATE] : Set data to userData!");
+    } catch (e) {
+      setState(() => isLoading = false);
+      print("[ERROR] -> gagal load data: $e");
+      // tampilkan error dialog modern
+      showModernErrorDialog(
+        context,
+        "Gagal Memuat Data",
+        "Terjadi kesalahan saat mengambil data dari server. \nSilahkan tanyakan masalah ini kepada admin!",
+        Colors.redAccent,
+      );
+    }
+  }
+
+  Color getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'terbatas':
+        return Color(0xFFF59E0B);
+      case 'selesai':
+        return Color(0xFF10B981);
+      default:
+        return Color(0xFF6366F1);
+    }
+  }
+
+  void actionSetState(String index) async {
+    setState(() {
+      _serviceUser.deleteUser(index);
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('User berhasil dihapus!'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    await _loadAllData();
+  }
+
+  void refreshState() async {
+    await _loadAllData();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args =
+          ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
+      setState(() {
+        title = args?['title'] ?? 'Default Title';
+      });
+
+      print('[DEBUG] -> [STATE -> INIT] : title = $title');
+
+      _loadAllData();
+    });
+
+    // Initialize background animation
+    _backgroundController = AnimationController(
+      duration: Duration(seconds: 5),
+      vsync: this,
+    );
+    _backgroundAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _backgroundController,
+        curve: Curves.easeInOutCubic,
+      ),
+    );
+
+    _backgroundController.repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _backgroundController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
+    return Scaffold(
+      drawer: SizedBox(
+        width: 250,
+        child: Drawer(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF1A1A2E),
+                  Color(0xFF16213E),
+                  Color(0xFF0F3460),
+                ],
+              ),
+            ),
+            child: Column(
+              children: [
+                // Header Drawer
+                Container(
+                  height: 275,
+                  width: double.infinity,
+                  padding: EdgeInsets.only(
+                    top: 15,
+                    left: 10,
+                    right: 10,
+                    bottom: 15,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFF4F46E5).withValues(alpha: 0.6),
+                        Color(0xFF7C3AED).withValues(alpha: 0.4),
+                      ],
+                    ),
+                  ),
+                  child: Stack(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              padding: EdgeInsets.all(0.1),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.25),
+                                    Colors.white.withValues(alpha: 0.1),
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  width: 1.5,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.1),
+                                    blurRadius: 10,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.arrow_back_ios_new_rounded,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // App Icon and Title with Glassmorphism
+                      Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedBox(height: 50),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaX: 15,
+                                  sigmaY: 15,
+                                ),
+                                child: Container(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.asset(
+                                      'images/Icon_App.png',
+                                      width: 180,
+                                      height: 180,
+                                      color: Colors.white,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 15),
+                            ShaderMask(
+                              shaderCallback: (bounds) => LinearGradient(
+                                colors: [Colors.white, Colors.grey.shade400],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ).createShader(bounds),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Menu Items
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 8,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFF4F46E5).withValues(alpha: 0.2),
+                                      Color(0xFF7C3AED).withValues(alpha: 0.1),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Color(
+                                      0xFF4F46E5,
+                                    ).withValues(alpha: 0.4),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(
+                                        0xFF4F46E5,
+                                      ).withValues(alpha: 0.2),
+                                      blurRadius: 15,
+                                      offset: Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      blurRadius: 5,
+                                      offset: Offset(0, -1),
+                                    ),
+                                  ],
+                                ),
+                                child: ListTile(
+                                  leading: Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFF4F46E5),
+                                          Color(0xFF7C3AED),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(
+                                            0xFF4F46E5,
+                                          ).withValues(alpha: 0.5),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.home_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    'Home',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontFamily: 'Roboto',
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          blurRadius: 5,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    homeAdmin(context);
+                                  },
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 10),
+
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 5,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFFDC2626).withValues(alpha: 0.2),
+                                      Color(0xFFEA580C).withValues(alpha: 0.1),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(15),
+                                  border: Border.all(
+                                    color: Color(
+                                      0xFFDC2626,
+                                    ).withValues(alpha: 0.4),
+                                    width: 1.5,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(
+                                        0xFFDC2626,
+                                      ).withValues(alpha: 0.2),
+                                      blurRadius: 15,
+                                      offset: Offset(0, 5),
+                                    ),
+                                    BoxShadow(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      blurRadius: 5,
+                                      offset: Offset(0, -1),
+                                    ),
+                                  ],
+                                ),
+                                child: ListTile(
+                                  leading: Container(
+                                    padding: EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          Color(0xFFDC2626),
+                                          Color(0xFFEA580C),
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Color(
+                                            0xFFDC2626,
+                                          ).withValues(alpha: 0.5),
+                                          blurRadius: 8,
+                                          offset: Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      Icons.logout_rounded,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  title: Text(
+                                    'Logout',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                      fontFamily: 'Roboto',
+                                      shadows: [
+                                        Shadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.3,
+                                          ),
+                                          blurRadius: 5,
+                                          offset: Offset(0, 1),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () => logout(context),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Footer
+                Container(
+                  padding: EdgeInsets.all(20),
+                  child: FutureBuilder<PackageInfo>(
+                    future: PackageInfo.fromPlatform(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return SizedBox();
+                      final version = snapshot.data!.version;
+                      final buildNumber = snapshot.data!.buildNumber;
+                      return Column(
+                        children: [
+                          Divider(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            thickness: 1,
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Version $version+$buildNumber',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.6),
+                              fontSize: 12,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: AnimatedBuilder(
+        animation: _backgroundAnimation,
+        builder: (context, child) {
+          return Container(
+            height: height,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.lerp(
+                    Color(0xFF1A1A2E),
+                    Color(0xFF16213E),
+                    _backgroundAnimation.value,
+                  )!,
+                  Color.lerp(
+                    Color(0xFF0F3460),
+                    Color(0xFF533483),
+                    _backgroundAnimation.value,
+                  )!,
+                  Color.lerp(
+                    Color(0xFF16213E),
+                    Color(0xFF0F0F0F),
+                    _backgroundAnimation.value,
+                  )!,
+                ],
+              ),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(),
+                  height: height * 0.25,
+                  width: width,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Header - Menu & Search button (simplified)
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 30,
+                          left: 15,
+                          right: 15,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Menu Button
+                            Builder(
+                              builder: (context) => InkWell(
+                                onTap: () {
+                                  Scaffold.of(context).openDrawer();
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: EdgeInsets.all(4.5),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Icon(
+                                    Icons.menu_rounded,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            // Search Button (Trigger dialog)
+                            InkWell(
+                              onTap: () => showFeatureNotAvailableDialog(context),
+                              borderRadius: BorderRadius.circular(12),
+                              child: Container(
+                                padding: EdgeInsets.all(4.5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.2),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.search,
+                                  color: Colors.white,
+                                  size: 24,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Title
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 35,
+                          left: 15,
+                          right: 15,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Manajemen Pengguna",
+                            style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 1,
+                              fontFamily: 'Roboto',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Main Content Container
+                Expanded(
+                  child: Container(
+                    width: width,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.fromRGBO(255, 255, 255, 0.3),
+                          Color.fromRGBO(248, 250, 252, 0.1),
+                          Color.fromRGBO(241, 245, 249, 0.1),
+                          Color.fromRGBO(255, 255, 255, 0.3),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
+                      ),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(height: 20),
+                        Expanded(
+                          child: Container(
+                            height: height * 0.75,
+                            margin: EdgeInsets.symmetric(horizontal: 15),
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 15),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(
+                                        sigmaX: 10,
+                                        sigmaY: 10,
+                                      ),
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 15,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: isRefreshing
+                                                ? [
+                                                    Colors.white.withValues(
+                                                      alpha: 0.2,
+                                                    ),
+                                                    Colors.white.withValues(
+                                                      alpha: 0.05,
+                                                    ),
+                                                  ]
+                                                : [
+                                                    Color(
+                                                      0xFF10B981,
+                                                    ).withValues(alpha: 0.3),
+                                                    Color(
+                                                      0xFF059669,
+                                                    ).withValues(alpha: 0.2),
+                                                  ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                          border: Border.all(
+                                            color: isRefreshing
+                                                ? Colors.white.withValues(
+                                                    alpha: 0.3,
+                                                  )
+                                                : Color(
+                                                    0xFF10B981,
+                                                  ).withValues(alpha: 0.3),
+                                            width: 1.5,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                              blurRadius: 3,
+                                              offset: Offset(0, -1),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            // Info text
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    'Data Akun Pengguna',
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 2),
+                                                  Text(
+                                                    isRefreshing
+                                                        ? 'Sedang memperbarui data...'
+                                                        : 'Tarik ke bawah untuk refresh',
+                                                    style: TextStyle(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                      fontSize: 12,
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            // Sync button
+                                            InkWell(
+                                              onTap: isRefreshing
+                                                  ? null
+                                                  : _refreshData,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: Container(
+                                                padding: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                    colors: isRefreshing
+                                                        ? [
+                                                            Color(
+                                                              0xFF6B7280,
+                                                            ).withValues(
+                                                              alpha: 0.3,
+                                                            ),
+                                                            Color(
+                                                              0xFF4B5563,
+                                                            ).withValues(
+                                                              alpha: 0.2,
+                                                            ),
+                                                          ]
+                                                        : [
+                                                            Color(
+                                                              0xFF10B981,
+                                                            ).withValues(
+                                                              alpha: 0.3,
+                                                            ),
+                                                            Color(
+                                                              0xFF059669,
+                                                            ).withValues(
+                                                              alpha: 0.2,
+                                                            ),
+                                                          ],
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  border: Border.all(
+                                                    color: isRefreshing
+                                                        ? Color(
+                                                            0xFF6B7280,
+                                                          ).withValues(
+                                                            alpha: 0.4,
+                                                          )
+                                                        : Color(
+                                                            0xFF10B981,
+                                                          ).withValues(
+                                                            alpha: 0.4,
+                                                          ),
+                                                    width: 1.5,
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: isRefreshing
+                                                          ? Color(
+                                                              0xFF6B7280,
+                                                            ).withValues(
+                                                              alpha: 0.2,
+                                                            )
+                                                          : Color(
+                                                              0xFF10B981,
+                                                            ).withValues(
+                                                              alpha: 0.2,
+                                                            ),
+                                                      blurRadius: 8,
+                                                      offset: Offset(0, 3),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: isRefreshing
+                                                    ? SizedBox(
+                                                        width: 20,
+                                                        height: 20,
+                                                        child: CircularProgressIndicator(
+                                                          strokeWidth: 2,
+                                                          valueColor:
+                                                              AlwaysStoppedAnimation<
+                                                                Color
+                                                              >(
+                                                                Colors.white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.8,
+                                                                    ),
+                                                              ),
+                                                        ),
+                                                      )
+                                                    : Icon(
+                                                        Icons.sync_rounded,
+                                                        color: Colors.white,
+                                                        size: 20,
+                                                      ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                // ListView dengan RefreshIndicator
+                                Expanded(
+                                  child: RefreshIndicator(
+                                    onRefresh: _refreshData,
+                                    backgroundColor: Colors.white.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    color: Color(0xFF10B981),
+                                    strokeWidth: 3,
+                                    child: ListView.builder(
+                                      physics: AlwaysScrollableScrollPhysics(
+                                        parent: BouncingScrollPhysics(),
+                                      ),
+                                      itemCount: _listUser.length,
+                                      padding: EdgeInsets.only(bottom: 20),
+                                      itemBuilder: (context, index) {
+                                        final user = _listUser[index];
+
+                                        return Container(
+                                          margin: EdgeInsets.only(bottom: 15),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              20,
+                                            ),
+                                            child: BackdropFilter(
+                                              filter: ImageFilter.blur(
+                                                sigmaX: 15,
+                                                sigmaY: 15,
+                                              ),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                    colors: [
+                                                      Colors.white.withValues(
+                                                        alpha: 0.25,
+                                                      ),
+                                                      Colors.white.withValues(
+                                                        alpha: 0.1,
+                                                      ),
+                                                      Colors.white.withValues(
+                                                        alpha: 0.05,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  border: Border.all(
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.3),
+                                                    width: 1.5,
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.black
+                                                          .withValues(
+                                                            alpha: 0.1,
+                                                          ),
+                                                      blurRadius: 20,
+                                                      offset: Offset(0, 10),
+                                                    ),
+                                                    BoxShadow(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.1,
+                                                          ),
+                                                      blurRadius: 5,
+                                                      offset: Offset(0, -2),
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    actionAdminManagementUser(
+                                                      index,
+                                                      context,
+                                                      _listUser,
+                                                      (i) => editUserManagement(
+                                                        context,
+                                                        index,
+                                                        _listUser,
+                                                        refreshState,
+                                                      ),
+                                                      (i) =>
+                                                          viewDetailUserManagement(
+                                                            context,
+                                                            index,
+                                                            _listUser,
+                                                          ),
+                                                      (i) => hapusUserDesktop(
+                                                        context,
+                                                        index,
+                                                        _listUser,
+                                                        actionSetState,
+                                                        refreshState
+                                                      ),
+                                                    );
+                                                    print(
+                                                      'Surat dipilih: ${user?.name}',
+                                                    );
+                                                  },
+                                                  onLongPress: () {
+                                                    actionAdminManagementUser(
+                                                      index,
+                                                      context,
+                                                      _listUser,
+                                                      (i) => editUserManagement(
+                                                        context,
+                                                        index,
+                                                        _listUser,
+                                                        refreshState,
+                                                      ),
+                                                      (i) =>
+                                                          viewDetailUserManagement(
+                                                            context,
+                                                            index,
+                                                            _listUser,
+                                                          ),
+                                                      (i) => hapusUserDesktop(
+                                                        context,
+                                                        index,
+                                                        _listUser,
+                                                        actionSetState,
+                                                        refreshState
+                                                      ),
+                                                    );
+                                                    print(
+                                                      'Surat dipilih: ${user?.name}',
+                                                    );
+                                                  },
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(20),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            // nama
+                                                            Text(
+                                                              user?.name == null
+                                                                  ? 'Data Kosong!'
+                                                                  : user!.name,
+                                                              style: const TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontFamily:
+                                                                    'Roboto',
+                                                                height: 1.3,
+                                                              ),
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+
+                                                            const SizedBox(
+                                                              height: 8,
+                                                            ),
+
+                                                            // email
+                                                            Text(
+                                                              user?.email ==
+                                                                      null
+                                                                  ? 'Data Kosong!'
+                                                                  : user!.email,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.8,
+                                                                    ),
+                                                                fontSize: 14,
+                                                                fontFamily:
+                                                                    'Roboto',
+                                                                height: 1.4,
+                                                              ),
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+
+                                                            const SizedBox(
+                                                              height: 15,
+                                                            ),
+
+                                                            // bidang
+                                                            Text(
+                                                              user?.bidang ==
+                                                                      null
+                                                                  ? 'Data Kosong!'
+                                                                  : user!
+                                                                        .bidang,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.8,
+                                                                    ),
+                                                                fontSize: 14,
+                                                                fontFamily:
+                                                                    'Roboto',
+                                                                height: 1.4,
+                                                              ),
+                                                              maxLines: 2,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+
+                                                            const SizedBox(
+                                                              height: 15,
+                                                            ),
+
+                                                            // Footer: role (kiri) + more_vert (kanan)
+                                                            Row(
+                                                              children: [
+                                                                // kiri (role + icon) ngisi sisa space
+                                                                Expanded(
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Container(
+                                                                        padding:
+                                                                            const EdgeInsets.all(
+                                                                              6,
+                                                                            ),
+                                                                        decoration: BoxDecoration(
+                                                                          gradient: LinearGradient(
+                                                                            colors: [
+                                                                              const Color(
+                                                                                0xFF4F46E5,
+                                                                              ).withValues(
+                                                                                alpha: 0.3,
+                                                                              ),
+                                                                              const Color(
+                                                                                0xFF7C3AED,
+                                                                              ).withValues(
+                                                                                alpha: 0.2,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(
+                                                                                8,
+                                                                              ),
+                                                                        ),
+                                                                        child: const Icon(
+                                                                          Icons
+                                                                              .person_outline_rounded,
+                                                                          color:
+                                                                              Colors.white,
+                                                                          size:
+                                                                              14,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            8,
+                                                                      ),
+                                                                      Expanded(
+                                                                        child: Text(
+                                                                          user?.role ==
+                                                                                  null
+                                                                              ? 'Tidak Memiliki Tujuan Akhir'
+                                                                              : user!.role,
+                                                                          style: TextStyle(
+                                                                            color: Colors.white.withValues(
+                                                                              alpha: 0.7,
+                                                                            ),
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontFamily:
+                                                                                'Roboto',
+                                                                          ),
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+
+                                                                const SizedBox(
+                                                                  width: 12,
+                                                                ),
+
+                                                                // kanan (more icon) ukuran fix
+                                                                Container(
+                                                                  padding:
+                                                                      const EdgeInsets.all(
+                                                                        6,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
+                                                                    gradient: LinearGradient(
+                                                                      colors: [
+                                                                        Colors.white.withValues(
+                                                                          alpha:
+                                                                              0.2,
+                                                                        ),
+                                                                        Colors.white.withValues(
+                                                                          alpha:
+                                                                              0.1,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          8,
+                                                                        ),
+                                                                  ),
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .more_vert_rounded,
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.8,
+                                                                        ),
+                                                                    size: 14,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(bottom: 10), // Jarak dari bawah
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF10B981), Color(0xFF059669), Color(0xFF047857)],
+          ),
+          borderRadius: BorderRadius.circular(25),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.2),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xFF10B981).withValues(alpha: 0.4),
+              blurRadius: 20,
+              offset: Offset(0, 10),
+            ),
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 15,
+              offset: Offset(0, 5),
+            ),
+            // Inner glow effect sesuai theme lu
+            BoxShadow(
+              color: Colors.white.withValues(alpha: 0.1),
+              blurRadius: 3,
+              offset: Offset(0, -1),
+            ),
+          ],
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            // Option 1: Bikin method handle sendiri
+            tambahUserPhone(context, (newUser) {}, refreshState);
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          // Ini yang ngilangin efek gelap pas hover/tap
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightElevation: 1,
+          icon: Container(
+            padding: EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(Icons.add_rounded, color: Colors.white, size: 20),
+          ),
+          label: Text(
+            'Tambah User',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Roboto',
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
+  }
+}
