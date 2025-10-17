@@ -1,122 +1,141 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:smart_doku/pages/auth/login_page.dart';
+import 'package:smart_doku/pages/forms/admins/desktop/tables_page_admin.dart';
+import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
+import 'package:smart_doku/pages/splashs/splashscreen_before_page.dart';
+import 'package:smart_doku/pages/views/admins/desktop/home_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/admins/desktop/manajemen_pengguna_page.dart';
+import 'package:smart_doku/pages/views/admins/desktop/profile_admin_page.dart';
+import 'package:smart_doku/pages/views/admins/desktop/setting_page.dart';
+import 'package:smart_doku/pages/views/admins/desktop/surat_disposisi_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/admins/desktop/surat_keluar_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/admins/desktop/surat_permohonan_page_admin_desktop.dart';
+import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
+import 'package:smart_doku/pages/views/admins/phones/management_user_phones.dart';
+import 'package:smart_doku/pages/views/admins/phones/surat_disposisi_page_admin.dart';
+import 'package:smart_doku/pages/views/admins/phones/surat_keluar_page_admin.dart';
+import 'package:smart_doku/pages/views/admins/phones/surat_permohonan_page_admin.dart';
+import 'package:smart_doku/pages/views/users/desktop/home_page_desktop.dart';
+import 'package:smart_doku/pages/views/users/desktop/profile_user_page.dart';
+import 'package:smart_doku/pages/views/users/desktop/surat_disposisi_page_desktop.dart';
+import 'package:smart_doku/pages/views/users/desktop/surat_keluar_page_desktop.dart';
+import 'package:smart_doku/pages/views/users/desktop/surat_permohonan_page_desktop.dart';
+import 'package:smart_doku/pages/views/users/phones/home_page.dart';
+import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
+import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
+import 'package:smart_doku/pages/views/users/phones/surat_permohonan_page.dart';
+import 'package:smart_doku/services/settings.dart';
+import 'package:smart_doku/test.dart';
+import 'dart:io' show Platform;
+import 'package:window_size/window_size.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (kIsWeb) {
+    // Jika di Web, jangan jalankan kode desktop seperti window_size
+    print("Aplikasi dijalankan di Web.");
+  } else if (Platform.isWindows ||
+      Platform.isLinux ||
+      Platform.isMacOS ||
+      Platform.isFuchsia) {
+    // Hanya di platform desktop yang mendukung window_size
+    setWindowTitle('SmartDoku');
+    var windowInfo = await getWindowInfo();
+    var size = windowInfo.frame.size;
+    setWindowMinSize(
+      Size(size.width * 0.3125, size.height * 0.8333),
+    ); // Minimum window size
+    setWindowMaxSize(
+      Size(size.width * 2.0, size.height * 1.5),
+    ); // Maximum window size
+  }
+
+  await dotenv.load(fileName: ".config/.env");
+
+  await AppSettings().init(); // init prefs global
+
+  // For Debug
+  final suf1 = AppSettings().part1;
+  final suf2 = AppSettings().part3;
+  print('[DEBUG] :: [STATE] : Suffix code = $suf1/$suf2');
+
+  runApp(const SmartDoku());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class SmartDoku extends StatelessWidget {
+  const SmartDoku({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'SmartDoku',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        scrollbarTheme: ScrollbarThemeData(
+          thumbColor: WidgetStateProperty.all(Colors.white.withValues(alpha: 0.6)),
+          trackColor: WidgetStateProperty.all(Colors.white.withValues(alpha: 0.1)), 
+          trackBorderColor: WidgetStateProperty.all(Colors.transparent),
+          thickness: WidgetStateProperty.all(8  ), 
+          radius: Radius.circular(8),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('id', 'ID'), // Indonesia
+        Locale('en', 'US'), // English
+      ],
+      home: LoginPage(),
+      debugShowCheckedModeBanner: false,
+      routes: {
+        // users phone
+        '/users/phone/surat_permohonan': (context) => PermohonanLetterPage(),
+        '/users/phone/surat_keluar': (context) => OutgoingLetterPage(),
+        '/users/phone/surat_disposisi': (context) => DispositionLetterPage(),
+        '/forms/phone/users/detail_page': (context) => DetailPage(),
+
+        // users desktop
+        '/user/desktop/home_page_desktop': (context) => UserDashboard(),
+        '/user/desktop/surat_permohonan_page_desktop': (context) => PermohonanLettersPageDesktop(),
+        '/user/desktop/surat_keluar_page_desktop': (context) => OutgoingLetterPageDesktop(),
+        '/user/desktop/surat_disposisi_page_desktop': (context) =>
+            DispositionLetterUserDesktop(),
+            '/user/desktop/profile_user_page' : (context) => UserProfile(),
+
+        // admins and superadmins phone
+        '/admin/phones/home_page_admin_phones': (context) =>
+            HomePageAdminPhones(),
+        '/admin/phones/surat_permohonan_page_admin': (context) =>
+            PermohonanLetterPageAdmin(),
+        '/admin/phones/surat_keluar_page_admin': (context) =>
+            OutgoingLetterPageAdmin(),
+        '/admin/phones/surat_disposisi_page_admin': (context) =>
+            DispositionLetterPageAdmin(),
+        '/admin/phones/management_user_phones': (context) =>
+            ManagementUserPhones(),
+
+        // admins and superadmins desktop
+        '/admin/desktop/home_page_admin_desktop': (context) => AdminDashboard(),
+        '/admin/desktop/surat_permohonan_page_admin_desktop': (context) =>
+            PermohonanLettersPageAdminDesktop(),
+        '/admin/desktop/surat_keluar_page_admin_desktop': (context) =>
+            OutgoingLetterPageAdminDesktop(),
+        '/admin/desktop/surat_disposisi_page_admin_desktop': (context) =>
+            DispositionLetterAdminDesktop(),
+        '/admin/desktop/manajemen_pengguna_page': (context) =>
+            UsersManagementPage(),
+        '/admin/desktop/setting_page': (context) => SettingPage(),
+        '/admin/desktop/profile_admin_page' : (context) => AdminProfile(),
+
+        // testing
+        '/forms/admins/desktop/tables_page_admin' : (context) => TablesPageAdmin()
+      },
     );
   }
 }
