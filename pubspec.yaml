@@ -83,6 +83,8 @@ flutter:
     - images/Icon_App.png
     - images/LogoKabupatenMalang.png
     - images/smartdoku_logo.jpeg
+    - images/logoApp.jpg
+    - images/logoApps.png
 
   fonts:
     - family: TimesNewRoman

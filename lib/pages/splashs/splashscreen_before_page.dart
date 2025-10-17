@@ -195,139 +195,18 @@ class _SplashScreenState extends State<SplashScreen>
                     opacity: _textFadeAnimation,
                     child: Column(
                       children: [
-                        AnimatedBuilder(
-                          animation: _shimmerAnimation,
-                          builder: (context, child) {
-                            return Container(
-                              width: 140,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Colors.white.withValues(alpha: 0.25),
-                                    Colors.white.withValues(alpha: 0.1),
-                                  ],
-                                ),
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  width: 1.5,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.1),
-                                    blurRadius: 20,
-                                    offset: Offset(0, 8),
-                                  ),
-                                  BoxShadow(
-                                    color: Colors.white.withValues(alpha: 0.1),
-                                    blurRadius: 10,
-                                    offset: Offset(-5, -5),
-                                  ),
-                                ],
+                        Container(
+                          child: Center(
+                            child: Container(
+                              width: 180,
+                              height: 180,
+                              child: Image.asset(
+                                'images/logoApps.png',
+                                fit: BoxFit.contain,
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(25),
-                                child: Stack(
-                                  children: [
-                                    BackdropFilter(
-                                      filter: ImageFilter.blur(
-                                        sigmaX: 10,
-                                        sigmaY: 10,
-                                      ),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [
-                                              Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              Colors.white.withValues(
-                                                alpha: 0.1,
-                                              ),
-                                            ],
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black.withValues(
-                                                alpha: 0.5,
-                                              ),
-                                              blurRadius: 30,
-                                              offset: Offset(5, 10),
-                                            ),
-                                            BoxShadow(
-                                              color: Colors.white.withValues(
-                                                alpha: 0.3,
-                                              ),
-                                              blurRadius: 15,
-                                              offset: Offset(-8, -4),
-                                            ),
-                                          ],
-                                        ),
-
-                                        child: Center(
-                                          child: Container(
-                                            width: 180,
-                                            height: 180,
-                                            child: Image.asset(
-                                              'images/Icon_App.png',
-                                              fit: BoxFit.contain,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned.fill(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(25),
-                                        child: Transform.translate(
-                                          offset: Offset(
-                                            _shimmerAnimation.value * 140,
-                                            0,
-                                          ),
-                                          child: Container(
-                                            width: 30,
-                                            decoration: BoxDecoration(
-                                              gradient: LinearGradient(
-                                                begin: Alignment.centerLeft,
-                                                end: Alignment.centerRight,
-                                                colors: [
-                                                  Colors.transparent,
-                                                  Colors.white.withValues(
-                                                    alpha: 0.3,
-                                                  ),
-                                                  Colors.white.withValues(
-                                                    alpha: 0.5,
-                                                  ),
-                                                  Colors.white.withValues(
-                                                    alpha: 0.3,
-                                                  ),
-                                                  Colors.transparent,
-                                                ],
-                                                stops: [
-                                                  0.0,
-                                                  0.3,
-                                                  0.5,
-                                                  0.7,
-                                                  1.0,
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
-                        SizedBox(height: 20),
                         Text(
                           'SmartDoku',
                           style: TextStyle(

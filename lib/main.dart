@@ -91,7 +91,7 @@ class SmartDoku extends StatelessWidget {
         Locale('id', 'ID'), // Indonesia
         Locale('en', 'US'), // English
       ],
-      home: LoginPage(),
+      home: SplashScreen(),
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone

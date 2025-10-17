@@ -8940,8 +8940,8 @@ void showDetailActionMenu(
                     // Download Button
                     buildActionMenuItem(
                       icon: Icons.download_rounded,
-                      title: 'Download PDF',
-                      subtitle: 'Unduh dokumen dalam format PDF',
+                      title: 'Download Excel',
+                      subtitle: 'Unduh dokumen dalam format Excel',
                       color: Color(0xFF10B981),
                       onTap: () {
                         Navigator.pop(context);
@@ -10806,13 +10806,13 @@ void showPrintDocumentFormat(BuildContext context) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      // PDF Button dengan custom icon
+                      // Excel Button dengan custom icon
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            // Handle Excel selection
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -10832,7 +10832,7 @@ void showPrintDocumentFormat(BuildContext context) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -11592,7 +11592,7 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      // PDF Button dengan custom icon
+                      // Excel Button dengan custom icon
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -11619,16 +11619,14 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFDC2626),
+                            backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                             elevation: 8,
-                            shadowColor: Color(
-                              0xFFDC2626,
-                            ).withValues(alpha: 0.4),
+                            shadowColor: Colors.green.withValues(alpha: 0.4),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -11636,7 +11634,7 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -11794,7 +11792,7 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      // PDF Button dengan custom icon
+                      // Excel Button dengan custom icon
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -11802,12 +11800,12 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
                             final dirPath = await _suratMasukService
                                 .getDefaultDownloadPath();
                             final savePath =
-                                '$dirPath/disposisi_$nomor_urut.xlsx';
+                                "$dirPath/disposisi_$nomor_urut.xlsx";
                             final data = await _suratMasukService
                                 .downloadDisposisi(
-                                  (nomor_urut == null
-                                      ? 0
-                                      : int.parse(nomor_urut)),
+                                  (nomor_urut != null
+                                      ? int.parse(nomor_urut)
+                                      : 0),
                                   savePath,
                                 );
 
@@ -11821,16 +11819,14 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFDC2626),
+                            backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                             elevation: 8,
-                            shadowColor: Color(
-                              0xFFDC2626,
-                            ).withValues(alpha: 0.4),
+                            shadowColor: Colors.green.withValues(alpha: 0.4),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -11838,7 +11834,7 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -12166,13 +12162,13 @@ void showShareDocumentFormat(BuildContext context) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      // PDF Button dengan custom icon
+                      // Excel Button dengan custom icon
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            // Handle Excel selection
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -12192,7 +12188,7 @@ void showShareDocumentFormat(BuildContext context) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,

@@ -1317,7 +1317,7 @@ Widget buildHeaderUserManagementCard(UserModel? data) {
                       ],
                     ),
                     child: Icon(
-                      Icons.description_rounded,
+                      Icons.person,
                       color: Colors.white,
                       size: 24,
                     ),
