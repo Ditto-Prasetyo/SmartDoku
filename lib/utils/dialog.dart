@@ -4,6 +4,7 @@ import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:file_picker/file_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/pages/forms/admins/phones/forms_dialog.dart';
 import 'package:smart_doku/services/service.dart';
@@ -6091,11 +6092,276 @@ void showEditSuratDialog(
 
                               SizedBox(height: 20),
 
-                              buildInputField(
-                                'Link Scan',
-                                linkscanController,
-                                Icons.link_rounded,
-                                maxLines: 1,
+                              StatefulBuilder(
+                                builder: (context, setStateLocal) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Link Scan (PDF)',
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.9,
+                                          ),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                              Colors.white.withValues(
+                                                alpha: 0.05,
+                                              ),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              try {
+                                                FilePickerResult? result =
+                                                    await FilePicker.platform
+                                                        .pickFiles(
+                                                          type: FileType.custom,
+                                                          allowedExtensions: [
+                                                            'pdf',
+                                                          ],
+                                                          allowMultiple: false,
+                                                        );
+
+                                                if (result != null &&
+                                                    result.files.isNotEmpty) {
+                                                  PlatformFile file =
+                                                      result.files.first;
+
+                                                  // Update controller dengan path file baru
+                                                  linkscanController.text =
+                                                      file.path ?? '';
+
+                                                  setStateLocal(
+                                                    () {},
+                                                  ); // Update UI lokal
+
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'File berhasil dipilih: ${file.name}',
+                                                      ),
+                                                      backgroundColor: Color(
+                                                        0xFF10B981,
+                                                      ),
+                                                      behavior: SnackBarBehavior
+                                                          .floating,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Gagal memilih file: $e',
+                                                    ),
+                                                    backgroundColor: Colors.red,
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.all(15),
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    padding: EdgeInsets.all(10),
+                                                    decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                        colors: [
+                                                          Color(
+                                                            0xFF4F46E5,
+                                                          ).withValues(
+                                                            alpha: 0.3,
+                                                          ),
+                                                          Color(
+                                                            0xFF7C3AED,
+                                                          ).withValues(
+                                                            alpha: 0.2,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                    child: Icon(
+                                                      linkscanController
+                                                              .text
+                                                              .isEmpty
+                                                          ? Icons
+                                                                .upload_file_rounded
+                                                          : Icons
+                                                                .insert_drive_file_rounded,
+                                                      color: Colors.white,
+                                                      size: 24,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 15),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          linkscanController
+                                                                  .text
+                                                                  .isEmpty
+                                                              ? 'Pilih File PDF Baru'
+                                                              : 'File Terpilih',
+                                                          style: TextStyle(
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.9,
+                                                                ),
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .none,
+                                                          ),
+                                                        ),
+                                                        if (linkscanController
+                                                            .text
+                                                            .isNotEmpty) ...[
+                                                          SizedBox(height: 4),
+                                                          Text(
+                                                            linkscanController
+                                                                .text
+                                                                .split('/')
+                                                                .last
+                                                                .split('\\')
+                                                                .last,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.6,
+                                                                  ),
+                                                              fontSize: 12,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  if (linkscanController
+                                                      .text
+                                                      .isNotEmpty)
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        // Button untuk clear file
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            linkscanController
+                                                                .clear();
+                                                            setStateLocal(
+                                                              () {},
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                  8,
+                                                                ),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .red
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .close_rounded,
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.8,
+                                                                  ),
+                                                              size: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                      ],
+                                                    ),
+                                                  Icon(
+                                                    Icons.chevron_right_rounded,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.5),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
 
                               SizedBox(height: 20),
@@ -7082,10 +7348,276 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 30),
 
-                              buildInputField(
-                                "Dok Final",
-                                dokfinalController,
-                                Icons.document_scanner,
+                              StatefulBuilder(
+                                builder: (context, setStateLocal) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Link Scan (PDF)',
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.9,
+                                          ),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                              Colors.white.withValues(
+                                                alpha: 0.05,
+                                              ),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              try {
+                                                FilePickerResult? result =
+                                                    await FilePicker.platform
+                                                        .pickFiles(
+                                                          type: FileType.custom,
+                                                          allowedExtensions: [
+                                                            'pdf',
+                                                          ],
+                                                          allowMultiple: false,
+                                                        );
+
+                                                if (result != null &&
+                                                    result.files.isNotEmpty) {
+                                                  PlatformFile file =
+                                                      result.files.first;
+
+                                                  // Update controller dengan path file baru
+                                                  dokfinalController.text =
+                                                      file.path ?? '';
+
+                                                  setStateLocal(
+                                                    () {},
+                                                  ); // Update UI lokal
+
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'File berhasil dipilih: ${file.name}',
+                                                      ),
+                                                      backgroundColor: Color(
+                                                        0xFF10B981,
+                                                      ),
+                                                      behavior: SnackBarBehavior
+                                                          .floating,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Gagal memilih file: $e',
+                                                    ),
+                                                    backgroundColor: Colors.red,
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.all(15),
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    padding: EdgeInsets.all(10),
+                                                    decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                        colors: [
+                                                          Color(
+                                                            0xFF4F46E5,
+                                                          ).withValues(
+                                                            alpha: 0.3,
+                                                          ),
+                                                          Color(
+                                                            0xFF7C3AED,
+                                                          ).withValues(
+                                                            alpha: 0.2,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                    child: Icon(
+                                                      dokfinalController
+                                                              .text
+                                                              .isEmpty
+                                                          ? Icons
+                                                                .upload_file_rounded
+                                                          : Icons
+                                                                .insert_drive_file_rounded,
+                                                      color: Colors.white,
+                                                      size: 24,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 15),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          dokfinalController
+                                                                  .text
+                                                                  .isEmpty
+                                                              ? 'Pilih File PDF Baru'
+                                                              : 'File Terpilih',
+                                                          style: TextStyle(
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.9,
+                                                                ),
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .none,
+                                                          ),
+                                                        ),
+                                                        if (dokfinalController
+                                                            .text
+                                                            .isNotEmpty) ...[
+                                                          SizedBox(height: 4),
+                                                          Text(
+                                                            dokfinalController
+                                                                .text
+                                                                .split('/')
+                                                                .last
+                                                                .split('\\')
+                                                                .last,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.6,
+                                                                  ),
+                                                              fontSize: 12,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  if (dokfinalController
+                                                      .text
+                                                      .isNotEmpty)
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        // Button untuk clear file
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            dokfinalController
+                                                                .clear();
+                                                            setStateLocal(
+                                                              () {},
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                  8,
+                                                                ),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .red
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .close_rounded,
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.8,
+                                                                  ),
+                                                              size: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                      ],
+                                                    ),
+                                                  Icon(
+                                                    Icons.chevron_right_rounded,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.5),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
 
                               SizedBox(height: 30),
@@ -9747,11 +10279,11 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                       ),
                       SizedBox(height: 20),
 
-                      // Print Button
+                      // upload Button
                       buildActionMenuItem(
                         icon: Icons.print,
                         title: 'Print Surat Disposisi',
-                        subtitle: 'Edit Nomor Urut untuk mengubah informasi',
+                        subtitle: 'print surat yang diinginkan',
                         color: Color(0xFF3B82F6),
                         onTap: () {
                           Navigator.pop(context);
@@ -11610,7 +12142,7 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
                                 );
 
                             Navigator.pop(context);
-                            
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Dokumen berhasil didownload!'),
@@ -11810,7 +12342,7 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
                                 );
 
                             Navigator.pop(context);
-                            
+
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Dokumen berhasil didownload!'),

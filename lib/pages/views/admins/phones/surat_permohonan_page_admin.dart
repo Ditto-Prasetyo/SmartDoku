@@ -989,28 +989,28 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                                     );
                                                   },
                                                   onLongPress: () {
-                                                    // actionAdmin(
-                                                    //   index,
-                                                    //   context,
-                                                    //   _listSurat,
-                                                    //   (i) => editDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     refreshEditState,
-                                                    //   ),
-                                                    //   (i) => viewDetailAdmin(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //   ),
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
+                                                    actionAdmin(
+                                                      index,
+                                                      context,
+                                                      _listSurat,
+                                                      (i) => editDokumenAdmin(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                        refreshEditState,
+                                                      ),
+                                                      (i) => viewDetailAdmin(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                      ),
+                                                      (i) => hapusDokumen(
+                                                        context,
+                                                        index,
+                                                        _listSurat,
+                                                        actionSetState,
+                                                      ),
+                                                    );
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
