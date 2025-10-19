@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -106,7 +107,6 @@ class SuratMasuk {
   }
 }
 
-
   Future<SuratMasukModel?> addSurat({
     String? suratDari,
     DateTime? tanggalDiterima,
@@ -162,15 +162,15 @@ class SuratMasuk {
         'link_scan': linkScan,
         'disp_1': disp1Kadin?.toIso8601String(),
         'disp_2': disp2Sekdin?.toIso8601String(),
-        'disp_3': disp3Kabid?.toIso8601String(),
-        'disp_4': disp4Kasubag?.toIso8601String(),
+        'disp_3': disp3Kabid?.toIso8601String() ?? null,
+        'disp_4': disp4Kasubag?.toIso8601String() ?? null,
         'disp_1_notes': disp1Notes,
         'disp_2_notes': disp2Notes,
         'disp_3_notes': disp3Notes,
         'disp_4_notes': disp4Notes,
         'disp_lanjut': dispLanjut,
-        'tindak_lanjut_1': tindakLanjut1?.toIso8601String(),
-        'tindak_lanjut_2': tindakLanjut2?.toIso8601String(),
+        'tindak_lanjut_1': tindakLanjut1?.toIso8601String() ?? null,
+        'tindak_lanjut_2': tindakLanjut2?.toIso8601String() ?? null,
         'tl_notes_1': tl1Notes,
         'tl_notes_2': tl2Notes,
         'status': status,
@@ -188,7 +188,9 @@ class SuratMasuk {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return SuratMasukModel.fromJson(data);
+        print("[DEBUG] :: [RES] :");
+        print(data);
+        return SuratMasukModel.fromJson(data['data']);
       } else {
         print('Gagal tambah surat: ${response.body}');
         return null;
@@ -312,7 +314,7 @@ class SuratMasuk {
         final data = jsonDecode(response.body);
         return SuratMasukModel.fromJson(data);
       } else {
-        print('Gagal tambah surat: ${response.body}');
+        print('Gagal delete surat: ${response.body}');
         return null;
       }
     } catch (e) {
@@ -322,17 +324,23 @@ class SuratMasuk {
   }
 
   // Files services
-  Future<bool> uploadFile(int nomor_urut, File file) async {
+  Future<bool> uploadFile(int nomor_urut, PlatformFile file) async {
     final token = await _authService.getToken();
 
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse('${dotenv.env['API_URL']}/upload/surat/masuk/$nomor_urut'),
+      Uri.parse('${dotenv.env['API_URL']}/upload/surat/masuk'),
     );
     request.headers['Authorization'] = 'Bearer $token';
-    request.files.add(await http.MultipartFile.fromPath('file', file.path));
+    request.files.add(await http.MultipartFile.fromPath('file', file.path!));
+    request.fields['nomor_urut'] = nomor_urut.toString();
 
     final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+
+    final decoded = jsonDecode(responseBody);
+    print("[DEBUG] -> [RES] :: $decoded");
+
     return response.statusCode == 200;
   }
 
@@ -350,10 +358,10 @@ class SuratMasuk {
     if (response.statusCode == 200) {
       final file = File(savePath);
       await file.writeAsBytes(response.bodyBytes);
-      print("Download berhasil: $savePath");
+      print("[DEBUG] -> [STATE] :: Download berhasil: $savePath");
       return file;
     } else {
-      print("Download gagal: ${response.body}");
+      print("[DEBUG] -> [STATE] ::  Download gagal: ${response.body}");
       return null;
     }
   }

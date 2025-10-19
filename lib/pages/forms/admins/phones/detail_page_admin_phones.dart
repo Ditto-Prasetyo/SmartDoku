@@ -613,7 +613,7 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildInfoCard([
                             buildDetailRow(
                               'No. Agenda',
-                              detailData.no_agenda == null ? 'Data Kosong!' : detailData.no_agenda,
+                              detailData.no_agenda == null ? 'Data Kosong!' : detailData.no_agenda!,
                             ),
                             buildDetailRow('No. Surat', detailData.no_surat == null ? 'Data Kosong!' : detailData.no_surat),
                             buildDetailRow('Hal', detailData.hal == null ? 'Data Kosong!' : detailData.hal),

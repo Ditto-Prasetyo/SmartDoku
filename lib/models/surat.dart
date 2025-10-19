@@ -5,7 +5,7 @@ class SuratMasukModel {
   final DateTime tanggal_diterima;
   final DateTime tanggal_surat;
   final String kode;
-  final String no_agenda;
+  final String? no_agenda;
   final String no_surat;  
   final String hal;
   final DateTime tanggal_waktu;

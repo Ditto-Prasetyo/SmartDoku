@@ -79,6 +79,8 @@ void showModernTambahSuratFormDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      bool _isLoading = false;
+
       return StatefulBuilder(
         builder: (context, setState) {
           final ScrollController _scrollController = ScrollController();
@@ -86,7 +88,16 @@ void showModernTambahSuratFormDialog(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
               child: Center(
-                child: Container(
+                child: _isLoading ?
+                  Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ) :
+                Container(
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                   height: MediaQuery.of(context).size.height * 0.9,
                   decoration: BoxDecoration(
@@ -1025,10 +1036,10 @@ void showModernTambahSuratFormDialog(
                                                                 }
 
                                                                 // Simpan path file ke controller
-                                                                // controllers['link_scan']!
-                                                                //         .text =
-                                                                //     file.path ??
-                                                                //     '';
+                                                                controllers['link_scan']!
+                                                                        .text =
+                                                                    file.path ??
+                                                                    '';
 
                                                                 setStateLocal(
                                                                   () {},
@@ -1254,140 +1265,75 @@ void showModernTambahSuratFormDialog(
                                         onPressed: () async {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            SuratMasukModel?
-                                            data = await _suratMasukService.addSurat(
-                                              suratDari:
-                                                  controllers['surat_dari']
-                                                      ?.text,
-                                              tanggalDiterima:
-                                                  controllers['diterima_tgl']
-                                                          ?.text
-                                                          .isNotEmpty ==
-                                                      true
-                                                  ? DateTime.tryParse(
-                                                      controllers['diterima_tgl']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              tanggalSurat:
-                                                  controllers['tgl_surat']
-                                                          ?.text
-                                                          .isNotEmpty ==
-                                                      true
-                                                  ? DateTime.tryParse(
-                                                      controllers['tgl_surat']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              kode: controllers['kode']?.text,
-                                              noSurat:
-                                                  controllers['no_surat']?.text,
-                                              hal: controllers['perihal']?.text,
-                                              tanggalWaktu:
-                                                  controllers['hari_tanggal']
-                                                          ?.text
-                                                          .isNotEmpty ==
-                                                      true
-                                                  ? DateTime.tryParse(
-                                                      controllers['hari_tanggal']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              tempat:
-                                                  controllers['tempat']?.text,
-                                              disposisi: selectedDisposisi,
-                                              index: controllers['index']?.text,
-                                              pengolah:
-                                                  controllers['pengolah']?.text,
-                                              sifat: controllers['sifat']?.text,
-                                              // linkScan: controllers['link_scan']?.text,
-                                              disp1Kadin:
-                                                  controllers['disposisi_kadin']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['disposisi_kadin']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              disp2Sekdin:
-                                                  controllers['disposisi_sekdin']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['disposisi_sekdin']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              disp3Kabid:
-                                                  controllers['disposisi_kabid']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['disposisi_kabid']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              disp4Kasubag:
-                                                  controllers['disposisi_kasubag']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['disposisi_kasubag']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              disp1Notes:
-                                                  controllers['notes_disposisi_kadin']
-                                                      ?.text,
-                                              disp2Notes:
-                                                  controllers['notes_disposisi_sekdin']
-                                                      ?.text,
-                                              disp3Notes:
-                                                  controllers['notes_disposisi_kabid']
-                                                      ?.text,
-                                              disp4Notes:
-                                                  controllers['notes_disposisi_kasubag']
-                                                      ?.text,
-                                              dispLanjut:
-                                                  controllers['disposisi_lanjutan']
-                                                      ?.text,
-                                              tindakLanjut1:
-                                                  controllers['tindak_lanjut_1']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['tindak_lanjut_1']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              tindakLanjut2:
-                                                  controllers['tindak_lanjut_2']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['tindak_lanjut_2']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              tl1Notes:
-                                                  controllers['notes_tl_1']
-                                                      ?.text,
-                                              tl2Notes:
-                                                  controllers['notes_tl_2']
-                                                      ?.text,
-                                              status:
-                                                  controllers['status']?.text,
-                                            );
 
-                                            // Call the callback function
-                                            onSuratAdded(data);
+                                            setState(() => _isLoading = true);
 
-                                            int nomor_urut = data?.nomor_urut ?? 0;
+                                            try {
+                                              SuratMasukModel? data = await _suratMasukService.addSurat(
+                                                suratDari: controllers['surat_dari']?.text,
+                                                tanggalDiterima: controllers['diterima_tgl']?.text.isNotEmpty == true
+                                                    ? DateTime.tryParse(controllers['diterima_tgl']!.text)
+                                                    : null,
+                                                tanggalSurat: controllers['tgl_surat']?.text.isNotEmpty == true
+                                                    ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                                    : null,
+                                                kode: controllers['kode']?.text,
+                                                noSurat: controllers['no_surat']?.text,
+                                                hal: controllers['perihal']?.text,
+                                                tanggalWaktu: controllers['hari_tanggal']?.text.isNotEmpty == true
+                                                    ? DateTime.tryParse(controllers['hari_tanggal']!.text)
+                                                    : null,
+                                                tempat: controllers['tempat']?.text,
+                                                disposisi: selectedDisposisi,
+                                                index: controllers['index']?.text,
+                                                pengolah: controllers['pengolah']?.text,
+                                                sifat: controllers['sifat']?.text,
+                                                // linkScan: controllers['link_scan']?.text,
+                                                disp1Kadin: controllers['disposisi_kadin']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['disposisi_kadin']!.text)
+                                                    : null,
+                                                disp2Sekdin: controllers['disposisi_sekdin']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['disposisi_sekdin']!.text)
+                                                    : null,
+                                                disp3Kabid: controllers['disposisi_kabid']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['disposisi_kabid']!.text)
+                                                    : null,
+                                                disp4Kasubag: controllers['disposisi_kasubag']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['disposisi_kasubag']!.text)
+                                                    : null,
+                                                disp1Notes: controllers['notes_disposisi_kadin']?.text,
+                                                disp2Notes: controllers['notes_disposisi_sekdin']?.text,
+                                                disp3Notes: controllers['notes_disposisi_kabid']?.text,
+                                                disp4Notes: controllers['notes_disposisi_kasubag']?.text,
+                                                dispLanjut: controllers['disposisi_lanjutan']?.text,
+                                                tindakLanjut1: controllers['tindak_lanjut_1']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['tindak_lanjut_1']!.text)
+                                                    : null,
+                                                tindakLanjut2: controllers['tindak_lanjut_2']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['tindak_lanjut_2']!.text)
+                                                    : null,
+                                                tl1Notes: controllers['notes_tl_1']?.text,
+                                                tl2Notes: controllers['notes_tl_2']?.text,
+                                                status: controllers['status']?.text,
+                                              );
 
-                                            print("[DEBUG] -> [STATE] :: Nomor Urut = $nomor_urut");
+                                              // Call the callback function
+                                              onSuratAdded(data);
 
-                                            fileSelected != null ? await _suratMasukService.uploadFile(data!.nomor_urut, (fileSelected as File)) : null;
+                                              final fileUpload = fileSelected != null || data?.nomor_urut == null ? await _suratMasukService.uploadFile(data!.nomor_urut, fileSelected!) : null;
+                                              print("[DEBUG] -> [STATE] :: File Uploaded = $fileUpload");
+                                            } catch (e) {
+                                              print("[ERROR] Upload gagal: $e");
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text('Gagal menyimpan data: $e'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            } finally {
+                                              setState(() => _isLoading = false);
+                                            }
+                                            
 
                                             Navigator.pop(context);
 
@@ -2590,6 +2536,8 @@ void showModernTambahSuratMasukFormDialog(
   Size size = MediaQuery.of(context).size;
   List<String> selectedDisposisi = [];
 
+  PlatformFile? fileTarget;
+
   final _appSettings = await AppSettings();
   final suffix1 = await _appSettings.part1;
   final suffix2 = await _appSettings.part3;
@@ -2607,14 +2555,25 @@ void showModernTambahSuratMasukFormDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      bool _isLoading = false;
+
       return StatefulBuilder(
         builder: (context, setState) {
           final ScrollController _scrollController = ScrollController();
+
           return SafeArea(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
               child: Center(
-                child: Container(
+                  child: _isLoading ? Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                ) :
+                Container(
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                   height: MediaQuery.of(context).size.height * 0.9,
                   width:
@@ -3560,7 +3519,11 @@ void showModernTambahSuratMasukFormDialog(
                                                                     '';
 
                                                                 setStateLocal(
-                                                                  () {},
+                                                                  () {
+                                                                    fileTarget = file ?? null;
+                                                                    String? fileName = fileTarget?.name ?? null;
+                                                                    print("[DEBUG] -> [STATE] :: File Target? = $fileName");
+                                                                  },
                                                                 ); // Update UI
 
                                                                 ScaffoldMessenger.of(
@@ -3780,140 +3743,83 @@ void showModernTambahSuratMasukFormDialog(
                                     Container(
                                       width: double.infinity,
                                       child: ElevatedButton(
-                                        onPressed: () async {
+                                        onPressed: _isLoading ? null :
+                                        () async {
                                           if (_formKey.currentState!
                                               .validate()) {
-                                            SuratMasukModel?
-                                            data = await _suratMasukService.addSurat(
-                                              suratDari:
-                                                  controllers['surat_dari']
-                                                      ?.text,
-                                              tanggalDiterima:
-                                                  controllers['diterima_tgl']
-                                                          ?.text
-                                                          .isNotEmpty ==
-                                                      true
-                                                  ? DateTime.tryParse(
-                                                      controllers['diterima_tgl']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              tanggalSurat:
-                                                  controllers['tgl_surat']
-                                                          ?.text
-                                                          .isNotEmpty ==
-                                                      true
-                                                  ? DateTime.tryParse(
-                                                      controllers['tgl_surat']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              kode: controllers['kode']?.text,
-                                              noSurat:
-                                                  controllers['no_surat']?.text,
-                                              hal: controllers['perihal']?.text,
-                                              tanggalWaktu:
-                                                  controllers['hari_tanggal']
-                                                          ?.text
-                                                          .isNotEmpty ==
-                                                      true
-                                                  ? DateTime.tryParse(
-                                                      controllers['hari_tanggal']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              tempat:
-                                                  controllers['tempat']?.text,
-                                              disposisi: selectedDisposisi,
-                                              index: controllers['index']?.text,
-                                              pengolah:
-                                                  controllers['pengolah']?.text,
-                                              sifat: controllers['sifat']?.text,
-                                              linkScan: controllers['link_scan']
-                                                  ?.text,
-                                              disp1Kadin:
-                                                  controllers['disposisi_kadin']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['disposisi_kadin']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              disp2Sekdin:
-                                                  controllers['disposisi_sekdin']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['disposisi_sekdin']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              disp3Kabid:
-                                                  controllers['disposisi_kabid']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['disposisi_kabid']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              disp4Kasubag:
-                                                  controllers['disposisi_kasubag']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['disposisi_kasubag']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              disp1Notes:
-                                                  controllers['notes_disposisi_kadin']
-                                                      ?.text,
-                                              disp2Notes:
-                                                  controllers['notes_disposisi_sekdin']
-                                                      ?.text,
-                                              disp3Notes:
-                                                  controllers['notes_disposisi_kabid']
-                                                      ?.text,
-                                              disp4Notes:
-                                                  controllers['notes_disposisi_kasubag']
-                                                      ?.text,
-                                              dispLanjut:
-                                                  controllers['disposisi_lanjutan']
-                                                      ?.text,
-                                              tindakLanjut1:
-                                                  controllers['tindak_lanjut_1']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['tindak_lanjut_1']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              tindakLanjut2:
-                                                  controllers['tindak_lanjut_2']!
-                                                      .text
-                                                      .isNotEmpty
-                                                  ? DateTime.tryParse(
-                                                      controllers['tindak_lanjut_2']!
-                                                          .text,
-                                                    )
-                                                  : null,
-                                              tl1Notes:
-                                                  controllers['notes_tl_1']
-                                                      ?.text,
-                                              tl2Notes:
-                                                  controllers['notes_tl_2']
-                                                      ?.text,
-                                              status:
-                                                  controllers['status']?.text,
-                                            );
 
-                                            // Call the callback function
-                                            onSuratAdded(data);
+                                            setState(() {
+                                              _isLoading = true;
+                                            });
 
-                                            refreshState();
+                                            try {                                            
+                                              SuratMasukModel?
+                                              data = await _suratMasukService.addSurat(
+                                                suratDari: controllers['surat_dari']?.text,
+                                                tanggalDiterima: controllers['diterima_tgl']?.text.isNotEmpty == true
+                                                    ? DateTime.tryParse(controllers['diterima_tgl']!.text)
+                                                    : null,
+                                                tanggalSurat: controllers['tgl_surat']?.text.isNotEmpty == true
+                                                    ? DateTime.tryParse(controllers['tgl_surat']!.text)
+                                                    : null,
+                                                kode: controllers['kode']?.text,
+                                                noSurat: controllers['no_surat']?.text,
+                                                hal: controllers['perihal']?.text,
+                                                tanggalWaktu: controllers['hari_tanggal']?.text.isNotEmpty == true
+                                                    ? DateTime.tryParse(controllers['hari_tanggal']!.text)
+                                                    : null,
+                                                tempat:controllers['tempat']?.text,
+                                                disposisi: selectedDisposisi,
+                                                index: controllers['index']?.text,
+                                                pengolah: controllers['pengolah']?.text,
+                                                sifat: controllers['sifat']?.text,
+                                                // linkScan: controllers['link_scan']?.text,
+                                                disp1Kadin: controllers['disposisi_kadin']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['disposisi_kadin']!.text)
+                                                    : null,
+                                                disp2Sekdin: controllers['disposisi_sekdin']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['disposisi_sekdin']!.text)
+                                                    : null,
+                                                disp3Kabid: controllers['disposisi_kabid']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['disposisi_kabid']!.text)
+                                                    : null,
+                                                disp4Kasubag: controllers['disposisi_kasubag']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['disposisi_kasubag']!.text,)
+                                                    : null,
+                                                disp1Notes: controllers['notes_disposisi_kadin']?.text,
+                                                disp2Notes: controllers['notes_disposisi_sekdin']?.text,
+                                                disp3Notes: controllers['notes_disposisi_kabid']?.text,
+                                                disp4Notes: controllers['notes_disposisi_kasubag']?.text,
+                                                dispLanjut: controllers['disposisi_lanjutan']?.text,
+                                                tindakLanjut1: controllers['tindak_lanjut_1']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['tindak_lanjut_1']!.text)
+                                                    : null,
+                                                tindakLanjut2: controllers['tindak_lanjut_2']!.text.isNotEmpty
+                                                    ? DateTime.tryParse(controllers['tindak_lanjut_2']!.text)
+                                                    : null,
+                                                tl1Notes: controllers['notes_tl_1']?.text,
+                                                tl2Notes: controllers['notes_tl_2']?.text,
+                                                status: controllers['status']?.text,
+                                              );
+
+                                              // Call the callback function
+                                              onSuratAdded(data);
+
+                                              final fileUpload = fileTarget == null || data?.nomor_urut == null ? null : await _suratMasukService.uploadFile(data!.nomor_urut, fileTarget!);
+                                              print("[DEBUG] -> [STATUS] :: File Uploaded == $fileUpload");
+                                            
+                                              refreshState();
+                                            } catch (e) {
+                                              print("[ERROR] Upload gagal: $e");
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                SnackBar(
+                                                  content: Text('Gagal menyimpan data: $e'),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              );
+                                            } finally {
+                                              setState(() => _isLoading = false);
+                                            }
 
                                             Navigator.pop(context);
 

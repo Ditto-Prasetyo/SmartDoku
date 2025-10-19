@@ -560,7 +560,9 @@ class _PermohonanLettersPageAdminDesktopState
                             children: [
                               InkWell(
                                 onTap: () {
-                                  tambahSuratMasukDesktop(context, (newSurat) {}, refreshState);
+                                  tambahSuratMasukDesktop(context, (newSurat) {
+                                    
+                                  }, refreshState);
                                 },
                                 child: Icon(
                                   Icons.add,
@@ -1308,7 +1310,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.no_agenda == null
                                                                   ? '404 Not Found'
-                                                                  : surat.no_agenda,
+                                                                  : surat.no_agenda!,
                                                                   // +
                                                                   //       "/" +
                                                                   //       surat
