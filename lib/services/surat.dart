@@ -366,6 +366,26 @@ class SuratMasuk {
     }
   }
 
+  Future<bool> deleteFile(int nomor_urut) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('${dotenv.env['API_URL']}/upload/surat/masuk/$nomor_urut');
+    final response = await http.delete(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print(jsonDecode(response.body));
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<File?> downloadDisposisi(int fileId, String savePath) async {
     final token = await _authService.getToken();
 
@@ -699,6 +719,26 @@ class SuratKeluar {
 
     final response = await request.send();
     return response.statusCode == 200;
+  }
+
+  Future<bool> deleteFile(int nomor_urut) async {
+    final token = await _authService.getToken();
+
+    final uri = Uri.parse('${dotenv.env['API_URL']}/upload/surat/keluar/$nomor_urut');
+    final response = await http.delete(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    print(jsonDecode(response.body));
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<File?> downloadFile(int fileId, String savePath) async {
