@@ -5632,6 +5632,8 @@ void showEditSuratDialog(
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
   Size size = MediaQuery.of(context).size;
 
+  PlatformFile? fileTarget;
+
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -5645,12 +5647,22 @@ void showEditSuratDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      bool _isLoading = false;
+
       return StatefulBuilder(
         builder: (context, setState) {
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
-              child: Container(
+              child: _isLoading ? Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                ) :
+              Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 height: MediaQuery.of(context).size.height * 0.9,
                 width:
@@ -6157,7 +6169,11 @@ void showEditSuratDialog(
                                                       file.path ?? '';
 
                                                   setStateLocal(
-                                                    () {},
+                                                    () {
+                                                      fileTarget = file;
+                                                      String? fileName = fileTarget?.name ?? null;
+                                                      print("[DEBUG] -> [STATE] :: File Target? = $fileName");
+                                                    },
                                                   ); // Update UI lokal
 
                                                   ScaffoldMessenger.of(
@@ -6666,6 +6682,8 @@ void showEditSuratDialog(
 
                                         try {
                                           // Update data
+                                          setState(() => _isLoading = true);
+
                                           final data = await _suratMasukService.editSurat(
                                             nomor_urut:
                                                 selectedSurat.nomor_urut,
@@ -6718,6 +6736,14 @@ void showEditSuratDialog(
                                                 selectedDisposisi, // Convert list to comma-separated string
                                           );
 
+                                          if (fileTarget != null) {
+                                            final fileStatus = await _suratMasukService.editUploadFile(data!.nomor_urut, fileTarget!);
+                                            print('[DEBUG] -> [STATE] :: File Status? = $fileStatus');
+                                          } if (linkscanController.text == '') {
+                                            final fileDeleteStatus = await _suratMasukService.deleteFile(data!.nomor_urut);
+                                            print('[DEBUG] -> [STATE] :: File Deleted? = $fileDeleteStatus');
+                                          }
+                                          print('[DEBUG] -> [STATE] :: Link Scan? = ${linkscanController.text}');
                                           print(data);
 
                                           // Refresh state
@@ -6762,6 +6788,8 @@ void showEditSuratDialog(
                                               ),
                                             ),
                                           );
+                                        } finally {
+                                          setState(() => _isLoading = false);
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(

@@ -282,7 +282,7 @@ class SuratMasuk {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return SuratMasukModel.fromJson(data);
+        return SuratMasukModel.fromJson(data['data']);
       } else {
         print('Gagal edit surat: ${response.body}');
         return null;
@@ -330,6 +330,26 @@ class SuratMasuk {
     final request = http.MultipartRequest(
       'POST',
       Uri.parse('${dotenv.env['API_URL']}/upload/surat/masuk'),
+    );
+    request.headers['Authorization'] = 'Bearer $token';
+    request.files.add(await http.MultipartFile.fromPath('file', file.path!));
+    request.fields['nomor_urut'] = nomor_urut.toString();
+
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+
+    final decoded = jsonDecode(responseBody);
+    print("[DEBUG] -> [RES] :: $decoded");
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> editUploadFile(int nomor_urut, PlatformFile file) async {
+    final token = await _authService.getToken();
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${dotenv.env['API_URL']}/upload/surat/masuk/edit'),
     );
     request.headers['Authorization'] = 'Bearer $token';
     request.files.add(await http.MultipartFile.fromPath('file', file.path!));
