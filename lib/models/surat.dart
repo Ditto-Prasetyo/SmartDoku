@@ -143,11 +143,11 @@ class SuratKeluarModel {
   final int nomor_urut;
   final String kode;
   final String klasifikasi;
-  final String no_register;
+  final String? no_register;
   final String? tujuan_surat;
   final String perihal;
   final DateTime tanggal_surat;
-  final String akses_arsip;
+  final String? akses_arsip;
   final String pengolah;
   final String? pembuat;
   final String? catatan;

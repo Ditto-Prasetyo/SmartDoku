@@ -3983,6 +3983,7 @@ void showModernTambahSuratKeluarFormDesktopDialog(
   });
 
   Size size = MediaQuery.of(context).size;
+  PlatformFile? fileTarget;
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -3996,991 +3997,1018 @@ void showModernTambahSuratKeluarFormDesktopDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      bool _isLoading = false;
+
       final ScrollController _scrollController = ScrollController();
-      return SafeArea(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: Center(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-              height: MediaQuery.of(context).size.height * 0.9,
-              width:
-                  (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                  ? size.width / 2
-                  : size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 30,
-                    spreadRadius: 5,
-                    offset: Offset(0, 15),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(24),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                          ],
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return SafeArea(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+              child: Center(
+                child: _isLoading ? 
+                  Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
                         ),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(24),
+                      )
+                    ) :
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+                  height: MediaQuery.of(context).size.height * 0.9,
+                  width:
+                      (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                      ? size.width / 2
+                      : size.width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.3),
+                        blurRadius: 30,
+                        spreadRadius: 5,
+                        offset: Offset(0, 15),
                       ),
-                      child: Column(
-                        children: [
-                          // Header
-                          Container(
-                            padding: EdgeInsets.all(25),
-                            child: Column(
-                              children: [
-                                // Icon container
-                                Container(
-                                  padding: EdgeInsets.all(15),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        accentColor.withValues(alpha: 0.8),
-                                        accentColor.withValues(alpha: 0.6),
-                                      ],
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: accentColor.withValues(
-                                          alpha: 0.4,
-                                        ),
-                                        blurRadius: 15,
-                                        spreadRadius: 2,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.note_add_rounded,
-                                    color: Colors.white,
-                                    size: 30,
-                                  ),
-                                ),
-                                SizedBox(height: 15),
-
-                                // Title
-                                Text(
-                                  'Form Tambah Surat Keluar',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    letterSpacing: 0.5,
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-
-                                Text(
-                                  'Lengkapi data surat keluar di bawah ini',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white.withValues(alpha: 0.8),
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                                Text(
-                                  '\nData selengkapnya anda bisa scroll ke bawah!',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white.withValues(alpha: 0.9),
-                                    height: 1.4,
-                                    decoration: TextDecoration.none,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                Colors.white.withValues(alpha: 0.2),
+                                Colors.white.withValues(alpha: 0.1),
                               ],
                             ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.white.withValues(alpha: 0.1),
-                                  width: 1.5,
-                                ),
-                              ),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              width: 1.5,
                             ),
+                            borderRadius: BorderRadius.circular(24),
                           ),
-                          SizedBox(height: 10),
-                          // Form Content
-                          Expanded(
-                            child: Form(
-                              key: _formKey,
-                              child: ScrollbarTheme(
-                                data: ScrollbarThemeData(
-                                  thumbColor: WidgetStateProperty.all(
-                                    Colors.white,
-                                  ),
-                                  thickness: WidgetStateProperty.all(6),
-                                ),
-                                child: Scrollbar(
-                                  thumbVisibility: true,
-                                  controller: _scrollController,
-                                  child: SingleChildScrollView(
-                                    controller: _scrollController,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 25,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        // Document Info Section
-                                        _buildSectionTitle('Informasi Dokumen'),
-
-                                        _buildModernTextField(
-                                          controller: controllers['kode']!,
-                                          label: 'Kode',
-                                          icon: Icons.qr_code_2_rounded,
-                                          required: true,
-                                        ),
-
-                                        SizedBox(height: 20),
-
-                                        // Basic Info Section
-                                        _buildSectionTitle('Informasi Dasar'),
-                                        _buildModernTextField(
-                                          controller:
-                                              controllers['klasifikasi']!,
-                                          label: 'Klasifikasi',
-                                          icon: Icons.category_rounded,
-                                          required: true,
-                                        ),
-                                        _buildModernTextField(
-                                          controller:
-                                              controllers['tujuan_surat']!,
-                                          label: 'Tujuan Surat',
-                                          icon: Icons.send_rounded,
-                                        ),
-                                        _buildModernTextField(
-                                          controller: controllers['perihal']!,
-                                          label: 'Perihal',
-                                          icon: Icons.subject_rounded,
-                                          required: true,
-                                          maxLines: 2,
-                                        ),
-
-                                        // Date & Time Section
-                                        _buildSectionTitle('Tanggal & Waktu'),
-                                        buildDatePickerField(
-                                          context: context,
-                                          controller: controllers['tgl_surat']!,
-                                          label: 'Tanggal Surat',
-                                          icon: Icons.date_range_rounded,
-                                          required: true,
-                                        ),
-                                        SizedBox(height: 20),
-
-                                        _buildSectionTitle('Sifat'),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: _buildModernTextField(
-                                                controller:
-                                                    controllers['klasifikasi_arsip']!,
-                                                label:
-                                                    'Ket. Klasifikasi Keamanan \n& Akses Arsip',
-                                                icon: Icons.security_rounded,
-                                              ),
-                                            ),
+                          child: Column(
+                            children: [
+                              // Header
+                              Container(
+                                padding: EdgeInsets.all(25),
+                                child: Column(
+                                  children: [
+                                    // Icon container
+                                    Container(
+                                      padding: EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            accentColor.withValues(alpha: 0.8),
+                                            accentColor.withValues(alpha: 0.6),
                                           ],
                                         ),
-
-                                        SizedBox(height: 20),
-
-                                        // Process Info Section
-                                        _buildSectionTitle('Informasi Proses'),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 10,
-                                          ),
-                                          child: DropdownButtonFormField<String>(
-                                            value:
-                                                controllers['pengolah']!
-                                                    .text
-                                                    .isNotEmpty
-                                                ? controllers['pengolah']!.text
-                                                : null,
-                                            items: workFields.entries
-                                                .map(
-                                                  (entry) => DropdownMenuItem(
-                                                    value: entry.value,
-                                                    child: Text(
-                                                      entry.key,
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.9,
-                                                            ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                )
-                                                .toList(),
-                                            onChanged: (value) {
-                                              controllers['pengolah']!.text =
-                                                  value ?? '';
-                                            },
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Pengolah harus diisi';
-                                              }
-                                              return null;
-                                            },
-                                            decoration: InputDecoration(
-                                              labelText: 'Pengolah',
-                                              labelStyle: TextStyle(
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.8,
-                                                ),
-                                              ),
-                                              prefixIcon: Icon(
-                                                Icons
-                                                    .assignment_turned_in_rounded,
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.9,
-                                                ),
-                                              ),
-                                              filled: true,
-                                              fillColor: Colors.white
-                                                  .withValues(alpha: 0.05),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.2),
-                                                ),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.4),
-                                                ),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.red.withValues(
-                                                    alpha: 0.7,
-                                                  ),
-                                                ),
-                                              ),
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          15,
-                                                        ),
-                                                    borderSide: BorderSide(
-                                                      color: Colors.red
-                                                          .withValues(
-                                                            alpha: 0.9,
-                                                          ),
-                                                    ),
-                                                  ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: accentColor.withValues(
+                                              alpha: 0.4,
                                             ),
-                                            dropdownColor: Colors.black
-                                                .withValues(alpha: 0.7),
-                                            iconEnabledColor: Colors.white
-                                                .withValues(alpha: 0.9),
-                                            style: TextStyle(
-                                              color: Colors.white,
+                                            blurRadius: 15,
+                                            spreadRadius: 2,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Icon(
+                                        Icons.note_add_rounded,
+                                        color: Colors.white,
+                                        size: 30,
+                                      ),
+                                    ),
+                                    SizedBox(height: 15),
+          
+                                    // Title
+                                    Text(
+                                      'Form Tambah Surat Keluar',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        letterSpacing: 0.5,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8),
+          
+                                    Text(
+                                      'Lengkapi data surat keluar di bawah ini',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white.withValues(alpha: 0.8),
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                    Text(
+                                      '\nData selengkapnya anda bisa scroll ke bawah!',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white.withValues(alpha: 0.9),
+                                        height: 1.4,
+                                        decoration: TextDecoration.none,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.white.withValues(alpha: 0.1),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                              // Form Content
+                              Expanded(
+                                child: Form(
+                                  key: _formKey,
+                                  child: ScrollbarTheme(
+                                    data: ScrollbarThemeData(
+                                      thumbColor: WidgetStateProperty.all(
+                                        Colors.white,
+                                      ),
+                                      thickness: WidgetStateProperty.all(6),
+                                    ),
+                                    child: Scrollbar(
+                                      thumbVisibility: true,
+                                      controller: _scrollController,
+                                      child: SingleChildScrollView(
+                                        controller: _scrollController,
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 25,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            // Document Info Section
+                                            _buildSectionTitle('Informasi Dokumen'),
+          
+                                            _buildModernTextField(
+                                              controller: controllers['kode']!,
+                                              label: 'Kode',
+                                              icon: Icons.qr_code_2_rounded,
+                                              required: true,
                                             ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 10),
-
-                                        _buildModernTextField(
-                                          controller: controllers['pembuat']!,
-                                          label: 'Pembuat',
-                                          icon: Icons
-                                              .admin_panel_settings_rounded,
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 10,
-                                          ),
-                                          child: DropdownButtonFormField<String>(
-                                            value:
-                                                controllers['status']!
-                                                    .text
-                                                    .isNotEmpty
-                                                ? controllers['status']!.text
-                                                : null,
-                                            items:
-                                                [
-                                                      'Pending',
-                                                      'Proses',
-                                                      'Selesai',
-                                                      'Ditolak',
-                                                    ]
+          
+                                            SizedBox(height: 20),
+          
+                                            // Basic Info Section
+                                            _buildSectionTitle('Informasi Dasar'),
+                                            _buildModernTextField(
+                                              controller:
+                                                  controllers['klasifikasi']!,
+                                              label: 'Klasifikasi',
+                                              icon: Icons.category_rounded,
+                                              required: true,
+                                            ),
+                                            _buildModernTextField(
+                                              controller:
+                                                  controllers['tujuan_surat']!,
+                                              label: 'Tujuan Surat',
+                                              icon: Icons.send_rounded,
+                                            ),
+                                            _buildModernTextField(
+                                              controller: controllers['perihal']!,
+                                              label: 'Perihal',
+                                              icon: Icons.subject_rounded,
+                                              required: true,
+                                              maxLines: 2,
+                                            ),
+          
+                                            // Date & Time Section
+                                            _buildSectionTitle('Tanggal & Waktu'),
+                                            buildDatePickerField(
+                                              context: context,
+                                              controller: controllers['tgl_surat']!,
+                                              label: 'Tanggal Surat',
+                                              icon: Icons.date_range_rounded,
+                                              required: true,
+                                            ),
+                                            SizedBox(height: 20),
+          
+                                            _buildSectionTitle('Sifat'),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: _buildModernTextField(
+                                                    controller:
+                                                        controllers['klasifikasi_arsip']!,
+                                                    label:
+                                                        'Ket. Klasifikasi Keamanan \n& Akses Arsip',
+                                                    icon: Icons.security_rounded,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+          
+                                            SizedBox(height: 20),
+          
+                                            // Process Info Section
+                                            _buildSectionTitle('Informasi Proses'),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                vertical: 10,
+                                              ),
+                                              child: DropdownButtonFormField<String>(
+                                                value:
+                                                    controllers['pengolah']!
+                                                        .text
+                                                        .isNotEmpty
+                                                    ? controllers['pengolah']!.text
+                                                    : null,
+                                                items: workFields.entries
                                                     .map(
-                                                      (
-                                                        status,
-                                                      ) => DropdownMenuItem(
-                                                        value: status,
-                                                        child: Row(
-                                                          children: [
-                                                            Container(
-                                                              width: 10,
-                                                              height: 10,
-                                                              decoration: BoxDecoration(
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                                color:
-                                                                    getStatusColor(
-                                                                      status,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 10),
-                                                            Text(status),
-                                                          ],
+                                                      (entry) => DropdownMenuItem(
+                                                        value: entry.value,
+                                                        child: Text(
+                                                          entry.key,
+                                                          style: TextStyle(
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.9,
+                                                                ),
+                                                          ),
                                                         ),
                                                       ),
                                                     )
                                                     .toList(),
-                                            onChanged: (value) {
-                                              controllers['status']!.text =
-                                                  value ?? '';
-                                            },
-                                            validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
-                                                return 'Status wajib diisi';
-                                              }
-                                              return null;
-                                            },
-                                            decoration: InputDecoration(
-                                              labelText: 'Status',
-                                              labelStyle: TextStyle(
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.8,
-                                                ),
-                                              ),
-                                              prefixIcon: Icon(
-                                                Icons.info_outline_rounded,
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.9,
-                                                ),
-                                              ),
-                                              filled: true,
-                                              fillColor: Colors.white
-                                                  .withValues(alpha: 0.05),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.2),
-                                                ),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.4),
-                                                ),
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                borderSide: BorderSide(
-                                                  color: Colors.red.withValues(
-                                                    alpha: 0.7,
+                                                onChanged: (value) {
+                                                  controllers['pengolah']!.text =
+                                                      value ?? '';
+                                                },
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Pengolah harus diisi';
+                                                  }
+                                                  return null;
+                                                },
+                                                decoration: InputDecoration(
+                                                  labelText: 'Pengolah',
+                                                  labelStyle: TextStyle(
+                                                    color: Colors.white.withValues(
+                                                      alpha: 0.8,
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                              focusedErrorBorder:
-                                                  OutlineInputBorder(
+                                                  prefixIcon: Icon(
+                                                    Icons
+                                                        .assignment_turned_in_rounded,
+                                                    color: Colors.white.withValues(
+                                                      alpha: 0.9,
+                                                    ),
+                                                  ),
+                                                  filled: true,
+                                                  fillColor: Colors.white
+                                                      .withValues(alpha: 0.05),
+                                                  enabledBorder: OutlineInputBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                          15,
-                                                        ),
+                                                        BorderRadius.circular(15),
                                                     borderSide: BorderSide(
-                                                      color: Colors.red
-                                                          .withValues(
-                                                            alpha: 0.9,
-                                                          ),
+                                                      color: Colors.white
+                                                          .withValues(alpha: 0.2),
                                                     ),
                                                   ),
-                                            ),
-                                            dropdownColor: Colors.black
-                                                .withValues(alpha: 0.7),
-                                            iconEnabledColor: Colors.white
-                                                .withValues(alpha: 0.9),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ),
-
-                                        SizedBox(height: 20),
-
-                                        // Additional Info Section
-                                        _buildSectionTitle(
-                                          'Informasi Tambahan',
-                                        ),
-                                        _buildModernTextField(
-                                          controller: controllers['catatan']!,
-                                          label: 'Catatan',
-                                          icon: Icons.next_plan_rounded,
-                                          maxLines: 2,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: _buildModernTextField(
-                                                controller:
-                                                    controllers['koreksi_1']!,
-                                                label: 'Koreksi 1',
-                                                icon: Icons
-                                                    .playlist_add_check_rounded,
+                                                  focusedBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(15),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.white
+                                                          .withValues(alpha: 0.4),
+                                                    ),
+                                                  ),
+                                                  errorBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(15),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red.withValues(
+                                                        alpha: 0.7,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  focusedErrorBorder:
+                                                      OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Colors.red
+                                                              .withValues(
+                                                                alpha: 0.9,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                ),
+                                                dropdownColor: Colors.black
+                                                    .withValues(alpha: 0.7),
+                                                iconEnabledColor: Colors.white
+                                                    .withValues(alpha: 0.9),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
-                                            SizedBox(width: 15),
-                                            Expanded(
-                                              child: _buildModernTextField(
-                                                controller:
-                                                    controllers['koreksi_2']!,
-                                                label: 'Koreksi 2',
-                                                icon: Icons
-                                                    .playlist_add_check_circle_rounded,
+                                            SizedBox(height: 10),
+          
+                                            _buildModernTextField(
+                                              controller: controllers['pembuat']!,
+                                              label: 'Pembuat',
+                                              icon: Icons
+                                                  .admin_panel_settings_rounded,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                vertical: 10,
+                                              ),
+                                              child: DropdownButtonFormField<String>(
+                                                value:
+                                                    controllers['status']!
+                                                        .text
+                                                        .isNotEmpty
+                                                    ? controllers['status']!.text
+                                                    : null,
+                                                items:
+                                                    [
+                                                          'Pending',
+                                                          'Proses',
+                                                          'Selesai',
+                                                          'Ditolak',
+                                                        ]
+                                                        .map(
+                                                          (
+                                                            status,
+                                                          ) => DropdownMenuItem(
+                                                            value: status,
+                                                            child: Row(
+                                                              children: [
+                                                                Container(
+                                                                  width: 10,
+                                                                  height: 10,
+                                                                  decoration: BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color:
+                                                                        getStatusColor(
+                                                                          status,
+                                                                        ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 10),
+                                                                Text(status),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        )
+                                                        .toList(),
+                                                onChanged: (value) {
+                                                  controllers['status']!.text =
+                                                      value ?? '';
+                                                },
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Status wajib diisi';
+                                                  }
+                                                  return null;
+                                                },
+                                                decoration: InputDecoration(
+                                                  labelText: 'Status',
+                                                  labelStyle: TextStyle(
+                                                    color: Colors.white.withValues(
+                                                      alpha: 0.8,
+                                                    ),
+                                                  ),
+                                                  prefixIcon: Icon(
+                                                    Icons.info_outline_rounded,
+                                                    color: Colors.white.withValues(
+                                                      alpha: 0.9,
+                                                    ),
+                                                  ),
+                                                  filled: true,
+                                                  fillColor: Colors.white
+                                                      .withValues(alpha: 0.05),
+                                                  enabledBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(15),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.white
+                                                          .withValues(alpha: 0.2),
+                                                    ),
+                                                  ),
+                                                  focusedBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(15),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.white
+                                                          .withValues(alpha: 0.4),
+                                                    ),
+                                                  ),
+                                                  errorBorder: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(15),
+                                                    borderSide: BorderSide(
+                                                      color: Colors.red.withValues(
+                                                        alpha: 0.7,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  focusedErrorBorder:
+                                                      OutlineInputBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        borderSide: BorderSide(
+                                                          color: Colors.red
+                                                              .withValues(
+                                                                alpha: 0.9,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                ),
+                                                dropdownColor: Colors.black
+                                                    .withValues(alpha: 0.7),
+                                                iconEnabledColor: Colors.white
+                                                    .withValues(alpha: 0.9),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                ),
                                               ),
                                             ),
-                                          ],
-                                        ),
-
-                                        SizedBox(height: 20),
-
-                                        // Document Links Section
-                                        _buildSectionTitle('Dokumen & Link'),
-                                        StatefulBuilder(
-                                          builder: (context, setStateLocal) {
-                                            return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+          
+                                            SizedBox(height: 20),
+          
+                                            // Additional Info Section
+                                            _buildSectionTitle(
+                                              'Informasi Tambahan',
+                                            ),
+                                            _buildModernTextField(
+                                              controller: controllers['catatan']!,
+                                              label: 'Catatan',
+                                              icon: Icons.next_plan_rounded,
+                                              maxLines: 2,
+                                            ),
+                                            Row(
                                               children: [
-                                                Text(
-                                                  'Dokumen Final (PDF)',
-                                                  style: TextStyle(
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.9),
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                    decoration:
-                                                        TextDecoration.none,
+                                                Expanded(
+                                                  child: _buildModernTextField(
+                                                    controller:
+                                                        controllers['koreksi_1']!,
+                                                    label: 'Koreksi 1',
+                                                    icon: Icons
+                                                        .playlist_add_check_rounded,
                                                   ),
                                                 ),
-                                                SizedBox(height: 8),
-                                                Container(
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                    gradient: LinearGradient(
-                                                      colors: [
-                                                        Colors.white.withValues(
-                                                          alpha: 0.1,
-                                                        ),
-                                                        Colors.white.withValues(
-                                                          alpha: 0.05,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          15,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: Colors.white
-                                                          .withValues(
-                                                            alpha: 0.2,
-                                                          ),
-                                                      width: 1,
-                                                    ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                  child: _buildModernTextField(
+                                                    controller:
+                                                        controllers['koreksi_2']!,
+                                                    label: 'Koreksi 2',
+                                                    icon: Icons
+                                                        .playlist_add_check_circle_rounded,
                                                   ),
-                                                  child: Material(
-                                                    color: Colors.transparent,
-                                                    child: InkWell(
-                                                      onTap: () async {
-                                                        try {
-                                                          FilePickerResult?
-                                                          result = await FilePicker
-                                                              .platform
-                                                              .pickFiles(
-                                                                type: FileType
-                                                                    .custom,
-                                                                allowedExtensions:
-                                                                    ['pdf'],
-                                                                allowMultiple:
-                                                                    false,
-                                                              );
-
-                                                          if (result != null &&
-                                                              result
-                                                                  .files
-                                                                  .isNotEmpty) {
-                                                            PlatformFile file =
-                                                                result
-                                                                    .files
-                                                                    .first;
-
-                                                            // Simpan path file ke controller
-                                                            controllers['dok_final']!
-                                                                    .text =
-                                                                file.path ?? '';
-
-                                                            setStateLocal(
-                                                              () {},
-                                                            ); // Update UI
-
-                                                            ScaffoldMessenger.of(
-                                                              context,
-                                                            ).showSnackBar(
-                                                              SnackBar(
-                                                                content: Text(
-                                                                  'File berhasil dipilih: ${file.name}',
+                                                ),
+                                              ],
+                                            ),
+          
+                                            SizedBox(height: 20),
+          
+                                            // Document Links Section
+                                            _buildSectionTitle('Dokumen & Link'),
+                                            StatefulBuilder(
+                                              builder: (context, setStateLocal) {
+                                                return Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      'Dokumen Final (PDF)',
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(alpha: 0.9),
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w600,
+                                                        decoration:
+                                                            TextDecoration.none,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 8),
+                                                    Container(
+                                                      width: double.infinity,
+                                                      decoration: BoxDecoration(
+                                                        gradient: LinearGradient(
+                                                          colors: [
+                                                            Colors.white.withValues(
+                                                              alpha: 0.1,
+                                                            ),
+                                                            Colors.white.withValues(
+                                                              alpha: 0.05,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              15,
+                                                            ),
+                                                        border: Border.all(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.2,
+                                                              ),
+                                                          width: 1,
+                                                        ),
+                                                      ),
+                                                      child: Material(
+                                                        color: Colors.transparent,
+                                                        child: InkWell(
+                                                          onTap: () async {
+                                                            try {
+                                                              FilePickerResult?
+                                                              result = await FilePicker
+                                                                  .platform
+                                                                  .pickFiles(
+                                                                    type: FileType
+                                                                        .custom,
+                                                                    allowedExtensions:
+                                                                        ['pdf'],
+                                                                    allowMultiple:
+                                                                        false,
+                                                                  );
+          
+                                                              if (result != null &&
+                                                                  result
+                                                                      .files
+                                                                      .isNotEmpty) {
+                                                                PlatformFile file =
+                                                                    result
+                                                                        .files
+                                                                        .first;
+          
+                                                                // Simpan path file ke controller
+                                                                controllers['dok_final']!
+                                                                        .text =
+                                                                    file.path ?? '';
+          
+                                                                setStateLocal(
+                                                                  () {
+                                                                    fileTarget = file;
+                                                                    print("[DEBUG] -> [STATE] :: File Target? = $fileTarget");
+                                                                  },
+                                                                ); // Update UI
+          
+                                                                ScaffoldMessenger.of(
+                                                                  context,
+                                                                ).showSnackBar(
+                                                                  SnackBar(
+                                                                    content: Text(
+                                                                      'File berhasil dipilih: ${file.name}',
+                                                                    ),
+                                                                    backgroundColor:
+                                                                        accentColor,
+                                                                    behavior:
+                                                                        SnackBarBehavior
+                                                                            .floating,
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                            10,
+                                                                          ),
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+                                                            } catch (e) {
+                                                              ScaffoldMessenger.of(
+                                                                context,
+                                                              ).showSnackBar(
+                                                                SnackBar(
+                                                                  content: Text(
+                                                                    'Gagal memilih file: $e',
+                                                                  ),
+                                                                  backgroundColor:
+                                                                      Colors.red,
+                                                                  behavior:
+                                                                      SnackBarBehavior
+                                                                          .floating,
+                                                                  shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          10,
+                                                                        ),
+                                                                  ),
                                                                 ),
-                                                                backgroundColor:
-                                                                    accentColor,
-                                                                behavior:
-                                                                    SnackBarBehavior
-                                                                        .floating,
-                                                                shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
+                                                              );
+                                                            }
+                                                          },
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                15,
+                                                              ),
+                                                          child: Padding(
+                                                            padding: EdgeInsets.all(
+                                                              15,
+                                                            ),
+                                                            child: Row(
+                                                              children: [
+                                                                Container(
+                                                                  padding:
+                                                                      EdgeInsets.all(
                                                                         10,
                                                                       ),
-                                                                ),
-                                                              ),
-                                                            );
-                                                          }
-                                                        } catch (e) {
-                                                          ScaffoldMessenger.of(
-                                                            context,
-                                                          ).showSnackBar(
-                                                            SnackBar(
-                                                              content: Text(
-                                                                'Gagal memilih file: $e',
-                                                              ),
-                                                              backgroundColor:
-                                                                  Colors.red,
-                                                              behavior:
-                                                                  SnackBarBehavior
-                                                                      .floating,
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      10,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }
-                                                      },
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            15,
-                                                          ),
-                                                      child: Padding(
-                                                        padding: EdgeInsets.all(
-                                                          15,
-                                                        ),
-                                                        child: Row(
-                                                          children: [
-                                                            Container(
-                                                              padding:
-                                                                  EdgeInsets.all(
-                                                                    10,
+                                                                  decoration: BoxDecoration(
+                                                                    color: accentColor
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.2,
+                                                                        ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          10,
+                                                                        ),
                                                                   ),
-                                                              decoration: BoxDecoration(
-                                                                color: accentColor
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.2,
-                                                                    ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      10,
-                                                                    ),
-                                                              ),
-                                                              child: Icon(
-                                                                Icons
-                                                                    .upload_file_rounded,
-                                                                color: Colors
-                                                                    .white,
-                                                                size: 24,
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 15),
-                                                            Expanded(
-                                                              child: Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Text(
-                                                                    controllers['dok_final']!
-                                                                            .text
-                                                                            .isEmpty
-                                                                        ? 'Pilih File PDF'
-                                                                        : 'File Terpilih',
-                                                                    style: TextStyle(
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .upload_file_rounded,
+                                                                    color: Colors
+                                                                        .white,
+                                                                    size: 24,
+                                                                  ),
+                                                                ),
+                                                                SizedBox(width: 15),
+                                                                Expanded(
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Text(
+                                                                        controllers['dok_final']!
+                                                                                .text
+                                                                                .isEmpty
+                                                                            ? 'Pilih File PDF'
+                                                                            : 'File Terpilih',
+                                                                        style: TextStyle(
+                                                                          color: Colors
+                                                                              .white
+                                                                              .withValues(
+                                                                                alpha:
+                                                                                    0.9,
+                                                                              ),
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight
+                                                                                  .w600,
+                                                                          decoration:
+                                                                              TextDecoration
+                                                                                  .none,
+                                                                        ),
+                                                                      ),
+                                                                      if (controllers['dok_final']!
+                                                                          .text
+                                                                          .isNotEmpty) ...[
+                                                                        SizedBox(
+                                                                          height: 4,
+                                                                        ),
+                                                                        Text(
+                                                                          controllers['dok_final']!
+                                                                              .text
+                                                                              .split(
+                                                                                '/',
+                                                                              )
+                                                                              .last
+                                                                              .split(
+                                                                                '\\',
+                                                                              )
+                                                                              .last,
+                                                                          style: TextStyle(
+                                                                            color: Colors
+                                                                                .white
+                                                                                .withValues(
+                                                                                  alpha: 0.6,
+                                                                                ),
+                                                                            fontSize:
+                                                                                12,
+                                                                            decoration:
+                                                                                TextDecoration.none,
+                                                                          ),
+                                                                          maxLines:
+                                                                              1,
+                                                                          overflow:
+                                                                              TextOverflow
+                                                                                  .ellipsis,
+                                                                        ),
+                                                                      ],
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                if (controllers['dok_final']!
+                                                                    .text
+                                                                    .isNotEmpty)
+                                                                  IconButton(
+                                                                    onPressed: () {
+                                                                      controllers['dok_final']!
+                                                                          .clear();
+                                                                      setStateLocal(
+                                                                        () {},
+                                                                      );
+                                                                    },
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .close_rounded,
                                                                       color: Colors
                                                                           .white
                                                                           .withValues(
                                                                             alpha:
-                                                                                0.9,
+                                                                                0.7,
                                                                           ),
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      decoration:
-                                                                          TextDecoration
-                                                                              .none,
+                                                                      size: 20,
                                                                     ),
                                                                   ),
-                                                                  if (controllers['dok_final']!
-                                                                      .text
-                                                                      .isNotEmpty) ...[
-                                                                    SizedBox(
-                                                                      height: 4,
-                                                                    ),
-                                                                    Text(
-                                                                      controllers['dok_final']!
-                                                                          .text
-                                                                          .split(
-                                                                            '/',
-                                                                          )
-                                                                          .last
-                                                                          .split(
-                                                                            '\\',
-                                                                          )
-                                                                          .last,
-                                                                      style: TextStyle(
-                                                                        color: Colors
-                                                                            .white
-                                                                            .withValues(
-                                                                              alpha: 0.6,
-                                                                            ),
-                                                                        fontSize:
-                                                                            12,
-                                                                        decoration:
-                                                                            TextDecoration.none,
-                                                                      ),
-                                                                      maxLines:
-                                                                          1,
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                  ],
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            if (controllers['dok_final']!
-                                                                .text
-                                                                .isNotEmpty)
-                                                              IconButton(
-                                                                onPressed: () {
-                                                                  controllers['dok_final']!
-                                                                      .clear();
-                                                                  setStateLocal(
-                                                                    () {},
-                                                                  );
-                                                                },
-                                                                icon: Icon(
+                                                                Icon(
                                                                   Icons
-                                                                      .close_rounded,
+                                                                      .chevron_right_rounded,
                                                                   color: Colors
                                                                       .white
                                                                       .withValues(
-                                                                        alpha:
-                                                                            0.7,
+                                                                        alpha: 0.5,
                                                                       ),
-                                                                  size: 20,
                                                                 ),
-                                                              ),
-                                                            Icon(
-                                                              Icons
-                                                                  .chevron_right_rounded,
-                                                              color: Colors
-                                                                  .white
-                                                                  .withValues(
-                                                                    alpha: 0.5,
-                                                                  ),
+                                                              ],
                                                             ),
-                                                          ],
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
+                                                  ],
+                                                );
+                                              },
+                                            ),
+                                            SizedBox(height: 20),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: buildDatePickerField(
+                                                    context: context,
+                                                    controller:
+                                                        controllers['dok_dikirim_tgl']!,
+                                                    label:
+                                                        'Tanggal Dokumen Dikirim',
+                                                    icon: Icons.send_rounded,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                  child: buildDatePickerField(
+                                                    context: context,
+                                                    controller:
+                                                        controllers['tanda_terima']!,
+                                                    label: 'Tanda Terima',
+                                                    icon:
+                                                        Icons.receipt_long_rounded,
                                                   ),
                                                 ),
                                               ],
-                                            );
-                                          },
-                                        ),
-                                        SizedBox(height: 20),
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              child: buildDatePickerField(
-                                                context: context,
-                                                controller:
-                                                    controllers['dok_dikirim_tgl']!,
-                                                label:
-                                                    'Tanggal Dokumen Dikirim',
-                                                icon: Icons.send_rounded,
-                                              ),
                                             ),
-                                            SizedBox(width: 15),
-                                            Expanded(
-                                              child: buildDatePickerField(
-                                                context: context,
-                                                controller:
-                                                    controllers['tanda_terima']!,
-                                                label: 'Tanda Terima',
-                                                icon:
-                                                    Icons.receipt_long_rounded,
+          
+                                            SizedBox(height: 30),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+          
+                              SizedBox(height: 10),
+                              Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: Colors.white.withValues(alpha: 0.1),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Bottom Buttons
+                              Container(
+                                padding: EdgeInsets.all(25),
+                                child: Column(
+                                  children: [
+                                    // Save Button
+                                    Container(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          if (_formKey.currentState!.validate()) {
+                                            // Create new surat data
+                                            // Map<String, dynamic> newSurat = {
+                                            //   'id': DateTime.now()
+                                            //       .millisecondsSinceEpoch
+                                            //       .toString(),
+                                            // };
+          
+                                            // // Add all controller values to the map
+                                            // controllers.forEach((key, controller) {
+                                            //   newSurat[key] = controller.text;
+                                            // });
+                                            try {
+                                              setState(() => _isLoading = true);
+                                            SuratKeluarModel?
+                                            data = await _suratKeluarService.addSurat(
+                                              kode: controllers['kode']?.text,
+                                              klasifikasi:
+                                                  controllers['klasifikasi']?.text,
+                                              tujuan_surat:
+                                                  controllers['tujuan_surat']?.text,
+                                              perihal: controllers['perihal']?.text,
+                                              tanggal_surat:
+                                                  controllers['tgl_surat']!
+                                                      .text
+                                                      .isNotEmpty
+                                                  ? DateTime.tryParse(
+                                                      controllers['tgl_surat']!
+                                                          .text,
+                                                    )
+                                                  : null,
+                                              akses_arsip:
+                                                  controllers['klasifikasi_arsip']
+                                                      ?.text,
+                                              pengolah:
+                                                  controllers['pengolah']?.text,
+                                              pembuat: controllers['pembuat']?.text,
+                                              catatan: controllers['catatan']?.text,
+                                              link_surat:
+                                                  controllers['link_surat']?.text,
+                                              koreksi_1:
+                                                  controllers['koreksi_1']?.text,
+                                              koreksi_2:
+                                                  controllers['koreksi_2']?.text,
+                                              status: controllers['status']?.text,
+                                              //dok_final:
+                                              //    controllers['dok_final']?.text,
+                                              dok_dikirim:
+                                                  controllers['dok_dikirim_tgl']!
+                                                      .text
+                                                      .isNotEmpty
+                                                  ? DateTime.tryParse(
+                                                      controllers['dok_dikirim_tgl']!
+                                                          .text,
+                                                    )
+                                                  : null,
+                                              tanda_terima:
+                                                  controllers['tanda_terima']!
+                                                      .text
+                                                      .isNotEmpty
+                                                  ? DateTime.tryParse(
+                                                      controllers['tanda_terima']!
+                                                          .text,
+                                                    )
+                                                  : null,
+                                            );
+          
+                                            // Call the callback function
+                                            onSuratKeluarAdded(data);
+          
+                                            final fileUpload = fileTarget != null ? await _suratKeluarService.uploadFile(data!.nomor_urut, fileTarget!) : null;
+                                            print("[DEBUG] -> [STATE] :: File Uploaded? = $fileUpload");
+                                            } catch (err) {
+                                              print(err);
+                                            } finally {
+                                              setState(() => _isLoading = false);
+          
+                                              refreshState();
+          
+                                              Navigator.pop(context);
+          
+                                              // Show success message
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Surat berhasil ditambahkan!',
+                                                  ),
+                                                  backgroundColor: accentColor,
+                                                  behavior: SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(10),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: accentColor,
+                                          foregroundColor: Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 15,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          elevation: 8,
+                                          shadowColor: accentColor.withValues(
+                                            alpha: 0.4,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.save_rounded),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              'Simpan Surat',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0.5,
                                               ),
                                             ),
                                           ],
                                         ),
-
-                                        SizedBox(height: 30),
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                    SizedBox(height: 10),
+          
+                                    // Cancel Button
+                                    Container(
+                                      width: double.infinity,
+                                      child: OutlinedButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: Colors.white,
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 15,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                          ),
+                                          side: BorderSide(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.close_rounded),
+                                            SizedBox(width: 10),
+                                            Text(
+                                              'Batal',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0.5,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-
-                          SizedBox(height: 10),
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: Colors.white.withValues(alpha: 0.1),
-                                  width: 1.5,
-                                ),
-                              ),
-                            ),
-                          ),
-                          // Bottom Buttons
-                          Container(
-                            padding: EdgeInsets.all(25),
-                            child: Column(
-                              children: [
-                                // Save Button
-                                Container(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      if (_formKey.currentState!.validate()) {
-                                        // Create new surat data
-                                        // Map<String, dynamic> newSurat = {
-                                        //   'id': DateTime.now()
-                                        //       .millisecondsSinceEpoch
-                                        //       .toString(),
-                                        // };
-
-                                        // // Add all controller values to the map
-                                        // controllers.forEach((key, controller) {
-                                        //   newSurat[key] = controller.text;
-                                        // });
-
-                                        SuratKeluarModel?
-                                        data = await _suratKeluarService.addSurat(
-                                          kode: controllers['kode']?.text,
-                                          klasifikasi:
-                                              controllers['klasifikasi']?.text,
-                                          tujuan_surat:
-                                              controllers['tujuan_surat']?.text,
-                                          perihal: controllers['perihal']?.text,
-                                          tanggal_surat:
-                                              controllers['tgl_surat']!
-                                                  .text
-                                                  .isNotEmpty
-                                              ? DateTime.tryParse(
-                                                  controllers['tgl_surat']!
-                                                      .text,
-                                                )
-                                              : null,
-                                          akses_arsip:
-                                              controllers['klasifikasi_arsip']
-                                                  ?.text,
-                                          pengolah:
-                                              controllers['pengolah']?.text,
-                                          pembuat: controllers['pembuat']?.text,
-                                          catatan: controllers['catatan']?.text,
-                                          link_surat:
-                                              controllers['link_surat']?.text,
-                                          koreksi_1:
-                                              controllers['koreksi_1']?.text,
-                                          koreksi_2:
-                                              controllers['koreksi_2']?.text,
-                                          status: controllers['status']?.text,
-                                          dok_final:
-                                              controllers['dok_final']?.text,
-                                          dok_dikirim:
-                                              controllers['dok_dikirim_tgl']!
-                                                  .text
-                                                  .isNotEmpty
-                                              ? DateTime.tryParse(
-                                                  controllers['dok_dikirim_tgl']!
-                                                      .text,
-                                                )
-                                              : null,
-                                          tanda_terima:
-                                              controllers['tanda_terima']!
-                                                  .text
-                                                  .isNotEmpty
-                                              ? DateTime.tryParse(
-                                                  controllers['tanda_terima']!
-                                                      .text,
-                                                )
-                                              : null,
-                                        );
-
-                                        // Call the callback function
-                                        onSuratKeluarAdded(data);
-
-                                        refreshState();
-
-                                        Navigator.pop(context);
-
-                                        // Show success message
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Surat berhasil ditambahkan!',
-                                            ),
-                                            backgroundColor: accentColor,
-                                            behavior: SnackBarBehavior.floating,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: accentColor,
-                                      foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 15,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      elevation: 8,
-                                      shadowColor: accentColor.withValues(
-                                        alpha: 0.4,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.save_rounded),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          'Simpan Surat',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.5,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 10),
-
-                                // Cancel Button
-                                Container(
-                                  width: double.infinity,
-                                  child: OutlinedButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: 15,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      side: BorderSide(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.3,
-                                        ),
-                                        width: 1.5,
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(Icons.close_rounded),
-                                        SizedBox(width: 10),
-                                        Text(
-                                          'Batal',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.5,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }
       );
     },
   );

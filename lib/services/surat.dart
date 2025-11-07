@@ -614,6 +614,7 @@ class SuratKeluar {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print(data);
         return SuratKeluarModel.fromJson(data);
       } else {
         print('Gagal tambah surat: ${response.body}');
@@ -684,6 +685,7 @@ class SuratKeluar {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print(data);
         return SuratKeluarModel.fromJson(data);
       } else {
         print('Gagal tambah surat: ${response.body}');
@@ -726,17 +728,43 @@ class SuratKeluar {
   }
 
   // Files services
-  Future<bool> uploadFile(int nomor_urut, File file) async {
+  Future<bool> uploadFile(int nomor_urut, PlatformFile file) async {
     final token = await _authService.getToken();
 
     final request = http.MultipartRequest(
       'POST',
-      Uri.parse('${dotenv.env['API_URL']}/upload/surat/keluar/$nomor_urut'),
+      Uri.parse('${dotenv.env['API_URL']}/upload/surat/keluar'),
     );
     request.headers['Authorization'] = 'Bearer $token';
-    request.files.add(await http.MultipartFile.fromPath('file', file.path));
+    request.files.add(await http.MultipartFile.fromPath('file', file.path!));
+    request.fields['nomor_urut'] = nomor_urut.toString();
 
     final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+
+    final decoded = jsonDecode(responseBody);
+    print("[DEBUG] -> [RES] :: $decoded");
+
+    return response.statusCode == 200;
+  }
+
+  Future<bool> editUploadFile(int nomor_urut, PlatformFile file) async {
+    final token = await _authService.getToken();
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${dotenv.env['API_URL']}/upload/surat/keluar/edit'),
+    );
+    request.headers['Authorization'] = 'Bearer $token';
+    request.files.add(await http.MultipartFile.fromPath('file', file.path!));
+    request.fields['nomor_urut'] = nomor_urut.toString();
+
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+
+    final decoded = jsonDecode(responseBody);
+    print("[DEBUG] -> [RES] :: $decoded");
+
     return response.statusCode == 200;
   }
 
@@ -780,5 +808,50 @@ class SuratKeluar {
       print("Download gagal: ${response.body}");
       return null;
     }
+  }
+
+  Future<String> getDefaultDownloadPath() async {
+    Directory? dir;
+
+    if (Platform.isAndroid) {
+      // Di Android 10 ke atas, kamu bisa pakai ini (tapi perlu permission)
+      dir = Directory('/storage/emulated/0/Download');
+      if (!await dir.exists()) {
+        dir = await getExternalStorageDirectory();
+      }
+    } else if (Platform.isWindows) {
+      final downloadsDir = Directory(
+        p.join(
+          Platform.environment['USERPROFILE'] ?? '',
+          'Downloads',
+        ),
+      );
+      dir = downloadsDir;
+    } else if (Platform.isLinux) {
+      final downloadsDir = Directory(
+        p.join(
+          Platform.environment['HOME'] ?? '',
+          'Downloads',
+        ),
+      );
+      dir = downloadsDir;
+    } else if (Platform.isMacOS) {
+      final downloadsDir = Directory(
+        p.join(
+          Platform.environment['HOME'] ?? '',
+          'Downloads',
+        ),
+      );
+      dir = downloadsDir;
+    } else {
+      dir = await getApplicationDocumentsDirectory();
+    }
+
+    // Pastikan folder ada
+    if (!await dir!.exists()) {
+      await dir.create(recursive: true);
+    }
+
+    return dir.path;
   }
 }
