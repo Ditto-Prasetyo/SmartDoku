@@ -1154,7 +1154,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                       null
                                                                   ? 'Data No Register Kosong'
                                                                   : surat!
-                                                                        .no_register,
+                                                                        .no_register!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1252,7 +1252,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                       null
                                                                   ? 'Data Klasifikasi Arsip Kosong'
                                                                   : surat
-                                                                        .akses_arsip,
+                                                                        .akses_arsip!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white

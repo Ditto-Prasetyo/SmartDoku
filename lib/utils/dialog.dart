@@ -8459,6 +8459,8 @@ void showEditSuratKeluarDialog(
   String selectedStatus = selectedSurat!.status!;
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
   Size size = MediaQuery.of(context).size;
+
+  PlatformFile? fileTarget;
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -8472,12 +8474,22 @@ void showEditSuratKeluarDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      bool _isLoading = false;
       return StatefulBuilder(
         builder: (context, setState) {
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
-              child: Container(
+              child: _isLoading ? 
+              Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+              ) :
+              Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 height: MediaQuery.of(context).size.height * 0.9,
                 width:
@@ -8973,7 +8985,10 @@ void showEditSuratKeluarDialog(
                                                       file.path ?? '';
 
                                                   setStateLocal(
-                                                    () {},
+                                                    () {
+                                                      fileTarget = file;
+                                                      print("[DEBUG] -> [STATE] :: File Target? = $fileTarget");
+                                                    },
                                                   ); // Update UI lokal
 
                                                   ScaffoldMessenger.of(
@@ -9240,6 +9255,8 @@ void showEditSuratKeluarDialog(
                                           pengolahController.text =
                                               selectedPengolah ?? '';
 
+                                          setState(() => _isLoading = true);
+
                                           // Update data
                                           final data = await _suratKeluarService
                                               .editSurat(
@@ -9284,6 +9301,14 @@ void showEditSuratKeluarDialog(
                                           print(
                                             "[DEBUG] -> [STATUS] : Edit Status",
                                           );
+
+                                          if (fileTarget != null) {
+                                            final fileUpload = await _suratKeluarService.editUploadFile(data!.nomor_urut, fileTarget!);
+                                            print("[DEBUG] -> [STATE] :: File Uploaded? = $fileUpload");
+                                          } else if (dokfinalController.text == '') {
+                                            final fileDeleted = await _suratKeluarService.deleteFile(data!.nomor_urut);
+                                            print("[DEBUG] -> [STATE] :: File deleted? = $fileDeleted");
+                                          }
                                           print(data);
 
                                           // Refresh state
@@ -9330,6 +9355,8 @@ void showEditSuratKeluarDialog(
                                               ),
                                             ),
                                           );
+                                        } finally {
+                                          setState(() => _isLoading = false);
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
