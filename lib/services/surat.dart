@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
@@ -33,7 +34,10 @@ class SuratMasuk {
     }
   }
 
-  Future<List<SuratMasukModel?>> getFilteredListSurat(String disposisi, bool? isSuperAdmin) async {
+  Future<List<SuratMasukModel?>> getFilteredListSurat(
+    String disposisi,
+    bool? isSuperAdmin,
+  ) async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk');
     final token = await _authService.getToken();
 
@@ -47,16 +51,17 @@ class SuratMasuk {
 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body);
-      
+
       final List<SuratMasukModel> allData = data
-        .map((e) => SuratMasukModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+          .map((e) => SuratMasukModel.fromJson(e as Map<String, dynamic>))
+          .toList();
 
       // Filter sesuai disposisi
-      final List<SuratMasukModel> filtered = allData.where((surat) => surat.disposisi.contains(disposisi)).toList();
+      final List<SuratMasukModel> filtered =
+          allData.where((surat) => surat.disposisi.contains(disposisi)).toList();
       if (isSuperAdmin == false)
         return filtered;
-      else 
+      else
         return allData;
     } else {
       throw Exception('Gagal mengambil data surat masuk');
@@ -64,47 +69,47 @@ class SuratMasuk {
   }
 
   Future<SuratMasukModel?> getSurat(int number) async {
-  final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk/$number');
-  final token = await _authService.getToken();
+    final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk/$number');
+    final token = await _authService.getToken();
 
-  try {
-    final response = await http.get(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
+    try {
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final body = response.body.trim();
-      if (body.isEmpty) return null;
+      if (response.statusCode == 200) {
+        final body = response.body.trim();
+        if (body.isEmpty) return null;
 
-      final data = jsonDecode(body);
+        final data = jsonDecode(body);
 
-      // Cek apakah data valid (misal Map dan punya key tertentu)
-      if (data == null || data is! Map<String, dynamic>) return null;
+        // Cek apakah data valid (misal Map dan punya key tertentu)
+        if (data == null || data is! Map<String, dynamic>) return null;
 
-      return SuratMasukModel.fromJson(data);
-    } else if (response.statusCode == 404) {
-      // Data tidak ditemukan
-      print('Surat dengan nomor $number tidak ditemukan');
-      return null;
-    } else if (response.statusCode == 401) {
-      // Token invalid/expired
-      print('Token kadaluarsa atau tidak valid');
-      return null;
-    } else {
-      // Error umum
-      print('Error ${response.statusCode}: ${response.body}');
+        return SuratMasukModel.fromJson(data);
+      } else if (response.statusCode == 404) {
+        // Data tidak ditemukan
+        print('Surat dengan nomor $number tidak ditemukan');
+        return null;
+      } else if (response.statusCode == 401) {
+        // Token invalid/expired
+        print('Token kadaluarsa atau tidak valid');
+        return null;
+      } else {
+        // Error umum
+        print('Error ${response.statusCode}: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      // Handler kalau server down, timeout, atau error parsing JSON
+      print('Terjadi kesalahan: $e');
       return null;
     }
-  } catch (e) {
-    // Handler kalau server down, timeout, atau error parsing JSON
-    print('Terjadi kesalahan: $e');
-    return null;
   }
-}
 
   Future<SuratMasukModel?> addSurat({
     String? suratDari,
@@ -232,12 +237,12 @@ class SuratMasuk {
     String? status,
   }) async {
     try {
-
       final token = await _authService.getToken();
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
-      final url = Uri.parse("${dotenv.env['API_URL']}/surat/masuk/$nomor_urut");
+      final url =
+          Uri.parse("${dotenv.env['API_URL']}/surat/masuk/$nomor_urut");
 
       final body = {
         'nama_surat': suratDari,
@@ -294,20 +299,17 @@ class SuratMasuk {
 
   Future<SuratMasukModel?> deleteSurat(int nomor_urut) async {
     try {
-
       final token = await _authService.getToken();
 
       if (token == null) throw Exception('Token tidak ditemukan');
 
-      final url = Uri.parse("${dotenv.env['API_URL']}/surat/masuk/$nomor_urut");
+      final url =
+          Uri.parse("${dotenv.env['API_URL']}/surat/masuk/$nomor_urut");
 
-      final response = await http.delete(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        }
-      );
+      final response = await http.delete(url, headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -363,32 +365,146 @@ class SuratMasuk {
     return response.statusCode == 200;
   }
 
-  Future<File?> downloadFile(int fileId, String savePath) async {
-    final token = await _authService.getToken();
+  /// ========================================================================
+  /// FIXED: Download File dengan REAL Progress Tracking
+  /// ========================================================================
+  Future<DownloadResult> downloadFileWithProgress(
+    int fileId,
+    String savePath, {
+    Function(int received, int total)? onProgress,
+  }) async {
+    try {
+      final token = await _authService.getToken();
 
-    final uri = Uri.parse('${dotenv.env['API_URL']}/download/surat/masuk/$fileId');
-    final response = await http.get(
-      uri,
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
+      if (token == null) {
+        return DownloadResult(
+          success: false,
+          error: 'Token tidak ditemukan',
+          errorType: DownloadErrorType.authError,
+        );
+      }
 
-    if (response.statusCode == 200) {
+      final uri = Uri.parse(
+        '${dotenv.env['API_URL']}/download/surat/masuk/$fileId',
+      );
+
+      // Check if file already exists
       final file = File(savePath);
-      await file.writeAsBytes(response.bodyBytes);
-      print("[DEBUG] -> [STATE] :: Download berhasil: $savePath");
-      return file;
-    } else {
-      print("[DEBUG] -> [STATE] ::  Download gagal: ${response.body}");
-      return null;
+      if (await file.exists()) {
+        return DownloadResult(
+          success: false,
+          error: 'File sudah ada di lokasi tersebut',
+          errorType: DownloadErrorType.fileExists,
+          existingFile: file,
+        );
+      }
+
+      // Create HTTP client for streaming
+      final client = http.Client();
+      final request = http.Request('GET', uri);
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // Send request
+      final response = await client.send(request).timeout(
+            Duration(seconds: 30),
+            onTimeout: () {
+              throw TimeoutException('Koneksi timeout');
+            },
+          );
+
+      if (response.statusCode == 200) {
+        final contentLength = response.contentLength ?? 0;
+        int receivedBytes = 0;
+        List<int> bytes = [];
+
+        // Stream response with progress tracking
+        await for (var chunk in response.stream) {
+          bytes.addAll(chunk);
+          receivedBytes += chunk.length;
+
+          // Update progress callback
+          if (onProgress != null && contentLength > 0) {
+            onProgress(receivedBytes, contentLength);
+          }
+        }
+
+        // Write to file
+        await file.writeAsBytes(bytes);
+
+        print("[DEBUG] -> [SUCCESS] :: Download berhasil: $savePath");
+        print("[DEBUG] -> [SIZE] :: ${(receivedBytes / 1024 / 1024).toStringAsFixed(2)} MB");
+
+        client.close();
+
+        return DownloadResult(
+          success: true,
+          file: file,
+          fileSize: receivedBytes,
+        );
+      } else if (response.statusCode == 404) {
+        client.close();
+        return DownloadResult(
+          success: false,
+          error: 'File tidak ditemukan di server',
+          errorType: DownloadErrorType.notFound,
+        );
+      } else if (response.statusCode == 401) {
+        client.close();
+        return DownloadResult(
+          success: false,
+          error: 'Token kadaluarsa atau tidak valid',
+          errorType: DownloadErrorType.authError,
+        );
+      } else {
+        client.close();
+        return DownloadResult(
+          success: false,
+          error: 'Server error: ${response.statusCode}',
+          errorType: DownloadErrorType.serverError,
+        );
+      }
+    } on SocketException catch (e) {
+      print("[ERROR] -> [NETWORK] :: $e");
+      return DownloadResult(
+        success: false,
+        error: 'Tidak ada koneksi internet',
+        errorType: DownloadErrorType.networkError,
+      );
+    } on TimeoutException catch (e) {
+      print("[ERROR] -> [TIMEOUT] :: $e");
+      return DownloadResult(
+        success: false,
+        error: 'Koneksi timeout, coba lagi',
+        errorType: DownloadErrorType.timeout,
+      );
+    } on FileSystemException catch (e) {
+      print("[ERROR] -> [FILESYSTEM] :: $e");
+      return DownloadResult(
+        success: false,
+        error: 'Tidak dapat menyimpan file, periksa izin akses',
+        errorType: DownloadErrorType.permissionDenied,
+      );
+    } catch (e) {
+      print("[ERROR] -> [DOWNLOAD] :: $e");
+      return DownloadResult(
+        success: false,
+        error: 'Terjadi kesalahan: ${e.toString()}',
+        errorType: DownloadErrorType.unknown,
+      );
     }
+  }
+
+  /// Legacy download method (backward compatibility)
+  Future<File?> downloadFile(int fileId, String savePath) async {
+    final result = await downloadFileWithProgress(fileId, savePath);
+    return result.file;
   }
 
   Future<bool> deleteFile(int nomor_urut) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('${dotenv.env['API_URL']}/upload/surat/masuk/$nomor_urut');
+    final uri =
+        Uri.parse('${dotenv.env['API_URL']}/upload/surat/masuk/$nomor_urut');
     final response = await http.delete(
       uri,
       headers: {
@@ -408,7 +524,8 @@ class SuratMasuk {
   Future<File?> downloadDisposisi(int fileId, String savePath) async {
     final token = await _authService.getToken();
 
-    final uri = Uri.parse('${dotenv.env['API_URL']}/download/disposisi/$fileId');
+    final uri =
+        Uri.parse('${dotenv.env['API_URL']}/download/disposisi/$fileId');
     final response = await http.get(
       uri,
       headers: {
@@ -473,6 +590,46 @@ class SuratMasuk {
   }
 }
 
+class DownloadResult {
+  final bool success;
+  final File? file;
+  final int? fileSize;
+  final String? error;
+  final DownloadErrorType? errorType;
+  final File? existingFile;
+
+  DownloadResult({
+    required this.success,
+    this.file,
+    this.fileSize,
+    this.error,
+    this.errorType,
+    this.existingFile,
+  });
+
+  String get formattedSize {
+    if (fileSize == null) return '';
+    final mb = fileSize! / 1024 / 1024;
+    if (mb >= 1) {
+      return '${mb.toStringAsFixed(2)} MB';
+    } else {
+      final kb = fileSize! / 1024;
+      return '${kb.toStringAsFixed(2)} KB';
+    }
+  }
+}
+
+/// Error types untuk better error handling
+enum DownloadErrorType {
+  networkError,
+  timeout,
+  authError,
+  notFound,
+  serverError,
+  permissionDenied,
+  fileExists,
+  unknown,
+}
 class SuratKeluar {
   final AuthService _authService = AuthService();
 

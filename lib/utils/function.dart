@@ -885,38 +885,52 @@ void DownloadDokumenAdminMasuk(
   SuratMasukModel? suratData,
   void Function() refreshState,
 ) {
-  
-  // Validasi dulu
+  // Validasi lebih ketat
   if (suratData == null) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Data surat tidak ditemukan'),
-        backgroundColor: Colors.red,
+        content: Row(
+          children: [
+            Icon(Icons.warning, color: Colors.white),
+            SizedBox(width: 10),
+            Text('Data surat tidak valid'),
+          ],
+        ),
+        backgroundColor: Colors.orange.shade700,
+        behavior: SnackBarBehavior.floating,
       ),
     );
     return;
   }
-  
-  print(
-    'Download Document - ID: ${suratData.id}, Judul: ${suratData.nama_surat}, \nNama File : ${suratData.link_scan}',
-  );
-  
+
+  // Validasi file link
+  if (suratData.link_scan == null || suratData.link_scan!.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(Icons.error, color: Colors.white),
+            SizedBox(width: 10),
+            Text('File tidak tersedia untuk didownload'),
+          ],
+        ),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    return;
+  }
+
+  print('[DOWNLOAD] ID: ${suratData.id}, File: ${suratData.link_scan}');
+
   showModernDownloadFileSuratMasukDesktopDialog(
     'Download File',
-    'Apakah anda ingin mendownload file ${suratData.link_scan ?? 'dokumen ini'} \ndari surat ${suratData.nama_surat ?? 'tanpa judul'}?',
-    Color(0xFF10B981), // Accent color 1 (hijau)
-    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    'Unduh file "${suratData.link_scan?.split('/').last ?? 'dokumen'}" dari surat "${suratData.nama_surat ?? 'tanpa judul'}"?',
+    Color(0xFF10B981),
+    Color(0xFF059669),
     context,
     suratData,
-    refreshState
-    // (fileId, savePath) async {
-    //   // Panggil service download lu
-    //   return await yourService.downloadFile(fileId, savePath);
-    // },
-    // () async {
-    //   // Panggil function getDefaultDownloadPath lu
-    //   return await yourService.getDefaultDownloadPath();
-    // },
+    refreshState,
   );
 }
 
