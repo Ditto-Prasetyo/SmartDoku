@@ -667,7 +667,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         // 2. Surat dari - flex: 200
                                         SizedBox(width: 20),
                                         Expanded(
-                                          flex: 170,
+                                          flex: 190,
                                           child: Text(
                                             'Surat Dari',
                                             style: TextStyle(
@@ -681,9 +681,8 @@ class _PermohonanLettersPageAdminDesktopState
                                         ),
                         
                                         // 3. Diterima TGL - flex: 100
-                                        SizedBox(width: 8),
                                         Expanded(
-                                          flex: 130,
+                                          flex: 120,
                                           child: Text(
                                             'Diterima \nTGL',
                                             style: TextStyle(
@@ -744,7 +743,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         // 7. No Agenda - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 100,
+                                          flex: 130,
                                           child: Text(
                                             'No Agenda',
                                             style: TextStyle(
@@ -759,7 +758,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         // 8. No Surat - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 60,
+                                          flex: 40,
                                           child: Text(
                                             'No \nSurat',
                                             style: TextStyle(
@@ -773,7 +772,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                         // 9. Perihal - flex: 200
                                         Expanded(
-                                          flex: 240,
+                                          flex: 220,
                                           child: Text(
                                             'Perihal',
                                             style: TextStyle(
@@ -789,7 +788,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         // 10. Hari/Tanggal - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 100,
+                                          flex: 110,
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8.0),
                                             child: Text(
@@ -808,7 +807,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         // 12. Tempat - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 100,
+                                          flex: 120,
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -860,7 +859,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                         // 15. Pengolah - flex: 100
                                         Expanded(
-                                          flex: 80,
+                                          flex: 120,
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -878,7 +877,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                         // 16. Sifat - flex: 100
                                         Expanded(
-                                          flex: 140,
+                                          flex: 80,
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -896,7 +895,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                         // 17. Link Scan - flex: 200
                                         Expanded(
-                                          flex: 200,
+                                          flex: 160,
                                           child: Text(
                                             'Link Scan',
                                             style: TextStyle(
@@ -911,7 +910,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                         // 18. Disposisi Kadin - flex: 100
                                         Expanded(
-                                          flex: 90,
+                                          flex: 140,
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -929,7 +928,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                         // 19. Disposisi Sekdin - flex: 100
                                         Expanded(
-                                          flex: 110,
+                                          flex: 170,
                                           child: Text(
                                             'Disposisi \nSekdin',
                                             style: TextStyle(
@@ -944,7 +943,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                         // 20. Disposisi Kabid - flex: 100
                                         Expanded(
-                                          flex: 80,
+                                          flex: 65,
                                           child: Text(
                                             'Disposisi\nKabid/ \nKaUPT',
                                             style: TextStyle(
@@ -959,7 +958,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                         // 21. Disposisi Kasubag - flex: 100
                                         Expanded(
-                                          flex: 140,
+                                          flex: 155,
                                           child: Text(
                                             'Disposisi \nKasubag/ \nKasi',
                                             style: TextStyle(
@@ -1177,11 +1176,11 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 2. Surat dari - flex: 200
                                                           SizedBox(width: 20),
                                                           Expanded(
-                                                            flex: 200,
+                                                            flex: 180,
                                                             child: Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
-                                                                      .start,
+                                                                      .center,
                                                               children: [
                                                                 Text(
                                                                   surat!
@@ -1229,7 +1228,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 3. Diterima tgl - flex: 100
                                                           SizedBox(width: 8),
                                                           Expanded(
-                                                            flex: 100,
+                                                            flex: 120,
                                                             child: Text(
                                                               parseDateFormat(surat.tanggal_diterima),
                                                               style: TextStyle(
@@ -1286,7 +1285,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 6. No_urut - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 100,
+                                                            flex: 80,
                                                             child: Text(
                                                               surat.nomor_urut
                                                                   .toString(),
@@ -1306,7 +1305,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 7. No_agenda - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 100,
+                                                            flex: 140,
                                                             child: Text(
                                                               surat.no_agenda == null
                                                                   ? '404 Not Found'
@@ -1334,7 +1333,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 8. No surat - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 70,
+                                                            flex: 120,
                                                             child: Text(
                                                               surat.no_surat,
                                                               style: TextStyle(
@@ -1353,7 +1352,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 9. Perihal - flex: 200
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 230,
+                                                            flex: 90,
                                                             child: Text(
                                                               surat.hal == null
                                                                   ? '404 Not Found'
@@ -1378,7 +1377,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 10. Hari/tanggal - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 100,
+                                                            flex: 170,
                                                             child: Padding(
                                                               padding:
                                                                   EdgeInsets.only(
@@ -1572,7 +1571,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                                           // 17. Link scan - flex: 200
                                                           Expanded(
-                                                            flex: 200,
+                                                            flex: 120,
                                                             child: Text(
                                                               surat.link_scan ==
                                                                       null
@@ -1598,7 +1597,7 @@ class _PermohonanLettersPageAdminDesktopState
                         
                                                           // 18. Disposisi kadin - flex: 100
                                                           Expanded(
-                                                            flex: 100,
+                                                            flex: 180,
                                                             child: Padding(
                                                               padding:
                                                                   EdgeInsets.only(
@@ -1853,9 +1852,8 @@ class _PermohonanLettersPageAdminDesktopState
                                                           ),
                         
                                                           // Actions - width: 100 (sama kayak header)
-                                                          SizedBox(width: 8),
                                                           SizedBox(
-                                                            width: 100,
+                                                            width: 120,
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -1904,6 +1902,51 @@ class _PermohonanLettersPageAdminDesktopState
                                                                     child: Icon(
                                                                       Icons
                                                                           .visibility_outlined,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      size: 14,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                // download file button
+                                                                Container(
+                                                                  margin:
+                                                                      EdgeInsets.only(
+                                                                        right: 4,
+                                                                      ),
+                                                                  padding:
+                                                                      EdgeInsets.all(
+                                                                        6,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
+                                                                    gradient: LinearGradient(
+                                                                      colors: [
+                                                                        Color(
+                                                                          0xFF4CAF50,
+                                                                        ).withValues(
+                                                                          alpha:
+                                                                              0.3,
+                                                                        ),
+                                                                        Color(
+                                                                          0xFF43A047,
+                                                                        ).withValues(
+                                                                          alpha:
+                                                                              0.2,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          6,
+                                                                        ),
+                                                                  ),
+                                                                  child: InkWell(
+                                                                    onTap: () {
+                                                                      
+                                                                    },
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .download,
                                                                       color: Colors
                                                                           .white,
                                                                       size: 14,

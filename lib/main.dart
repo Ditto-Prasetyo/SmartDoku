@@ -28,33 +28,35 @@ import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_permohonan_page.dart';
 import 'package:smart_doku/services/settings.dart';
 import 'package:smart_doku/test.dart';
-import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;  
 import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  final bool isDesktop = !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.windows ||
+       defaultTargetPlatform == TargetPlatform.linux  ||
+       defaultTargetPlatform == TargetPlatform.macOS  ||
+       defaultTargetPlatform == TargetPlatform.fuchsia);
+
   if (kIsWeb) {
-    // Jika di Web, jangan jalankan kode desktop seperti window_size
-    print("Aplikasi dijalankan di Web.");
-  } else if (Platform.isWindows ||
-      Platform.isLinux ||
-      Platform.isMacOS ||
-      Platform.isFuchsia) {
-    // Hanya di platform desktop yang mendukung window_size
+    // Web: jangan jalankan window_size
+    // print("Aplikasi dijalankan di Web."); // optional
+  } else if (isDesktop) {
     setWindowTitle('SmartDoku');
-    var windowInfo = await getWindowInfo();
-    var size = windowInfo.frame.size;
-    setWindowMinSize(
-      Size(size.width * 0.3125, size.height * 0.8333),
-    ); // Minimum window size
-    setWindowMaxSize(
-      Size(size.width * 2.0, size.height * 1.5),
-    ); // Maximum window size
+    final info = await getWindowInfo();
+    final size = info.frame.size;
+    setWindowMinSize(Size(size.width * 0.3125, size.height * 0.8333));
+    setWindowMaxSize(Size(size.width * 2.0, size.height * 1.5));
   }
 
-  await dotenv.load(fileName: ".config/.env");
+  try {
+    await dotenv.load(fileName: ".config/.env");
+  } catch (e) {
+    print('[DOTENV] ${e.toString()}'); // optional
+  }
 
   await AppSettings().init(); // init prefs global
 

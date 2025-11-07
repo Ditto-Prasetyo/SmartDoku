@@ -703,7 +703,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         // Kode
                                         SizedBox(width: 20),
                                         Expanded(
-                                          flex: 30,
+                                          flex: 25,
                                           child: Text(
                                             'KODE',
                                             style: TextStyle(
@@ -717,7 +717,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         // Klasifikasi
                                         SizedBox(width: 25),
                                         Expanded(
-                                          flex: 60,
+                                          flex: 55,
                                           child: Text(
                                             'KLASIFIKASI',
                                             style: TextStyle(
@@ -730,7 +730,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // No Register
                                         Expanded(
-                                          flex: 45,
+                                          flex: 55,
                                           child: Text(
                                             'NO REGISTER',
                                             style: TextStyle(
@@ -743,7 +743,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Tujuan Surat
                                         Expanded(
-                                          flex: 45,
+                                          flex: 20,
                                           child: Text(
                                             'TUJUAN SURAT',
                                             style: TextStyle(
@@ -756,7 +756,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Perihal
                                         Expanded(
-                                          flex: 65,
+                                          flex: 90,
                                           child: Text(
                                             'PERIHAL',
                                             style: TextStyle(
@@ -1069,9 +1069,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ),
                         
                                                           // kode
-                                                          SizedBox(width: 20),
+                                                          SizedBox(width: 30),
                                                           Expanded(
-                                                            flex: 25,
+                                                            flex: 30,
                                                             child: Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
@@ -1100,9 +1100,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ),
                         
                                                           // Klasifikasi
-                                                          SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 60,
+                                                            flex: 40,
                                                             child: Row(
                                                               children: [
                                                                 Container(
@@ -1171,7 +1170,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // Nomor Register
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 36,
+                                                            flex: 53,
                                                             child: Text(
                                                               surat?.no_register ??
                                                                   '',
@@ -1190,7 +1189,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // tujuan surat
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 46,
+                                                            flex: 52,
                                                             child: Text(
                                                               surat?.tujuan_surat ==
                                                                       null
@@ -1212,7 +1211,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // perihal
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 53,
+                                                            flex: 40,
                                                             child: Text(
                                                               surat?.perihal ??
                                                                   '',
@@ -1235,7 +1234,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // tanggal surat
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 50,
+                                                            flex: 53,
                                                             child: Text(
                                                               surat?.tanggal_surat == null ? '-' : parseDateFormat(surat!.tanggal_surat),
                                                               style: TextStyle(
@@ -1300,7 +1299,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // pembuat
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 31,
                                                             child: Text(
                                                               surat?.pembuat ??
                                                                   '',
@@ -1319,7 +1318,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // catatan
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 44,
+                                                            flex: 40,
                                                             child: Text(
                                                               surat?.catatan ==
                                                                       null
@@ -1341,7 +1340,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // link surat
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 37,
+                                                            flex: 38,
                                                             child: Text(
                                                               surat?.link_surat ==
                                                                       null
@@ -1358,12 +1357,13 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 fontFamily:
                                                                     'Roboto',
                                                               ),
+                                                              overflow: TextOverflow.ellipsis,
                                                             ),
                                                           ),
                                                           // koreksi 1
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 28,
                                                             child: Text(
                                                               surat?.koreksi_1 ==
                                                                       null
@@ -1385,7 +1385,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // koreksi 2
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 35,
+                                                            flex: 27,
                                                             child: Text(
                                                               surat?.koreksi_2 ==
                                                                       null
@@ -1406,7 +1406,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ),
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 37,
                                                             child: Text(
                                                               surat?.dok_dikirim == null ? "-" : parseDateFormat(surat!.dok_dikirim!),
                                                               style: TextStyle(
@@ -1422,7 +1422,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                             ),
                                                           ),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 26,
                                                             child: Text(
                                                               surat?.dok_final == null ? "-" : surat!.dok_final!,
                                                               style: TextStyle(
@@ -1434,11 +1434,12 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 fontSize: 11,
                                                                 fontFamily:
                                                                     'Roboto',
+                                                                    
                                                               ),
                                                             ),
                                                           ),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 20,
                                                             child: Text(
                                                               surat?.tanda_terima == null ? "-" : parseDateFormat(surat!.tanda_terima!),
                                                               style: TextStyle(
@@ -1454,8 +1455,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                             ),
                                                           ),
                                                           // Status
+                                                          SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 15,
+                                                            flex: 14,
                                                             child: Align(
                                                               alignment: Alignment
                                                                   .centerLeft,
@@ -1531,7 +1533,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // Actions
                                                           SizedBox(width: 40),
                                                           SizedBox(
-                                                            width: 100,
+                                                            width: 120,
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -1581,6 +1583,51 @@ class _OutgoingLetterPageAdminDesktopState
                                                                     child: Icon(
                                                                       Icons
                                                                           .visibility_outlined,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      size: 14,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                // download file button
+                                                                Container(
+                                                                  margin:
+                                                                      EdgeInsets.only(
+                                                                        right: 4,
+                                                                      ),
+                                                                  padding:
+                                                                      EdgeInsets.all(
+                                                                        6,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
+                                                                    gradient: LinearGradient(
+                                                                      colors: [
+                                                                        Color(
+                                                                          0xFF4CAF50,
+                                                                        ).withValues(
+                                                                          alpha:
+                                                                              0.3,
+                                                                        ),
+                                                                        Color(
+                                                                          0xFF43A047,
+                                                                        ).withValues(
+                                                                          alpha:
+                                                                              0.2,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          6,
+                                                                        ),
+                                                                  ),
+                                                                  child: InkWell(
+                                                                    onTap: () {
+                                                                      
+                                                                    },
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .download,
                                                                       color: Colors
                                                                           .white,
                                                                       size: 14,
