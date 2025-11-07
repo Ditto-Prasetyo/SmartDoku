@@ -1623,7 +1623,12 @@ class _OutgoingLetterPageAdminDesktopState
                                                                   ),
                                                                   child: InkWell(
                                                                     onTap: () {
-                                                                      
+                                                                      DownloadDokumenAdminKeluar(
+                                                                        context,
+                                                                        index,
+                                                                        _listSurat,
+                                                                        refreshState,
+                                                                      );
                                                                     },
                                                                     child: Icon(
                                                                       Icons

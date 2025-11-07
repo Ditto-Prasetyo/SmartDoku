@@ -1942,7 +1942,12 @@ class _PermohonanLettersPageAdminDesktopState
                                                                   ),
                                                                   child: InkWell(
                                                                     onTap: () {
-                                                                      
+                                                                      DownloadDokumenAdminMasuk(
+                                                                        context,
+                                                                        index,
+                                                                        surat!,
+                                                                        refreshState,
+                                                                      );
                                                                     },
                                                                     child: Icon(
                                                                       Icons

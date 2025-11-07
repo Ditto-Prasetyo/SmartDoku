@@ -879,6 +879,67 @@ void hapusUserDesktop(
   );
 }
 
+void DownloadDokumenAdminMasuk(
+  BuildContext context,
+  int index,
+  SuratMasukModel? suratData,
+  void Function() refreshState,
+) {
+  
+  // Validasi dulu
+  if (suratData == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Data surat tidak ditemukan'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return;
+  }
+  
+  print(
+    'Download Document - ID: ${suratData.id}, Judul: ${suratData.nama_surat}, \nNama File : ${suratData.link_scan}',
+  );
+  
+  showModernDownloadFileSuratMasukDesktopDialog(
+    'Download File',
+    'Apakah anda ingin mendownload file ${suratData.link_scan ?? 'dokumen ini'} \ndari surat ${suratData.nama_surat ?? 'tanpa judul'}?',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    suratData,
+    refreshState
+    // (fileId, savePath) async {
+    //   // Panggil service download lu
+    //   return await yourService.downloadFile(fileId, savePath);
+    // },
+    // () async {
+    //   // Panggil function getDefaultDownloadPath lu
+    //   return await yourService.getDefaultDownloadPath();
+    // },
+  );
+}
+
+void DownloadDokumenAdminKeluar(
+  BuildContext context,
+  int index,
+  List<SuratKeluarModel?> suratData,
+  void Function() refreshState,
+) {
+  final surat = suratData[index];
+  print(
+    'Edit Document - ID: ${surat?.id}, Judul: ${surat?.klasifikasi}, \nNama Surat : ${surat?.dok_final}',
+  );
+  showModernDownloadFileSuratKeluarDesktopDialog(
+    'Download File', 
+    'Apakah anda ingin mendownload file ${surat?.dok_final} \ndari surat ${surat?.klasifikasi}?', 
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context, 
+    suratData, 
+    refreshState);
+}
+
 // Function untuk pick image (tambahin package image_picker di pubspec.yaml)
 void pickImage(BuildContext context) async {
   // final ImagePicker picker = ImagePicker();
