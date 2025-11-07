@@ -1622,11 +1622,56 @@ class _OutgoingLetterPageAdminDesktopState
                                                                         ),
                                                                   ),
                                                                   child: InkWell(
-                                                                    onTap: () {
-                                                                      DownloadDokumenAdminKeluar(
+                                                                    onTap: () async {
+                                                                      // Validasi cepat sebelum haptic
+                                                                      if (surat ==
+                                                                              null ||
+                                                                          surat.dok_final ==
+                                                                              null ||
+                                                                          surat
+                                                                              .dok_final!
+                                                                              .isEmpty) {
+                                                                        // Show warning
+                                                                        ScaffoldMessenger.of(
+                                                                          context,
+                                                                        ).showSnackBar(
+                                                                          SnackBar(
+                                                                            content: Row(
+                                                                              children: [
+                                                                                Icon(
+                                                                                  Icons.warning_amber_rounded,
+                                                                                  color: Colors.white,
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  width: 10,
+                                                                                ),
+                                                                                Text(
+                                                                                  'File tidak tersedia untuk diunduh',
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            backgroundColor:
+                                                                                Colors.orange.shade700,
+                                                                            behavior:
+                                                                                SnackBarBehavior.floating,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                10,
+                                                                              ),
+                                                                            ),
+                                                                            duration: Duration(
+                                                                              seconds: 2,
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                        return;
+                                                                      }
+
+                                                                      // Call download function
+                                                                      await DownloadDokumenAdminKeluar(
                                                                         context,
                                                                         index,
-                                                                        _listSurat,
+                                                                        surat!,
                                                                         refreshState,
                                                                       );
                                                                     },

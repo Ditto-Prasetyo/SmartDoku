@@ -12,7 +12,7 @@ import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 // Auths Section
 
 // -- Login Page --
@@ -879,79 +879,140 @@ void hapusUserDesktop(
   );
 }
 
-void DownloadDokumenAdminMasuk(
+Future<void> DownloadDokumenAdminMasuk(
   BuildContext context,
   int index,
   SuratMasukModel? suratData,
   void Function() refreshState,
-) {
-  // Validasi lebih ketat
+) async {
+  // ======== VALIDASI 1: Data surat ========
   if (suratData == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.warning, color: Colors.white),
-            SizedBox(width: 10),
-            Text('Data surat tidak valid'),
-          ],
-        ),
-        backgroundColor: Colors.orange.shade700,
-        behavior: SnackBarBehavior.floating,
-      ),
+    showErrorSnackbar(
+      context,
+      'Data Tidak Valid',
+      'Data surat tidak ditemukan',
+      Icons.warning_amber_rounded,
+      Colors.orange.shade700,
     );
     return;
   }
 
-  // Validasi file link
+  // ======== VALIDASI 2: Link file ========
   if (suratData.link_scan == null || suratData.link_scan!.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.error, color: Colors.white),
-            SizedBox(width: 10),
-            Text('File tidak tersedia untuk didownload'),
-          ],
-        ),
-        backgroundColor: Colors.red.shade700,
-        behavior: SnackBarBehavior.floating,
-      ),
+    showErrorSnackbar(
+      context,
+      'File Tidak Tersedia',
+      'File tidak tersedia untuk diunduh',
+      Icons.error_outline,
+      Colors.red.shade700,
     );
     return;
   }
 
-  print('[DOWNLOAD] ID: ${suratData.id}, File: ${suratData.link_scan}');
+  // ======== VALIDASI 3: Network connectivity ========
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult == ConnectivityResult.none) {
+    showErrorSnackbar(
+      context,
+      'Tidak Ada Koneksi',
+      'Periksa koneksi internet Anda',
+      Icons.wifi_off,
+      Colors.red.shade700,
+    );
+    return;
+  }
 
+  // Log download info
+  print('[DOWNLOAD] ========================================');
+  print('[DOWNLOAD] ID: ${suratData.id}');
+  print('[DOWNLOAD] Nomor Urut: ${suratData.nomor_urut}');
+  print('[DOWNLOAD] Nama Surat: ${suratData.nama_surat}');
+  print('[DOWNLOAD] File: ${suratData.link_scan}');
+  print('[DOWNLOAD] ========================================');
+
+  // Haptic feedback untuk mobile
+
+  // Extract filename
+  String fileName = suratData.link_scan!.split('/').last;
+  
+  // Tampilkan dialog download
   showModernDownloadFileSuratMasukDesktopDialog(
     'Download File',
-    'Unduh file "${suratData.link_scan?.split('/').last ?? 'dokumen'}" dari surat "${suratData.nama_surat ?? 'tanpa judul'}"?',
-    Color(0xFF10B981),
-    Color(0xFF059669),
+    'Unduh file "$fileName" dari surat "${suratData.nama_surat ?? 'tanpa judul'}"?',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
     context,
     suratData,
     refreshState,
   );
 }
 
-void DownloadDokumenAdminKeluar(
+Future<void> DownloadDokumenAdminKeluar(
   BuildContext context,
   int index,
-  List<SuratKeluarModel?> suratData,
+  SuratKeluarModel? suratData,
   void Function() refreshState,
-) {
-  final surat = suratData[index];
-  print(
-    'Edit Document - ID: ${surat?.id}, Judul: ${surat?.klasifikasi}, \nNama Surat : ${surat?.dok_final}',
-  );
+) async {
+  // ======== VALIDASI 1: Data surat ========
+  if (suratData == null) {
+    showErrorSnackbar(
+      context,
+      'Data Tidak Valid',
+      'Data surat tidak ditemukan',
+      Icons.warning_amber_rounded,
+      Colors.orange.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 2: Link file ========
+  if (suratData.dok_final == null || suratData.dok_final!.isEmpty) {
+    showErrorSnackbar(
+      context,
+      'File Tidak Tersedia',
+      'File tidak tersedia untuk diunduh',
+      Icons.error_outline,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 3: Network connectivity ========
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult == ConnectivityResult.none) {
+    showErrorSnackbar(
+      context,
+      'Tidak Ada Koneksi',
+      'Periksa koneksi internet Anda',
+      Icons.wifi_off,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // Log download info
+  print('[DOWNLOAD] ========================================');
+  print('[DOWNLOAD] ID: ${suratData.id}');
+  print('[DOWNLOAD] Nomor Urut: ${suratData.nomor_urut}');
+  print('[DOWNLOAD] Nama Surat: ${suratData.klasifikasi}');
+  print('[DOWNLOAD] File: ${suratData.dok_final}');
+  print('[DOWNLOAD] ========================================');
+
+  // Haptic feedback untuk mobile
+
+  // Extract filename
+  String fileName = suratData.dok_final!.split('/').last;
+  
+  // Tampilkan dialog download
   showModernDownloadFileSuratKeluarDesktopDialog(
-    'Download File', 
-    'Apakah anda ingin mendownload file ${surat?.dok_final} \ndari surat ${surat?.klasifikasi}?', 
+    'Download File',
+    'Unduh file "$fileName" dari surat "${suratData.klasifikasi ?? 'tanpa judul'}"?',
     Color(0xFF10B981), // Accent color 1 (hijau)
     Color(0xFF059669), // Accent color 2 (hijau gelap)
-    context, 
-    suratData, 
-    refreshState);
+    context,
+    suratData,
+    refreshState,
+  );
 }
 
 // Function untuk pick image (tambahin package image_picker di pubspec.yaml)
