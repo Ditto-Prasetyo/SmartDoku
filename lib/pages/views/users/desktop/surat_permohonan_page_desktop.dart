@@ -2253,7 +2253,7 @@ class _PermohonanLettersPageDesktopState
                                                                         viewDetail(
                                                                           context,
                                                                           index,
-                                                                          _listSurat!,
+                                                                          _filteredList!,
                                                                         );
                                                                       },
                                                                       child: Icon(

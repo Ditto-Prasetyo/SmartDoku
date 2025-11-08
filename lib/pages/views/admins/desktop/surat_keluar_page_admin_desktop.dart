@@ -1129,7 +1129,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                       ),
                                                 ),
                                               ]
-                                            : _filteredList.isEmpty
+                                            : _visibleList.isEmpty
                                             ? [
                                                 // if empty
                                                 Container(
@@ -2097,7 +2097,7 @@ class _OutgoingLetterPageAdminDesktopState
                                 Row(
                                   children: [
                                     const Text(
-                                      'Anda Dapat Mengatur Surat Masuk di Sini!',
+                                      'Anda Dapat Mengatur Surat Keluar di Sini!',
                                       style: TextStyle(
                                         fontSize: 16,
                                         color: Colors.white,
@@ -2217,7 +2217,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                   ),
                                                   decoration: InputDecoration(
                                                     hintText:
-                                                        'Cari nama, nomor, perihal surat...',
+                                                        'Cari kode, klasifikasi, no register...',
                                                     hintStyle: TextStyle(
                                                       color: Colors.white
                                                           .withValues(
