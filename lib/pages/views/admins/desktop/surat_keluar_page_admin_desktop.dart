@@ -26,8 +26,12 @@ class _OutgoingLetterPageAdminDesktopState
     with TickerProviderStateMixin {
   var height, width;
   bool isLoading = true;
+  bool isSearchExpanded = false;
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
+
+  FocusNode _searchFocusNode = FocusNode();
+  TextEditingController _searchController = TextEditingController();
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -36,9 +40,15 @@ class _OutgoingLetterPageAdminDesktopState
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
 
+  late AnimationController _searchAnimationController;
+  late Animation<double> _searchAnimation;
+
   SuratKeluar _suratService = SuratKeluar();
   UserService _userService = UserService();
   List<SuratKeluarModel?> _listSurat = [];
+  List<SuratKeluarModel?> _filteredList = [];
+  List<SuratKeluarModel?> get _visibleList =>
+      _searchController.text.trim().isEmpty ? _listSurat : _filteredList;
 
   // Selected sidebar item
   int _selectedIndex = 2;
@@ -125,15 +135,20 @@ class _OutgoingLetterPageAdminDesktopState
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
     try {
       final disposisi = await _userService.getDisposisi();
-      final mappedDisposisi = workFields.entries.firstWhere(
-        (e) => e.value == disposisi,
-        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
-      ).key;
+      final mappedDisposisi = workFields.entries
+          .firstWhere(
+            (e) => e.value == disposisi,
+            orElse: () => const MapEntry('Tidak Diketahui', 'Unknown'),
+          )
+          .key;
       final isSU = await _userService.getSuperAdminStatus();
       print("[DEBUG] -> [STATE] :: SU Status : $isSU");
-      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : await _suratService.listSurat();
+      final data = disposisi != null
+          ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
+          : await _suratService.listSurat();
       setState(() {
         _listSurat = data;
+        _filteredList = List.from(data);
         isLoading = false;
       });
       print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
@@ -184,6 +199,7 @@ class _OutgoingLetterPageAdminDesktopState
   void initState() {
     super.initState();
     _loadAllData();
+    _filteredList = _listSurat;
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -205,6 +221,17 @@ class _OutgoingLetterPageAdminDesktopState
       CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
 
+    _searchAnimationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _searchAnimation = CurvedAnimation(
+      parent: _searchAnimationController,
+      curve: Curves.easeInOut,
+    );
+    _searchController.addListener(_performSearch);
+
     _backgroundController.repeat(reverse: true);
     _cardController.forward();
   }
@@ -215,7 +242,138 @@ class _OutgoingLetterPageAdminDesktopState
     _cardController.dispose();
     _horizontalScrollController.dispose();
     _verticalScrollController.dispose();
+    _searchAnimationController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  void _performSearch() {
+    final query = _searchController.text.toLowerCase().trim();
+
+    setState(() {
+      if (query.isEmpty) {
+        _filteredList = List.from(_listSurat);
+      } else {
+        _filteredList = _listSurat.where((e) {
+          final s = e!;
+          final kode = (s.kode ?? '').toLowerCase();
+          final klasifikasi = (s.klasifikasi ?? '').toLowerCase();
+          final noRegister = (s.no_register ?? '').toString().toLowerCase();
+          final tujuan = (s.tujuan_surat ?? '').toLowerCase();
+          final perihal = (s.perihal ?? '').toLowerCase();
+          final pengolah = (s.pengolah ?? '').toLowerCase();
+          final pembuat = (s.pembuat ?? '').toLowerCase();
+          final catatan = (s.catatan ?? '').toLowerCase();
+          final link = (s.link_surat ?? '').toLowerCase();
+          final k1 = (s.koreksi_1 ?? '').toLowerCase();
+          final k2 = (s.koreksi_2 ?? '').toLowerCase();
+          final status = (s.status ?? '').toLowerCase();
+
+          // cek substring di banyak kolom
+          return kode.contains(query) ||
+              klasifikasi.contains(query) ||
+              noRegister.contains(query) ||
+              tujuan.contains(query) ||
+              perihal.contains(query) ||
+              pengolah.contains(query) ||
+              pembuat.contains(query) ||
+              catatan.contains(query) ||
+              link.contains(query) ||
+              k1.contains(query) ||
+              k2.contains(query) ||
+              status.contains(query);
+        }).toList();
+      }
+
+      _sortByRelevance(query);
+    });
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      isSearchExpanded = !isSearchExpanded;
+
+      if (isSearchExpanded) {
+        _searchAnimationController.forward();
+      } else {
+        _searchAnimationController.reverse();
+        _searchController.clear();
+        _filteredList = List.from(_listSurat);
+      }
+    });
+  }
+
+  int _scoreField(String? field, String q) {
+    if (field == null || q.isEmpty) return 0;
+    final f = field.toLowerCase();
+    if (f == q) return 1000; // exact match
+    if (f.startsWith(q)) return 600; // prefix match
+    if (f.contains(q)) {
+      final hits = RegExp(RegExp.escape(q)).allMatches(f).length;
+      return 100 + hits * 30; // substring + bonus jumlah kemunculan
+    }
+    return 0;
+  }
+
+  DateTime _parseDateSafe(dynamic v) {
+    try {
+      if (v == null) return DateTime.fromMillisecondsSinceEpoch(0);
+      if (v is DateTime) return v;
+      return DateTime.parse(v.toString());
+    } catch (_) {
+      return DateTime.fromMillisecondsSinceEpoch(0);
+    }
+  }
+
+  int _scoreSurat(SuratKeluarModel s, String q) {
+    final ql = q.toLowerCase().trim();
+    int score = 0;
+
+    // Prioritas kolom kunci surat keluar
+    score += 9 * _scoreField(s.klasifikasi, ql);
+    score += 9 * _scoreField(s.no_register, ql);
+    score += 9 * _scoreField(s.dok_final, ql);
+    score += 9 * _scoreField(s.kode, ql);
+    score += 8 * _scoreField(s.tujuan_surat, ql);
+    score += 7 * _scoreField(s.perihal, ql);
+    score += 6 * _scoreField(s.pengolah, ql);
+    score += 5 * _scoreField(s.pembuat, ql);
+    score += 4 * _scoreField(s.catatan, ql);
+    score += 3 * _scoreField(s.link_surat, ql);
+    score += 3 * _scoreField(s.koreksi_1, ql);
+    score += 3 * _scoreField(s.koreksi_2, ql);
+    score += 3 * _scoreField(s.status, ql);
+
+    // Bonus kecil buat match pada tanggal yang diparsing ke string
+    final tgl = _parseDateSafe(s.tanggal_surat);
+    final dikirim = _parseDateSafe(s.dok_dikirim);
+    final terima = _parseDateSafe(s.tanda_terima);
+    score += 2 * _scoreField('${tgl.toIso8601String()}', ql);
+    score += 2 * _scoreField('${dikirim.toIso8601String()}', ql);
+    score += 2 * _scoreField('${terima.toIso8601String()}', ql);
+
+    return score;
+  }
+
+  void _sortByRelevance(String q) {
+    _filteredList.sort((a, b) {
+      final aa = a!, bb = b!;
+      final sa = _scoreSurat(aa, q);
+      final sb = _scoreSurat(bb, q);
+      if (sb != sa) return sb.compareTo(sa); // skor tertinggi dulu
+
+      // tie-breaker 1: tanggal surat terbaru
+      final da = _parseDateSafe(aa.tanggal_surat);
+      final db = _parseDateSafe(bb.tanggal_surat);
+      final byDate = db.compareTo(da);
+      if (byDate != 0) return byDate;
+
+      // tie-breaker 2: no_register menaik (kalau ada)
+      final na = int.tryParse('${aa.no_register ?? ''}') ?? -1;
+      final nb = int.tryParse('${bb.no_register ?? ''}') ?? -1;
+      return na.compareTo(nb);
+    });
   }
 
   Widget _buildSidebar() {
@@ -485,7 +643,7 @@ class _OutgoingLetterPageAdminDesktopState
             ),
           ),
 
-                    // Credit Section
+          // Credit Section
           Padding(
             padding: EdgeInsets.only(top: 40, bottom: 10),
             child: Text(
@@ -506,6 +664,8 @@ class _OutgoingLetterPageAdminDesktopState
   }
 
   Widget _buildTableDataLetters(Animation<double> _cardAnimation) {
+    final isSearching = _searchController.text.trim().isNotEmpty;
+    final count = isSearching ? _filteredList.length : _listSurat.length;
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -563,7 +723,7 @@ class _OutgoingLetterPageAdminDesktopState
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '${_listSurat.length} Data',
+                                '$count Data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -598,8 +758,12 @@ class _OutgoingLetterPageAdminDesktopState
                             children: [
                               InkWell(
                                 onTap: () {
-                                  tambahSuratKeluarDesktop(context, _listSurat, (newSurat) {
-                                  }, refreshState);
+                                  tambahSuratKeluarDesktop(
+                                    context,
+                                    _listSurat,
+                                    (newSurat) {},
+                                    refreshState,
+                                  );
                                 },
                                 child: Icon(
                                   Icons.add,
@@ -941,7 +1105,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       ],
                                     ),
                                   ),
-                        
+
                                   // Table Body
                                   Expanded(
                                     child: SingleChildScrollView(
@@ -949,7 +1113,7 @@ class _OutgoingLetterPageAdminDesktopState
                                       child: Column(
                                         children: isLoading
                                             ? [
-                                                // 👇 Kalau lagi loading
+                                                // if it still loaing
                                                 Container(
                                                   alignment: Alignment.center,
                                                   padding: EdgeInsets.symmetric(
@@ -957,13 +1121,14 @@ class _OutgoingLetterPageAdminDesktopState
                                                   ),
                                                   child:
                                                       CircularProgressIndicator(
-                                                        color: Colors.greenAccent,
+                                                        color:
+                                                            Colors.greenAccent,
                                                       ),
                                                 ),
                                               ]
-                                            : _listSurat.isEmpty
+                                            : _filteredList.isEmpty
                                             ? [
-                                                // 👇 Kalau kosong
+                                                // if empty
                                                 Container(
                                                   alignment: Alignment.center,
                                                   padding: EdgeInsets.symmetric(
@@ -973,16 +1138,18 @@ class _OutgoingLetterPageAdminDesktopState
                                                     "Belum ada data surat masuk",
                                                     style: TextStyle(
                                                       color: Colors.white
-                                                          .withValues(alpha: 0.8),
+                                                          .withValues(
+                                                            alpha: 0.8,
+                                                          ),
                                                       fontSize: 16,
                                                     ),
                                                   ),
                                                 ),
                                               ]
-                                            : List.generate(_listSurat.length, (
+                                            : List.generate(_visibleList.length, (
                                                 index,
                                               ) {
-                                                final surat = _listSurat[index];
+                                                final surat = _visibleList[index];
                                                 return Container(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
@@ -1007,7 +1174,9 @@ class _OutgoingLetterPageAdminDesktopState
                                                       );
                                                     },
                                                     borderRadius:
-                                                        BorderRadius.circular(8),
+                                                        BorderRadius.circular(
+                                                          8,
+                                                        ),
                                                     child: Padding(
                                                       padding:
                                                           EdgeInsets.symmetric(
@@ -1021,7 +1190,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                             child: Container(
                                                               padding:
                                                                   EdgeInsets.symmetric(
-                                                                    horizontal: 6,
+                                                                    horizontal:
+                                                                        6,
                                                                     vertical: 2,
                                                                   ),
                                                               decoration: BoxDecoration(
@@ -1030,12 +1200,14 @@ class _OutgoingLetterPageAdminDesktopState
                                                                     Color(
                                                                       0xFF4F46E5,
                                                                     ).withValues(
-                                                                      alpha: 0.3,
+                                                                      alpha:
+                                                                          0.3,
                                                                     ),
                                                                     Color(
                                                                       0xFF7C3AED,
                                                                     ).withValues(
-                                                                      alpha: 0.2,
+                                                                      alpha:
+                                                                          0.2,
                                                                     ),
                                                                   ],
                                                                 ),
@@ -1067,7 +1239,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                               ),
                                                             ),
                                                           ),
-                        
+
                                                           // kode
                                                           SizedBox(width: 30),
                                                           Expanded(
@@ -1083,7 +1255,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                   style: TextStyle(
                                                                     color: Colors
                                                                         .white,
-                                                                    fontSize: 13,
+                                                                    fontSize:
+                                                                        13,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w600,
@@ -1098,7 +1271,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                               ],
                                                             ),
                                                           ),
-                        
+
                                                           // Klasifikasi
                                                           Expanded(
                                                             flex: 40,
@@ -1166,7 +1339,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                               ],
                                                             ),
                                                           ),
-                        
+
                                                           // Nomor Register
                                                           SizedBox(width: 5),
                                                           Expanded(
@@ -1178,7 +1351,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1200,7 +1374,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1219,7 +1394,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1236,12 +1412,19 @@ class _OutgoingLetterPageAdminDesktopState
                                                           Expanded(
                                                             flex: 53,
                                                             child: Text(
-                                                              surat?.tanggal_surat == null ? '-' : parseDateFormat(surat!.tanggal_surat),
+                                                              surat?.tanggal_surat ==
+                                                                      null
+                                                                  ? '-'
+                                                                  : parseDateFormat(
+                                                                      surat!
+                                                                          .tanggal_surat,
+                                                                    ),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1260,7 +1443,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1283,12 +1467,14 @@ class _OutgoingLetterPageAdminDesktopState
                                                               //       listPengolah,
                                                               //     ) ??
                                                               //     '',
-                                                              surat?.pengolah ?? '',
+                                                              surat?.pengolah ??
+                                                                  '',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1307,7 +1493,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1329,7 +1516,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1351,13 +1539,16 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
                                                                     'Roboto',
                                                               ),
-                                                              overflow: TextOverflow.ellipsis,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
                                                             ),
                                                           ),
                                                           // koreksi 1
@@ -1374,7 +1565,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1396,7 +1588,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1408,12 +1601,19 @@ class _OutgoingLetterPageAdminDesktopState
                                                           Expanded(
                                                             flex: 37,
                                                             child: Text(
-                                                              surat?.dok_dikirim == null ? "-" : parseDateFormat(surat!.dok_dikirim!),
+                                                              surat?.dok_dikirim ==
+                                                                      null
+                                                                  ? "-"
+                                                                  : parseDateFormat(
+                                                                      surat!
+                                                                          .dok_dikirim!,
+                                                                    ),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1424,29 +1624,40 @@ class _OutgoingLetterPageAdminDesktopState
                                                           Expanded(
                                                             flex: 26,
                                                             child: Text(
-                                                              surat?.dok_final == null ? "-" : surat!.dok_final!,
+                                                              surat?.dok_final ==
+                                                                      null
+                                                                  ? "-"
+                                                                  : surat!
+                                                                        .dok_final!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
                                                                     'Roboto',
-                                                                    
                                                               ),
                                                             ),
                                                           ),
                                                           Expanded(
                                                             flex: 20,
                                                             child: Text(
-                                                              surat?.tanda_terima == null ? "-" : parseDateFormat(surat!.tanda_terima!),
+                                                              surat?.tanda_terima ==
+                                                                      null
+                                                                  ? "-"
+                                                                  : parseDateFormat(
+                                                                      surat!
+                                                                          .tanda_terima!,
+                                                                    ),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
                                                                     .withValues(
-                                                                      alpha: 0.7,
+                                                                      alpha:
+                                                                          0.7,
                                                                     ),
                                                                 fontSize: 11,
                                                                 fontFamily:
@@ -1467,7 +1678,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                     EdgeInsets.symmetric(
                                                                       horizontal:
                                                                           8,
-                                                                      vertical: 4,
+                                                                      vertical:
+                                                                          4,
                                                                     ),
                                                                 decoration: BoxDecoration(
                                                                   gradient: LinearGradient(
@@ -1493,8 +1705,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                                     BoxShadow(
                                                                       color:
                                                                           getStatusColor(
-                                                                            surat
-                                                                                .status!,
+                                                                            surat.status!,
                                                                           ).withValues(
                                                                             alpha:
                                                                                 0.3,
@@ -1511,14 +1722,16 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 ),
                                                                 child: Text(
                                                                   surat.status!,
-                                                                  softWrap: true,
+                                                                  softWrap:
+                                                                      true,
                                                                   textAlign:
                                                                       TextAlign
                                                                           .center,
                                                                   style: TextStyle(
                                                                     color: Colors
                                                                         .white,
-                                                                    fontSize: 10,
+                                                                    fontSize:
+                                                                        10,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w600,
@@ -1529,7 +1742,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                               ),
                                                             ),
                                                           ),
-                        
+
                                                           // Actions
                                                           SizedBox(width: 40),
                                                           SizedBox(
@@ -1543,7 +1756,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 Container(
                                                                   margin:
                                                                       EdgeInsets.only(
-                                                                        right: 4,
+                                                                        right:
+                                                                            4,
                                                                       ),
                                                                   padding:
                                                                       EdgeInsets.all(
@@ -1577,7 +1791,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                                       viewDetailKeluar(
                                                                         context,
                                                                         index,
-                                                                        _listSurat,
+                                                                        _filteredList,
                                                                       );
                                                                     },
                                                                     child: Icon(
@@ -1593,7 +1807,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 Container(
                                                                   margin:
                                                                       EdgeInsets.only(
-                                                                        right: 4,
+                                                                        right:
+                                                                            4,
                                                                       ),
                                                                   padding:
                                                                       EdgeInsets.all(
@@ -1688,7 +1903,8 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 Container(
                                                                   margin:
                                                                       EdgeInsets.only(
-                                                                        right: 4,
+                                                                        right:
+                                                                            4,
                                                                       ),
                                                                   padding:
                                                                       EdgeInsets.all(
@@ -1853,18 +2069,19 @@ class _OutgoingLetterPageAdminDesktopState
                 // Main content
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Header
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Surat Keluar',
                                   style: TextStyle(
                                     fontSize: 32,
@@ -1873,52 +2090,222 @@ class _OutgoingLetterPageAdminDesktopState
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Anda Dapat Mengatur Surat Keluar di Sini!',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Anda Dapat Mengatur Surat Masuk di Sini!',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                    if (_searchController.text.isNotEmpty) ...[
+                                      const SizedBox(width: 12),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(
+                                                0xFF4F46E5,
+                                              ).withValues(alpha: 0.3),
+                                              const Color(
+                                                0xFF7C3AED,
+                                              ).withValues(alpha: 0.2),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${_filteredList.length} hasil',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            Row(
+                              children: [
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 350),
+                                  curve: Curves.easeInOutCubic,
+                                  width: isSearchExpanded ? 450 : 0,
+                                  height: 48,
+                                  child: isSearchExpanded
+                                      ? Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 16,
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.25,
+                                                ),
+                                                Colors.white.withValues(
+                                                  alpha: 0.15,
+                                                ),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.35,
+                                              ),
+                                              width: 1.5,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: const Color(
+                                                  0xFF4F46E5,
+                                                ).withValues(alpha: 0.2),
+                                                blurRadius: 15,
+                                                offset: const Offset(0, 5),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.search,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.6,
+                                                ),
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: _searchController,
+                                                  focusNode: _searchFocusNode,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    hintText:
+                                                        'Cari nama, nomor, perihal surat...',
+                                                    hintStyle: TextStyle(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.5,
+                                                          ),
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                  ),
+                                                  onChanged: (value) =>
+                                                      setState(() {}),
+                                                ),
+                                              ),
+                                              if (_searchController
+                                                  .text
+                                                  .isNotEmpty)
+                                                InkWell(
+                                                  onTap: () {
+                                                    _searchController.clear();
+                                                    _searchFocusNode
+                                                        .requestFocus();
+                                                  },
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(4),
+                                                    child: Icon(
+                                                      Icons.clear,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                      size: 18,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                                InkWell(
+                                  onTap: _toggleSearch,
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: isSearchExpanded
+                                            ? [
+                                                const Color(0xFFEF4444),
+                                                const Color(0xFFDC2626),
+                                              ]
+                                            : [
+                                                const Color(0xFF4F46E5),
+                                                const Color(0xFF7C3AED),
+                                              ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              (isSearchExpanded
+                                                      ? const Color(0xFFEF4444)
+                                                      : const Color(0xFF4F46E5))
+                                                  .withValues(alpha: 0.3),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      isSearchExpanded
+                                          ? Icons.close
+                                          : LineIcons.search,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            InkWell(
-                              onTap: () =>
-                                  showFeatureNotAvailableDialog(context),
-                              borderRadius: BorderRadius.circular(15),
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFF4F46E5),
-                                      Color(0xFF7C3AED),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(
-                                        0xFF4F46E5,
-                                      ).withValues(alpha: 0.3),
-                                      blurRadius: 10,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  LineIcons.search,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
 
-                        SizedBox(height: 40),
+                        const SizedBox(height: 40),
 
                         // Recent activity
                         Expanded(child: _buildTableDataLetters(_cardAnimation)),
