@@ -57,7 +57,7 @@ class SuratMasuk {
           .toList();
 
       // Filter sesuai disposisi
-      final List<SuratMasukModel> filtered = allData
+      final List<SuratMasukModel?> filtered = allData
           .where((surat) => surat.disposisi.contains(disposisi))
           .toList();
       if (isSuperAdmin == false)

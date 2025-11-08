@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'package:smart_doku/utils/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -31,6 +33,8 @@ class _UserDashboardState extends State<UserDashboard>
   List<Map<String, dynamic>> _statsData = [];
   SuratMasuk _suratMasukService = SuratMasuk();
   SuratKeluar _suratKeluarService = SuratKeluar();
+  UserService _userService = UserService();
+  UserModel? _user;
 
   int? totalSuratMasuk;
   int? totalSuratKeluar;
@@ -60,6 +64,14 @@ class _UserDashboardState extends State<UserDashboard>
           'isPositive': true,
         }
       ];
+    });
+  }
+
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+    setState(() {
+      _user = user;
+      print(_user?.name);
     });
   }
 
@@ -106,6 +118,7 @@ class _UserDashboardState extends State<UserDashboard>
   @override
   void initState() {
     super.initState();
+    _loadUser();
     _loadAllData();
 
     // Initialize animations
@@ -777,7 +790,7 @@ class _UserDashboardState extends State<UserDashboard>
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Selamat datang kembali, User!',
+                                  'Selamat datang kembali, ${_user?.name}',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
