@@ -691,7 +691,7 @@ class _PermohonanLettersPageAdminDesktopState
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '$count Data',
+                                '${_listSurat.length} data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,

@@ -705,7 +705,10 @@ class _OutgoingLetterPageAdminDesktopState
                           ),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-                              colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                              colors: [
+                                Color(0xFF10B981).withValues(alpha: 0.3),
+                                Color(0xFF059669).withValues(alpha: 0.2),
+                              ],
                             ),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
@@ -723,7 +726,7 @@ class _OutgoingLetterPageAdminDesktopState
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '$count Data',
+                                '${_listSurat.length} data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
