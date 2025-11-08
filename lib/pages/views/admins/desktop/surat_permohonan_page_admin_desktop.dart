@@ -26,8 +26,12 @@ class _PermohonanLettersPageAdminDesktopState
     with TickerProviderStateMixin {
   var height, width;
   bool isLoading = true;
+  bool isSearchExpanded = false;
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
+
+  FocusNode _searchFocusNode = FocusNode();
+  TextEditingController _searchController = TextEditingController();
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -36,9 +40,15 @@ class _PermohonanLettersPageAdminDesktopState
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
 
+  late AnimationController _searchAnimationController;
+  late Animation<double> _searchAnimation;
+
   SuratMasuk _suratService = SuratMasuk();
   UserService _userService = UserService();
   List<SuratMasukModel?> _listSurat = [];
+  List<SuratMasukModel?> _filteredList = [];
+  List<SuratMasukModel?> get _visibleList =>
+    _searchController.text.trim().isEmpty ? _listSurat : _filteredList;
 
   Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
@@ -57,6 +67,7 @@ class _PermohonanLettersPageAdminDesktopState
           : await _suratService.listSurat();
       setState(() {
         _listSurat = data;
+        _filteredList = List.from(data);
         isLoading = false;
       });
       print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
@@ -147,6 +158,7 @@ class _PermohonanLettersPageAdminDesktopState
   void initState() {
     super.initState();
     _loadAllData();
+    _filteredList = _listSurat;
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -168,6 +180,17 @@ class _PermohonanLettersPageAdminDesktopState
       CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
 
+    _searchAnimationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _searchAnimation = CurvedAnimation(
+      parent: _searchAnimationController,
+      curve: Curves.easeInOut,
+    );
+    _searchController.addListener(_performSearch);
+
     _backgroundController.repeat(reverse: true);
     _cardController.forward();
   }
@@ -178,7 +201,144 @@ class _PermohonanLettersPageAdminDesktopState
     _cardController.dispose();
     _horizontalScrollController.dispose();
     _verticalScrollController.dispose();
+    _searchAnimationController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  void _performSearch() {
+    final query = _searchController.text.toLowerCase().trim();
+
+    setState(() {
+      if (query.isEmpty) {
+        // Tampilkan semua saat kosong
+        _filteredList = List.from(_listSurat);
+      } else {
+        _filteredList = _listSurat.where((surat) {
+          final s = surat!;
+          final namaSurat = s.nama_surat.toLowerCase();
+          final hal = s.hal.toLowerCase();
+          final noSurat = s.no_surat.toLowerCase();
+          final kode = s.kode.toLowerCase();
+          final pengolah = s.pengolah.toLowerCase();
+          final tempat = s.tempat.toLowerCase();
+          final status = s.status.toLowerCase();
+
+          final noAgenda = (s.no_agenda ?? '').toString().toLowerCase();
+          final index = (s.index ?? '').toLowerCase();
+          final sifat = (s.sifat ?? '').toLowerCase();
+          final disposisi = (s.disposisi as List)
+              .map((e) => e.toString().toLowerCase())
+              .join(' ');
+
+          return namaSurat.contains(query) ||
+              hal.contains(query) ||
+              noSurat.contains(query) ||
+              noAgenda.contains(query) ||
+              kode.contains(query) ||
+              pengolah.contains(query) ||
+              tempat.contains(query) ||
+              status.contains(query) ||
+              index.contains(query) ||
+              sifat.contains(query) ||
+              disposisi.contains(query);
+        }).toList();
+      }
+
+      // Urutkan hasil sesuai relevansi (exact > prefix > substring)
+      _sortByRelevance(query);
+
+      // debug optional
+      print('🔍 "$query" -> ${_filteredList.length}/${_listSurat.length}');
+    });
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      isSearchExpanded = !isSearchExpanded;
+
+      if (isSearchExpanded) {
+        _searchAnimationController.forward();
+      } else {
+        _searchAnimationController.reverse();
+        _searchController.clear();
+        _filteredList = List.from(_listSurat);
+      }
+    });
+  }
+
+  int _scoreField(String? field, String q) {
+    if (field == null || q.isEmpty) return 0;
+    final f = field.toLowerCase();
+    if (f == q) return 1000; // exact match
+    if (f.startsWith(q)) return 600; // prefix match
+    if (f.contains(q)) {
+      final hits = RegExp(RegExp.escape(q)).allMatches(f).length;
+      return 100 + hits * 30; // substring + bonus jumlah kemunculan
+    }
+    return 0;
+  }
+
+  DateTime _parseDateSafe(dynamic v) {
+    try {
+      if (v == null) return DateTime.fromMillisecondsSinceEpoch(0);
+      if (v is DateTime) return v;
+      return DateTime.parse(v.toString());
+    } catch (_) {
+      return DateTime.fromMillisecondsSinceEpoch(0);
+    }
+  }
+
+  int _scoreSurat(SuratMasukModel s, String q) {
+    final ql = q.toLowerCase().trim();
+    int score = 0;
+
+    // Bobot prioritas kolom
+    score += 9 * _scoreField(s.no_surat, ql);
+    score += 8 * _scoreField(s.nama_surat, ql);
+    score += 7 * _scoreField(s.hal, ql);
+    score += 6 * _scoreField(s.no_agenda?.toString(), ql);
+    score += 5 * _scoreField(s.kode, ql);
+    score += 5 * _scoreField(s.pengolah, ql);
+    score += 4 * _scoreField(s.tempat, ql);
+    score += 4 * _scoreField(s.status, ql);
+    score += 3 * _scoreField(s.index, ql);
+    score += 3 * _scoreField(s.sifat, ql);
+
+    if (s.disposisi is List) {
+      final disp = (s.disposisi as List).map((e) => e.toString()).join(' ');
+      score += 3 * _scoreField(disp, ql);
+    }
+
+    // Bonus kecil untuk kecocokan numerik di nomor_urut
+    final numeric = int.tryParse(ql);
+    if (numeric != null) {
+      final noUrut = int.tryParse('${s.nomor_urut ?? ''}');
+      if (noUrut != null && '$noUrut'.contains(ql)) score += 150;
+    }
+
+    return score;
+  }
+
+  void _sortByRelevance(String q) {
+    _filteredList.sort((a, b) {
+      final aa = a!, bb = b!;
+      final sa = _scoreSurat(aa, q);
+      final sb = _scoreSurat(bb, q);
+      if (sb != sa) return sb.compareTo(sa); // skor turun (tertinggi dulu)
+
+      // tie-breaker 1: tanggal terbaru dulu
+      final da = _parseDateSafe(aa.tanggal_waktu);
+      final db = _parseDateSafe(bb.tanggal_waktu);
+      final byDate = db.compareTo(da);
+      if (byDate != 0) return byDate;
+
+      // tie-breaker 2: nomor_urut naik
+      final na = int.tryParse('${aa.nomor_urut ?? ''}') ?? -1;
+      final nb = int.tryParse('${bb.nomor_urut ?? ''}') ?? -1;
+      return na.compareTo(nb);
+    });
   }
 
   Widget _buildSidebar() {
@@ -469,6 +629,8 @@ class _PermohonanLettersPageAdminDesktopState
   }
 
   Widget _buildTableDataLetters(Animation<double> _cardAnimation) {
+    final isSearching = _searchController.text.trim().isNotEmpty;
+    final count = isSearching ? _filteredList.length : _listSurat.length;
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -529,7 +691,7 @@ class _PermohonanLettersPageAdminDesktopState
                               ),
                               SizedBox(width: 6),
                               Text(
-                                '${_listSurat.length} Data',
+                                '$count Data',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -764,7 +926,7 @@ class _PermohonanLettersPageAdminDesktopState
                                         // 8. No Surat - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 40,
+                                          flex: 50,
                                           child: Text(
                                             'No \nSurat',
                                             style: TextStyle(
@@ -778,7 +940,7 @@ class _PermohonanLettersPageAdminDesktopState
 
                                         // 9. Perihal - flex: 200
                                         Expanded(
-                                          flex: 220,
+                                          flex: 210,
                                           child: Text(
                                             'Perihal',
                                             style: TextStyle(
@@ -1061,7 +1223,7 @@ class _PermohonanLettersPageAdminDesktopState
                                       child: Column(
                                         children: isLoading
                                             ? [
-                                                // 👇 Kalau lagi loading
+                                                // if loading
                                                 Container(
                                                   alignment: Alignment.center,
                                                   padding: EdgeInsets.symmetric(
@@ -1074,9 +1236,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                       ),
                                                 ),
                                               ]
-                                            : _listSurat.isEmpty
+                                            : _visibleList.isEmpty
                                             ? [
-                                                // 👇 Kalau kosong
+                                                // if empty
                                                 Container(
                                                   alignment: Alignment.center,
                                                   padding: EdgeInsets.symmetric(
@@ -1094,10 +1256,11 @@ class _PermohonanLettersPageAdminDesktopState
                                                   ),
                                                 ),
                                               ]
-                                            : List.generate(_listSurat.length, (
+                                            : List.generate(_visibleList.length, (
                                                 index,
                                               ) {
-                                                final surat = _listSurat[index];
+                                                final surat =
+                                                    _visibleList[index];
                                                 return Container(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
@@ -1963,7 +2126,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                       viewDetail(
                                                                         context,
                                                                         index,
-                                                                        _listSurat,
+                                                                        _filteredList,
                                                                       );
                                                                     },
                                                                     child: Icon(
@@ -2253,18 +2416,20 @@ class _PermohonanLettersPageAdminDesktopState
                 // Main content
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(30),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header
+                        // === HEADER: judul kiri + search kanan (ini memang Row) ===
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Kiri: Judul + badge
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Surat Masuk',
                                   style: TextStyle(
                                     fontSize: 32,
@@ -2273,54 +2438,225 @@ class _PermohonanLettersPageAdminDesktopState
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Anda Dapat Mengatur Surat Masuk di Sini!',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Anda Dapat Mengatur Surat Masuk di Sini!',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                    if (_searchController.text.isNotEmpty) ...[
+                                      const SizedBox(width: 12),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(
+                                                0xFF4F46E5,
+                                              ).withValues(alpha: 0.3),
+                                              const Color(
+                                                0xFF7C3AED,
+                                              ).withValues(alpha: 0.2),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${_filteredList.length} hasil',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+
+                            // Kanan: Search box + toggle (tetap di Row)
+                            Row(
+                              children: [
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 350),
+                                  curve: Curves.easeInOutCubic,
+                                  width: isSearchExpanded ? 450 : 0,
+                                  height: 48,
+                                  child: isSearchExpanded
+                                      ? Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 16,
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.25,
+                                                ),
+                                                Colors.white.withValues(
+                                                  alpha: 0.15,
+                                                ),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.35,
+                                              ),
+                                              width: 1.5,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: const Color(
+                                                  0xFF4F46E5,
+                                                ).withValues(alpha: 0.2),
+                                                blurRadius: 15,
+                                                offset: const Offset(0, 5),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.search,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.6,
+                                                ),
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: _searchController,
+                                                  focusNode: _searchFocusNode,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    hintText:
+                                                        'Cari nama, nomor, perihal surat...',
+                                                    hintStyle: TextStyle(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.5,
+                                                          ),
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                  ),
+                                                  onChanged: (value) =>
+                                                      setState(() {}),
+                                                ),
+                                              ),
+                                              if (_searchController
+                                                  .text
+                                                  .isNotEmpty)
+                                                InkWell(
+                                                  onTap: () {
+                                                    _searchController.clear();
+                                                    _searchFocusNode
+                                                        .requestFocus();
+                                                  },
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(4),
+                                                    child: Icon(
+                                                      Icons.clear,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                      size: 18,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                                InkWell(
+                                  onTap: _toggleSearch,
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: isSearchExpanded
+                                            ? [
+                                                const Color(0xFFEF4444),
+                                                const Color(0xFFDC2626),
+                                              ]
+                                            : [
+                                                const Color(0xFF4F46E5),
+                                                const Color(0xFF7C3AED),
+                                              ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              (isSearchExpanded
+                                                      ? const Color(0xFFEF4444)
+                                                      : const Color(0xFF4F46E5))
+                                                  .withValues(alpha: 0.3),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      isSearchExpanded
+                                          ? Icons.close
+                                          : LineIcons.search,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            InkWell(
-                              onTap: () =>
-                                  showFeatureNotAvailableDialog(context),
-                              borderRadius: BorderRadius.circular(15),
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFF4F46E5),
-                                      Color(0xFF7C3AED),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(
-                                        0xFF4F46E5,
-                                      ).withValues(alpha: 0.3),
-                                      blurRadius: 10,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  LineIcons.search,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
 
-                        SizedBox(height: 40),
+                        const SizedBox(height: 40),
 
-                        // Recent activity
+                        // === KONTEN: tabel/list surat mengisi sisa tinggi ===
                         Expanded(child: _buildTableDataLetters(_cardAnimation)),
                       ],
                     ),
