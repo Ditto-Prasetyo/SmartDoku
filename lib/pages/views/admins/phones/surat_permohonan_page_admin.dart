@@ -11,6 +11,7 @@ import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:smart_doku/utils/map.dart';
 import 'package:smart_doku/utils/helper/emptyStateWidget.dart';
 import 'package:smart_doku/utils/search/SuratMasukFunction.dart';
+import 'package:smart_doku/utils/cardMobile/surat_masuk_card_mobile.dart';
 
 class PermohonanLetterPageAdmin extends StatefulWidget {
   final Function(Map<String, dynamic>)? onSuratAdded;
@@ -193,245 +194,6 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   void dispose() {
     _backgroundController.dispose();
     super.dispose();
-  }
-
-  Widget buildItemCard(SuratMasukModel surat, int index, BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 15),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: 0.25),
-                  Colors.white.withValues(alpha: 0.1),
-                  Colors.white.withValues(alpha: 0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 20,
-                  offset: Offset(0, 10),
-                ),
-                BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.1),
-                  blurRadius: 5,
-                  offset: Offset(0, -2),
-                ),
-              ],
-            ),
-            child: InkWell(
-              onTap: () {
-                actionAdmin(
-                  index,
-                  context,
-                  _visibleList,
-                  (i) => editDokumenAdmin(
-                    context,
-                    index,
-                    _visibleList,
-                    refreshEditState,
-                  ),
-                  (i) => viewDetailAdmin(context, index, _visibleList),
-                  (i) => hapusDokumen(
-                    context,
-                    index,
-                    _visibleList,
-                    actionSetState,
-                  ),
-                );
-                print(
-                  'Surat dipilih: ${surat?.nama_surat} \ntanggal : ${surat?.tanggal_surat.toString()}',
-                );
-              },
-              onLongPress: () {
-                actionAdmin(
-                  index,
-                  context,
-                  _listSurat,
-                  (i) => editDokumenAdmin(
-                    context,
-                    index,
-                    _listSurat,
-                    refreshEditState,
-                  ),
-                  (i) => viewDetailAdmin(context, index, _listSurat),
-                  (i) =>
-                      hapusDokumen(context, index, _listSurat, actionSetState),
-                );
-              },
-              borderRadius: BorderRadius.circular(20),
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header dengan status badge
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                getStatusColor(surat!.status),
-                                getStatusColor(
-                                  surat.status,
-                                ).withValues(alpha: 0.8),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: getStatusColor(
-                                  surat.status,
-                                ).withValues(alpha: 0.3),
-                                blurRadius: 8,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            surat.status,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              fontFamily: 'Roboto',
-                            ),
-                          ),
-                        ),
-                        // Tanggal
-                        Text(
-                          parseDateFormat(surat.tanggal_diterima),
-                          style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.7),
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 15),
-
-                    // Judul Surat
-                    Text(
-                      surat.nama_surat,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Roboto',
-                        height: 1.3,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    SizedBox(height: 8),
-
-                    // Perihal
-                    Text(
-                      surat.hal,
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.8),
-                        fontSize: 14,
-                        fontFamily: 'Roboto',
-                        height: 1.4,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-
-                    SizedBox(height: 15),
-
-                    // Footer dengan pengirim dan icon
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // Pengirim
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFF4F46E5).withValues(alpha: 0.3),
-                                      Color(0xFF7C3AED).withValues(alpha: 0.2),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Icon(
-                                  Icons.person_outline_rounded,
-                                  color: Colors.white,
-                                  size: 14,
-                                ),
-                              ),
-                              SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  surat?.disposisi == null
-                                      ? '404 Not Found'
-                                      : (surat.disposisi as List).join(', '),
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.7),
-                                    fontSize: 12,
-                                    fontFamily: 'Roboto',
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Arrow icon
-                        Container(
-                          padding: EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.white.withValues(alpha: 0.2),
-                                Colors.white.withValues(alpha: 0.1),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            Icons.more_vert_rounded,
-                            color: Colors.white.withValues(alpha: 0.8),
-                            size: 14,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -1287,10 +1049,63 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                         }
                                         final surat = _visibleList[index];
 
-                                        return buildItemCard(
-                                          surat!,
-                                          index,
-                                          context,
+                                        return SuratMasukCard(
+                                          surat: surat!,
+                                          statusColor: getStatusColor(
+                                            surat.status,
+                                          ),
+                                          tanggalText: parseDateFormat(
+                                            surat.tanggal_diterima,
+                                          ),
+                                          onTap: () {
+                                            actionAdmin(
+                                              index,
+                                              context,
+                                              _visibleList,
+                                              (i) => editDokumenAdmin(
+                                                context,
+                                                index,
+                                                _visibleList,
+                                                refreshEditState,
+                                              ),
+                                              (i) => viewDetailAdmin(
+                                                context,
+                                                index,
+                                                _visibleList,
+                                              ),
+                                              (i) => hapusDokumen(
+                                                context,
+                                                index,
+                                                _visibleList,
+                                                actionSetState,
+                                              ),
+                                            );
+                                          },
+                                          onLongPress: () {
+                                            // tetap pakai _visibleList biar index gak ngaco saat difilter
+                                            actionAdmin(
+                                              index,
+                                              context,
+                                              _visibleList,
+                                              (i) => editDokumenAdmin(
+                                                context,
+                                                index,
+                                                _visibleList,
+                                                refreshEditState,
+                                              ),
+                                              (i) => viewDetailAdmin(
+                                                context,
+                                                index,
+                                                _visibleList,
+                                              ),
+                                              (i) => hapusDokumen(
+                                                context,
+                                                index,
+                                                _visibleList,
+                                                actionSetState,
+                                              ),
+                                            );
+                                          },
                                         );
                                       },
                                     ),
