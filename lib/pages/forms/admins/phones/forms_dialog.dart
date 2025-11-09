@@ -1031,10 +1031,6 @@ void showModernTambahSuratFormDialog(
                                                                     .files
                                                                     .first;
 
-                                                                if (file != null) {
-                                                                  fileSelected = file;
-                                                                }
-
                                                                 // Simpan path file ke controller
                                                                 controllers['link_scan']!
                                                                         .text =
@@ -1042,7 +1038,9 @@ void showModernTambahSuratFormDialog(
                                                                     '';
 
                                                                 setStateLocal(
-                                                                  () {},
+                                                                  () {
+                                                                    fileSelected = file;
+                                                                  },
                                                                 ); // Update UI
 
                                                                 ScaffoldMessenger.of(

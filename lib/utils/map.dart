@@ -82,3 +82,23 @@ final Map<String, String> roleField = {
   'Admin': 'ADMIN',
   'SuperAdmin': 'SUPERADMIN',
 };
+
+List<int> flexSuratKeluar = [
+  25, // Kode
+  55, // Klasifikasi
+  55, // No. Register
+  20, // Tujuan Surat
+  90, // Perihal
+  20, // Tanggal Surat
+  90, // Akses Arsip
+  40, // Pengolah
+  38, // Pembuat
+  22, // Catatan
+  70, // Link Surat
+  30, // Koreksi 1
+  31, // Koreksi 2
+  39, // Dokumen Dikirim
+  35, // Dokumen Final
+  35, // Tanda Terima
+  30 // Status
+];
