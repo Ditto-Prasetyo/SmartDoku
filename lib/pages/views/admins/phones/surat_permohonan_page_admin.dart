@@ -3,15 +3,17 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
+import 'package:smart_doku/utils/refreshList/Mobile_Refresh_List.dart';
 import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/map.dart';
 import 'package:smart_doku/utils/helper/emptyStateWidget.dart';
+import 'package:smart_doku/utils/map.dart';
+
 import 'package:smart_doku/utils/search/SuratMasukFunction.dart';
-import 'package:smart_doku/utils/cardMobile/surat_masuk_card_mobile.dart';
+import 'package:smart_doku/utils/card/surat_masuk_card_admin_mobile.dart';
 
 class PermohonanLetterPageAdmin extends StatefulWidget {
   final Function(Map<String, dynamic>)? onSuratAdded;
@@ -1026,89 +1028,78 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                   ),
                                 ),
 
-                                // ListView dengan RefreshIndicator
                                 Expanded(
-                                  child: RefreshIndicator(
+                                  child: MobileRefreshList<SuratMasukModel?>(
+                                    items: _visibleList,
+                                    hasBaseData: _listSurat.isNotEmpty,
+                                    isSearching: searchController.text
+                                        .trim()
+                                        .isNotEmpty,
+                                    query: searchController.text.trim(),
+                                    emptyAllMessage:
+                                        'Belum ada data surat masuk',
+                                    emptySearchPrefix: 'Tidak hasil untuk',
                                     onRefresh: _refreshData,
-                                    backgroundColor: Colors.white.withValues(
-                                      alpha: 0.1,
-                                    ),
-                                    color: Color(0xFF10B981),
-                                    strokeWidth: 3,
-                                    child: ListView.builder(
-                                      physics: AlwaysScrollableScrollPhysics(
-                                        parent: BouncingScrollPhysics(),
-                                      ),
-                                      itemCount: _visibleList.isEmpty
-                                          ? 1
-                                          : _visibleList.length,
-                                      padding: EdgeInsets.only(bottom: 20),
-                                      itemBuilder: (context, index) {
-                                        if (_visibleList.isEmpty) {
-                                          return buildEmptyStateWidget();
-                                        }
-                                        final surat = _visibleList[index];
-
-                                        return SuratMasukCard(
-                                          surat: surat!,
-                                          statusColor: getStatusColor(
-                                            surat.status,
-                                          ),
-                                          tanggalText: parseDateFormat(
-                                            surat.tanggal_diterima,
-                                          ),
-                                          onTap: () {
-                                            actionAdmin(
-                                              index,
+                                    itemBuilder: (context, item, index, items) {
+                                      final surat = item!;
+                                      return SuratMasukCard(
+                                        surat: surat,
+                                        statusColor: getStatusColor(
+                                          surat.status,
+                                        ),
+                                        tanggalText: parseDateFormat(
+                                          surat.tanggal_diterima,
+                                        ),
+                                        onTap: () {
+                                          actionAdmin(
+                                            index,
+                                            context,
+                                            items,
+                                            (i) => editDokumenAdmin(
                                               context,
-                                              _visibleList,
-                                              (i) => editDokumenAdmin(
-                                                context,
-                                                index,
-                                                _visibleList,
-                                                refreshEditState,
-                                              ),
-                                              (i) => viewDetailAdmin(
-                                                context,
-                                                index,
-                                                _visibleList,
-                                              ),
-                                              (i) => hapusDokumen(
-                                                context,
-                                                index,
-                                                _visibleList,
-                                                actionSetState,
-                                              ),
-                                            );
-                                          },
-                                          onLongPress: () {
-                                            // tetap pakai _visibleList biar index gak ngaco saat difilter
-                                            actionAdmin(
                                               index,
+                                              items,
+                                              refreshEditState,
+                                            ),
+                                            (i) => viewDetailAdmin(
                                               context,
-                                              _visibleList,
-                                              (i) => editDokumenAdmin(
-                                                context,
-                                                index,
-                                                _visibleList,
-                                                refreshEditState,
-                                              ),
-                                              (i) => viewDetailAdmin(
-                                                context,
-                                                index,
-                                                _visibleList,
-                                              ),
-                                              (i) => hapusDokumen(
-                                                context,
-                                                index,
-                                                _visibleList,
-                                                actionSetState,
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
+                                              index,
+                                              items,
+                                            ),
+                                            (i) => hapusDokumen(
+                                              context,
+                                              index,
+                                              items,
+                                              actionSetState,
+                                            ),
+                                          );
+                                        },
+                                        onLongPress: () {
+                                          actionAdmin(
+                                            index,
+                                            context,
+                                            items,
+                                            (i) => editDokumenAdmin(
+                                              context,
+                                              index,
+                                              items,
+                                              refreshEditState,
+                                            ),
+                                            (i) => viewDetailAdmin(
+                                              context,
+                                              index,
+                                              items,
+                                            ),
+                                            (i) => hapusDokumen(
+                                              context,
+                                              index,
+                                              items,
+                                              actionSetState,
+                                            ),
+                                          );
+                                        },
+                                      ); 
+                                    },
                                   ),
                                 ),
                               ],

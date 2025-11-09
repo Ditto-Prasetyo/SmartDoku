@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/models/surat.dart';
 
 class SuratMasukSearch {

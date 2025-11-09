@@ -10,6 +10,10 @@ import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/services/settings.dart';
 import 'package:smart_doku/utils/map.dart';
 import 'package:path/path.dart' as p;
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
+import 'package:file_saver/file_saver.dart';     // Android: MediaStore -> Downloads
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class SuratMasuk {
   final AuthService _authService = AuthService();
@@ -508,6 +512,158 @@ class SuratMasuk {
     final result = await downloadFileWithProgress(fileId, savePath);
     return result.file;
   }
+
+  /// Pakai downloader lo, tapi auto-simpan ke default lokasi per platform
+  Future<String?> downloadToDefaultAuto({
+    required int fileId,
+    required String fileName,              // contoh: 'dok_final.pdf'
+    String? desktopDefaultDir,             // contoh: defaultPath lo (desktop)
+    bool overwrite = true,                 // desktop/iOS honor; Android: tergantung MediaStore
+    bool uniqueWhenExists = true,          // bikin (1), (2) dst saat exist
+    Function(int received, int total)? onProgress, // nerusin progress streaming
+  }) async {
+    if (kIsWeb) {
+      throw UnsupportedError('Web flow tidak di-handle di sini.');
+    }
+
+    // --- ANDROID ---
+    if (Platform.isAndroid) {
+      // 1) Download ke TEMP dulu (biar progress lo tetap jalan)
+      final tmpDir = await getTemporaryDirectory();
+      final tmpPath = p.join(tmpDir.path, fileName);
+      final result = await downloadFileWithProgress(
+        fileId,
+        tmpPath,
+        onProgress: onProgress,
+        overwrite: true, // tmp selalu boleh ditimpa
+      );
+      if (!(result.success) || result.file == null || !await result.file!.exists()) {
+        throw Exception(result.error ?? 'Download gagal');
+      }
+
+      // 2) Baca BYTES (wajib buat MediaStore)
+      final Uint8List bytes = await result.file!.readAsBytes();
+
+      // 3) Simpan ke Downloads via FileSaver (MediaStore)
+      final ext = _ext(fileName);          // tanpa titik
+      final mime = _guessMime(fileName);
+      final savedUriOrPath = await FileSaver.instance.saveFile(
+        name: p.basenameWithoutExtension(fileName),
+        bytes: bytes,
+        fileExtension: ext,
+        mimeType: MimeType.other,
+        customMimeType: mime,
+      );
+
+      // 4) Bersihin temp + opsional buka
+      try { await result.file!.delete(); } catch (_) {}
+      return savedUriOrPath; // biasanya content:// URI di Android
+    }
+
+    // --- iOS ---
+    if (Platform.isIOS) {
+      // 1) Download ke TEMP
+      final tmpDir = await getTemporaryDirectory();
+      final tmpPath = p.join(tmpDir.path, fileName);
+      final result = await downloadFileWithProgress(
+        fileId,
+        tmpPath,
+        onProgress: onProgress,
+        overwrite: true,
+      );
+      if (!(result.success) || result.file == null || !await result.file!.exists()) {
+        throw Exception(result.error ?? 'Download gagal');
+      }
+
+      // 2) Pindah/copy ke Documents (sandbox)
+      final docs = await getApplicationDocumentsDirectory();
+      String destPath = p.join(docs.path, fileName);
+
+      // overwrite / unique naming
+      if (!overwrite && await File(destPath).exists()) {
+        // user minta jangan timpa → rename unik
+        if (uniqueWhenExists) {
+          destPath = await _resolveTargetPath(
+            baseDir: docs.path, fileName: fileName, unique: true,
+          );
+        } else {
+          // kalau bener-bener gak boleh timpa & gak mau rename → batal
+          try { await result.file!.delete(); } catch (_) {}
+          throw FileSystemException('File sudah ada', destPath);
+        }
+      } else if (overwrite && await File(destPath).exists()) {
+        await File(destPath).delete();
+      }
+
+      final outFile = await result.file!.copy(destPath);
+      try { await result.file!.delete(); } catch (_) {}
+
+      return outFile.path;
+    }
+
+    // --- DESKTOP (Windows/Mac/Linux) ---
+    Directory? downloadsDir;
+    try { downloadsDir = await getDownloadsDirectory(); } catch (_) {}
+    final base = desktopDefaultDir ?? downloadsDir?.path ?? Directory.current.path;
+
+    String destPath = p.join(base, fileName);
+    if (!overwrite && await File(destPath).exists()) {
+      if (uniqueWhenExists) {
+        destPath = await _resolveTargetPath(baseDir: base, fileName: fileName, unique: true);
+      } else {
+        throw FileSystemException('File sudah ada', destPath);
+      }
+    }
+
+    // Langsung arahkan downloader lo ke path final (hemat I/O)
+    final result = await downloadFileWithProgress(
+      fileId,
+      destPath,
+      onProgress: onProgress,
+      overwrite: overwrite,
+    );
+    if (!(result.success) || result.file == null || !await result.file!.exists()) {
+      throw Exception(result.error ?? 'Download gagal');
+    }
+    return result.file!.path;
+  }
+
+  /// Helpers
+  Future<String> _resolveTargetPath({
+    required String baseDir,
+    required String fileName,
+    bool unique = true,
+  }) async {
+    var candidate = p.join(baseDir, fileName);
+    if (!unique) return candidate;
+
+    var i = 1;
+    while (await File(candidate).exists()) {
+      final name = p.basenameWithoutExtension(fileName);
+      final ext = p.extension(fileName);
+      candidate = p.join(baseDir, '$name ($i)$ext');
+      i++;
+    }
+    return candidate;
+  }
+
+  String _ext(String fileName) {
+    final e = p.extension(fileName);
+    return e.isNotEmpty ? e.substring(1) : ''; // tanpa titik
+  }
+
+  String _guessMime(String path) {
+    switch (p.extension(path).toLowerCase()) {
+      case '.pdf':  return 'application/pdf';
+      case '.jpg':
+      case '.jpeg': return 'image/jpeg';
+      case '.png':  return 'image/png';
+      case '.doc':  return 'application/msword';
+      case '.docx': return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      default:      return 'application/octet-stream';
+    }
+  }
+
 
   Future<bool> deleteFile(int nomor_urut) async {
     final token = await _authService.getToken();

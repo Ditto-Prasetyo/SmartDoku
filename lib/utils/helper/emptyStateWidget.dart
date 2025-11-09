@@ -6,9 +6,9 @@ Widget buildEmptyStateWidget() {
     padding: const EdgeInsets.only(top: 16, bottom: 8),
     child: Center(
       child: Text(
-        searchController.text.trim().isEmpty
-            ? 'Belum ada data surat.'
-            : 'Tidak ada hasil untuk “${searchController.text.trim()}”.',
+        searchController.text.trim().isEmpty 
+            ? 'Tidak ada hasil untuk “${searchController.text.trim()}”.'
+            : 'Belum ada data surat.',
         textAlign: TextAlign.center,
         style: TextStyle(
           color: Colors.white.withValues(alpha: 0.8),

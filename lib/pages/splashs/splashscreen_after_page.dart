@@ -513,7 +513,7 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                               ],
                             ),
                             child: Image.asset(
-                              'images/Icon_App.png',
+                              'images/logoApps.png',
                               width: 125.0,
                               height: 125.0,
                               color: Colors.white,

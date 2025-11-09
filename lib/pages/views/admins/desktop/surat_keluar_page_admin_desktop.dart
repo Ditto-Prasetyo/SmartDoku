@@ -116,21 +116,6 @@ class _OutgoingLetterPageAdminDesktopState
     await _loadAllData();
   }
 
-  // String? getNamaPengolah(
-  //   List<String> ids,
-  //   List<Map<String, dynamic>> listPengolah,
-  // ) {
-  //   if (ids.isEmpty) return null;
-
-  //   final idPertama = ids.first;
-  //   final match = listPengolah.firstWhere(
-  //     (e) => e['id'] == idPertama,
-  //     orElse: () => {},
-  //   );
-
-  //   return match['nama_pengolah'];
-  // }
-
   Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
     try {

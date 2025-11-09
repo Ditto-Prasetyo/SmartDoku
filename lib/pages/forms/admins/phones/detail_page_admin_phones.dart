@@ -711,11 +711,11 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
                           buildInfoCard([
                             buildDetailRow(
                               'Tindak Lanjut 1',
-                              detailData.tindak_lanjut_1 == null ? 'Data Kosong!' : detailData.tindak_lanjut_1.toString(),
+                              detailData.tindak_lanjut_1 == null ? 'Data Kosong!' : parseDateFormat(detailData.tindak_lanjut_1!),
                             ),
                             buildDetailRow(
                               'Tindak Lanjut 2',
-                              detailData.tindak_lanjut_2 == null ? 'Data Kosong!' : detailData.tindak_lanjut_2.toString(),
+                              detailData.tindak_lanjut_2 == null ? 'Data Kosong!' : parseDateFormat(detailData.tindak_lanjut_2!),
                             ),
                             buildDetailRow(
                               'Status',
@@ -727,7 +727,7 @@ class _DetailPageAdmin extends State<DetailPageAdmin>
 
                           SizedBox(height: 20),
 
-                          buildBackButtonSection(context),
+                          buildBackButtonSectionMasuk(context,  detailData.nomor_urut == null ? 'Data Kosong!' : detailData.nomor_urut.toString(), detailData),
                         ],
                       ),
               ]),
