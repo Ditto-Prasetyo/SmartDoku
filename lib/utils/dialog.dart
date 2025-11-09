@@ -3457,7 +3457,7 @@ void showModernActionAdminMasukDialog(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            showUploadDialog(context, pickDocument);
+                            showFeatureNotAvailableDialog(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor4,
@@ -3758,7 +3758,7 @@ void showModernActionAdminKeluarDialog(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            showUploadDialog(context, pickDocument);
+                            showFeatureNotAvailableDialog(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor4,
