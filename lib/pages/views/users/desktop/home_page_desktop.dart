@@ -31,21 +31,21 @@ class _UserDashboardState extends State<UserDashboard>
 
   // Sample data for dashboard
   List<Map<String, dynamic>> _statsData = [];
-  SuratMasuk _suratMasukService = SuratMasuk();
-  SuratKeluar _suratKeluarService = SuratKeluar();
   UserService _userService = UserService();
   UserModel? _user;
+
+  StatService _statService = StatService();
 
   int? totalSuratMasuk;
   int? totalSuratKeluar;
 
   Future<void> _loadAllData() async {
-    final suratMasuk = await _suratMasukService.listSurat();
-    final SuratKeluar = await _suratKeluarService.listSurat();
+    final suratMasuk = await _statService.getSuratMasuk();
+    final SuratKeluar = await _statService.getSuratKeluar();
     
     setState(() {
-      totalSuratMasuk = suratMasuk.length;
-      totalSuratKeluar = SuratKeluar.length;
+      totalSuratMasuk = suratMasuk['total'];
+      totalSuratKeluar = SuratKeluar['total'];
 
       // Sample data for dashboard
       _statsData = [

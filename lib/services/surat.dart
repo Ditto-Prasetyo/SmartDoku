@@ -1284,3 +1284,91 @@ class SuratKeluar {
     return dir.path;
   }
 }
+
+class StatService {
+  final AuthService _authService = AuthService();
+
+  Future<Map<String, dynamic>> getSuratMasuk() async {
+    final token = await _authService.getToken();
+    final url = Uri.parse('${dotenv.env['API_URL']}/stats/surat/masuk');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      return data['data']['suratMasuk'];
+    } else {
+      throw Exception('Gagal mengambil stats surat masuk');
+    }
+  }
+
+  Future<Map<String, dynamic>> getSuratKeluar() async {
+    final token = await _authService.getToken();
+    final url = Uri.parse('${dotenv.env['API_URL']}/stats/surat/keluar');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      return data['data']['suratKeluar'];
+    } else {
+      throw Exception('Gagal mengambil stats surat masuk');
+    }
+  }
+
+  Future<Map<String, dynamic>> getUsers() async {
+    final token = await _authService.getToken();
+    final url = Uri.parse('${dotenv.env['API_URL']}/stats/users');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      return data['data'];
+    } else {
+      throw Exception('Gagal mengambil stats surat masuk');
+    }
+  }
+
+  Future<Map<String, dynamic>> getDisposisi() async {
+    final token = await _authService.getToken();
+    final url = Uri.parse('${dotenv.env['API_URL']}/stats/disposisi');
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+
+      return data;
+    } else {
+      throw Exception('Gagal mengambil stats surat masuk');
+    }
+  }
+}

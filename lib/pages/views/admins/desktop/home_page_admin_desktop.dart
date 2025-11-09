@@ -29,23 +29,21 @@ class _AdminDashboardState extends State<AdminDashboard>
   int _selectedIndex = 0;
 
   List<Map<String, dynamic>> _statsData = [];
-  UserService _userService = UserService();
-  SuratMasuk _suratMasukService = SuratMasuk();
-  SuratKeluar _suratKeluarService = SuratKeluar();
+  StatService _statService = StatService();
 
   int? totalUsers;
   int? totalSuratMasuk;
   int? totalSuratKeluar;
 
   Future<void> _loadAllData() async {
-    final users = await _userService.listUsers();
-    final suratMasuk = await _suratMasukService.listSurat();
-    final SuratKeluar = await _suratKeluarService.listSurat();
+    final users = await _statService.getUsers();
+    final suratMasuk = await _statService.getSuratMasuk();
+    final SuratKeluar = await _statService.getSuratKeluar();
     
     setState(() {
-      totalUsers = users.length;
-      totalSuratMasuk = suratMasuk.length;
-      totalSuratKeluar = SuratKeluar.length;
+      totalUsers = users['totalUsers'];
+      totalSuratMasuk = suratMasuk['total'];
+      totalSuratKeluar = SuratKeluar['total'];
 
       // Sample data for dashboard
       _statsData = [
