@@ -855,7 +855,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         // Kode
                                         SizedBox(width: 20),
                                         Expanded(
-                                          flex: 25,
+                                          flex: flexSuratKeluar[0],
                                           child: Text(
                                             'KODE',
                                             style: TextStyle(
@@ -869,7 +869,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         // Klasifikasi
                                         SizedBox(width: 25),
                                         Expanded(
-                                          flex: 55,
+                                          flex: flexSuratKeluar[1],
                                           child: Text(
                                             'KLASIFIKASI',
                                             style: TextStyle(
@@ -882,7 +882,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // No Register
                                         Expanded(
-                                          flex: 55,
+                                          flex: flexSuratKeluar[2],
                                           child: Text(
                                             'NO REGISTER',
                                             style: TextStyle(
@@ -895,7 +895,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Tujuan Surat
                                         Expanded(
-                                          flex: 20,
+                                          flex: flexSuratKeluar[3],
                                           child: Text(
                                             'TUJUAN SURAT',
                                             style: TextStyle(
@@ -908,7 +908,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Perihal
                                         Expanded(
-                                          flex: 90,
+                                          flex: flexSuratKeluar[4],
                                           child: Text(
                                             'PERIHAL',
                                             style: TextStyle(
@@ -922,7 +922,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Tanggal Surat
                                         Expanded(
-                                          flex: 20,
+                                          flex: flexSuratKeluar[5],
                                           child: Text(
                                             'TGL\nSURAT',
                                             style: TextStyle(
@@ -936,7 +936,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Klasifikasi
                                         Expanded(
-                                          flex: 90,
+                                          flex: flexSuratKeluar[6],
                                           child: Text(
                                             'KET.KLASIFIKASI \nKEAMANAN & AKSES ARSIP',
                                             style: TextStyle(
@@ -950,7 +950,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Pengolah
                                         Expanded(
-                                          flex: 40,
+                                          flex: flexSuratKeluar[7],
                                           child: Text(
                                             'PENGOLAH',
                                             style: TextStyle(
@@ -963,7 +963,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // PEMBUAT
                                         Expanded(
-                                          flex: 38,
+                                          flex: flexSuratKeluar[8],
                                           child: Text(
                                             'PEMBUAT',
                                             style: TextStyle(
@@ -976,7 +976,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Catatan
                                         Expanded(
-                                          flex: 22,
+                                          flex: flexSuratKeluar[9],
                                           child: Text(
                                             'CATATAN',
                                             style: TextStyle(
@@ -989,7 +989,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // link surat
                                         Expanded(
-                                          flex: 70,
+                                          flex: flexSuratKeluar[10],
                                           child: Text(
                                             'link SURAT \nMASUK (JIKA ADA)',
                                             style: TextStyle(
@@ -1003,7 +1003,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Koreksi 1
                                         Expanded(
-                                          flex: 30,
+                                          flex: flexSuratKeluar[11],
                                           child: Text(
                                             'KOREKSI 1',
                                             style: TextStyle(
@@ -1016,7 +1016,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Koreksi 2
                                         Expanded(
-                                          flex: 31,
+                                          flex: flexSuratKeluar[12],
                                           child: Text(
                                             'KOREKSI 2',
                                             style: TextStyle(
@@ -1028,7 +1028,7 @@ class _OutgoingLetterPageAdminDesktopState
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 39,
+                                          flex: flexSuratKeluar[13],
                                           child: Text(
                                             'Dokumen Dikirim',
                                             style: TextStyle(
@@ -1040,7 +1040,7 @@ class _OutgoingLetterPageAdminDesktopState
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 35,
+                                          flex: flexSuratKeluar[14],
                                           child: Text(
                                             'Dokumen Final',
                                             style: TextStyle(
@@ -1052,7 +1052,7 @@ class _OutgoingLetterPageAdminDesktopState
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 35,
+                                          flex: flexSuratKeluar[15],
                                           child: Text(
                                             'Tanda Terima',
                                             style: TextStyle(
@@ -1065,7 +1065,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         ),
                                         // Status
                                         Expanded(
-                                          flex: 30,
+                                          flex: flexSuratKeluar[16],
                                           child: Text(
                                             'Status',
                                             style: TextStyle(

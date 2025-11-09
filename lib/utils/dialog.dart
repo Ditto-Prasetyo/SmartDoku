@@ -14329,7 +14329,7 @@ void showPrintDocumentFormat(BuildContext context) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'Excel',
+                                'PDF',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -15001,180 +15001,202 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
-      return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 30,
-                  spreadRadius: 5,
-                  offset: Offset(0, 15),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: Container(
-                  padding: EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.2),
-                        Colors.white.withValues(alpha: 0.1),
-                      ],
+      bool _isLoading = false;
+
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Center(
+              child: _isLoading ?
+                Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
                     ),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF7C2D12).withValues(alpha: 0.8),
-                              Color(0xFF9A3412).withValues(alpha: 0.6),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
+                ) :
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 30),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: Offset(0, 15),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Container(
+                      padding: EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.2),
+                            Colors.white.withValues(alpha: 0.1),
                           ],
                         ),
-                        child: Icon(
-                          Icons.document_scanner,
-                          color: Colors.white,
-                          size: 30,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          width: 1.5,
                         ),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Format Dokumen',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Text(
-                        'Pilih jenis format dokumen yang anda inginkan',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      // Excel Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            final dirPath = await _suratMasukService
-                                .getDefaultDownloadPath();
-                            final savePath =
-                                "$dirPath/disposisi_$nomor_urut.xlsx";
-                            final data = await _suratMasukService
-                                .downloadDisposisi(
-                                  (nomor_urut != null
-                                      ? int.parse(nomor_urut)
-                                      : 0),
-                                  savePath,
-                                );
-
-                            Navigator.pop(context);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Dokumen berhasil didownload!'),
-                                backgroundColor: Colors.green,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFF7C2D12).withValues(alpha: 0.8),
+                                  Color(0xFF9A3412).withValues(alpha: 0.6),
+                                ],
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+                                  blurRadius: 15,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
-                            elevation: 8,
-                            shadowColor: Colors.green.withValues(alpha: 0.4),
+                            child: Icon(
+                              Icons.document_scanner,
+                              color: Colors.white,
+                              size: 30,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PdfIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'Excel',
+                          SizedBox(height: 20),
+                          Text(
+                            'Format Dokumen',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Text(
+                            'Pilih jenis format dokumen yang anda inginkan',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white.withValues(alpha: 0.9),
+                              height: 1.4,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(height: 25),
+                          // Excel Button dengan custom icon
+                          Container(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  setState(() => _isLoading = true);
+                                  final dirPath = await _suratMasukService
+                                    .getDefaultDownloadPath();
+                                  final savePath =
+                                    "$dirPath/disposisi_$nomor_urut.pdf";
+                                  final data = await _suratMasukService
+                                    .downloadDisposisi(
+                                      (nomor_urut != null
+                                          ? int.parse(nomor_urut)
+                                          : 0),
+                                      savePath,
+                                    );
+                                } catch (err) {
+                                  print(err);
+                                } finally {
+                                  setState(() => _isLoading = false);
+                                }
+          
+                                Navigator.pop(context);
+          
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Dokumen berhasil didownload!'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                elevation: 8,
+                                shadowColor: Colors.green.withValues(alpha: 0.4),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  PdfIcon(size: 20, color: Colors.white),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'PDF',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                side: BorderSide(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Text(
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            'Batal',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }
       );
     },
   );
@@ -15195,186 +15217,207 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
     },
     pageBuilder: (context, animation, secondaryAnimation) {
       Size size = MediaQuery.of(context).size;
-      return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 30,
-                  spreadRadius: 5,
-                  offset: Offset(0, 15),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: Container(
-                  width:
-                      (Platform.isWindows ||
-                          Platform.isLinux ||
-                          Platform.isMacOS)
-                      ? size.width / 2
-                      : size.width,
-                  padding: EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.2),
-                        Colors.white.withValues(alpha: 0.1),
-                      ],
+      bool _isLoading = false;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Center(
+              child: _isLoading ?
+                Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
                     ),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF7C2D12).withValues(alpha: 0.8),
-                              Color(0xFF9A3412).withValues(alpha: 0.6),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
+                ) :
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 30),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: Offset(0, 15),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Container(
+                      width:
+                          (Platform.isWindows ||
+                              Platform.isLinux ||
+                              Platform.isMacOS)
+                          ? size.width / 2
+                          : size.width,
+                      padding: EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.2),
+                            Colors.white.withValues(alpha: 0.1),
                           ],
                         ),
-                        child: Icon(
-                          Icons.document_scanner,
-                          color: Colors.white,
-                          size: 30,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          width: 1.5,
                         ),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Format Dokumen',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Text(
-                        'Pilih jenis format dokumen yang anda inginkan',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      // Excel Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            final dirPath = await _suratMasukService
-                                .getDefaultDownloadPath();
-                            final savePath =
-                                "$dirPath/disposisi_$nomor_urut.xlsx";
-                            final data = await _suratMasukService
-                                .downloadDisposisi(
-                                  (nomor_urut != null
-                                      ? int.parse(nomor_urut)
-                                      : 0),
-                                  savePath,
-                                );
-
-                            Navigator.pop(context);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Dokumen berhasil didownload!'),
-                                backgroundColor: Colors.green,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFF7C2D12).withValues(alpha: 0.8),
+                                  Color(0xFF9A3412).withValues(alpha: 0.6),
+                                ],
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+                                  blurRadius: 15,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
-                            elevation: 8,
-                            shadowColor: Colors.green.withValues(alpha: 0.4),
+                            child: Icon(
+                              Icons.document_scanner,
+                              color: Colors.white,
+                              size: 30,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PdfIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'Excel',
+                          SizedBox(height: 20),
+                          Text(
+                            'Format Dokumen',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Text(
+                            'Pilih jenis format dokumen yang anda inginkan',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white.withValues(alpha: 0.9),
+                              height: 1.4,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(height: 25),
+                          // Excel Button dengan custom icon
+                          Container(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  setState(() => _isLoading = true);
+                                  final dirPath = await _suratMasukService
+                                      .getDefaultDownloadPath();
+                                  final savePath =
+                                      "$dirPath/disposisi_$nomor_urut.pdf";
+                                  final data = await _suratMasukService
+                                      .downloadDisposisi(
+                                        (nomor_urut != null
+                                            ? int.parse(nomor_urut)
+                                            : 0),
+                                        savePath,
+                                      );
+                                } catch (err) {
+                                  print("[ERR] : $err");
+                                } finally {
+                                  setState(() => _isLoading = false);
+                                }
+          
+                                Navigator.pop(context);
+          
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Dokumen berhasil didownload!'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                elevation: 8,
+                                shadowColor: Colors.red.withValues(alpha: 0.4),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  PdfIcon(size: 20, color: Colors.white),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'PDF',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                side: BorderSide(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Text(
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            'Batal',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }
       );
     },
   );
