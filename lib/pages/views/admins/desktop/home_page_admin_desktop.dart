@@ -34,16 +34,19 @@ class _AdminDashboardState extends State<AdminDashboard>
   int? totalUsers;
   int? totalSuratMasuk;
   int? totalSuratKeluar;
+  int? totalDisposisi;
 
   Future<void> _loadAllData() async {
     final users = await _statService.getUsers();
     final suratMasuk = await _statService.getSuratMasuk();
     final SuratKeluar = await _statService.getSuratKeluar();
+    final disposisi = await _statService.getDisposisi();
     
     setState(() {
       totalUsers = users['totalUsers'];
       totalSuratMasuk = suratMasuk['total'];
       totalSuratKeluar = SuratKeluar['total'];
+      totalDisposisi = disposisi['total'];
 
       // Sample data for dashboard
       _statsData = [
@@ -70,7 +73,7 @@ class _AdminDashboardState extends State<AdminDashboard>
         },
         {
           'title': 'Total Bidang',
-          'value': '6',
+          'value': totalDisposisi ?? 0,
           'icon': Icons.work_rounded,
           'color': Colors.lightBlue,
           'isPositive': true,
