@@ -83,6 +83,11 @@ final Map<String, String> roleField = {
   'SuperAdmin': 'SUPERADMIN',
 };
 
+final Map<String, String> roleFieldAccess = {
+  'User': 'USER',
+  'Admin': 'ADMIN'
+};
+
 List<int> flexSuratKeluar = [
   25, // Kode
   55, // Klasifikasi
