@@ -5273,7 +5273,7 @@ void showModernTambahUserFormDialog(
                                                         .isNotEmpty
                                                     ? controllers['role']!.text
                                                     : null,
-                                                items: roleFieldAccess.entries
+                                                items: roleField.entries
                                                     .map(
                                                       (entry) =>
                                                           DropdownMenuItem(
@@ -5950,7 +5950,7 @@ void showModernTambahUserFormPhoneDialog(
                                                         .isNotEmpty
                                                     ? controllers['role']!.text
                                                     : null,
-                                                items: roleFieldAccess.entries
+                                                items: roleField.entries
                                                     .map(
                                                       (entry) =>
                                                           DropdownMenuItem(
