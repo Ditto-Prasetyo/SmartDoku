@@ -5,8 +5,8 @@ import 'dart:ui';
 import 'dart:io';
 import 'package:smart_doku/utils/card/user_management_card_mobile.dart';
 import 'package:smart_doku/services/user.dart';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:smart_doku/utils/refreshList/Mobile_Refresh_List.dart';
 import 'package:smart_doku/utils/search/UserManagementFunction.dart';
 

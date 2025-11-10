@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:smart_doku/services/auth.dart';
-import 'package:smart_doku/utils/map.dart';
+import 'package:smart_doku/utils/helper/map.dart';
 import 'package:collection/collection.dart';
 
 class UserService {

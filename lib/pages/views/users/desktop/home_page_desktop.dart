@@ -5,7 +5,7 @@ import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class UserDashboard extends StatefulWidget {

@@ -3,7 +3,7 @@ import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/services/service.dart';
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'dart:ui';
 import 'dart:math';
 

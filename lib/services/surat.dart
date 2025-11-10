@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/services/settings.dart';
-import 'package:smart_doku/utils/map.dart';
+import 'package:smart_doku/utils/helper/map.dart';
 import 'package:path/path.dart' as p;
 import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';

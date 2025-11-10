@@ -1,7 +1,7 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:smart_doku/services/user.dart';
-import 'package:smart_doku/utils/function.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
@@ -12,11 +12,11 @@ import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
-import 'package:smart_doku/utils/icon.dart';
+import 'package:smart_doku/utils/helper/icon.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
-import 'package:smart_doku/utils/map.dart';
+import 'package:smart_doku/utils/helper/map.dart';
 import 'package:intl/intl.dart';
 import 'dart:io' show File, Platform, Process;
 

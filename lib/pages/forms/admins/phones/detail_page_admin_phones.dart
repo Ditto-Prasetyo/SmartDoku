@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/map.dart';
-import 'package:smart_doku/utils/widget.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/helper/map.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 
 class DetailPageAdmin extends StatefulWidget {
   final SuratMasukModel? suratData; // Parameter untuk data surat

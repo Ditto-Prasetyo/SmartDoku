@@ -10,7 +10,7 @@ import 'package:smart_doku/pages/forms/users/detail_keluar_page.dart';
 import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/services/auth.dart';
-import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 // Auths Section

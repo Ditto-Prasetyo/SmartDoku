@@ -4,10 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/user.dart';
-import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
 import 'dart:ui';
-import 'package:smart_doku/utils/function.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class TablesPageAdmin extends StatefulWidget {

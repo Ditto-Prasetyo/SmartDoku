@@ -9,9 +9,9 @@ import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/settings.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
-import 'package:smart_doku/utils/map.dart';
+import 'package:smart_doku/utils/helper/map.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:smart_doku/utils/dropdownDisposisi.dart';
+import 'package:smart_doku/utils/handlers/dropdownDisposisi.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 

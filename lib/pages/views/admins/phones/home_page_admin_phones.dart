@@ -10,9 +10,9 @@ import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/models/user.dart';
 import 'dart:ui';
 import 'dart:math';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/widget.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 
 class HomePageAdminPhones extends StatefulWidget {
   const HomePageAdminPhones({super.key});

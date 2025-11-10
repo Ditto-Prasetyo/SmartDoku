@@ -1,7 +1,7 @@
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'dart:ui';
 import 'dart:math';
 import 'package:smart_doku/utils/platform/platform_info.dart';

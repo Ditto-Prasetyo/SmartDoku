@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/models/user.dart';
 import 'dart:ui';
-import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';

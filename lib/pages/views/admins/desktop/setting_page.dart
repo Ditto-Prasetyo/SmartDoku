@@ -4,9 +4,9 @@ import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/services/settings.dart';
 import 'dart:ui';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
