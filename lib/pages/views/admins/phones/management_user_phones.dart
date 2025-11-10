@@ -8,6 +8,7 @@ import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/refreshList/Mobile_Refresh_List.dart';
+import 'package:smart_doku/utils/search/UserManagementFunction.dart';
 
 class ManagementUserPhones extends StatefulWidget {
   const ManagementUserPhones({super.key});
@@ -179,65 +180,11 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
     });
   }
 
-  int _scoreField(String? field, String q) {
-    if (field == null || q.isEmpty) return 0;
-    final f = field.toLowerCase();
-    if (f == q) return 1000; // exact
-    if (f.startsWith(q)) return 600; // prefix
-    if (f.contains(q)) {
-      final hits = RegExp(RegExp.escape(q)).allMatches(f).length;
-      return 100 + hits * 30; // substring + bonus kemunculan
-    }
-    return 0;
-  }
-
-  int _scoreUser(UserModel? u, String q) {
-    final ql = q.toLowerCase().trim();
-    int s = 0;
-    // Bobot kolom: nama/email > username > role
-    s += 9 * _scoreField(u!.name, ql);
-    s += 9 * _scoreField(u.email, ql);
-    s += 7 * _scoreField(u.username, ql);
-    s += 5 * _scoreField(u.role, ql);
-    return s;
-  }
-
-  void _sortUsers(String q) {
-    _filteredList.sort((a, b) {
-      final sa = _scoreUser(a, q);
-      final sb = _scoreUser(b, q);
-      if (sb != sa) return sb.compareTo(sa); // skor tertinggi dulu
-
-      // tie-breaker jika skor sama: alfabetis nama → email
-      final byName = (a!.name ?? '').toLowerCase().compareTo(
-        (b!.name ?? '').toLowerCase(),
-      );
-      if (byName != 0) return byName;
-      return (a.email ?? '').toLowerCase().compareTo(
-        (b.email ?? '').toLowerCase(),
-      );
-    });
-  }
-
   void _performSearch() {
-    final q = _searchController.text.toLowerCase().trim();
-
+    final q = _searchController.text;
+    final result = UserManagementSearch.filterAndSort(_listUser, q);
     setState(() {
-      if (q.isEmpty) {
-        _filteredList = List.from(_listUser);
-      } else {
-        _filteredList = _listUser.where((u) {
-          final name = (u!.name ?? '').toLowerCase();
-          final email = (u.email ?? '').toLowerCase();
-          final username = (u.username ?? '').toLowerCase();
-          final role = (u.role ?? '').toLowerCase();
-          return name.contains(q) ||
-              email.contains(q) ||
-              username.contains(q) ||
-              role.contains(q);
-        }).toList();
-      }
-      _sortUsers(q);
+      _filteredList = result;
     });
   }
 
