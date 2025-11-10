@@ -11113,7 +11113,7 @@ void showEditUserManagementDialog(
                                               alpha: 0.7,
                                             ),
                                           ),
-                                          items: roleFieldAccess.entries.map((entry) {
+                                          items: roleField.entries.map((entry) {
                                             return DropdownMenuItem<String>(
                                               value: entry.value,
                                               child: Row(
