@@ -528,7 +528,7 @@ class _DetailPageUsermanagement extends State<DetailPageUsermanagement> with Tic
                         padding: EdgeInsets.only(top: 35, left: 15, right: 15),
                         child: Center(
                           child: Text(
-                            "Detail User ${userData?.name}",
+                            "Detail User",
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,

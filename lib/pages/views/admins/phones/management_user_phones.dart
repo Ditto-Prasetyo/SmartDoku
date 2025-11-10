@@ -3,10 +3,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/user.dart';
 import 'dart:ui';
 import 'dart:io';
-
+import 'package:smart_doku/utils/card/user_management_card_mobile.dart';
 import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/refreshList/Mobile_Refresh_List.dart';
 
 class ManagementUserPhones extends StatefulWidget {
   const ManagementUserPhones({super.key});
@@ -21,14 +22,24 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
 
   bool isRefreshing = false;
   bool isLoading = false;
+  bool isSearchExpanded = false;
   String? title;
+
+  FocusNode _searchFocusNode = FocusNode();
+  TextEditingController _searchController = TextEditingController();
 
   // Animation controllers (cuma background aja sekarang)
   late AnimationController _backgroundController;
   late Animation<double> _backgroundAnimation;
 
+  late AnimationController _searchAnimationController;
+  late Animation<double> _searchAnimation;
+
   UserService _serviceUser = UserService();
   List<UserModel?> _listUser = [];
+  List<UserModel?> _filteredList = [];
+  List<UserModel?> get _visibleList =>
+      _searchController.text.trim().isEmpty ? _listUser : _filteredList;
 
   Future<void> _refreshData() async {
     setState(() {
@@ -67,6 +78,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
       print(data.map((e) => e.toJson()).toList());
       setState(() {
         _listUser = data;
+        _filteredList = List.from(data);
         isLoading = false;
       });
       print("[DEBUG] -> [STATE] : Set data to userData!");
@@ -114,6 +126,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
   @override
   void initState() {
     super.initState();
+    _filteredList = _listUser;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final args =
@@ -138,8 +151,94 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
         curve: Curves.easeInOutCubic,
       ),
     );
+    _searchAnimationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _searchAnimation = CurvedAnimation(
+      parent: _searchAnimationController,
+      curve: Curves.easeInOut,
+    );
+    _searchController.addListener(_performSearch);
 
     _backgroundController.repeat(reverse: true);
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      isSearchExpanded = !isSearchExpanded;
+
+      if (isSearchExpanded) {
+        _searchAnimationController.forward();
+      } else {
+        _searchAnimationController.reverse();
+        _searchController.clear();
+        _filteredList = List.from(_listUser);
+      }
+    });
+  }
+
+  int _scoreField(String? field, String q) {
+    if (field == null || q.isEmpty) return 0;
+    final f = field.toLowerCase();
+    if (f == q) return 1000; // exact
+    if (f.startsWith(q)) return 600; // prefix
+    if (f.contains(q)) {
+      final hits = RegExp(RegExp.escape(q)).allMatches(f).length;
+      return 100 + hits * 30; // substring + bonus kemunculan
+    }
+    return 0;
+  }
+
+  int _scoreUser(UserModel? u, String q) {
+    final ql = q.toLowerCase().trim();
+    int s = 0;
+    // Bobot kolom: nama/email > username > role
+    s += 9 * _scoreField(u!.name, ql);
+    s += 9 * _scoreField(u.email, ql);
+    s += 7 * _scoreField(u.username, ql);
+    s += 5 * _scoreField(u.role, ql);
+    return s;
+  }
+
+  void _sortUsers(String q) {
+    _filteredList.sort((a, b) {
+      final sa = _scoreUser(a, q);
+      final sb = _scoreUser(b, q);
+      if (sb != sa) return sb.compareTo(sa); // skor tertinggi dulu
+
+      // tie-breaker jika skor sama: alfabetis nama → email
+      final byName = (a!.name ?? '').toLowerCase().compareTo(
+        (b!.name ?? '').toLowerCase(),
+      );
+      if (byName != 0) return byName;
+      return (a.email ?? '').toLowerCase().compareTo(
+        (b.email ?? '').toLowerCase(),
+      );
+    });
+  }
+
+  void _performSearch() {
+    final q = _searchController.text.toLowerCase().trim();
+
+    setState(() {
+      if (q.isEmpty) {
+        _filteredList = List.from(_listUser);
+      } else {
+        _filteredList = _listUser.where((u) {
+          final name = (u!.name ?? '').toLowerCase();
+          final email = (u.email ?? '').toLowerCase();
+          final username = (u.username ?? '').toLowerCase();
+          final role = (u.role ?? '').toLowerCase();
+          return name.contains(q) ||
+              email.contains(q) ||
+              username.contains(q) ||
+              role.contains(q);
+        }).toList();
+      }
+      _sortUsers(q);
+    });
   }
 
   @override
@@ -565,11 +664,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                     children: [
                       // Header - Menu & Search button (simplified)
                       Padding(
-                        padding: EdgeInsets.only(
-                          top: 30,
-                          left: 15,
-                          right: 15,
-                        ),
+                        padding: EdgeInsets.only(top: 30, left: 15, right: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -583,9 +678,7 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                                 child: Container(
                                   padding: EdgeInsets.all(4.5),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.1,
-                                    ),
+                                    color: Colors.white.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
                                       color: Colors.white.withValues(
@@ -603,9 +696,9 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                               ),
                             ),
 
-                            // Search Button (Trigger dialog)
+                            // Search Button
                             InkWell(
-                              onTap: () => showFeatureNotAvailableDialog(context),
+                              onTap: () => _toggleSearch(),
                               borderRadius: BorderRadius.circular(12),
                               child: Container(
                                 padding: EdgeInsets.all(4.5),
@@ -628,13 +721,108 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
                         ),
                       ),
 
-                      // Title
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 35,
+                      // search function
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOutCubic,
+                        height: isSearchExpanded
+                            ? 48
+                            : 0, // collapse saat ditutup
+                        margin: const EdgeInsets.only(
+                          top: 12,
                           left: 15,
                           right: 15,
                         ),
+                        child: isSearchExpanded
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.white.withValues(alpha: 0.22),
+                                      Colors.white.withValues(alpha: 0.12),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.35),
+                                    width: 1.2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.08,
+                                      ),
+                                      blurRadius: 10,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.search,
+                                      color: Colors.white.withValues(
+                                        alpha: 0.7,
+                                      ),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: _searchController,
+                                        focusNode: _searchFocusNode,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText:
+                                              'Cari nama user, email, username...',
+                                          hintStyle: TextStyle(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.55,
+                                            ),
+                                            fontSize: 13,
+                                          ),
+                                          border: InputBorder.none,
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.zero,
+                                        ),
+                                      ),
+                                    ),
+                                    if (_searchController.text.isNotEmpty)
+                                      GestureDetector(
+                                        onTap: () {
+                                          _searchController.clear();
+                                          _searchFocusNode.requestFocus();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4),
+                                          child: Icon(
+                                            Icons.clear,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.75,
+                                            ),
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+
+                      // Title
+                      Padding(
+                        padding: EdgeInsets.only(top: 35, left: 15, right: 15),
                         child: Center(
                           child: Text(
                             "Manajemen Pengguna",
@@ -885,354 +1073,75 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
 
                                 // ListView dengan RefreshIndicator
                                 Expanded(
-                                  child: RefreshIndicator(
+                                  child: MobileRefreshList<UserModel?>(
+                                    items: _visibleList,
+                                    hasBaseData: _listUser.isNotEmpty,
+                                    isSearching: _searchController.text
+                                        .trim()
+                                        .isNotEmpty,
+                                    query: _searchController.text.trim(),
+                                    emptyAllMessage: 'Belum ada data user',
+                                    emptySearchPrefix: 'Tidak ada hasil untuk',
                                     onRefresh: _refreshData,
-                                    backgroundColor: Colors.white.withValues(
-                                      alpha: 0.1,
-                                    ),
-                                    color: Color(0xFF10B981),
-                                    strokeWidth: 3,
-                                    child: ListView.builder(
-                                      physics: AlwaysScrollableScrollPhysics(
-                                        parent: BouncingScrollPhysics(),
-                                      ),
-                                      itemCount: _listUser.length,
-                                      padding: EdgeInsets.only(bottom: 20),
-                                      itemBuilder: (context, index) {
-                                        final user = _listUser[index];
+                                    itemBuilder: (context, item, index, items) {
+                                      final user = item!;
 
-                                        return Container(
-                                          margin: EdgeInsets.only(bottom: 15),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
+                                      return UserCard(
+                                        user: user,
+                                        onTap: () {
+                                          actionAdminManagementUser(
+                                            index,
+                                            context,
+                                            items,
+                                            (i) => editUserManagement(
+                                              context,
+                                              index,
+                                              items,
+                                              refreshState,
                                             ),
-                                            child: BackdropFilter(
-                                              filter: ImageFilter.blur(
-                                                sigmaX: 15,
-                                                sigmaY: 15,
-                                              ),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                    colors: [
-                                                      Colors.white.withValues(
-                                                        alpha: 0.25,
-                                                      ),
-                                                      Colors.white.withValues(
-                                                        alpha: 0.1,
-                                                      ),
-                                                      Colors.white.withValues(
-                                                        alpha: 0.05,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  border: Border.all(
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.3),
-                                                    width: 1.5,
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withValues(
-                                                            alpha: 0.1,
-                                                          ),
-                                                      blurRadius: 20,
-                                                      offset: Offset(0, 10),
-                                                    ),
-                                                    BoxShadow(
-                                                      color: Colors.white
-                                                          .withValues(
-                                                            alpha: 0.1,
-                                                          ),
-                                                      blurRadius: 5,
-                                                      offset: Offset(0, -2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    actionAdminManagementUser(
-                                                      index,
-                                                      context,
-                                                      _listUser,
-                                                      (i) => editUserManagement(
-                                                        context,
-                                                        index,
-                                                        _listUser,
-                                                        refreshState,
-                                                      ),
-                                                      (i) =>
-                                                          viewDetailUserManagement(
-                                                            context,
-                                                            index,
-                                                            _listUser,
-                                                          ),
-                                                      (i) => hapusUserDesktop(
-                                                        context,
-                                                        index,
-                                                        _listUser,
-                                                        actionSetState,
-                                                        refreshState
-                                                      ),
-                                                    );
-                                                    print(
-                                                      'Surat dipilih: ${user?.name}',
-                                                    );
-                                                  },
-                                                  onLongPress: () {
-                                                    actionAdminManagementUser(
-                                                      index,
-                                                      context,
-                                                      _listUser,
-                                                      (i) => editUserManagement(
-                                                        context,
-                                                        index,
-                                                        _listUser,
-                                                        refreshState,
-                                                      ),
-                                                      (i) =>
-                                                          viewDetailUserManagement(
-                                                            context,
-                                                            index,
-                                                            _listUser,
-                                                          ),
-                                                      (i) => hapusUserDesktop(
-                                                        context,
-                                                        index,
-                                                        _listUser,
-                                                        actionSetState,
-                                                        refreshState
-                                                      ),
-                                                    );
-                                                    print(
-                                                      'Surat dipilih: ${user?.name}',
-                                                    );
-                                                  },
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(20),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: [
-                                                            // nama
-                                                            Text(
-                                                              user?.name == null
-                                                                  ? 'Data Kosong!'
-                                                                  : user!.name,
-                                                              style: const TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 18,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                                height: 1.3,
-                                                              ),
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-
-                                                            const SizedBox(
-                                                              height: 8,
-                                                            ),
-
-                                                            // email
-                                                            Text(
-                                                              user?.email ==
-                                                                      null
-                                                                  ? 'Data Kosong!'
-                                                                  : user!.email,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.8,
-                                                                    ),
-                                                                fontSize: 14,
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                                height: 1.4,
-                                                              ),
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-
-                                                            const SizedBox(
-                                                              height: 15,
-                                                            ),
-
-                                                            // bidang
-                                                            Text(
-                                                              user?.bidang ==
-                                                                      null
-                                                                  ? 'Data Kosong!'
-                                                                  : user!
-                                                                        .bidang,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.8,
-                                                                    ),
-                                                                fontSize: 14,
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                                height: 1.4,
-                                                              ),
-                                                              maxLines: 2,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-
-                                                            const SizedBox(
-                                                              height: 15,
-                                                            ),
-
-                                                            // Footer: role (kiri) + more_vert (kanan)
-                                                            Row(
-                                                              children: [
-                                                                // kiri (role + icon) ngisi sisa space
-                                                                Expanded(
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Container(
-                                                                        padding:
-                                                                            const EdgeInsets.all(
-                                                                              6,
-                                                                            ),
-                                                                        decoration: BoxDecoration(
-                                                                          gradient: LinearGradient(
-                                                                            colors: [
-                                                                              const Color(
-                                                                                0xFF4F46E5,
-                                                                              ).withValues(
-                                                                                alpha: 0.3,
-                                                                              ),
-                                                                              const Color(
-                                                                                0xFF7C3AED,
-                                                                              ).withValues(
-                                                                                alpha: 0.2,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(
-                                                                                8,
-                                                                              ),
-                                                                        ),
-                                                                        child: const Icon(
-                                                                          Icons
-                                                                              .person_outline_rounded,
-                                                                          color:
-                                                                              Colors.white,
-                                                                          size:
-                                                                              14,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(
-                                                                        width:
-                                                                            8,
-                                                                      ),
-                                                                      Expanded(
-                                                                        child: Text(
-                                                                          user?.role ==
-                                                                                  null
-                                                                              ? 'Tidak Memiliki Tujuan Akhir'
-                                                                              : user!.role,
-                                                                          style: TextStyle(
-                                                                            color: Colors.white.withValues(
-                                                                              alpha: 0.7,
-                                                                            ),
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontFamily:
-                                                                                'Roboto',
-                                                                          ),
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-
-                                                                const SizedBox(
-                                                                  width: 12,
-                                                                ),
-
-                                                                // kanan (more icon) ukuran fix
-                                                                Container(
-                                                                  padding:
-                                                                      const EdgeInsets.all(
-                                                                        6,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    gradient: LinearGradient(
-                                                                      colors: [
-                                                                        Colors.white.withValues(
-                                                                          alpha:
-                                                                              0.2,
-                                                                        ),
-                                                                        Colors.white.withValues(
-                                                                          alpha:
-                                                                              0.1,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          8,
-                                                                        ),
-                                                                  ),
-                                                                  child: Icon(
-                                                                    Icons
-                                                                        .more_vert_rounded,
-                                                                    color: Colors
-                                                                        .white
-                                                                        .withValues(
-                                                                          alpha:
-                                                                              0.8,
-                                                                        ),
-                                                                    size: 14,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                            (i) => viewDetailUserManagement(
+                                              context,
+                                              index,
+                                              items,
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                            (i) => hapusUserDesktop(
+                                              context,
+                                              index,
+                                              items,
+                                              actionSetState,
+                                              refreshState,
+                                            ),
+                                          );
+                                          print('Surat dipilih: ${user?.name}');
+                                        },
+                                        onLongPress: () {
+                                          actionAdminManagementUser(
+                                            index,
+                                            context,
+                                            items,
+                                            (i) => editUserManagement(
+                                              context,
+                                              index,
+                                              items,
+                                              refreshState,
+                                            ),
+                                            (i) => viewDetailUserManagement(
+                                              context,
+                                              index,
+                                              items,
+                                            ),
+                                            (i) => hapusUserDesktop(
+                                              context,
+                                              index,
+                                              items,
+                                              actionSetState,
+                                              refreshState,
+                                            ),
+                                          );
+                                          print('Surat dipilih: ${user?.name}');
+                                        },
+                                      );
+                                    },
                                   ),
                                 ),
                               ],

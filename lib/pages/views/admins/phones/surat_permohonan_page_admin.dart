@@ -9,11 +9,9 @@ import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/helper/emptyStateWidget.dart';
 import 'package:smart_doku/utils/map.dart';
-
 import 'package:smart_doku/utils/search/SuratMasukFunction.dart';
-import 'package:smart_doku/utils/card/surat_masuk_card_admin_mobile.dart';
+import 'package:smart_doku/utils/card/surat_masuk_card_mobile.dart';
 
 class PermohonanLetterPageAdmin extends StatefulWidget {
   final Function(Map<String, dynamic>)? onSuratAdded;
@@ -195,6 +193,9 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   @override
   void dispose() {
     _backgroundController.dispose();
+    _searchAnimationController.dispose();
+    searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -1038,7 +1039,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                     query: searchController.text.trim(),
                                     emptyAllMessage:
                                         'Belum ada data surat masuk',
-                                    emptySearchPrefix: 'Tidak hasil untuk',
+                                    emptySearchPrefix: 'Tidak ada hasil untuk',
                                     onRefresh: _refreshData,
                                     itemBuilder: (context, item, index, items) {
                                       final surat = item!;

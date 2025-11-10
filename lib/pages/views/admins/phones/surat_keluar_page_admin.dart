@@ -8,11 +8,10 @@ import 'dart:io';
 import 'package:smart_doku/utils/dialog.dart';
 import 'package:smart_doku/utils/function.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/helper/emptyStateWidget.dart';
 import 'package:smart_doku/utils/map.dart';
 import 'package:smart_doku/utils/search/SuratKeluarFunction.dart';
 import 'package:smart_doku/utils/refreshList/Mobile_Refresh_List.dart';
-import 'package:smart_doku/utils/card/surat_keluar_card_admin_mobile.dart';
+import 'package:smart_doku/utils/card/surat_keluar_card_mobile.dart';
 
 class OutgoingLetterPageAdmin extends StatefulWidget {
   const OutgoingLetterPageAdmin({super.key});
@@ -201,6 +200,9 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
   @override
   void dispose() {
     _backgroundController.dispose();
+    _searchAnimationController.dispose();
+    searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -740,7 +742,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                         ),
                                         decoration: InputDecoration(
                                           hintText:
-                                              'Cari nama, nomor, perihal, kode, pengolah...',
+                                              'Cari klasifikasi, nomor, perihal, kode, pengolah...',
                                           hintStyle: TextStyle(
                                             color: Colors.white.withValues(
                                               alpha: 0.55,
@@ -1047,7 +1049,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
                                     query: searchController.text.trim(),
                                     emptyAllMessage:
                                         'Belum ada data surat keluar',
-                                    emptySearchPrefix: 'Nggak ada hasil untuk',
+                                    emptySearchPrefix: 'Tidak ada hasil untuk',
                                     onRefresh: _refreshData,
                                     itemBuilder: (context, item, index, items) {
                                       final surat = item!;

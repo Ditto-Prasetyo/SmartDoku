@@ -405,9 +405,7 @@ void actionUserMasuk(
   int index,
   BuildContext context,
   List<SuratMasukModel?> listData,
-  void Function(int) editDokumen,
   void Function(int) viewDetail,
-  void Function(int) hapusDokumen,
 ) {
   final tempSurat = listData[index];
 
@@ -419,7 +417,7 @@ void actionUserMasuk(
   showActionSuratMasukForUserDialog(
     index,
     '${tempSurat?.nama_surat}',
-    'Surat ini berisi $namaSuratPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_diterima}',
+    'Surat ini berisi $namaSuratPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_diterima != null ? parseDateFormat(tempSurat!.tanggal_diterima) : '-'}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
@@ -445,7 +443,7 @@ void actionUserKeluar(
   showActionSuratKeluarForUserDialog(
     index,
     '${tempSurat?.perihal}',
-    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_surat}',
+    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_surat != null ? parseDateFormat(tempSurat!.tanggal_surat) : '-'}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
