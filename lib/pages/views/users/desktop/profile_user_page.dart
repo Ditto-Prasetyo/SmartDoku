@@ -173,18 +173,35 @@ class _UserProfileState extends State<UserProfile>
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                        color: const Color(0xFF4F46E5).withValues(alpha: 0.5),
                         blurRadius: 10,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
+                    border: Border(
+                      right: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.8),
+                      ),
+                    ),
                   ),
-                  child: Image.asset(
-                    'images/Icon_App.png',
-                    width: 180,
-                    height: 180,
-                    fit: BoxFit.cover,
-                    color: Colors.white,
+                  clipBehavior:
+                      Clip.antiAlias, 
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(
+                        8,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit
+                            .contain,
+                        child: Image.asset(
+                          'images/logoApps.png',
+                          color: Colors.white,
+                          filterQuality: FilterQuality
+                              .high, 
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(width: 15),
