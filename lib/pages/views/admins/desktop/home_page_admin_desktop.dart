@@ -4,9 +4,11 @@ import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
+import 'package:smart_doku/services/logs.dart'; // TAMBAH INI
 import 'dart:ui';
 import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:intl/intl.dart'; // TAMBAH INI untuk format waktu
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -31,6 +33,11 @@ class _AdminDashboardState extends State<AdminDashboard>
 
   List<Map<String, dynamic>> _statsData = [];
   StatService _statService = StatService();
+  
+  // TAMBAH INI
+  LogService _logService = LogService();
+  List<dynamic> _recentLogs = [];
+  bool _isLoadingLogs = true;
 
   UserService _userService = UserService();
   UserModel? _user;
@@ -52,7 +59,6 @@ class _AdminDashboardState extends State<AdminDashboard>
       totalSuratKeluar = SuratKeluar['total'];
       totalDisposisi = disposisi['total'];
 
-      // Sample data for dashboard
       _statsData = [
         {
           'title': 'Total Surat Masuk',
@@ -84,6 +90,27 @@ class _AdminDashboardState extends State<AdminDashboard>
         },
       ];
     });
+  }
+
+  // TAMBAH FUNGSI INI
+  Future<void> _loadLogs() async {
+    try {
+      setState(() {
+        _isLoadingLogs = true;
+      });
+      
+      final logs = await _logService.getLogs(limit: 5);
+      
+      setState(() {
+        _recentLogs = logs;
+        _isLoadingLogs = false;
+      });
+    } catch (e) {
+      print('Error loading logs: $e');
+      setState(() {
+        _isLoadingLogs = false;
+      });
+    }
   }
 
   final List<Map<String, dynamic>> _sidebarItems = [
@@ -149,8 +176,8 @@ class _AdminDashboardState extends State<AdminDashboard>
     super.initState();
     _loadAllData();
     _loadUser();
+    _loadLogs(); // TAMBAH INI
 
-    // Initialize animations
     _backgroundController = AnimationController(
       duration: Duration(seconds: 6),
       vsync: this,
@@ -203,7 +230,6 @@ class _AdminDashboardState extends State<AdminDashboard>
       ),
       child: Column(
         children: [
-          // Header with logo
           Container(
             height: 120,
             padding: EdgeInsets.all(20),
@@ -282,7 +308,6 @@ class _AdminDashboardState extends State<AdminDashboard>
             endIndent: 20,
           ),
 
-          // Menu items
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -368,7 +393,6 @@ class _AdminDashboardState extends State<AdminDashboard>
             ),
           ),
 
-          // Logout button
           Container(
             padding: EdgeInsets.all(20),
             child: ClipRRect(
@@ -425,7 +449,6 @@ class _AdminDashboardState extends State<AdminDashboard>
             ),
           ),
 
-          // Build Number items
           Container(
             padding: EdgeInsets.all(20),
             child: FutureBuilder<PackageInfo>(
@@ -455,7 +478,6 @@ class _AdminDashboardState extends State<AdminDashboard>
             ),
           ),
 
-          // Credit Section
           Padding(
             padding: EdgeInsets.only(top: 40, bottom: 10),
             child: Text(
@@ -614,31 +636,8 @@ class _AdminDashboardState extends State<AdminDashboard>
     );
   }
 
+  // FUNGSI INI DIGANTI SEPENUHNYA
   Widget _buildRecentActivity(Animation<double> _cardAnimation) {
-    final recentActivities = [
-      {
-        'title': 'Surat permohonan dari PT. ABC',
-        'time': '2 jam lalu',
-        'type': 'masuk',
-      },
-      {
-        'title': 'Disposisi surat ke bagian HRD',
-        'time': '4 jam lalu',
-        'type': 'disposisi',
-      },
-      {
-        'title': 'Surat keluar ke vendor',
-        'time': '6 jam lalu',
-        'type': 'keluar',
-      },
-      {'title': 'User baru mendaftar', 'time': '1 hari lalu', 'type': 'user'},
-      {
-        'title': 'Backup data berhasil',
-        'time': '2 hari lalu',
-        'type': 'system',
-      },
-    ];
-
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -671,117 +670,442 @@ class _AdminDashboardState extends State<AdminDashboard>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Aktivitas Terbaru',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Roboto',
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Aktivitas Terbaru',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  if (_isLoadingLogs)
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    ),
+                ],
               ),
               SizedBox(height: 20),
               Expanded(
-                child: ListView.builder(
-                  itemCount: recentActivities.length,
-                  itemBuilder: (context, index) {
-                    final activity = recentActivities[index];
-                    IconData icon;
-                    Color color;
-
-                    switch (activity['type']) {
-                      case 'masuk':
-                        icon = LineIcons.envelopeOpen;
-                        color = Color(0xFF4F46E5);
-                        break;
-                      case 'keluar':
-                        icon = FontAwesomeIcons.envelopeCircleCheck;
-                        color = Color(0xFF059669);
-                        break;
-                      case 'disposisi':
-                        icon = Icons.assignment_turned_in_rounded;
-                        color = Color(0xFFDC2626);
-                        break;
-                      case 'user':
-                        icon = Icons.person_add_rounded;
-                        color = Color(0xFF7C2D12);
-                        break;
-                      default:
-                        icon = Icons.info_outline_rounded;
-                        color = Color(0xFF6B7280);
-                    }
-
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 12),
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withAlpha(64),
-                            Colors.white.withAlpha(25),
-                            Colors.white.withAlpha(12),
-                          ],
+                child: _isLoadingLogs
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey[200]!, width: 1),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: color.withAlpha(200),
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: color.withAlpha(150),
-                                  blurRadius: 6,
-                                  spreadRadius: 1,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
+                      )
+                    : _recentLogs.isEmpty
+                        ? Center(
+                            child: Text(
+                              'Belum ada aktivitas',
+                              style: TextStyle(
+                                color: Colors.white.withValues(alpha: 0.7),
+                                fontFamily: 'Roboto',
+                              ),
                             ),
-                            child: Icon(icon, color: Colors.white, size: 18),
-                          ),
-                          SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  activity['title']!,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                          )
+                        : ListView.builder(
+                            itemCount: _recentLogs.length,
+                            itemBuilder: (context, index) {
+                              final log = _recentLogs[index];
+                              
+                              // Parse data dari API
+                              final action = log['action'] ?? 'unknown';
+                              final rawDescription = log['description'] ?? '';
+                              final username = log['username'] ?? 'Unknown';
+                              final timestamp = log['timestamp'] ?? '';
+                              
+                              // Generate description dan icon/color yang lebih spesifik
+                              final activityData = _parseLogActivity(action, rawDescription, username);
+                              
+                              final description = activityData['description'];
+                              final icon = activityData['icon'];
+                              final color = activityData['color'];
+                              
+                              // Format waktu dengan lebih user-friendly
+                              String formattedTime = _formatTimestamp(timestamp);
+
+                              return Container(
+                                margin: EdgeInsets.only(bottom: 12),
+                                padding: EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.white.withAlpha(64),
+                                      Colors.white.withAlpha(25),
+                                      Colors.white.withAlpha(12),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.grey[200]!,
+                                    width: 1,
                                   ),
                                 ),
-                                SizedBox(height: 4),
-                                Text(
-                                  activity['time']!,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                  ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: color.withAlpha(200),
+                                        borderRadius: BorderRadius.circular(8),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: color.withAlpha(150),
+                                            blurRadius: 6,
+                                            spreadRadius: 1,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Icon(
+                                        icon,
+                                        color: Colors.white,
+                                        size: 18,
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            description,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                              fontFamily: 'Roboto',
+                                            ),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.person_outline,
+                                                size: 12,
+                                                color: Colors.white.withValues(alpha: 0.7),
+                                              ),
+                                              SizedBox(width: 4),
+                                              Text(
+                                                username,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white.withValues(alpha: 0.7),
+                                                  fontFamily: 'Roboto',
+                                                ),
+                                              ),
+                                              SizedBox(width: 8),
+                                              Icon(
+                                                Icons.access_time,
+                                                size: 12,
+                                                color: Colors.white.withValues(alpha: 0.7),
+                                              ),
+                                              SizedBox(width: 4),
+                                              Text(
+                                                formattedTime,
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.white.withValues(alpha: 0.7),
+                                                  fontFamily: 'Roboto',
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // TAMBAH HELPER FUNCTION INI
+  Map<String, dynamic> _parseLogActivity(String action, String rawDescription, String username) {
+    String description = rawDescription;
+    IconData icon = Icons.info_outline_rounded;
+    Color color = Color(0xFF6B7280);
+    
+    final actionLower = action.toLowerCase();
+    
+    // === SURAT MASUK ===
+    if (actionLower.contains('surat_masuk') || actionLower.contains('suratmasuk')) {
+      if (actionLower.contains('create') || actionLower.contains('tambah')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menambahkan surat masuk baru';
+        icon = LineIcons.envelopeOpen;
+        color = Color(0xFF4F46E5);
+      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Mengupdate data surat masuk';
+        icon = LineIcons.edit;
+        color = Color(0xFF4F46E5);
+      } else if (actionLower.contains('delete') || actionLower.contains('hapus')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menghapus surat masuk';
+        icon = Icons.delete_outline;
+        color = Color(0xFFDC2626);
+      } else if (actionLower.contains('view') || actionLower.contains('read')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Membaca detail surat masuk';
+        icon = Icons.visibility_outlined;
+        color = Color(0xFF4F46E5);
+      }
+    }
+    
+    // === SURAT KELUAR ===
+    else if (actionLower.contains('surat_keluar') || actionLower.contains('suratkeluar')) {
+      if (actionLower.contains('create') || actionLower.contains('tambah')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Membuat surat keluar baru';
+        icon = FontAwesomeIcons.envelopeCircleCheck;
+        color = Color(0xFF059669);
+      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Mengupdate data surat keluar';
+        icon = Icons.edit_outlined;
+        color = Color(0xFF059669);
+      } else if (actionLower.contains('delete') || actionLower.contains('hapus')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menghapus surat keluar';
+        icon = Icons.delete_outline;
+        color = Color(0xFFDC2626);
+      } else if (actionLower.contains('send') || actionLower.contains('kirim')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Mengirim surat keluar';
+        icon = Icons.send_rounded;
+        color = Color(0xFF059669);
+      }
+    }
+    
+    // === DISPOSISI ===
+    else if (actionLower.contains('disposisi')) {
+      if (actionLower.contains('create') || actionLower.contains('tambah')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Membuat disposisi surat';
+        icon = Icons.assignment_turned_in_rounded;
+        color = Colors.lightBlue;
+      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Mengupdate disposisi';
+        icon = Icons.edit_note_rounded;
+        color = Colors.lightBlue;
+      } else if (actionLower.contains('forward') || actionLower.contains('teruskan')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Meneruskan disposisi ke bidang';
+        icon = Icons.forward_rounded;
+        color = Colors.lightBlue;
+      } else if (actionLower.contains('approve') || actionLower.contains('setuju')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menyetujui disposisi';
+        icon = Icons.check_circle_outline;
+        color = Color(0xFF059669);
+      } else if (actionLower.contains('reject') || actionLower.contains('tolak')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menolak disposisi';
+        icon = Icons.cancel_outlined;
+        color = Color(0xFFDC2626);
+      }
+    }
+    
+    // === USER MANAGEMENT ===
+    else if (actionLower.contains('user') || actionLower.contains('pengguna')) {
+      if (actionLower.contains('create') || actionLower.contains('tambah') || actionLower.contains('register')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menambahkan pengguna baru';
+        icon = Icons.person_add_rounded;
+        color = Color(0xFF7C2D12);
+      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Mengupdate data pengguna';
+        icon = Icons.edit_outlined;
+        color = Color(0xFF7C2D12);
+      } else if (actionLower.contains('delete') || actionLower.contains('hapus')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menghapus pengguna';
+        icon = Icons.person_remove_rounded;
+        color = Color(0xFFDC2626);
+      } else if (actionLower.contains('activate') || actionLower.contains('aktifkan')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Mengaktifkan akun pengguna';
+        icon = Icons.check_circle_outline;
+        color = Color(0xFF059669);
+      } else if (actionLower.contains('deactivate') || actionLower.contains('nonaktifkan')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menonaktifkan akun pengguna';
+        icon = Icons.block_rounded;
+        color = Color(0xFFDC2626);
+      }
+    }
+    
+    // === AUTHENTICATION ===
+    else if (actionLower.contains('login') || actionLower.contains('masuk')) {
+      description = rawDescription.isNotEmpty 
+          ? rawDescription 
+          : '$username berhasil login';
+      icon = Icons.login_rounded;
+      color = Color(0xFF059669);
+    }
+    else if (actionLower.contains('logout') || actionLower.contains('keluar')) {
+      description = rawDescription.isNotEmpty 
+          ? rawDescription 
+          : '$username telah logout';
+      icon = Icons.logout_rounded;
+      color = Color(0xFF6B7280);
+    }
+    
+    // === BIDANG / DEPARTEMEN ===
+    else if (actionLower.contains('bidang') || actionLower.contains('departemen') || actionLower.contains('department')) {
+      if (actionLower.contains('create') || actionLower.contains('tambah')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menambahkan bidang baru';
+        icon = Icons.work_outline_rounded;
+        color = Colors.lightBlue;
+      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Mengupdate data bidang';
+        icon = Icons.edit_outlined;
+        color = Colors.lightBlue;
+      } else if (actionLower.contains('delete') || actionLower.contains('hapus')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Menghapus bidang';
+        icon = Icons.delete_outline;
+        color = Color(0xFFDC2626);
+      }
+    }
+    
+    // === SETTINGS / SYSTEM ===
+    else if (actionLower.contains('setting') || actionLower.contains('pengaturan') || actionLower.contains('config')) {
+      description = rawDescription.isNotEmpty 
+          ? rawDescription 
+          : 'Mengubah pengaturan sistem';
+      icon = Icons.settings_outlined;
+      color = Color(0xFF6B7280);
+    }
+    else if (actionLower.contains('backup')) {
+      description = rawDescription.isNotEmpty 
+          ? rawDescription 
+          : 'Melakukan backup data';
+      icon = Icons.backup_rounded;
+      color = Color(0xFF059669);
+    }
+    else if (actionLower.contains('restore')) {
+      description = rawDescription.isNotEmpty 
+          ? rawDescription 
+          : 'Melakukan restore data';
+      icon = Icons.restore_rounded;
+      color = Color(0xFF4F46E5);
+    }
+    
+    // === FILE / DOCUMENT ===
+    else if (actionLower.contains('upload') || actionLower.contains('unggah')) {
+      description = rawDescription.isNotEmpty 
+          ? rawDescription 
+          : 'Mengunggah file dokumen';
+      icon = Icons.upload_file_rounded;
+      color = Color(0xFF4F46E5);
+    }
+    else if (actionLower.contains('download') || actionLower.contains('unduh')) {
+      description = rawDescription.isNotEmpty 
+          ? rawDescription 
+          : 'Mengunduh file dokumen';
+      icon = Icons.download_rounded;
+      color = Color(0xFF059669);
+    }
+    
+    // === LAPORAN ===
+    else if (actionLower.contains('laporan') || actionLower.contains('report')) {
+      if (actionLower.contains('generate') || actionLower.contains('buat')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Generate laporan';
+        icon = Icons.assessment_rounded;
+        color = Color(0xFF7C2D12);
+      } else if (actionLower.contains('export')) {
+        description = rawDescription.isNotEmpty 
+            ? rawDescription 
+            : 'Export laporan';
+        icon = Icons.file_download_outlined;
+        color = Color(0xFF059669);
+      }
+    }
+    
+    // === DEFAULT / UNKNOWN ===
+    else {
+      description = rawDescription.isNotEmpty 
+          ? rawDescription 
+          : 'Melakukan aktivitas';
+      icon = Icons.info_outline_rounded;
+      color = Color(0xFF6B7280);
+    }
+    
+    return {
+      'description': description,
+      'icon': icon,
+      'color': color,
+    };
+  }
+
+  String _formatTimestamp(String timestamp) {
+    try {
+      final dateTime = DateTime.parse(timestamp);
+      final now = DateTime.now();
+      final difference = now.difference(dateTime);
+
+      if (difference.inMinutes < 1) {
+        return 'Baru saja';
+      } else if (difference.inMinutes < 60) {
+        return '${difference.inMinutes} menit lalu';
+      } else if (difference.inHours < 24) {
+        return '${difference.inHours} jam lalu';
+      } else if (difference.inDays < 7) {
+        return '${difference.inDays} hari lalu';
+      } else {
+        return DateFormat('dd MMM yyyy', 'id_ID').format(dateTime);
+      }
+    } catch (e) {
+      return timestamp;
+    }
   }
 
   @override
