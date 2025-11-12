@@ -718,12 +718,13 @@ class _AdminDashboardState extends State<AdminDashboard>
                               
                               // Parse data dari API
                               final action = log['action'] ?? 'unknown';
-                              final rawDescription = log['description'] ?? '';
-                              final username = log['username'] ?? 'Unknown';
+                              final rawDescription = log['details'] ?? '';
+                              final username = log['user']['name'] ?? 'Unknown';
                               final timestamp = log['timestamp'] ?? '';
+                              final model = log['model'];
                               
                               // Generate description dan icon/color yang lebih spesifik
-                              final activityData = _parseLogActivity(action, rawDescription, username);
+                              final activityData = _parseLogActivity(model, action, rawDescription, username);
                               
                               final description = activityData['description'];
                               final icon = activityData['icon'];
@@ -840,235 +841,237 @@ class _AdminDashboardState extends State<AdminDashboard>
   }
 
   // TAMBAH HELPER FUNCTION INI
-  Map<String, dynamic> _parseLogActivity(String action, String rawDescription, String username) {
+  Map<String, dynamic> _parseLogActivity(String model, String action, String rawDescription, String username) {
     String description = rawDescription;
     IconData icon = Icons.info_outline_rounded;
     Color color = Color(0xFF6B7280);
     
-    final actionLower = action.toLowerCase();
+    final modelState = model;
     
     // === SURAT MASUK ===
-    if (actionLower.contains('surat_masuk') || actionLower.contains('suratmasuk')) {
-      if (actionLower.contains('create') || actionLower.contains('tambah')) {
+    if (modelState == 'DataSurat') {
+      if (action == 'CREATE') {
         description = rawDescription.isNotEmpty 
             ? rawDescription 
             : 'Menambahkan surat masuk baru';
         icon = LineIcons.envelopeOpen;
         color = Color(0xFF4F46E5);
-      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
+      } else if (action == 'UPDATE') {
         description = rawDescription.isNotEmpty 
             ? rawDescription 
             : 'Mengupdate data surat masuk';
         icon = LineIcons.edit;
         color = Color(0xFF4F46E5);
-      } else if (actionLower.contains('delete') || actionLower.contains('hapus')) {
+      } else if (action == 'DELETE') {
         description = rawDescription.isNotEmpty 
             ? rawDescription 
             : 'Menghapus surat masuk';
         icon = Icons.delete_outline;
         color = Color(0xFFDC2626);
-      } else if (actionLower.contains('view') || actionLower.contains('read')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Membaca detail surat masuk';
-        icon = Icons.visibility_outlined;
-        color = Color(0xFF4F46E5);
-      }
+      } 
+      // else if (modelState.contains('view') || modelState.contains('read')) {
+      //   description = rawDescription.isNotEmpty 
+      //       ? rawDescription 
+      //       : 'Membaca detail surat masuk';
+      //   icon = Icons.visibility_outlined;
+      //   color = Color(0xFF4F46E5);
+      // }
     }
     
     // === SURAT KELUAR ===
-    else if (actionLower.contains('surat_keluar') || actionLower.contains('suratkeluar')) {
-      if (actionLower.contains('create') || actionLower.contains('tambah')) {
+    else if (modelState == 'SuratKeluar') {
+      if (action == 'CREATE') {
         description = rawDescription.isNotEmpty 
             ? rawDescription 
             : 'Membuat surat keluar baru';
         icon = FontAwesomeIcons.envelopeCircleCheck;
         color = Color(0xFF059669);
-      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
+      } else if (action == 'UPDATE') {
         description = rawDescription.isNotEmpty 
             ? rawDescription 
             : 'Mengupdate data surat keluar';
         icon = Icons.edit_outlined;
         color = Color(0xFF059669);
-      } else if (actionLower.contains('delete') || actionLower.contains('hapus')) {
+      } else if (action == 'DELETE') {
         description = rawDescription.isNotEmpty 
             ? rawDescription 
             : 'Menghapus surat keluar';
         icon = Icons.delete_outline;
         color = Color(0xFFDC2626);
-      } else if (actionLower.contains('send') || actionLower.contains('kirim')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Mengirim surat keluar';
-        icon = Icons.send_rounded;
-        color = Color(0xFF059669);
-      }
+      } 
+      // else if (modelState.contains('send') || modelState.contains('kirim')) {
+      //   description = rawDescription.isNotEmpty 
+      //       ? rawDescription 
+      //       : 'Mengirim surat keluar';
+      //   icon = Icons.send_rounded;
+      //   color = Color(0xFF059669);
+      // }
     }
     
     // === DISPOSISI ===
-    else if (actionLower.contains('disposisi')) {
-      if (actionLower.contains('create') || actionLower.contains('tambah')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Membuat disposisi surat';
-        icon = Icons.assignment_turned_in_rounded;
-        color = Colors.lightBlue;
-      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Mengupdate disposisi';
-        icon = Icons.edit_note_rounded;
-        color = Colors.lightBlue;
-      } else if (actionLower.contains('forward') || actionLower.contains('teruskan')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Meneruskan disposisi ke bidang';
-        icon = Icons.forward_rounded;
-        color = Colors.lightBlue;
-      } else if (actionLower.contains('approve') || actionLower.contains('setuju')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Menyetujui disposisi';
-        icon = Icons.check_circle_outline;
-        color = Color(0xFF059669);
-      } else if (actionLower.contains('reject') || actionLower.contains('tolak')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Menolak disposisi';
-        icon = Icons.cancel_outlined;
-        color = Color(0xFFDC2626);
-      }
-    }
+    // else if (modelState.contains('disposisi')) {
+    //   if (modelState.contains('create') || modelState.contains('tambah')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Membuat disposisi surat';
+    //     icon = Icons.assignment_turned_in_rounded;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('update') || modelState.contains('edit')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Mengupdate disposisi';
+    //     icon = Icons.edit_note_rounded;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('forward') || modelState.contains('teruskan')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Meneruskan disposisi ke bidang';
+    //     icon = Icons.forward_rounded;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('approve') || modelState.contains('setuju')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Menyetujui disposisi';
+    //     icon = Icons.check_circle_outline;
+    //     color = Color(0xFF059669);
+    //   } else if (modelState.contains('reject') || modelState.contains('tolak')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Menolak disposisi';
+    //     icon = Icons.cancel_outlined;
+    //     color = Color(0xFFDC2626);
+    //   }
+    // }
     
     // === USER MANAGEMENT ===
-    else if (actionLower.contains('user') || actionLower.contains('pengguna')) {
-      if (actionLower.contains('create') || actionLower.contains('tambah') || actionLower.contains('register')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Menambahkan pengguna baru';
-        icon = Icons.person_add_rounded;
-        color = Color(0xFF7C2D12);
-      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Mengupdate data pengguna';
-        icon = Icons.edit_outlined;
-        color = Color(0xFF7C2D12);
-      } else if (actionLower.contains('delete') || actionLower.contains('hapus')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Menghapus pengguna';
-        icon = Icons.person_remove_rounded;
-        color = Color(0xFFDC2626);
-      } else if (actionLower.contains('activate') || actionLower.contains('aktifkan')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Mengaktifkan akun pengguna';
-        icon = Icons.check_circle_outline;
-        color = Color(0xFF059669);
-      } else if (actionLower.contains('deactivate') || actionLower.contains('nonaktifkan')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Menonaktifkan akun pengguna';
-        icon = Icons.block_rounded;
-        color = Color(0xFFDC2626);
-      }
-    }
+    // else if (modelState.contains('user') || modelState.contains('pengguna')) {
+    //   if (modelState.contains('create') || modelState.contains('tambah') || modelState.contains('register')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Menambahkan pengguna baru';
+    //     icon = Icons.person_add_rounded;
+    //     color = Color(0xFF7C2D12);
+    //   } else if (modelState.contains('update') || modelState.contains('edit')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Mengupdate data pengguna';
+    //     icon = Icons.edit_outlined;
+    //     color = Color(0xFF7C2D12);
+    //   } else if (modelState.contains('delete') || modelState.contains('hapus')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Menghapus pengguna';
+    //     icon = Icons.person_remove_rounded;
+    //     color = Color(0xFFDC2626);
+    //   } else if (modelState.contains('activate') || modelState.contains('aktifkan')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Mengaktifkan akun pengguna';
+    //     icon = Icons.check_circle_outline;
+    //     color = Color(0xFF059669);
+    //   } else if (modelState.contains('deactivate') || modelState.contains('nonaktifkan')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Menonaktifkan akun pengguna';
+    //     icon = Icons.block_rounded;
+    //     color = Color(0xFFDC2626);
+    //   }
+    // }
     
     // === AUTHENTICATION ===
-    else if (actionLower.contains('login') || actionLower.contains('masuk')) {
-      description = rawDescription.isNotEmpty 
-          ? rawDescription 
-          : '$username berhasil login';
-      icon = Icons.login_rounded;
-      color = Color(0xFF059669);
-    }
-    else if (actionLower.contains('logout') || actionLower.contains('keluar')) {
-      description = rawDescription.isNotEmpty 
-          ? rawDescription 
-          : '$username telah logout';
-      icon = Icons.logout_rounded;
-      color = Color(0xFF6B7280);
-    }
+    // else if (modelState.contains('login') || modelState.contains('masuk')) {
+    //   description = rawDescription.isNotEmpty 
+    //       ? rawDescription 
+    //       : '$username berhasil login';
+    //   icon = Icons.login_rounded;
+    //   color = Color(0xFF059669);
+    // }
+    // else if (modelState.contains('logout') || modelState.contains('keluar')) {
+    //   description = rawDescription.isNotEmpty 
+    //       ? rawDescription 
+    //       : '$username telah logout';
+    //   icon = Icons.logout_rounded;
+    //   color = Color(0xFF6B7280);
+    // }
     
     // === BIDANG / DEPARTEMEN ===
-    else if (actionLower.contains('bidang') || actionLower.contains('departemen') || actionLower.contains('department')) {
-      if (actionLower.contains('create') || actionLower.contains('tambah')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Menambahkan bidang baru';
-        icon = Icons.work_outline_rounded;
-        color = Colors.lightBlue;
-      } else if (actionLower.contains('update') || actionLower.contains('edit')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Mengupdate data bidang';
-        icon = Icons.edit_outlined;
-        color = Colors.lightBlue;
-      } else if (actionLower.contains('delete') || actionLower.contains('hapus')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Menghapus bidang';
-        icon = Icons.delete_outline;
-        color = Color(0xFFDC2626);
-      }
-    }
+    // else if (modelState.contains('bidang') || modelState.contains('departemen') || modelState.contains('department')) {
+    //   if (modelState.contains('create') || modelState.contains('tambah')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Menambahkan bidang baru';
+    //     icon = Icons.work_outline_rounded;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('update') || modelState.contains('edit')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Mengupdate data bidang';
+    //     icon = Icons.edit_outlined;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('delete') || modelState.contains('hapus')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Menghapus bidang';
+    //     icon = Icons.delete_outline;
+    //     color = Color(0xFFDC2626);
+    //   }
+    // }
     
     // === SETTINGS / SYSTEM ===
-    else if (actionLower.contains('setting') || actionLower.contains('pengaturan') || actionLower.contains('config')) {
-      description = rawDescription.isNotEmpty 
-          ? rawDescription 
-          : 'Mengubah pengaturan sistem';
-      icon = Icons.settings_outlined;
-      color = Color(0xFF6B7280);
-    }
-    else if (actionLower.contains('backup')) {
-      description = rawDescription.isNotEmpty 
-          ? rawDescription 
-          : 'Melakukan backup data';
-      icon = Icons.backup_rounded;
-      color = Color(0xFF059669);
-    }
-    else if (actionLower.contains('restore')) {
-      description = rawDescription.isNotEmpty 
-          ? rawDescription 
-          : 'Melakukan restore data';
-      icon = Icons.restore_rounded;
-      color = Color(0xFF4F46E5);
-    }
+    // else if (modelState.contains('setting') || modelState.contains('pengaturan') || modelState.contains('config')) {
+    //   description = rawDescription.isNotEmpty 
+    //       ? rawDescription 
+    //       : 'Mengubah pengaturan sistem';
+    //   icon = Icons.settings_outlined;
+    //   color = Color(0xFF6B7280);
+    // }
+    // else if (modelState.contains('backup')) {
+    //   description = rawDescription.isNotEmpty 
+    //       ? rawDescription 
+    //       : 'Melakukan backup data';
+    //   icon = Icons.backup_rounded;
+    //   color = Color(0xFF059669);
+    // }
+    // else if (modelState.contains('restore')) {
+    //   description = rawDescription.isNotEmpty 
+    //       ? rawDescription 
+    //       : 'Melakukan restore data';
+    //   icon = Icons.restore_rounded;
+    //   color = Color(0xFF4F46E5);
+    // }
     
     // === FILE / DOCUMENT ===
-    else if (actionLower.contains('upload') || actionLower.contains('unggah')) {
-      description = rawDescription.isNotEmpty 
-          ? rawDescription 
-          : 'Mengunggah file dokumen';
-      icon = Icons.upload_file_rounded;
-      color = Color(0xFF4F46E5);
-    }
-    else if (actionLower.contains('download') || actionLower.contains('unduh')) {
-      description = rawDescription.isNotEmpty 
-          ? rawDescription 
-          : 'Mengunduh file dokumen';
-      icon = Icons.download_rounded;
-      color = Color(0xFF059669);
-    }
+    // else if (modelState.contains('upload') || modelState.contains('unggah')) {
+    //   description = rawDescription.isNotEmpty 
+    //       ? rawDescription 
+    //       : 'Mengunggah file dokumen';
+    //   icon = Icons.upload_file_rounded;
+    //   color = Color(0xFF4F46E5);
+    // }
+    // else if (modelState.contains('download') || modelState.contains('unduh')) {
+    //   description = rawDescription.isNotEmpty 
+    //       ? rawDescription 
+    //       : 'Mengunduh file dokumen';
+    //   icon = Icons.download_rounded;
+    //   color = Color(0xFF059669);
+    // }
     
     // === LAPORAN ===
-    else if (actionLower.contains('laporan') || actionLower.contains('report')) {
-      if (actionLower.contains('generate') || actionLower.contains('buat')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Generate laporan';
-        icon = Icons.assessment_rounded;
-        color = Color(0xFF7C2D12);
-      } else if (actionLower.contains('export')) {
-        description = rawDescription.isNotEmpty 
-            ? rawDescription 
-            : 'Export laporan';
-        icon = Icons.file_download_outlined;
-        color = Color(0xFF059669);
-      }
-    }
+    // else if (modelState.contains('laporan') || modelState.contains('report')) {
+    //   if (modelState.contains('generate') || modelState.contains('buat')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Generate laporan';
+    //     icon = Icons.assessment_rounded;
+    //     color = Color(0xFF7C2D12);
+    //   } else if (modelState.contains('export')) {
+    //     description = rawDescription.isNotEmpty 
+    //         ? rawDescription 
+    //         : 'Export laporan';
+    //     icon = Icons.file_download_outlined;
+    //     color = Color(0xFF059669);
+    //   }
+    // }
     
     // === DEFAULT / UNKNOWN ===
     else {
