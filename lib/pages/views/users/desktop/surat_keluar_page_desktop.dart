@@ -209,10 +209,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
   // bikin ID unik dari data surat
   String _pinId(dynamic surat) {
     // idealnya pake surat.index (ada di file lo)
-    final idx = surat?.index;
+    final idx = surat?.kode;
     if (idx != null && idx is String && idx.isNotEmpty) return idx;
     // fallback kalau index null → gabung beberapa field
-    final no = surat?.no_surat ?? '';
+    final no = surat?.no_register ?? '';
     final tgl = surat?.tanggal_surat ?? '';
     final urut = surat?.nomor_urut?.toString() ?? '';
     final pengolah = surat?.pengolah ?? '';
@@ -221,7 +221,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
 
   // Title buat ditampilkan di daftar favorit
   String _pinTitle(dynamic surat) {
-    return (surat?.no_surat ?? surat?.nama_surat ?? surat?.hal ?? 'Surat')
+    return (surat?.no_register ?? surat?.nama_surat ?? surat?.kode ?? 'Surat')
         .toString();
   }
 

@@ -214,7 +214,11 @@ class _PermohonanLettersPageDesktopState
     }
 
     await prefs.setStringList('bookmarks', list.map(jsonEncode).toList());
-    setState(() {});
+    setState(() {
+      print("[DEBUG] -> [STATE] :: Bookmarks Values");
+      print(raw);
+      print(_pins);
+    });
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     }
