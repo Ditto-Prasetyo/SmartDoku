@@ -801,12 +801,24 @@ class _UserDashboardState extends State<UserDashboard>
                                   ),
                                 ),
                                 SizedBox(height: 8),
-                                Text(
-                                  'Selamat datang kembali, ${_user?.name}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto',
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                        text: 'Selamat datang kembali, ',
+                                      ),
+                                      TextSpan(
+                                        text: '${_user?.username ?? '-'}!',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],

@@ -302,7 +302,7 @@ void checkLengthName(
   String value,
   TextEditingController _nameController,
 ) {
-  final int _maxLengthname = 16;
+  final int _maxLengthname = 55;
   if (value.length > _maxLengthname) {
     _nameController.text = value.substring(0, _maxLengthname);
     _nameController.selection = TextSelection.fromPosition(

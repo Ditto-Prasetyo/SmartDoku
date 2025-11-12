@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
@@ -31,6 +32,9 @@ class _AdminDashboardState extends State<AdminDashboard>
   List<Map<String, dynamic>> _statsData = [];
   StatService _statService = StatService();
 
+  UserService _userService = UserService();
+  UserModel? _user;
+
   int? totalUsers;
   int? totalSuratMasuk;
   int? totalSuratKeluar;
@@ -41,7 +45,7 @@ class _AdminDashboardState extends State<AdminDashboard>
     final suratMasuk = await _statService.getSuratMasuk();
     final SuratKeluar = await _statService.getSuratKeluar();
     final disposisi = await _statService.getDisposisi();
-    
+
     setState(() {
       totalUsers = users['totalUsers'];
       totalSuratMasuk = suratMasuk['total'];
@@ -132,10 +136,19 @@ class _AdminDashboardState extends State<AdminDashboard>
     Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+    setState(() {
+      _user = user;
+      print(_user?.name);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _loadAllData();
+    _loadUser();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -217,21 +230,16 @@ class _AdminDashboardState extends State<AdminDashboard>
                       ),
                     ),
                   ),
-                  clipBehavior:
-                      Clip.antiAlias, 
+                  clipBehavior: Clip.antiAlias,
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(
-                        8,
-                      ),
+                      padding: const EdgeInsets.all(8),
                       child: FittedBox(
-                        fit: BoxFit
-                            .contain,
+                        fit: BoxFit.contain,
                         child: Image.asset(
                           'images/logoApps.png',
                           color: Colors.white,
-                          filterQuality: FilterQuality
-                              .high, 
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),
@@ -538,7 +546,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                   height: 200,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: Column (
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Row(
@@ -839,12 +847,24 @@ class _AdminDashboardState extends State<AdminDashboard>
                                   ),
                                 ),
                                 SizedBox(height: 8),
-                                Text(
-                                  'Selamat datang kembali, Admin!',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto',
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                        text: 'Selamat datang kembali, ',
+                                      ),
+                                      TextSpan(
+                                        text: '${_user?.username ?? '-'}!',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],

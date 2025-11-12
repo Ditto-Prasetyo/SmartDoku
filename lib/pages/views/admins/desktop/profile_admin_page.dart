@@ -516,7 +516,7 @@ class _AdminProfileState extends State<AdminProfile>
                         ),
                       ),
                       Text(
-                        'Informasi lengkap Administrator sistem',
+                        'Informasi Lengkap Administrator sistem',
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.7),
                           fontSize: 16,
@@ -1123,7 +1123,7 @@ class _AdminProfileState extends State<AdminProfile>
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  'Informasi lengkap mengenai akun Anda!',
+                                  'Informasi Lengkap Mengenai Akun Anda!',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
