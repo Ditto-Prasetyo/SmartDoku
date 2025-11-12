@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
@@ -27,6 +30,8 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
   var height, width;
   bool isLoading = true;
   bool isSearchExpanded = false;
+  bool _isPinned(dynamic surat) => _pins.contains(_pinId(surat));
+  Set<String> _pins = {};
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
 
@@ -188,11 +193,82 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
     }
   }
 
+  Future<void> _loadPins() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getStringList('bookmarks') ?? [];
+    final ids = <String>{};
+    for (final s in raw) {
+      try {
+        final m = Map<String, dynamic>.from(jsonDecode(s));
+        if (m['id'] is String) ids.add(m['id']);
+      } catch (_) {}
+    }
+    setState(() => _pins = ids);
+  }
+
+  // bikin ID unik dari data surat
+  String _pinId(dynamic surat) {
+    // idealnya pake surat.index (ada di file lo)
+    final idx = surat?.index;
+    if (idx != null && idx is String && idx.isNotEmpty) return idx;
+    // fallback kalau index null → gabung beberapa field
+    final no = surat?.no_surat ?? '';
+    final tgl = surat?.tanggal_surat ?? '';
+    final urut = surat?.nomor_urut?.toString() ?? '';
+    final pengolah = surat?.pengolah ?? '';
+    return '$no|$tgl|$urut|$pengolah';
+  }
+
+  // Title buat ditampilkan di daftar favorit
+  String _pinTitle(dynamic surat) {
+    return (surat?.no_surat ?? surat?.nama_surat ?? surat?.hal ?? 'Surat')
+        .toString();
+  }
+
+  Future<void> _togglePin(dynamic surat) async {
+    if (surat == null) return;
+    final id = _pinId(surat);
+    final title = _pinTitle(surat);
+
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getStringList('bookmarks') ?? [];
+    final list = <Map<String, dynamic>>[];
+    for (final s in raw) {
+      try {
+        list.add(Map<String, dynamic>.from(jsonDecode(s)));
+      } catch (_) {}
+    }
+
+    final idx = list.indexWhere((e) => e['id'] == id);
+    String msg;
+    if (idx >= 0) {
+      list.removeAt(idx);
+      _pins.remove(id);
+      msg = 'Dihapus dari Favorit';
+    } else {
+      list.insert(0, {
+        'id': id,
+        'judul': title,
+        'type': 'surat_keluar', 
+        'savedAt': DateTime.now().toIso8601String(),
+      });
+      _pins.add(id);
+      msg = 'Ditambahkan ke Favorit';
+    }
+
+    await prefs.setStringList('bookmarks', list.map(jsonEncode).toList());
+    setState(() {});
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadAllData();
     _filteredList = _listSurat;
+    _loadPins();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -260,6 +336,49 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
         _filteredList = _listSurat != null ? List.from(_listSurat!) : null;
       }
     });
+  }
+
+  Widget _favoriteButton(dynamic surat) {
+    if (surat == null) return SizedBox.shrink();
+    final pinned = _isPinned(surat);
+
+    return Container(
+      margin: EdgeInsets.only(right: 4),
+      padding: EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: pinned
+              ? [
+                  Color(0xFFF59E0B).withValues(alpha: 0.30),
+                  Color(0xFFD97706).withValues(alpha: 0.30),
+                ]
+              : [
+                  Colors.white.withValues(alpha: 0.12),
+                  Colors.white.withValues(alpha: 0.06),
+                ],
+        ),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.30),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () => _togglePin(surat),
+        child: Icon(
+          pinned ? Icons.bookmark : Icons.bookmark_border,
+          color: Colors.white,
+          size: 14,
+        ),
+      ),
+    );
   }
 
   Widget _buildSidebar() {
@@ -1611,6 +1730,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                   MainAxisAlignment
                                                                       .center,
                                                               children: [
+                                                                // favorites button
+                                                                _favoriteButton(
+                                                                  surat,
+                                                                ),
                                                                 // View button
                                                                 Container(
                                                                   margin:
