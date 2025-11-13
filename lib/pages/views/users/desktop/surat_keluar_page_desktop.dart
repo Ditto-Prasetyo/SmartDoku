@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/bookmarks.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
@@ -139,6 +140,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : null;
+      if (!mounted) return;
       setState(() {
         _listSurat = data != null ? data : null;
         _filteredList = data != null ? List.from(data) : null;
@@ -194,16 +196,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
   }
 
   Future<void> _loadPins() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getStringList('bookmarks') ?? [];
-    final ids = <String>{};
-    for (final s in raw) {
-      try {
-        final m = Map<String, dynamic>.from(jsonDecode(s));
-        if (m['id'] is String) ids.add(m['id']);
-      } catch (_) {}
-    }
-    setState(() => _pins = ids);
+    final items = await Bookmarks.list();
+    setState(() {
+      _pins = items.map((e) => e.id).toSet();
+    });
   }
 
   // bikin ID unik dari data surat
@@ -227,40 +223,31 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
 
   Future<void> _togglePin(dynamic surat) async {
     if (surat == null) return;
-    final id = _pinId(surat);
-    final title = _pinTitle(surat);
 
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getStringList('bookmarks') ?? [];
-    final list = <Map<String, dynamic>>[];
-    for (final s in raw) {
-      try {
-        list.add(Map<String, dynamic>.from(jsonDecode(s)));
-      } catch (_) {}
-    }
+    final id = _pinId(surat); // pastikan stabil (lihat catatan bawah)
+    final title = _pinTitle(surat); // no_register / nama_surat / kode, dsb.
 
-    final idx = list.indexWhere((e) => e['id'] == id);
-    String msg;
-    if (idx >= 0) {
-      list.removeAt(idx);
-      _pins.remove(id);
-      msg = 'Dihapus dari Favorit';
-    } else {
-      list.insert(0, {
-        'id': id,
-        'judul': title,
-        'type': 'surat_keluar', 
-        'savedAt': DateTime.now().toIso8601String(),
-      });
-      _pins.add(id);
-      msg = 'Ditambahkan ke Favorit';
-    }
+    await Bookmarks.toggle(
+      BookmarkItem(
+        id: id,
+        title: title,
+        type: 'surat_keluar',
+        route:
+            '/user/desktop/surat_keluar_page_desktop', // isi kalau kamu punya rute detail
+      ),
+    );
 
-    await prefs.setStringList('bookmarks', list.map(jsonEncode).toList());
-    setState(() {});
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-    }
+    await _loadPins();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _pins.contains(id)
+              ? 'Ditambahkan ke Favorit'
+              : 'Dihapus dari Favorit',
+        ),
+      ),
+    );
   }
 
   @override
@@ -269,6 +256,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
     _loadAllData();
     _filteredList = _listSurat;
     _loadPins();
+    Bookmarks.normalize();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -430,21 +418,16 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                       ),
                     ),
                   ),
-                  clipBehavior:
-                      Clip.antiAlias, 
+                  clipBehavior: Clip.antiAlias,
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(
-                        8,
-                      ),
+                      padding: const EdgeInsets.all(8),
                       child: FittedBox(
-                        fit: BoxFit
-                            .contain,
+                        fit: BoxFit.contain,
                         child: Image.asset(
                           'images/logoApps.png',
                           color: Colors.white,
-                          filterQuality: FilterQuality
-                              .high, 
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),
@@ -660,7 +643,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
             ),
           ),
 
-                    // Credit Section
+          // Credit Section
           Padding(
             padding: EdgeInsets.only(top: 40, bottom: 10),
             child: Text(
@@ -1127,7 +1110,8 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                             : List.generate(_visibleList!.length, (
                                                 index,
                                               ) {
-                                                final surat = _visibleList![index];
+                                                final surat =
+                                                    _visibleList![index];
                                                 return Container(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
@@ -1724,7 +1708,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           // Actions
                                                           SizedBox(width: 40),
                                                           SizedBox(
-                                                            width: 120,
+                                                            width: 80,
                                                             child: Row(
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
@@ -1785,201 +1769,6 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                // download file button
-                                                                Container(
-                                                                  margin:
-                                                                      EdgeInsets.only(
-                                                                        right:
-                                                                            4,
-                                                                      ),
-                                                                  padding:
-                                                                      EdgeInsets.all(
-                                                                        6,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    gradient: LinearGradient(
-                                                                      colors: [
-                                                                        Color(
-                                                                          0xFF4CAF50,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.3,
-                                                                        ),
-                                                                        Color(
-                                                                          0xFF43A047,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.2,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          6,
-                                                                        ),
-                                                                  ),
-                                                                  child: InkWell(
-                                                                    onTap: () async {
-                                                                      // Validasi cepat sebelum haptic
-                                                                      if (surat ==
-                                                                              null ||
-                                                                          surat.dok_final ==
-                                                                              null ||
-                                                                          surat
-                                                                              .dok_final!
-                                                                              .isEmpty) {
-                                                                        // Show warning
-                                                                        ScaffoldMessenger.of(
-                                                                          context,
-                                                                        ).showSnackBar(
-                                                                          SnackBar(
-                                                                            content: Row(
-                                                                              children: [
-                                                                                Icon(
-                                                                                  Icons.warning_amber_rounded,
-                                                                                  color: Colors.white,
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  width: 10,
-                                                                                ),
-                                                                                Text(
-                                                                                  'File tidak tersedia untuk diunduh',
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            backgroundColor:
-                                                                                Colors.orange.shade700,
-                                                                            behavior:
-                                                                                SnackBarBehavior.floating,
-                                                                            shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(
-                                                                                10,
-                                                                              ),
-                                                                            ),
-                                                                            duration: Duration(
-                                                                              seconds: 2,
-                                                                            ),
-                                                                          ),
-                                                                        );
-                                                                        return;
-                                                                      }
-
-                                                                      // Call download function
-                                                                      await DownloadDokumenAdminKeluar(
-                                                                        context,
-                                                                        index,
-                                                                        surat!,
-                                                                        refreshEditState,
-                                                                      );
-                                                                    },
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .download,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      size: 14,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                // Edit button
-                                                                Container(
-                                                                  margin:
-                                                                      EdgeInsets.only(
-                                                                        right:
-                                                                            4,
-                                                                      ),
-                                                                  padding:
-                                                                      EdgeInsets.all(
-                                                                        6,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    gradient: LinearGradient(
-                                                                      colors: [
-                                                                        Color(
-                                                                          0xFFF59E0B,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.3,
-                                                                        ),
-                                                                        Color(
-                                                                          0xFFD97706,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.2,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          6,
-                                                                        ),
-                                                                  ),
-                                                                  child: InkWell(
-                                                                    onTap: () {
-                                                                      // Handle edit action
-                                                                      editDokumenAdminKeluar(
-                                                                        context,
-                                                                        index,
-                                                                        _listSurat!,
-                                                                        refreshEditState,
-                                                                      );
-                                                                    },
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .edit_outlined,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      size: 14,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                // Delete button
-                                                                Container(
-                                                                  padding:
-                                                                      EdgeInsets.all(
-                                                                        6,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    gradient: LinearGradient(
-                                                                      colors: [
-                                                                        Color(
-                                                                          0xFFEF4444,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.3,
-                                                                        ),
-                                                                        Color(
-                                                                          0xFFDC2626,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.2,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          6,
-                                                                        ),
-                                                                  ),
-                                                                  child: InkWell(
-                                                                    onTap: () {
-                                                                      // Handle delete action
-                                                                      hapusDokumenKeluarDesktop(
-                                                                        context,
-                                                                        index,
-                                                                        _listSurat!,
-                                                                        actionSetState,
-                                                                      );
-                                                                    },
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .delete_outline,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      size: 14,
-                                                                    ),
-                                                                  ),
-                                                                ),
                                                               ],
                                                             ),
                                                           ),
@@ -1992,7 +1781,6 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                       ),
                                     ),
                                   ),
-                                
                                 ],
                               ),
                             ),

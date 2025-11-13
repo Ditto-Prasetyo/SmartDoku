@@ -88,7 +88,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : await _suratService.listSurat();
-
+       if (!mounted) return;
       setState(() {
         print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
         _listSurat = data;
@@ -133,6 +133,7 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
   @override
   void initState() {
     super.initState();
+    _loadAllData();
     _filteredList = _listSurat;
 
     // Initialize background animation

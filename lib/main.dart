@@ -57,7 +57,7 @@ void main() async {
   }
 
   await AppSettings().init(); // init prefs global
-  final bookmarks = await Bookmarks().getBookmarks();
+  final bookmarks = await Bookmarks.getBookmarks();
 
   // For Debug
   final suf1 = AppSettings().part1;

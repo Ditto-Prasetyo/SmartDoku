@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/bookmarks.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
@@ -54,7 +55,7 @@ class _PermohonanLettersPageDesktopState
   List<SuratMasukModel?>? _listSurat = [];
   List<SuratMasukModel?>? _filteredList = [];
   List<SuratMasukModel?>? get _visibleList =>
-    _searchController.text.trim().isEmpty ? _listSurat : _filteredList;
+      _searchController.text.trim().isEmpty ? _listSurat : _filteredList;
 
   Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
@@ -71,6 +72,7 @@ class _PermohonanLettersPageDesktopState
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : null;
+      if (!mounted) return;
       setState(() {
         _listSurat = data;
         _filteredList = data != null ? List.from(data) : null;
@@ -151,16 +153,10 @@ class _PermohonanLettersPageDesktopState
   }
 
   Future<void> _loadPins() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getStringList('bookmarks') ?? [];
-    final ids = <String>{};
-    for (final s in raw) {
-      try {
-        final m = Map<String, dynamic>.from(jsonDecode(s));
-        if (m['id'] is String) ids.add(m['id']);
-      } catch (_) {}
-    }
-    setState(() => _pins = ids);
+    final items = await Bookmarks.list();
+    setState(() {
+      _pins = items.map((e) => e.id).toSet();
+    });
   }
 
   // bikin ID unik dari data surat
@@ -187,41 +183,26 @@ class _PermohonanLettersPageDesktopState
     final id = _pinId(surat);
     final title = _pinTitle(surat);
 
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getStringList('bookmarks') ?? [];
-    final list = <Map<String, dynamic>>[];
-    for (final s in raw) {
-      try {
-        list.add(Map<String, dynamic>.from(jsonDecode(s)));
-      } catch (_) {}
-    }
+    await Bookmarks.toggle(
+      BookmarkItem(
+        id: id,
+        title: title,
+        type: 'surat_masuk',
+        route: '/user/desktop/surat_permohonan_page_desktop',
+      ),
+    );
 
-    final idx = list.indexWhere((e) => e['id'] == id);
-    String msg;
-    if (idx >= 0) {
-      list.removeAt(idx);
-      _pins.remove(id);
-      msg = 'Dihapus dari Favorit';
-    } else {
-      list.insert(0, {
-        'id': id,
-        'judul': title,
-        'type': 'surat_masuk', 
-        'savedAt': DateTime.now().toIso8601String(),
-      });
-      _pins.add(id);
-      msg = 'Ditambahkan ke Favorit';
-    }
-
-    await prefs.setStringList('bookmarks', list.map(jsonEncode).toList());
-    setState(() {
-      print("[DEBUG] -> [STATE] :: Bookmarks Values");
-      print(raw);
-      print(_pins);
-    });
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
-    }
+    await _loadPins();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _pins.contains(id)
+              ? 'Ditambahkan ke Favorit'
+              : 'Dihapus dari Favorit',
+        ),
+      ),
+    );
   }
 
   @override
@@ -230,6 +211,7 @@ class _PermohonanLettersPageDesktopState
     _loadAllData();
     _filteredList = _listSurat;
     _loadPins();
+    Bookmarks.normalize();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -392,21 +374,16 @@ class _PermohonanLettersPageDesktopState
                       ),
                     ),
                   ),
-                  clipBehavior:
-                      Clip.antiAlias, 
+                  clipBehavior: Clip.antiAlias,
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(
-                        8,
-                      ),
+                      padding: const EdgeInsets.all(8),
                       child: FittedBox(
-                        fit: BoxFit
-                            .contain,
+                        fit: BoxFit.contain,
                         child: Image.asset(
                           'images/logoApps.png',
                           color: Colors.white,
-                          filterQuality: FilterQuality
-                              .high, 
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),
@@ -622,7 +599,7 @@ class _PermohonanLettersPageDesktopState
             ),
           ),
 
-                    // Credit Section
+          // Credit Section
           Padding(
             padding: EdgeInsets.only(top: 40, bottom: 10),
             child: Text(
@@ -1402,7 +1379,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 2. Surat dari - flex: 200
                                                             SizedBox(width: 20),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[0],
+                                                              flex:
+                                                                  flexSuratMasuk[0],
                                                               child: Column(
                                                                 crossAxisAlignment:
                                                                     CrossAxisAlignment
@@ -1463,7 +1441,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 3. Diterima tgl - flex: 100
                                                             SizedBox(width: 8),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[1],
+                                                              flex:
+                                                                  flexSuratMasuk[1],
                                                               child: Text(
                                                                 surat?.tanggal_diterima ==
                                                                         null
@@ -1489,7 +1468,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 4. Tanggal - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[2],
+                                                              flex:
+                                                                  flexSuratMasuk[2],
                                                               child: Text(
                                                                 surat?.tanggal_surat ==
                                                                         null
@@ -1515,7 +1495,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 5. Kode - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[3],
+                                                              flex:
+                                                                  flexSuratMasuk[3],
                                                               child: Text(
                                                                 surat?.kode ==
                                                                         null
@@ -1539,7 +1520,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 6. No_urut - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[4],
+                                                              flex:
+                                                                  flexSuratMasuk[4],
                                                               child: Text(
                                                                 surat?.nomor_urut ==
                                                                         null
@@ -1564,7 +1546,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 7. No_agenda - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[5],
+                                                              flex:
+                                                                  flexSuratMasuk[5],
                                                               child: Text(
                                                                 surat?.kode ==
                                                                         null
@@ -1593,7 +1576,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 8. No surat - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[6],
+                                                              flex:
+                                                                  flexSuratMasuk[6],
                                                               child: Text(
                                                                 surat?.no_surat ==
                                                                         null
@@ -1617,7 +1601,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 9. Perihal - flex: 200
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[7],
+                                                              flex:
+                                                                  flexSuratMasuk[7],
                                                               child: Text(
                                                                 surat?.hal ==
                                                                         null
@@ -1645,7 +1630,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 10. Hari/tanggal - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[8],
+                                                              flex:
+                                                                  flexSuratMasuk[8],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1683,7 +1669,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 12. Tempat - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[9],
+                                                              flex:
+                                                                  flexSuratMasuk[9],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1714,7 +1701,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 13. Disposisi - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: flexSuratMasuk[10],
+                                                              flex:
+                                                                  flexSuratMasuk[10],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1747,7 +1735,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 14. Index - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[11],
+                                                              flex:
+                                                                  flexSuratMasuk[11],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1773,7 +1762,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 15. Pengolah - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[12],
+                                                              flex:
+                                                                  flexSuratMasuk[12],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1808,7 +1798,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 16. Sifat - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[13],
+                                                              flex:
+                                                                  flexSuratMasuk[13],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1834,7 +1825,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 17. Link scan - flex: 200
                                                             Expanded(
-                                                              flex: flexSuratMasuk[14],
+                                                              flex:
+                                                                  flexSuratMasuk[14],
                                                               child: Text(
                                                                 surat.link_scan ??
                                                                     "-",
@@ -1858,7 +1850,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 18. Disposisi kadin - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[15],
+                                                              flex:
+                                                                  flexSuratMasuk[15],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1895,7 +1888,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 19. Disposisi Sekdin - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[16],
+                                                              flex:
+                                                                  flexSuratMasuk[16],
                                                               child: Text(
                                                                 surat.disp_2 ==
                                                                         null
@@ -1924,7 +1918,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 20. Disposisi Kabid - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[17],
+                                                              flex:
+                                                                  flexSuratMasuk[17],
                                                               child: Text(
                                                                 surat.disp_3 !=
                                                                         null
@@ -1953,7 +1948,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 21. Disposisi Kasubag - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[18],
+                                                              flex:
+                                                                  flexSuratMasuk[18],
                                                               child: Text(
                                                                 surat.disp_4 !=
                                                                         null
@@ -1981,7 +1977,8 @@ class _PermohonanLettersPageDesktopState
                                                             ),
 
                                                             Expanded(
-                                                              flex: flexSuratMasuk[19],
+                                                              flex:
+                                                                  flexSuratMasuk[19],
                                                               child: Center(
                                                                 child: Text(
                                                                   surat.disp_1_notes ??
@@ -1993,11 +1990,13 @@ class _PermohonanLettersPageDesktopState
                                                                           alpha:
                                                                               0.7,
                                                                         ),
-                                                                    fontSize: 11,
+                                                                    fontSize:
+                                                                        11,
                                                                     fontFamily:
                                                                         'Roboto',
                                                                   ),
-                                                                  softWrap: true,
+                                                                  softWrap:
+                                                                      true,
                                                                   overflow:
                                                                       TextOverflow
                                                                           .visible,
@@ -2006,7 +2005,8 @@ class _PermohonanLettersPageDesktopState
                                                             ),
 
                                                             Expanded(
-                                                              flex: flexSuratMasuk[20],
+                                                              flex:
+                                                                  flexSuratMasuk[20],
                                                               child: Text(
                                                                 surat.disp_2_notes ??
                                                                     "-",
@@ -2029,7 +2029,8 @@ class _PermohonanLettersPageDesktopState
                                                             ),
 
                                                             Expanded(
-                                                              flex: flexSuratMasuk[21],
+                                                              flex:
+                                                                  flexSuratMasuk[21],
                                                               child: Text(
                                                                 surat
                                                                     .disp_3_notes!,
@@ -2052,7 +2053,8 @@ class _PermohonanLettersPageDesktopState
                                                             ),
 
                                                             Expanded(
-                                                              flex: flexSuratMasuk[22],
+                                                              flex:
+                                                                  flexSuratMasuk[22],
                                                               child: Text(
                                                                 surat.disp_4_notes ??
                                                                     "-",
@@ -2076,7 +2078,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 22. Disposisi Lanjutan - flex: 200
                                                             Expanded(
-                                                              flex: flexSuratMasuk[23],
+                                                              flex:
+                                                                  flexSuratMasuk[23],
                                                               child: Text(
                                                                 surat.disp_lanjut ??
                                                                     "-",
@@ -2100,7 +2103,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 23. Tindak lanjut 1 - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[24],
+                                                              flex:
+                                                                  flexSuratMasuk[24],
                                                               child: Text(
                                                                 surat.tindak_lanjut_1 !=
                                                                         null
@@ -2129,7 +2133,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 24. Tindak lanjut 2 - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[25],
+                                                              flex:
+                                                                  flexSuratMasuk[25],
                                                               child: Text(
                                                                 surat.tindak_lanjut_2 !=
                                                                         null
@@ -2158,7 +2163,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 25. Status - flex: 100
                                                             Expanded(
-                                                              flex: flexSuratMasuk[26],
+                                                              flex:
+                                                                  flexSuratMasuk[26],
                                                               child: Align(
                                                                 alignment: Alignment
                                                                     .centerLeft,
@@ -2242,9 +2248,9 @@ class _PermohonanLettersPageDesktopState
                                                                         .center,
                                                                 children: [
                                                                   // favorites button
-                                                                _favoriteButton(
-                                                                  surat,
-                                                                ),
+                                                                  _favoriteButton(
+                                                                    surat,
+                                                                  ),
                                                                   // View button
                                                                   Container(
                                                                     margin:

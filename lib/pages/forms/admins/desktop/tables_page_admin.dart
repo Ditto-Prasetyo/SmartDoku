@@ -56,6 +56,7 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
           ? _userService.getFilteredUsers(title!)
           : _userService.listUsers());
       print(data.map((e) => e.toJson()).toList());
+      if (!mounted) return;
       setState(() {
         _userData = data;
         _filteredList = List.from(data);
@@ -333,21 +334,16 @@ class _TablesPageAdminState extends State<TablesPageAdmin>
                       ),
                     ),
                   ),
-                  clipBehavior:
-                      Clip.antiAlias, 
+                  clipBehavior: Clip.antiAlias,
                   child: Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(
-                        8,
-                      ),
+                      padding: const EdgeInsets.all(8),
                       child: FittedBox(
-                        fit: BoxFit
-                            .contain,
+                        fit: BoxFit.contain,
                         child: Image.asset(
                           'images/logoApps.png',
                           color: Colors.white,
-                          filterQuality: FilterQuality
-                              .high, 
+                          filterQuality: FilterQuality.high,
                         ),
                       ),
                     ),

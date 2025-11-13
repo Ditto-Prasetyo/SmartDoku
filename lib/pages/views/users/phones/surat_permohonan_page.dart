@@ -59,7 +59,7 @@ class _PermohonanLetterPage extends State<PermohonanLetterPage>
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : null;
-
+       if (!mounted) return;
       setState(() {
         print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
         _listSurat = data ?? null;

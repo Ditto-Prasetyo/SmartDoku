@@ -66,6 +66,7 @@ class _PermohonanLettersPageAdminDesktopState
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : await _suratService.listSurat();
+      if (!mounted) return;
       setState(() {
         _listSurat = data;
         _filteredList = List.from(data);
