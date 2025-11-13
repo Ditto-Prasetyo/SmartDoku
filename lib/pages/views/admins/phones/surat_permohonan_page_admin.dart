@@ -3,12 +3,15 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
+import 'package:smart_doku/utils/refreshList/Mobile_Refresh_List.dart';
 import 'dart:ui';
 import 'dart:io';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/map.dart';
+import 'package:smart_doku/utils/helper/map.dart';
+import 'package:smart_doku/utils/search/SuratMasukFunction.dart';
+import 'package:smart_doku/utils/card/surat_masuk_card_mobile.dart';
 
 class PermohonanLetterPageAdmin extends StatefulWidget {
   final Function(Map<String, dynamic>)? onSuratAdded;
@@ -24,32 +27,46 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   var height, width;
 
   bool isRefreshing = false;
+  bool isSearchExpanded = false;
   late Function(Map<String, dynamic>) onSuratAdded;
+
+  FocusNode _searchFocusNode = FocusNode();
+  TextEditingController searchController = TextEditingController();
 
   // Animation controllers and animations
   late AnimationController _backgroundController;
-
   late Animation<double> _backgroundAnimation;
+
+  late AnimationController _searchAnimationController;
+  late Animation<double> _searchAnimation;
 
   SuratMasuk _suratService = SuratMasuk();
   UserService _userService = UserService();
   List<SuratMasukModel?> _listSurat = [];
+  List<SuratMasukModel?> _filteredList = [];
+  List<SuratMasukModel?> get _visibleList =>
+      searchController.text.trim().isEmpty ? _listSurat : _filteredList;
 
   Future<void> _loadAllData() async {
     print('[DEBUG] -> [INFO] : Loading all data "surat masuk" ...');
     try {
       final disposisi = await _userService.getDisposisi();
-      final mappedDisposisi = workFields.entries.firstWhere(
-        (e) => e.value == disposisi,
-        orElse: () => const MapEntry('Tidak Diketahui', 'Unknown')
-      ).key;
+      final mappedDisposisi = workFields.entries
+          .firstWhere(
+            (e) => e.value == disposisi,
+            orElse: () => const MapEntry('Tidak Diketahui', 'Unknown'),
+          )
+          .key;
       final isSU = await _userService.getSuperAdminStatus();
       print("[DEBUG] -> [STATE] :: SU Status : $isSU");
-      final data = disposisi != null ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU) : await _suratService.listSurat();
-
+      final data = disposisi != null
+          ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
+          : await _suratService.listSurat();
+       if (!mounted) return;
       setState(() {
         print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
         _listSurat = data;
+        _filteredList = List.from(data);
         print(_listSurat.map((e) => e?.toJson()).toList());
       });
     } catch (e) {
@@ -109,6 +126,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   void initState() {
     super.initState();
     _loadAllData();
+    _filteredList = _listSurat;
 
     // Initialize background animation
     _backgroundController = AnimationController(
@@ -121,8 +139,40 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
         curve: Curves.easeInOutCubic,
       ),
     );
+    _searchAnimationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _searchAnimation = CurvedAnimation(
+      parent: _searchAnimationController,
+      curve: Curves.easeInOut,
+    );
+    searchController.addListener(_performSearch);
 
     _backgroundController.repeat(reverse: true);
+  }
+
+  void _performSearch() {
+    final q = searchController.text;
+    final result = SuratMasukSearch.filterAndSort(_listSurat, q);
+    setState(() {
+      _filteredList = result;
+    });
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      isSearchExpanded = !isSearchExpanded;
+
+      if (isSearchExpanded) {
+        _searchAnimationController.forward();
+      } else {
+        _searchAnimationController.reverse();
+        searchController.clear();
+        _filteredList = List.from(_listSurat);
+      }
+    });
   }
 
   void actionSetState(int index) async {
@@ -143,6 +193,9 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
   @override
   void dispose() {
     _backgroundController.dispose();
+    _searchAnimationController.dispose();
+    searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
   }
 
@@ -562,28 +615,21 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // menu bar
                       Padding(
-                        padding: EdgeInsets.only(
-                          top: 30,
-                          left: 15,
-                          right: 15,
-                        ),
+                        padding: EdgeInsets.only(top: 30, left: 15, right: 15),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             // Menu Button
                             Builder(
                               builder: (context) => InkWell(
-                                onTap: () {
-                                  Scaffold.of(context).openDrawer();
-                                },
+                                onTap: () => Scaffold.of(context).openDrawer(),
                                 borderRadius: BorderRadius.circular(12),
                                 child: Container(
                                   padding: EdgeInsets.all(4.5),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withValues(
-                                      alpha: 0.1,
-                                    ),
+                                    color: Colors.white.withValues(alpha: 0.1),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
                                       color: Colors.white.withValues(
@@ -601,9 +647,9 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                               ),
                             ),
 
-                            // Search Button (Trigger dialog)
+                            // Search bar
                             InkWell(
-                              onTap: () => showFeatureNotAvailableDialog(context),
+                              onTap: _toggleSearch, // <-- pakai toggle
                               borderRadius: BorderRadius.circular(12),
                               child: Container(
                                 padding: EdgeInsets.all(4.5),
@@ -626,13 +672,108 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                         ),
                       ),
 
-                      // Title
-                      Padding(
-                        padding: EdgeInsets.only(
-                          top: 35,
+                      // search function
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOutCubic,
+                        height: isSearchExpanded
+                            ? 48
+                            : 0, // collapse saat ditutup
+                        margin: const EdgeInsets.only(
+                          top: 12,
                           left: 15,
                           right: 15,
                         ),
+                        child: isSearchExpanded
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.white.withValues(alpha: 0.22),
+                                      Colors.white.withValues(alpha: 0.12),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.35),
+                                    width: 1.2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.08,
+                                      ),
+                                      blurRadius: 10,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.search,
+                                      color: Colors.white.withValues(
+                                        alpha: 0.7,
+                                      ),
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: TextField(
+                                        controller: searchController,
+                                        focusNode: _searchFocusNode,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText:
+                                              'Cari nama, nomor, perihal, kode, pengolah...',
+                                          hintStyle: TextStyle(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.55,
+                                            ),
+                                            fontSize: 13,
+                                          ),
+                                          border: InputBorder.none,
+                                          isDense: true,
+                                          contentPadding: EdgeInsets.zero,
+                                        ),
+                                      ),
+                                    ),
+                                    if (searchController.text.isNotEmpty)
+                                      GestureDetector(
+                                        onTap: () {
+                                          searchController.clear();
+                                          _searchFocusNode.requestFocus();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(4),
+                                          child: Icon(
+                                            Icons.clear,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.75,
+                                            ),
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+
+                      // title
+                      Padding(
+                        padding: EdgeInsets.only(top: 35, left: 15, right: 15),
                         child: Center(
                           child: Text(
                             "Surat Masuk Admin",
@@ -888,389 +1029,78 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                   ),
                                 ),
 
-                                // ListView dengan RefreshIndicator
                                 Expanded(
-                                  child: RefreshIndicator(
+                                  child: MobileRefreshList<SuratMasukModel?>(
+                                    items: _visibleList,
+                                    hasBaseData: _listSurat.isNotEmpty,
+                                    isSearching: searchController.text
+                                        .trim()
+                                        .isNotEmpty,
+                                    query: searchController.text.trim(),
+                                    emptyAllMessage:
+                                        'Belum ada data surat masuk',
+                                    emptySearchPrefix: 'Tidak ada hasil untuk',
                                     onRefresh: _refreshData,
-                                    backgroundColor: Colors.white.withValues(
-                                      alpha: 0.1,
-                                    ),
-                                    color: Color(0xFF10B981),
-                                    strokeWidth: 3,
-                                    child: ListView.builder(
-                                      physics: AlwaysScrollableScrollPhysics(
-                                        parent: BouncingScrollPhysics(),
-                                      ), // Enable pull to refresh even when list is short
-                                      itemCount: _listSurat.length,
-                                      padding: EdgeInsets.only(bottom: 20),
-                                      itemBuilder: (context, index) {
-                                        final surat = _listSurat[index];
-
-                                        return Container(
-                                          margin: EdgeInsets.only(bottom: 15),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(
-                                              20,
+                                    itemBuilder: (context, item, index, items) {
+                                      final surat = item!;
+                                      return SuratMasukCard(
+                                        surat: surat,
+                                        statusColor: getStatusColor(
+                                          surat.status,
+                                        ),
+                                        tanggalText: parseDateFormat(
+                                          surat.tanggal_diterima,
+                                        ),
+                                        onTap: () {
+                                          actionAdmin(
+                                            index,
+                                            context,
+                                            items,
+                                            (i) => editDokumenAdmin(
+                                              context,
+                                              index,
+                                              items,
+                                              refreshEditState,
                                             ),
-                                            child: BackdropFilter(
-                                              filter: ImageFilter.blur(
-                                                sigmaX: 15,
-                                                sigmaY: 15,
-                                              ),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                    colors: [
-                                                      Colors.white.withValues(
-                                                        alpha: 0.25,
-                                                      ),
-                                                      Colors.white.withValues(
-                                                        alpha: 0.1,
-                                                      ),
-                                                      Colors.white.withValues(
-                                                        alpha: 0.05,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  border: Border.all(
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.3),
-                                                    width: 1.5,
-                                                  ),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withValues(
-                                                            alpha: 0.1,
-                                                          ),
-                                                      blurRadius: 20,
-                                                      offset: Offset(0, 10),
-                                                    ),
-                                                    BoxShadow(
-                                                      color: Colors.white
-                                                          .withValues(
-                                                            alpha: 0.1,
-                                                          ),
-                                                      blurRadius: 5,
-                                                      offset: Offset(0, -2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: InkWell(
-                                                  onTap: () {
-                                                    actionAdmin(
-                                                      index,
-                                                      context,
-                                                      _listSurat,
-                                                      (i) => editDokumenAdmin(
-                                                        context,
-                                                        index,
-                                                        _listSurat,
-                                                        refreshEditState,
-                                                      ),
-                                                      (i) => viewDetailAdmin(
-                                                        context,
-                                                        index,
-                                                        _listSurat,
-                                                      ),
-                                                      (i) => hapusDokumen(
-                                                        context,
-                                                        index,
-                                                        _listSurat,
-                                                        actionSetState,
-                                                      ),
-                                                    );
-                                                    print(
-                                                      'Surat dipilih: ${surat?.nama_surat} \ntanggal : ${surat?.tanggal_surat.toString()}',
-                                                    );
-                                                  },
-                                                  onLongPress: () {
-                                                    // actionAdmin(
-                                                    //   index,
-                                                    //   context,
-                                                    //   _listSurat,
-                                                    //   (i) => editDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     refreshEditState,
-                                                    //   ),
-                                                    //   (i) => viewDetailAdmin(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //   ),
-                                                    //   (i) => hapusDokumen(
-                                                    //     context,
-                                                    //     index,
-                                                    //     _listSurat,
-                                                    //     actionSetState,
-                                                    //   ),
-                                                    // );
-                                                  },
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(20),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        // Header dengan status badge
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Container(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        12,
-                                                                    vertical: 6,
-                                                                  ),
-                                                              decoration: BoxDecoration(
-                                                                gradient: LinearGradient(
-                                                                  colors: [
-                                                                    getStatusColor(
-                                                                      surat!
-                                                                          .status,
-                                                                    ),
-                                                                    getStatusColor(
-                                                                      surat
-                                                                          .status,
-                                                                    ).withValues(
-                                                                      alpha:
-                                                                          0.8,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      20,
-                                                                    ),
-                                                                boxShadow: [
-                                                                  BoxShadow(
-                                                                    color:
-                                                                        getStatusColor(
-                                                                          surat
-                                                                              .status,
-                                                                        ).withValues(
-                                                                          alpha:
-                                                                              0.3,
-                                                                        ),
-                                                                    blurRadius:
-                                                                        8,
-                                                                    offset:
-                                                                        Offset(
-                                                                          0,
-                                                                          2,
-                                                                        ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              child: Text(
-                                                                surat.status,
-                                                                style: TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontFamily:
-                                                                      'Roboto',
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            // Tanggal
-                                                            Text(
-                                                              parseDateFormat(surat.tanggal_diterima),
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.7,
-                                                                    ),
-                                                                fontSize: 12,
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-
-                                                        SizedBox(height: 15),
-
-                                                        // Judul Surat
-                                                        Text(
-                                                          surat.nama_surat,
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            height: 1.3,
-                                                          ),
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-
-                                                        SizedBox(height: 8),
-
-                                                        // Perihal
-                                                        Text(
-                                                          surat.hal,
-                                                          style: TextStyle(
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.8,
-                                                                ),
-                                                            fontSize: 14,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            height: 1.4,
-                                                          ),
-                                                          maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-
-                                                        SizedBox(height: 15),
-
-                                                        // Footer dengan pengirim dan icon
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            // Pengirim
-                                                            Expanded(
-                                                              child: Row(
-                                                                children: [
-                                                                  Container(
-                                                                    padding:
-                                                                        EdgeInsets.all(
-                                                                          6,
-                                                                        ),
-                                                                    decoration: BoxDecoration(
-                                                                      gradient: LinearGradient(
-                                                                        colors: [
-                                                                          Color(
-                                                                            0xFF4F46E5,
-                                                                          ).withValues(
-                                                                            alpha:
-                                                                                0.3,
-                                                                          ),
-                                                                          Color(
-                                                                            0xFF7C3AED,
-                                                                          ).withValues(
-                                                                            alpha:
-                                                                                0.2,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                            8,
-                                                                          ),
-                                                                    ),
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .person_outline_rounded,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      size: 14,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 8,
-                                                                  ),
-                                                                  Expanded(
-                                                                    child: Text(
-                                                                      surat?.disposisi ==
-                                                                              null
-                                                                          ? '404 Not Found'
-                                                                          : (surat.disposisi as List).join(', '),
-                                                                      style: TextStyle(
-                                                                        color: Colors
-                                                                            .white
-                                                                            .withValues(
-                                                                              alpha: 0.7,
-                                                                            ),
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontFamily:
-                                                                            'Roboto',
-                                                                      ),
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-
-                                                            // Arrow icon
-                                                            Container(
-                                                              padding:
-                                                                  EdgeInsets.all(
-                                                                    6,
-                                                                  ),
-                                                              decoration: BoxDecoration(
-                                                                gradient: LinearGradient(
-                                                                  colors: [
-                                                                    Colors.white
-                                                                        .withValues(
-                                                                          alpha:
-                                                                              0.2,
-                                                                        ),
-                                                                    Colors.white
-                                                                        .withValues(
-                                                                          alpha:
-                                                                              0.1,
-                                                                        ),
-                                                                  ],
-                                                                ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      8,
-                                                                    ),
-                                                              ),
-                                                              child: Icon(
-                                                                Icons
-                                                                    .more_vert_rounded,
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.8,
-                                                                    ),
-                                                                size: 14,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                            (i) => viewDetailAdmin(
+                                              context,
+                                              index,
+                                              items,
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
+                                            (i) => hapusDokumen(
+                                              context,
+                                              index,
+                                              items,
+                                              actionSetState,
+                                            ),
+                                          );
+                                        },
+                                        onLongPress: () {
+                                          actionAdmin(
+                                            index,
+                                            context,
+                                            items,
+                                            (i) => editDokumenAdmin(
+                                              context,
+                                              index,
+                                              items,
+                                              refreshEditState,
+                                            ),
+                                            (i) => viewDetailAdmin(
+                                              context,
+                                              index,
+                                              items,
+                                            ),
+                                            (i) => hapusDokumen(
+                                              context,
+                                              index,
+                                              items,
+                                              actionSetState,
+                                            ),
+                                          );
+                                        },
+                                      ); 
+                                    },
                                   ),
                                 ),
                               ],
@@ -1287,7 +1117,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
         },
       ),
       floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 10), // Jarak dari bawah
+        margin: EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -1320,18 +1150,10 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
         ),
         child: FloatingActionButton.extended(
           onPressed: () {
-            // Option 1: Bikin method handle sendiri
-            tambahSuratMasuk(context, (newSurat) {
-              // setState(() {
-              //   // Tambahin ke list suratData lu
-              //   _listSurat.add(newSurat);
-              // });
-              // Logic tambahan kalo ada
-            }, refreshEditState);
+            tambahSuratMasuk(context, (newSurat) {}, refreshEditState);
           },
           backgroundColor: Colors.transparent,
           elevation: 0,
-          // Ini yang ngilangin efek gelap pas hover/tap
           splashColor: Colors.transparent,
           focusColor: Colors.transparent,
           hoverColor: Colors.transparent,

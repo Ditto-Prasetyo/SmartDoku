@@ -3,7 +3,10 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  connectivity_plus
+  file_saver
   file_selector_windows
+  printing
   url_launcher_windows
   window_size
 )

@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/widget.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 
 class DetailPageKeluar extends StatefulWidget {
   final SuratKeluarModel? suratData; // Parameter untuk data surat
@@ -673,6 +673,31 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
 
                           SizedBox(height: 20),
 
+                          buildSectionTitle('Informasi File Surat'),
+                          SizedBox(height: 15),
+                          buildInfoCard([
+                            buildDetailRow(
+                              'Dokumen Final',
+                              detailData?.dok_final == null
+                                  ? 'Data Dokumen Final Kosong'
+                                  : detailData!.dok_final!,
+                            ),
+                            buildDetailRow(
+                              'Dokumen Dikirim',
+                              detailData?.dok_dikirim == null
+                                  ? 'Data Dokumen Dikirim Kosong'
+                                  : parseDateFormat(detailData!.dok_dikirim!),
+                            ),
+                            buildDetailRow(
+                              'Tanda Terima',
+                              detailData?.tanda_terima == null
+                                  ? 'Data Tanda Terima Kosong'
+                                  : parseDateFormat(detailData!.tanda_terima!),
+                            ),
+                          ]),
+
+                          SizedBox(height: 20),
+
                           // Disposition Section
                           buildSectionTitle('Catatan Tambahan'),
                           SizedBox(height: 15),
@@ -682,18 +707,6 @@ class _DetailPageKeluar extends State<DetailPageKeluar>
                               detailData?.catatan == null
                                   ? 'Data Kosong!'
                                   : detailData!.catatan!,
-                            ),
-                            buildDetailRow(
-                              'Dokumen Final',
-                              detailData?.dok_final == null ? 'Data Dokumen Final Kosong' : detailData!.dok_final!,
-                            ),
-                            buildDetailRow(
-                              'Dokumen Dikirim',
-                              detailData?.dok_dikirim == null ? 'Data Dokumen Dikirim Kosong' : parseDateFormat(detailData!.dok_dikirim!),
-                            ),
-                            buildDetailRow(
-                              'Tanda Terima',
-                              detailData?.tanda_terima == null ? 'Data Tanda Terima Kosong' : parseDateFormat(detailData!.tanda_terima!),
                             ),
                           ]),
                         ],

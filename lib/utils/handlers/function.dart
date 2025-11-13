@@ -10,9 +10,9 @@ import 'package:smart_doku/pages/forms/users/detail_keluar_page.dart';
 import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_after_page.dart';
 import 'package:smart_doku/services/auth.dart';
-import 'package:smart_doku/utils/dialog.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 // Auths Section
 
 // -- Login Page --
@@ -302,7 +302,7 @@ void checkLengthName(
   String value,
   TextEditingController _nameController,
 ) {
-  final int _maxLengthname = 16;
+  final int _maxLengthname = 55;
   if (value.length > _maxLengthname) {
     _nameController.text = value.substring(0, _maxLengthname);
     _nameController.selection = TextSelection.fromPosition(
@@ -405,9 +405,7 @@ void actionUserMasuk(
   int index,
   BuildContext context,
   List<SuratMasukModel?> listData,
-  void Function(int) editDokumen,
   void Function(int) viewDetail,
-  void Function(int) hapusDokumen,
 ) {
   final tempSurat = listData[index];
 
@@ -419,7 +417,7 @@ void actionUserMasuk(
   showActionSuratMasukForUserDialog(
     index,
     '${tempSurat?.nama_surat}',
-    'Surat ini berisi $namaSuratPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_diterima}',
+    'Surat ini berisi $namaSuratPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_diterima != null ? parseDateFormat(tempSurat!.tanggal_diterima) : '-'}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
@@ -445,7 +443,7 @@ void actionUserKeluar(
   showActionSuratKeluarForUserDialog(
     index,
     '${tempSurat?.perihal}',
-    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_surat}',
+    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${tempSurat?.tanggal_surat != null ? parseDateFormat(tempSurat!.tanggal_surat) : '-'}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
@@ -506,7 +504,7 @@ void actionAdminKeluar(
   showModernActionAdminKeluarDialog(
     index,
     '${surat?.perihal}',
-    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat?.tanggal_surat}',
+    'Surat ini berisi $perihalPendek\n\nSurat ini dikirimkan pada tanggal ${surat?.tanggal_surat != null ? parseDateFormat(surat!.tanggal_surat) : "-"}',
     Colors.indigo.withValues(alpha: 0.9),
     Colors.orange,
     Colors.deepOrange,
@@ -876,6 +874,274 @@ void hapusUserDesktop(
     userData,
     onConfirmDelete,
     refreshState,
+  );
+}
+
+Future<void> DownloadDokumenAdminMasuk(
+  BuildContext context,
+  int index,
+  SuratMasukModel? suratData,
+  void Function() refreshState,
+) async {
+  // ======== VALIDASI 1: Data surat ========
+  if (suratData == null) {
+    showErrorSnackbar(
+      context,
+      'Data Tidak Valid',
+      'Data surat tidak ditemukan',
+      Icons.warning_amber_rounded,
+      Colors.orange.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 2: Link file ========
+  if (suratData.link_scan == null || suratData.link_scan!.isEmpty) {
+    showErrorSnackbar(
+      context,
+      'File Tidak Tersedia',
+      'File tidak tersedia untuk diunduh',
+      Icons.error_outline,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 3: Network connectivity ========
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult == ConnectivityResult.none) {
+    showErrorSnackbar(
+      context,
+      'Tidak Ada Koneksi',
+      'Periksa koneksi internet Anda',
+      Icons.wifi_off,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // Log download info
+  print('[DOWNLOAD] ========================================');
+  print('[DOWNLOAD] ID: ${suratData.id}');
+  print('[DOWNLOAD] Nomor Urut: ${suratData.nomor_urut}');
+  print('[DOWNLOAD] Nama Surat: ${suratData.nama_surat}');
+  print('[DOWNLOAD] File: ${suratData.link_scan}');
+  print('[DOWNLOAD] ========================================');
+
+  // Haptic feedback untuk mobile
+
+  // Extract filename
+  String fileName = suratData.link_scan!.split('/').last;
+  
+  // Tampilkan dialog download
+  showModernDownloadFileSuratMasukDesktopDialog(
+    'Download File',
+    'Unduh file "$fileName" dari surat "${suratData.nama_surat ?? 'tanpa judul'}"?',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    suratData,
+    refreshState,
+  );
+}
+
+Future<void> DownloadDokumenMobileAdminMasuk(
+  BuildContext context,
+  String? nomor_urut,
+  SuratMasukModel? suratData,
+) async {
+  // ======== VALIDASI 1: Data surat ========
+  if (suratData == null) {
+    showErrorSnackbar(
+      context,
+      'Data Tidak Valid',
+      'Data surat tidak ditemukan',
+      Icons.warning_amber_rounded,
+      Colors.orange.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 2: Link file ========
+  if (suratData.link_scan == null || suratData.link_scan!.isEmpty) {
+    showErrorSnackbar(
+      context,
+      'File Tidak Tersedia',
+      'File tidak tersedia untuk diunduh',
+      Icons.error_outline,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 3: Network connectivity ========
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult == ConnectivityResult.none) {
+    showErrorSnackbar(
+      context,
+      'Tidak Ada Koneksi',
+      'Periksa koneksi internet Anda',
+      Icons.wifi_off,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // Log download info
+  print('[DOWNLOAD] ========================================');
+  print('[DOWNLOAD] ID: ${suratData.id}');
+  print('[DOWNLOAD] Nomor Urut: ${suratData.nomor_urut}');
+  print('[DOWNLOAD] Nama Surat: ${suratData.nama_surat}');
+  print('[DOWNLOAD] File: ${suratData.link_scan}');
+  print('[DOWNLOAD] ========================================');
+
+  // Haptic feedback untuk mobile
+
+  // Extract filename
+  String fileName = suratData.link_scan!.split('/').last;
+  
+  // Tampilkan dialog download
+  showModernDownloadFileSuratMasukMobileDialog(
+    'Download File',
+    'Unduh file "$fileName" dari surat "${suratData.nama_surat ?? 'tanpa judul'}"?',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    suratData,
+  );
+}
+
+Future<void> DownloadDokumenAdminKeluar(
+  BuildContext context,
+  int index,
+  SuratKeluarModel? suratData,
+  void Function() refreshState,
+) async {
+  // ======== VALIDASI 1: Data surat ========
+  if (suratData == null) {
+    showErrorSnackbar(
+      context,
+      'Data Tidak Valid',
+      'Data surat tidak ditemukan',
+      Icons.warning_amber_rounded,
+      Colors.orange.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 2: Link file ========
+  if (suratData.dok_final == null || suratData.dok_final!.isEmpty) {
+    showErrorSnackbar(
+      context,
+      'File Tidak Tersedia',
+      'File tidak tersedia untuk diunduh',
+      Icons.error_outline,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 3: Network connectivity ========
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult == ConnectivityResult.none) {
+    showErrorSnackbar(
+      context,
+      'Tidak Ada Koneksi',
+      'Periksa koneksi internet Anda',
+      Icons.wifi_off,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // Log download info
+  print('[DOWNLOAD] ========================================');
+  print('[DOWNLOAD] ID: ${suratData.id}');
+  print('[DOWNLOAD] Nomor Urut: ${suratData.nomor_urut}');
+  print('[DOWNLOAD] Nama Surat: ${suratData.klasifikasi}');
+  print('[DOWNLOAD] File: ${suratData.dok_final}');
+  print('[DOWNLOAD] ========================================');
+
+  // Haptic feedback untuk mobile
+
+  // Extract filename
+  String fileName = suratData.dok_final!.split('/').last;
+  
+  // Tampilkan dialog download
+  showModernDownloadFileSuratKeluarDesktopDialog(
+    'Download File',
+    'Unduh file "$fileName" dari surat "${suratData.klasifikasi ?? 'tanpa judul'}"?',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    suratData,
+    refreshState,
+  );
+}
+
+Future<void> DownloadDokumenMobileAdminKeluar(
+  BuildContext context,
+  String? nomor_urut,
+  SuratKeluarModel? suratData
+) async {
+  // ======== VALIDASI 1: Data surat ========
+  if (suratData == null) {
+    showErrorSnackbar(
+      context,
+      'Data Tidak Valid',
+      'Data surat tidak ditemukan',
+      Icons.warning_amber_rounded,
+      Colors.orange.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 2: Link file ========
+  if (suratData.dok_final == null || suratData.dok_final!.isEmpty) {
+    showErrorSnackbar(
+      context,
+      'File Tidak Tersedia',
+      'File tidak tersedia untuk diunduh',
+      Icons.error_outline,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // ======== VALIDASI 3: Network connectivity ========
+  var connectivityResult = await Connectivity().checkConnectivity();
+  if (connectivityResult == ConnectivityResult.none) {
+    showErrorSnackbar(
+      context,
+      'Tidak Ada Koneksi',
+      'Periksa koneksi internet Anda',
+      Icons.wifi_off,
+      Colors.red.shade700,
+    );
+    return;
+  }
+
+  // Log download info
+  print('[DOWNLOAD] ========================================');
+  print('[DOWNLOAD] ID: ${suratData.id}');
+  print('[DOWNLOAD] Nomor Urut: ${suratData.nomor_urut}');
+  print('[DOWNLOAD] Nama Surat: ${suratData.klasifikasi}');
+  print('[DOWNLOAD] File: ${suratData.dok_final}');
+  print('[DOWNLOAD] ========================================');
+
+  // Haptic feedback untuk mobile
+
+  // Extract filename
+  String fileName = suratData.dok_final!.split('/').last;
+  
+  // Tampilkan dialog download
+  showModernDownloadFileSuratKeluarMobileDialog(
+    'Download File',
+    'Unduh file "$fileName" dari surat "${suratData.klasifikasi ?? 'tanpa judul'}"?',
+    Color(0xFF10B981), // Accent color 1 (hijau)
+    Color(0xFF059669), // Accent color 2 (hijau gelap)
+    context,
+    suratData,
   );
 }
 

@@ -1,16 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/bookmarks.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/map.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/helper/map.dart';
+import 'package:smart_doku/utils/search/SuratKeluarFunction.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class OutgoingLetterPageDesktop extends StatefulWidget {
@@ -25,8 +30,14 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
     with TickerProviderStateMixin {
   var height, width;
   bool isLoading = true;
+  bool isSearchExpanded = false;
+  bool _isPinned(dynamic surat) => _pins.contains(_pinId(surat));
+  Set<String> _pins = {};
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
+
+  FocusNode _searchFocusNode = FocusNode();
+  TextEditingController _searchController = TextEditingController();
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -35,9 +46,15 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
 
+  late AnimationController _searchAnimationController;
+  late Animation<double> _searchAnimation;
+
   SuratKeluar _suratService = SuratKeluar();
   UserService _userService = UserService();
   List<SuratKeluarModel?>? _listSurat = [];
+  List<SuratKeluarModel?>? _filteredList = [];
+  List<SuratKeluarModel?>? get _visibleList =>
+      _searchController.text.trim().isEmpty ? _listSurat : _filteredList;
 
   // Selected sidebar item
   int _selectedIndex = 2;
@@ -109,7 +126,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
   }
 
   Future<void> _loadAllData() async {
-    print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
+    print("[DEBUG] -> [INFO] : Loading all data surat keluar ...");
     try {
       final disposisi = await _userService.getDisposisi();
       final mappedDisposisi = workFields.entries
@@ -123,8 +140,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : null;
+      if (!mounted) return;
       setState(() {
-        _listSurat = data;
+        _listSurat = data != null ? data : null;
+        _filteredList = data != null ? List.from(data) : null;
         isLoading = false;
       });
       print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
@@ -176,10 +195,68 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
     }
   }
 
+  Future<void> _loadPins() async {
+    final items = await Bookmarks.list();
+    setState(() {
+      _pins = items.map((e) => e.id).toSet();
+    });
+  }
+
+  // bikin ID unik dari data surat
+  String _pinId(dynamic surat) {
+    // idealnya pake surat.index (ada di file lo)
+    final idx = surat?.kode;
+    if (idx != null && idx is String && idx.isNotEmpty) return idx;
+    // fallback kalau index null → gabung beberapa field
+    final no = surat?.no_register ?? '';
+    final tgl = surat?.tanggal_surat ?? '';
+    final urut = surat?.nomor_urut?.toString() ?? '';
+    final pengolah = surat?.pengolah ?? '';
+    return '$no|$tgl|$urut|$pengolah';
+  }
+
+  // Title buat ditampilkan di daftar favorit
+  String _pinTitle(dynamic surat) {
+    return (surat?.no_register ?? surat?.nama_surat ?? surat?.kode ?? 'Surat')
+        .toString();
+  }
+
+  Future<void> _togglePin(dynamic surat) async {
+    if (surat == null) return;
+
+    final id = _pinId(surat); // pastikan stabil (lihat catatan bawah)
+    final title = _pinTitle(surat); // no_register / nama_surat / kode, dsb.
+
+    await Bookmarks.toggle(
+      BookmarkItem(
+        id: id,
+        title: title,
+        type: 'surat_keluar',
+        route:
+            '/user/desktop/surat_keluar_page_desktop', // isi kalau kamu punya rute detail
+      ),
+    );
+
+    await _loadPins();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _pins.contains(id)
+              ? 'Ditambahkan ke Favorit'
+              : 'Dihapus dari Favorit',
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _loadAllData();
+    _filteredList = _listSurat;
+    _loadPins();
+    Bookmarks.normalize();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -200,6 +277,16 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
     _cardAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
+    _searchAnimationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _searchAnimation = CurvedAnimation(
+      parent: _searchAnimationController,
+      curve: Curves.easeInOut,
+    );
+    _searchController.addListener(_performSearch);
 
     _backgroundController.repeat(reverse: true);
     _cardController.forward();
@@ -211,7 +298,75 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
     _cardController.dispose();
     _horizontalScrollController.dispose();
     _verticalScrollController.dispose();
+    _searchAnimationController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  void _performSearch() {
+    final q = _searchController.text;
+    final result = SuratKeluarSearch.filterAndSort(_listSurat!, q);
+    setState(() {
+      _filteredList = result;
+    });
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      isSearchExpanded = !isSearchExpanded;
+
+      if (isSearchExpanded) {
+        _searchAnimationController.forward();
+      } else {
+        _searchAnimationController.reverse();
+        _searchController.clear();
+        _filteredList = _listSurat != null ? List.from(_listSurat!) : null;
+      }
+    });
+  }
+
+  Widget _favoriteButton(dynamic surat) {
+    if (surat == null) return SizedBox.shrink();
+    final pinned = _isPinned(surat);
+
+    return Container(
+      margin: EdgeInsets.only(right: 4),
+      padding: EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: pinned
+              ? [
+                  Color(0xFFF59E0B).withValues(alpha: 0.30),
+                  Color(0xFFD97706).withValues(alpha: 0.30),
+                ]
+              : [
+                  Colors.white.withValues(alpha: 0.12),
+                  Colors.white.withValues(alpha: 0.06),
+                ],
+        ),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.30),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () => _togglePin(surat),
+        child: Icon(
+          pinned ? Icons.bookmark : Icons.bookmark_border,
+          color: Colors.white,
+          size: 14,
+        ),
+      ),
+    );
   }
 
   Widget _buildSidebar() {
@@ -252,9 +407,9 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                        color: const Color(0xFF4F46E5).withValues(alpha: 0.5),
                         blurRadius: 10,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                     border: Border(
@@ -263,12 +418,19 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                       ),
                     ),
                   ),
-                  child: Image.asset(
-                    'images/Icon_App.png',
-                    width: 180,
-                    height: 180,
-                    fit: BoxFit.cover,
-                    color: Colors.white,
+                  clipBehavior: Clip.antiAlias,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Image.asset(
+                          'images/logoApps.png',
+                          color: Colors.white,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(width: 15),
@@ -480,12 +642,30 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
               },
             ),
           ),
+
+          // Credit Section
+          Padding(
+            padding: EdgeInsets.only(top: 40, bottom: 10),
+            child: Text(
+              'Created by PKL UIN Malang @ 2025',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white.withValues(alpha: 0.7),
+                fontFamily: 'Roboto',
+                letterSpacing: 0.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildTableDataLetters(Animation<double> _cardAnimation) {
+    final isSearching = _searchController.text.trim().isNotEmpty;
+    final count = isSearching ? _filteredList!.length : _listSurat!.length;
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -647,7 +827,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         // Kode
                                         SizedBox(width: 20),
                                         Expanded(
-                                          flex: 30,
+                                          flex: flexSuratKeluar[0],
                                           child: Text(
                                             'KODE',
                                             style: TextStyle(
@@ -661,7 +841,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         // Klasifikasi
                                         SizedBox(width: 25),
                                         Expanded(
-                                          flex: 60,
+                                          flex: flexSuratKeluar[1],
                                           child: Text(
                                             'KLASIFIKASI',
                                             style: TextStyle(
@@ -674,7 +854,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // No Register
                                         Expanded(
-                                          flex: 45,
+                                          flex: flexSuratKeluar[2],
                                           child: Text(
                                             'NO REGISTER',
                                             style: TextStyle(
@@ -687,7 +867,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // Tujuan Surat
                                         Expanded(
-                                          flex: 55,
+                                          flex: flexSuratKeluar[3],
                                           child: Text(
                                             'TUJUAN SURAT',
                                             style: TextStyle(
@@ -700,7 +880,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // Perihal
                                         Expanded(
-                                          flex: 45,
+                                          flex: flexSuratKeluar[4],
                                           child: Text(
                                             'PERIHAL',
                                             style: TextStyle(
@@ -715,7 +895,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         // Tanggal Surat
                                         SizedBox(width: 20),
                                         Expanded(
-                                          flex: 30,
+                                          flex: flexSuratKeluar[5],
                                           child: Text(
                                             'TGL\nSURAT',
                                             style: TextStyle(
@@ -729,7 +909,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // Klasifikasi
                                         Expanded(
-                                          flex: 90,
+                                          flex: flexSuratKeluar[6],
                                           child: Text(
                                             'KET.KLASIFIKASI \nKEAMANAN & AKSES ARSIP',
                                             style: TextStyle(
@@ -743,7 +923,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // Pengolah
                                         Expanded(
-                                          flex: 40,
+                                          flex: flexSuratKeluar[7],
                                           child: Text(
                                             'PENGOLAH',
                                             style: TextStyle(
@@ -756,7 +936,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // PEMBUAT
                                         Expanded(
-                                          flex: 38,
+                                          flex: flexSuratKeluar[8],
                                           child: Text(
                                             'PEMBUAT',
                                             style: TextStyle(
@@ -769,7 +949,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // Catatan
                                         Expanded(
-                                          flex: 22,
+                                          flex: flexSuratKeluar[9],
                                           child: Text(
                                             'CATATAN',
                                             style: TextStyle(
@@ -782,7 +962,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // link surat
                                         Expanded(
-                                          flex: 70,
+                                          flex: flexSuratKeluar[10],
                                           child: Text(
                                             'link SURAT \nMASUK (JIKA ADA)',
                                             style: TextStyle(
@@ -796,7 +976,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // Koreksi 1
                                         Expanded(
-                                          flex: 30,
+                                          flex: flexSuratKeluar[11],
                                           child: Text(
                                             'KOREKSI 1',
                                             style: TextStyle(
@@ -809,7 +989,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // Koreksi 2
                                         Expanded(
-                                          flex: 35,
+                                          flex: flexSuratKeluar[12],
                                           child: Text(
                                             'KOREKSI 2',
                                             style: TextStyle(
@@ -821,7 +1001,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 35,
+                                          flex: flexSuratKeluar[13],
                                           child: Text(
                                             'Dokumen Dikirim',
                                             style: TextStyle(
@@ -833,7 +1013,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 35,
+                                          flex: flexSuratKeluar[14],
                                           child: Text(
                                             'Dokumen Final',
                                             style: TextStyle(
@@ -845,7 +1025,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                           ),
                                         ),
                                         Expanded(
-                                          flex: 35,
+                                          flex: flexSuratKeluar[15],
                                           child: Text(
                                             'Tanda Terima',
                                             style: TextStyle(
@@ -858,7 +1038,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                         ),
                                         // Status
                                         Expanded(
-                                          flex: 20,
+                                          flex: flexSuratKeluar[16],
                                           child: Text(
                                             'Status',
                                             style: TextStyle(
@@ -894,7 +1074,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                       child: Column(
                                         children: isLoading
                                             ? [
-                                                // 👇 Kalau lagi loading
+                                                // if it still loaing
                                                 Container(
                                                   alignment: Alignment.center,
                                                   padding: EdgeInsets.symmetric(
@@ -907,9 +1087,9 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                       ),
                                                 ),
                                               ]
-                                            : _listSurat == null
+                                            : _visibleList!.isEmpty
                                             ? [
-                                                // 👇 Kalau kosong
+                                                // if empty
                                                 Container(
                                                   alignment: Alignment.center,
                                                   padding: EdgeInsets.symmetric(
@@ -927,11 +1107,11 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                   ),
                                                 ),
                                               ]
-                                            : List.generate(_listSurat?.length ?? 0, (
+                                            : List.generate(_visibleList!.length, (
                                                 index,
                                               ) {
                                                 final surat =
-                                                    _listSurat?[index] ?? null;
+                                                    _visibleList![index];
                                                 return Container(
                                                   padding: EdgeInsets.symmetric(
                                                     horizontal: 20,
@@ -1023,20 +1203,17 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           ),
 
                                                           // kode
-                                                          SizedBox(width: 20),
+                                                          SizedBox(width: 30),
                                                           Expanded(
-                                                            flex: 25,
+                                                            flex: 30,
                                                             child: Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
                                                                       .start,
                                                               children: [
                                                                 Text(
-                                                                  surat?.kode ==
-                                                                          null
-                                                                      ? 'Data Kode Kosong'
-                                                                      : surat!
-                                                                            .kode,
+                                                                  surat?.kode ??
+                                                                      '',
                                                                   style: TextStyle(
                                                                     color: Colors
                                                                         .white,
@@ -1058,9 +1235,8 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           ),
 
                                                           // Klasifikasi
-                                                          SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 60,
+                                                            flex: 40,
                                                             child: Row(
                                                               children: [
                                                                 Container(
@@ -1102,11 +1278,8 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                 ),
                                                                 Expanded(
                                                                   child: Text(
-                                                                    surat?.klasifikasi ==
-                                                                            null
-                                                                        ? 'Data Klasifikasi Kosong'
-                                                                        : surat!
-                                                                              .klasifikasi,
+                                                                    surat?.klasifikasi ??
+                                                                        '',
                                                                     style: TextStyle(
                                                                       color: Colors
                                                                           .white
@@ -1132,13 +1305,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           // Nomor Register
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 36,
+                                                            flex: 53,
                                                             child: Text(
-                                                              surat?.no_register ==
-                                                                      null
-                                                                  ? 'Data No Register Kosong'
-                                                                  : surat!
-                                                                        .no_register,
+                                                              surat?.no_register ??
+                                                                  '',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1155,10 +1325,13 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           // tujuan surat
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 40,
+                                                            flex: 52,
                                                             child: Text(
-                                                              surat!
-                                                                  .tujuan_surat!,
+                                                              surat?.tujuan_surat ==
+                                                                      null
+                                                                  ? 'Tidak Ada'
+                                                                  : surat!
+                                                                        .tujuan_surat!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1175,13 +1348,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           // perihal
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 59,
+                                                            flex: 40,
                                                             child: Text(
-                                                              surat?.perihal ==
-                                                                      null
-                                                                  ? 'Data Perihal Kosong'
-                                                                  : surat
-                                                                        .perihal,
+                                                              surat?.perihal ??
+                                                                  '',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1197,9 +1367,6 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                               overflow:
                                                                   TextOverflow
                                                                       .clip,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
                                                             ),
                                                           ),
                                                           // tanggal surat
@@ -1209,9 +1376,9 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                             child: Text(
                                                               surat?.tanggal_surat ==
                                                                       null
-                                                                  ? 'Data Tanggal Surat Kosong'
+                                                                  ? '-'
                                                                   : parseDateFormat(
-                                                                      surat
+                                                                      surat!
                                                                           .tanggal_surat,
                                                                     ),
                                                               style: TextStyle(
@@ -1230,13 +1397,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           // klasifikasi dan arsip
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 47,
+                                                            flex: 50,
                                                             child: Text(
-                                                              surat?.akses_arsip ==
-                                                                      null
-                                                                  ? 'Data Klasifikasi Arsip Kosong'
-                                                                  : surat
-                                                                        .akses_arsip,
+                                                              surat?.akses_arsip ??
+                                                                  '',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1265,7 +1429,8 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                               //       listPengolah,
                                                               //     ) ??
                                                               //     '',
-                                                              "Contoh",
+                                                              surat?.pengolah ??
+                                                                  '',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1282,9 +1447,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           // pembuat
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 30,
+                                                            flex: 31,
                                                             child: Text(
-                                                              surat.pengolah,
+                                                              surat?.pembuat ??
+                                                                  '',
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1301,9 +1467,13 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           // catatan
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 45,
+                                                            flex: 40,
                                                             child: Text(
-                                                              surat.catatan!,
+                                                              surat?.catatan ==
+                                                                      null
+                                                                  ? 'kosong'
+                                                                  : surat!
+                                                                        .catatan!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1320,9 +1490,13 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           // link surat
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 37,
+                                                            flex: 38,
                                                             child: Text(
-                                                              surat.link_surat!,
+                                                              surat?.link_surat ==
+                                                                      null
+                                                                  ? 'kosong'
+                                                                  : surat!
+                                                                        .link_surat!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1334,14 +1508,21 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                 fontFamily:
                                                                     'Roboto',
                                                               ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
                                                             ),
                                                           ),
                                                           // koreksi 1
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 28,
                                                             child: Text(
-                                                              surat.koreksi_1!,
+                                                              surat?.koreksi_1 ==
+                                                                      null
+                                                                  ? 'kosong'
+                                                                  : surat!
+                                                                        .koreksi_1!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1360,13 +1541,35 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           Expanded(
                                                             flex: 27,
                                                             child: Text(
-                                                              surat.dok_dikirim !=
+                                                              surat?.koreksi_2 ==
                                                                       null
-                                                                  ? parseDateFormat(
-                                                                      surat
+                                                                  ? 'kosong'
+                                                                  : surat!
+                                                                        .koreksi_2!,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.7,
+                                                                    ),
+                                                                fontSize: 11,
+                                                                fontFamily:
+                                                                    'Roboto',
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Expanded(
+                                                            flex: 37,
+                                                            child: Text(
+                                                              surat?.dok_dikirim ==
+                                                                      null
+                                                                  ? "-"
+                                                                  : parseDateFormat(
+                                                                      surat!
                                                                           .dok_dikirim!,
-                                                                    )
-                                                                  : "-",
+                                                                    ),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1381,32 +1584,13 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                             ),
                                                           ),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 26,
                                                             child: Text(
-                                                              surat.dok_final!,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white
-                                                                    .withValues(
-                                                                      alpha:
-                                                                          0.7,
-                                                                    ),
-                                                                fontSize: 11,
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Expanded(
-                                                            flex: 27,
-                                                            child: Text(
-                                                              surat.tanda_terima !=
+                                                              surat?.dok_final ==
                                                                       null
-                                                                  ? parseDateFormat(
-                                                                      surat
-                                                                          .tanda_terima!,
-                                                                    )
-                                                                  : "-",
+                                                                  ? "-"
+                                                                  : surat!
+                                                                        .dok_final!,
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1421,9 +1605,15 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                             ),
                                                           ),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 20,
                                                             child: Text(
-                                                              surat.koreksi_2!,
+                                                              surat?.tanda_terima ==
+                                                                      null
+                                                                  ? "-"
+                                                                  : parseDateFormat(
+                                                                      surat!
+                                                                          .tanda_terima!,
+                                                                    ),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1438,8 +1628,9 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                             ),
                                                           ),
                                                           // Status
+                                                          SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 18,
+                                                            flex: 14,
                                                             child: Align(
                                                               alignment: Alignment
                                                                   .centerLeft,
@@ -1456,7 +1647,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                   gradient: LinearGradient(
                                                                     colors: [
                                                                       getStatusColor(
-                                                                        surat
+                                                                        surat!
                                                                             .status!,
                                                                       ),
                                                                       getStatusColor(
@@ -1515,6 +1706,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                           ),
 
                                                           // Actions
+                                                          SizedBox(width: 40),
                                                           SizedBox(
                                                             width: 80,
                                                             child: Row(
@@ -1522,6 +1714,10 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                   MainAxisAlignment
                                                                       .center,
                                                               children: [
+                                                                // favorites button
+                                                                _favoriteButton(
+                                                                  surat,
+                                                                ),
                                                                 // View button
                                                                 Container(
                                                                   margin:
@@ -1561,7 +1757,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                                                       viewDetailKeluar(
                                                                         context,
                                                                         index,
-                                                                        _listSurat!,
+                                                                        _filteredList!,
                                                                       );
                                                                     },
                                                                     child: Icon(
@@ -1655,7 +1851,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Surat Keluar',
                                   style: TextStyle(
                                     fontSize: 32,
@@ -1664,52 +1860,221 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Anda Dapat Mengatur Surat Keluar di Sini!',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Anda Dapat Melihat Surat Keluar di Sini!',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                    if (_searchController.text.isNotEmpty) ...[
+                                      const SizedBox(width: 12),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(
+                                                0xFF4F46E5,
+                                              ).withValues(alpha: 0.3),
+                                              const Color(
+                                                0xFF7C3AED,
+                                              ).withValues(alpha: 0.2),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${_filteredList!.length} hasil',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 350),
+                                  curve: Curves.easeInOutCubic,
+                                  width: isSearchExpanded ? 450 : 0,
+                                  height: 48,
+                                  child: isSearchExpanded
+                                      ? Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 16,
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.25,
+                                                ),
+                                                Colors.white.withValues(
+                                                  alpha: 0.15,
+                                                ),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.35,
+                                              ),
+                                              width: 1.5,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: const Color(
+                                                  0xFF4F46E5,
+                                                ).withValues(alpha: 0.2),
+                                                blurRadius: 15,
+                                                offset: const Offset(0, 5),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.search,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.6,
+                                                ),
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: _searchController,
+                                                  focusNode: _searchFocusNode,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    hintText:
+                                                        'Cari kode, klasifikasi, no register...',
+                                                    hintStyle: TextStyle(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.5,
+                                                          ),
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                  ),
+                                                  onChanged: (value) =>
+                                                      setState(() {}),
+                                                ),
+                                              ),
+                                              if (_searchController
+                                                  .text
+                                                  .isNotEmpty)
+                                                InkWell(
+                                                  onTap: () {
+                                                    _searchController.clear();
+                                                    _searchFocusNode
+                                                        .requestFocus();
+                                                  },
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(4),
+                                                    child: Icon(
+                                                      Icons.clear,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                      size: 18,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                                InkWell(
+                                  onTap: _toggleSearch,
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: isSearchExpanded
+                                            ? [
+                                                const Color(0xFFEF4444),
+                                                const Color(0xFFDC2626),
+                                              ]
+                                            : [
+                                                const Color(0xFF4F46E5),
+                                                const Color(0xFF7C3AED),
+                                              ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              (isSearchExpanded
+                                                      ? const Color(0xFFEF4444)
+                                                      : const Color(0xFF4F46E5))
+                                                  .withValues(alpha: 0.3),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      isSearchExpanded
+                                          ? Icons.close
+                                          : LineIcons.search,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            InkWell(
-                              onTap: () =>
-                                  showFeatureNotAvailableDialog(context),
-                              borderRadius: BorderRadius.circular(15),
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFF4F46E5),
-                                      Color(0xFF7C3AED),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(
-                                        0xFF4F46E5,
-                                      ).withValues(alpha: 0.3),
-                                      blurRadius: 10,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  LineIcons.search,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
 
-                        SizedBox(height: 40),
+                        const SizedBox(height: 40),
 
                         // Recent activity
                         Expanded(child: _buildTableDataLetters(_cardAnimation)),

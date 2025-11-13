@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/forms/admins/desktop/tables_page_admin.dart';
 import 'package:smart_doku/pages/forms/users/detail_masuk_page.dart';
 import 'package:smart_doku/pages/splashs/splashscreen_before_page.dart';
@@ -22,46 +21,50 @@ import 'package:smart_doku/pages/views/users/desktop/profile_user_page.dart';
 import 'package:smart_doku/pages/views/users/desktop/surat_disposisi_page_desktop.dart';
 import 'package:smart_doku/pages/views/users/desktop/surat_keluar_page_desktop.dart';
 import 'package:smart_doku/pages/views/users/desktop/surat_permohonan_page_desktop.dart';
-import 'package:smart_doku/pages/views/users/phones/home_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_disposisi_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_keluar_page.dart';
 import 'package:smart_doku/pages/views/users/phones/surat_permohonan_page.dart';
+import 'package:smart_doku/services/bookmarks.dart';
 import 'package:smart_doku/services/settings.dart';
-import 'package:smart_doku/test.dart';
-import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb, defaultTargetPlatform, TargetPlatform;  
 import 'package:window_size/window_size.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  final bool isDesktop = !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.windows ||
+       defaultTargetPlatform == TargetPlatform.linux  ||
+       defaultTargetPlatform == TargetPlatform.macOS  ||
+       defaultTargetPlatform == TargetPlatform.fuchsia);
+
   if (kIsWeb) {
-    // Jika di Web, jangan jalankan kode desktop seperti window_size
-    print("Aplikasi dijalankan di Web.");
-  } else if (Platform.isWindows ||
-      Platform.isLinux ||
-      Platform.isMacOS ||
-      Platform.isFuchsia) {
-    // Hanya di platform desktop yang mendukung window_size
+    // Web: jangan jalankan window_size
+    // print("Aplikasi dijalankan di Web."); // optional
+  } else if (isDesktop) {
     setWindowTitle('SmartDoku');
-    var windowInfo = await getWindowInfo();
-    var size = windowInfo.frame.size;
-    setWindowMinSize(
-      Size(size.width * 0.3125, size.height * 0.8333),
-    ); // Minimum window size
-    setWindowMaxSize(
-      Size(size.width * 2.0, size.height * 1.5),
-    ); // Maximum window size
+    final info = await getWindowInfo();
+    final size = info.frame.size;
+    setWindowMinSize(Size(size.width * 0.3125, size.height * 0.8333));
+    setWindowMaxSize(Size(size.width * 2.0, size.height * 1.5));
   }
 
-  await dotenv.load(fileName: ".config/.env");
+  try {
+    await dotenv.load(fileName: ".config/.env");
+  } catch (e) {
+    print('[DOTENV] ${e.toString()}'); // optional
+  }
 
   await AppSettings().init(); // init prefs global
+  final bookmarks = await Bookmarks.getBookmarks();
 
   // For Debug
   final suf1 = AppSettings().part1;
   final suf2 = AppSettings().part3;
   print('[DEBUG] :: [STATE] : Suffix code = $suf1/$suf2');
+  print('[DEBUG] :: [STATE] : Bookmarks Data');
+  print(bookmarks);
 
   runApp(const SmartDoku());
 }
@@ -91,7 +94,7 @@ class SmartDoku extends StatelessWidget {
         Locale('id', 'ID'), // Indonesia
         Locale('en', 'US'), // English
       ],
-      home: LoginPage(),
+      home: SplashScreen(),
       debugShowCheckedModeBanner: false,
       routes: {
         // users phone

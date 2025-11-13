@@ -4,9 +4,9 @@ import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 import 'package:smart_doku/models/surat.dart';
 
 class UserProfile extends StatefulWidget {
@@ -173,18 +173,35 @@ class _UserProfileState extends State<UserProfile>
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                        color: const Color(0xFF4F46E5).withValues(alpha: 0.5),
                         blurRadius: 10,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
+                    border: Border(
+                      right: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.8),
+                      ),
+                    ),
                   ),
-                  child: Image.asset(
-                    'images/Icon_App.png',
-                    width: 180,
-                    height: 180,
-                    fit: BoxFit.cover,
-                    color: Colors.white,
+                  clipBehavior:
+                      Clip.antiAlias, 
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(
+                        8,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit
+                            .contain,
+                        child: Image.asset(
+                          'images/logoApps.png',
+                          color: Colors.white,
+                          filterQuality: FilterQuality
+                              .high, 
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(width: 15),
@@ -394,6 +411,22 @@ class _UserProfileState extends State<UserProfile>
                   ],
                 );
               },
+            ),
+          ),
+
+                    // Credit Section
+          Padding(
+            padding: EdgeInsets.only(top: 40, bottom: 10),
+            child: Text(
+              'Created by PKL UIN Malang @ 2025',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white.withValues(alpha: 0.7),
+                fontFamily: 'Roboto',
+                letterSpacing: 0.5,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
         ],

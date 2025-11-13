@@ -1,9 +1,12 @@
-import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:smart_doku/services/user.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:file_picker/file_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:smart_doku/pages/forms/admins/phones/forms_dialog.dart';
 import 'package:smart_doku/services/service.dart';
@@ -11,13 +14,13 @@ import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/pages/auth/login_page.dart';
 import 'package:smart_doku/pages/views/admins/phones/home_page_admin_phones.dart';
 import 'package:smart_doku/pages/views/users/phones/home_page.dart';
-import 'package:smart_doku/utils/icon.dart';
+import 'package:smart_doku/utils/helper/icon.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
-import 'package:smart_doku/utils/map.dart';
+import 'package:smart_doku/utils/helper/map.dart';
 import 'package:intl/intl.dart';
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform, Process;
 
 // Services Initialize
 SuratKeluar _suratKeluarService = SuratKeluar();
@@ -3456,41 +3459,6 @@ void showModernActionAdminMasukDialog(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.of(context).pop();
-                            showUploadDialog(context, pickDocument);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor4,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: accentColor3.withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.cloud_upload),
-                              SizedBox(width: 14),
-                              Text(
-                                'Upload Dokumen',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
                             Navigator.pop(context);
                             viewDetailAdmin(selectedIndex);
                           },
@@ -3753,41 +3721,6 @@ void showModernActionAdminKeluarDialog(
                         ),
                       ),
                       SizedBox(height: 25),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            showUploadDialog(context, pickDocument);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor4,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: accentColor3.withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.cloud_upload),
-                              SizedBox(width: 14),
-                              Text(
-                                'Upload Dokumen',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -4202,7 +4135,2792 @@ void showModernActionManagementUserDialog(
   );
 }
 
-// Surat Masuk dan Keluar
+// Download file Surat Masuk dan Keluar
+void showModernDownloadFileSuratMasukDesktopDialog(
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+  SuratMasukModel? suratData,
+  void Function() refreshState,
+) {
+  Size size = MediaQuery.of(context).size;
+
+  // State untuk loading dan status
+  ValueNotifier<bool> isDownloading = ValueNotifier<bool>(false);
+  ValueNotifier<double> downloadProgress = ValueNotifier<double>(0.0);
+  ValueNotifier<String> statusText = ValueNotifier<String>('');
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Download File Surat Masuk Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack, // Lebih smooth dari elasticOut
+        ),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width /
+                      2.5 // Sedikit lebih kecil, lebih compact
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30), // Lebih spacious
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon container dengan animasi pulse
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.file_download_outlined,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                          fontFamily: 'SF Pro Display', // Opsional
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Progress Section dengan animasi smooth
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            height: isLoading ? null : 0,
+                            child: isLoading
+                                ? Column(
+                                    children: [
+                                      // Status text
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: statusText,
+                                        builder: (context, status, child) {
+                                          return AnimatedOpacity(
+                                            opacity: status.isNotEmpty
+                                                ? 1.0
+                                                : 0.0,
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: Text(
+                                              status,
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 12),
+
+                                      // Progress Bar
+                                      ValueListenableBuilder<double>(
+                                        valueListenable: downloadProgress,
+                                        builder: (context, progress, child) {
+                                          return Column(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Container(
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.15,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      // Animated progress bar
+                                                      AnimatedContainer(
+                                                        duration: Duration(
+                                                          milliseconds: 300,
+                                                        ),
+                                                        curve: Curves.easeOut,
+                                                        width:
+                                                            MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            progress,
+                                                        decoration: BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                                colors: [
+                                                                  accentColor,
+                                                                  accentColor2,
+                                                                ],
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      // Shimmer effect
+                                                      Positioned.fill(
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                          child: LinearProgressIndicator(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                  Color
+                                                                >(
+                                                                  Colors.white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10),
+
+                                              // Percentage with file size (optional)
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    '${(progress * 100).toInt()}%',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      decoration:
+                                                          TextDecoration.none,
+                                                    ),
+                                                  ),
+                                                  // Tambahkan file size info kalau lu punya
+                                                  // Text(' • 2.4MB / 5.0MB', ...)
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 24),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          );
+                        },
+                      ),
+
+                      // Buttons
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return Column(
+                            children: [
+                              // Download Button
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () async {
+                                          try {
+                                            statusText.value =
+                                                'Memilih lokasi penyimpanan...';
+
+                                            // Ambil default path
+                                            String defaultPath =
+                                                await _suratMasukService
+                                                    .getDefaultDownloadPath();
+
+                                            // Ambil nama file
+                                            String fileName = "file_download";
+                                            if (suratData?.link_scan != null &&
+                                                suratData!.link_scan!.contains(
+                                                  '/',
+                                                )) {
+                                              fileName = suratData!.link_scan!
+                                                  .split('/')
+                                                  .last;
+                                            }
+
+                                            // File picker
+                                            String? outputPath;
+                                            if (Platform.isWindows ||
+                                                Platform.isMacOS ||
+                                                Platform.isLinux) {
+                                              outputPath = await FilePicker
+                                                  .platform
+                                                  .saveFile(
+                                                    dialogTitle: 'Simpan File',
+                                                    fileName: fileName,
+                                                    initialDirectory:
+                                                        defaultPath,
+                                                    type: FileType.custom,
+                                                    allowedExtensions: [
+                                                      'pdf',
+                                                      'doc',
+                                                      'docx',
+                                                      'jpg',
+                                                      'png',
+                                                      'jpeg',
+                                                    ],
+                                                  );
+                                            } else {
+                                              outputPath = await FilePicker
+                                                  .platform
+                                                  .saveFile(
+                                                    dialogTitle: 'Simpan File',
+                                                    fileName: fileName,
+                                                    type: FileType.custom,
+                                                    allowedExtensions: [
+                                                      'pdf',
+                                                      'doc',
+                                                      'docx',
+                                                      'jpg',
+                                                      'png',
+                                                      'jpeg',
+                                                    ],
+                                                  );
+                                            }
+
+                                            if (outputPath == null) {
+                                              statusText.value = '';
+                                              return; // User canceled
+                                            }
+
+                                            // Start download
+                                            isDownloading.value = true;
+                                            downloadProgress.value = 0.0;
+                                            statusText.value =
+                                                'Mengunduh file...';
+
+                                            // TODO: GANTI DENGAN REAL PROGRESS CALLBACK!
+                                            // Contoh implementasi:
+                                            /*
+                                            final result = await _suratMasukService
+                                                .downloadFileWithProgress(
+                                              suratData!.nomor_urut,
+                                              outputPath,
+                                              onProgress: (received, total) {
+                                                if (total > 0) {
+                                                  downloadProgress.value = 
+                                                    received / total;
+                                                  statusText.value = 
+                                                    'Mengunduh... ${(received / 1024 / 1024).toStringAsFixed(1)}MB / ${(total / 1024 / 1024).toStringAsFixed(1)}MB';
+                                                }
+                                              },
+                                            );
+                                            */
+
+                                            // TEMPORARY: Fake progress for demo
+                                            // HAPUS INI setelah implement real progress!
+                                            for (int i = 0; i <= 100; i += 5) {
+                                              await Future.delayed(
+                                                Duration(milliseconds: 50),
+                                              );
+                                              downloadProgress.value = i / 100;
+                                            }
+
+                                            final result =
+                                                await _suratMasukService
+                                                    .downloadFile(
+                                                      suratData!.nomor_urut,
+                                                      outputPath,
+                                                    );
+
+                                            isDownloading.value = false;
+
+                                            if (result != null) {
+                                              Navigator.pop(context);
+
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Row(
+                                                    children: [
+                                                      Container(
+                                                        padding: EdgeInsets.all(
+                                                          8,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.2,
+                                                                  ),
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                        child: Icon(
+                                                          Icons
+                                                              .check_circle_outline,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              'Download Berhasil!',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              'File tersimpan di: ${fileName}',
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                              ),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.green.shade700,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                  ),
+                                                  duration: Duration(
+                                                    seconds: 4,
+                                                  ),
+                                                  action: SnackBarAction(
+                                                    label: 'Buka',
+                                                    textColor: Colors.white,
+                                                    onPressed: () {
+                                                      if (Platform.isWindows) {
+                                                        Process.run(
+                                                          'explorer',
+                                                          [
+                                                            '/select,',
+                                                            outputPath!,
+                                                          ],
+                                                        );
+                                                      } else if (Platform
+                                                          .isMacOS) {
+                                                        Process.run('open', [
+                                                          '-R',
+                                                          outputPath!,
+                                                        ]);
+                                                      } else if (Platform
+                                                          .isLinux) {
+                                                        Process.run(
+                                                          'xdg-open',
+                                                          [
+                                                            File(
+                                                              outputPath!,
+                                                            ).parent.path,
+                                                          ],
+                                                        );
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                              refreshState();
+                                            } else {
+                                              throw Exception(
+                                                'Server tidak mengembalikan file',
+                                              );
+                                            }
+                                          } catch (e) {
+                                            isDownloading.value = false;
+                                            downloadProgress.value = 0.0;
+                                            statusText.value = '';
+
+                                            print("[ERROR] Download: $e");
+
+                                            // Error handling yang lebih spesifik
+                                            String errorMsg =
+                                                'Terjadi kesalahan saat mengunduh';
+                                            if (e.toString().contains(
+                                              'SocketException',
+                                            )) {
+                                              errorMsg =
+                                                  'Tidak ada koneksi internet';
+                                            } else if (e.toString().contains(
+                                              'TimeoutException',
+                                            )) {
+                                              errorMsg =
+                                                  'Koneksi timeout, coba lagi';
+                                            } else if (e.toString().contains(
+                                              'Permission',
+                                            )) {
+                                              errorMsg =
+                                                  'Tidak ada izin akses penyimpanan';
+                                            }
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.error_outline,
+                                                      color: Colors.white,
+                                                    ),
+                                                    SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Text(
+                                                            'Download Gagal',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            errorMsg,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                backgroundColor:
+                                                    Colors.red.shade700,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                duration: Duration(seconds: 4),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isLoading
+                                        ? accentColor.withValues(alpha: 0.6)
+                                        : accentColor,
+                                    foregroundColor: Colors.white,
+                                    disabledBackgroundColor: accentColor
+                                        .withValues(alpha: 0.4),
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    elevation: isLoading ? 0 : 8,
+                                    shadowColor: accentColor.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      if (isLoading)
+                                        SizedBox(
+                                          width: 22,
+                                          height: 22,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          ),
+                                        )
+                                      else
+                                        Icon(Icons.download_rounded, size: 20),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        isLoading ? 'Mengunduh...' : 'Download',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 12),
+
+                              // Cancel Button
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                width: double.infinity,
+                                child: TextButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () => Navigator.pop(context),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    side: BorderSide(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Batal',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernDownloadFileSuratKeluarDesktopDialog(
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+  SuratKeluarModel? suratData,
+  void Function() refreshState,
+) {
+  Size size = MediaQuery.of(context).size;
+
+  // State untuk loading dan status
+  ValueNotifier<bool> isDownloading = ValueNotifier<bool>(false);
+  ValueNotifier<double> downloadProgress = ValueNotifier<double>(0.0);
+  ValueNotifier<String> statusText = ValueNotifier<String>('');
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Download File Surat Keluar Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack, // Lebih smooth dari elasticOut
+        ),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width /
+                      2.5 // Sedikit lebih kecil, lebih compact
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30), // Lebih spacious
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon container dengan animasi pulse
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.file_download_outlined,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                          fontFamily: 'SF Pro Display', // Opsional
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Progress Section dengan animasi smooth
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            height: isLoading ? null : 0,
+                            child: isLoading
+                                ? Column(
+                                    children: [
+                                      // Status text
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: statusText,
+                                        builder: (context, status, child) {
+                                          return AnimatedOpacity(
+                                            opacity: status.isNotEmpty
+                                                ? 1.0
+                                                : 0.0,
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: Text(
+                                              status,
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 12),
+
+                                      // Progress Bar
+                                      ValueListenableBuilder<double>(
+                                        valueListenable: downloadProgress,
+                                        builder: (context, progress, child) {
+                                          return Column(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Container(
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.15,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      // Animated progress bar
+                                                      AnimatedContainer(
+                                                        duration: Duration(
+                                                          milliseconds: 300,
+                                                        ),
+                                                        curve: Curves.easeOut,
+                                                        width:
+                                                            MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            progress,
+                                                        decoration: BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                                colors: [
+                                                                  accentColor,
+                                                                  accentColor2,
+                                                                ],
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      // Shimmer effect
+                                                      Positioned.fill(
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                          child: LinearProgressIndicator(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                  Color
+                                                                >(
+                                                                  Colors.white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10),
+
+                                              // Percentage with file size (optional)
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    '${(progress * 100).toInt()}%',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      decoration:
+                                                          TextDecoration.none,
+                                                    ),
+                                                  ),
+                                                  // Tambahkan file size info kalau lu punya
+                                                  // Text(' • 2.4MB / 5.0MB', ...)
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 24),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          );
+                        },
+                      ),
+
+                      // Buttons
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return Column(
+                            children: [
+                              // Download Button
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () async {
+                                          try {
+                                            statusText.value =
+                                                'Memilih lokasi penyimpanan...';
+
+                                            // Ambil default path
+                                            String defaultPath =
+                                                await _suratKeluarService
+                                                    .getDefaultDownloadPath();
+
+                                            // Ambil nama file
+                                            String fileName = "file_download";
+                                            if (suratData?.dok_final != null &&
+                                                suratData!.dok_final!.contains(
+                                                  '/',
+                                                )) {
+                                              fileName = suratData!.dok_final!
+                                                  .split('/')
+                                                  .last;
+                                            }
+
+                                            // File picker
+                                            String? outputPath;
+                                            if (Platform.isWindows ||
+                                                Platform.isMacOS ||
+                                                Platform.isLinux) {
+                                              outputPath = await FilePicker
+                                                  .platform
+                                                  .saveFile(
+                                                    dialogTitle: 'Simpan File',
+                                                    fileName: fileName,
+                                                    initialDirectory:
+                                                        defaultPath,
+                                                    type: FileType.custom,
+                                                    allowedExtensions: [
+                                                      'pdf',
+                                                      'doc',
+                                                      'docx',
+                                                      'jpg',
+                                                      'png',
+                                                      'jpeg',
+                                                    ],
+                                                  );
+                                            } else {
+                                              outputPath = await FilePicker
+                                                  .platform
+                                                  .saveFile(
+                                                    dialogTitle: 'Simpan File',
+                                                    fileName: fileName,
+                                                    type: FileType.custom,
+                                                    allowedExtensions: [
+                                                      'pdf',
+                                                      'doc',
+                                                      'docx',
+                                                      'jpg',
+                                                      'png',
+                                                      'jpeg',
+                                                    ],
+                                                  );
+                                            }
+
+                                            if (outputPath == null) {
+                                              statusText.value = '';
+                                              return; // User canceled
+                                            }
+
+                                            // Start download
+                                            isDownloading.value = true;
+                                            downloadProgress.value = 0.0;
+                                            statusText.value =
+                                                'Mengunduh file...';
+
+
+                                            // TEMPORARY: Fake progress for demo
+                                            // HAPUS INI setelah implement real progress!
+                                            for (int i = 0; i <= 100; i += 5) {
+                                              await Future.delayed(
+                                                Duration(milliseconds: 50),
+                                              );
+                                              downloadProgress.value = i / 100;
+                                            }
+
+                                            final result =
+                                                await _suratKeluarService
+                                                    .downloadFile(
+                                                      suratData!.nomor_urut,
+                                                      outputPath,
+                                                    );
+
+                                            isDownloading.value = false;
+
+                                            if (result != null) {
+                                              Navigator.pop(context);
+
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Row(
+                                                    children: [
+                                                      Container(
+                                                        padding: EdgeInsets.all(
+                                                          8,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.2,
+                                                                  ),
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                        child: Icon(
+                                                          Icons
+                                                              .check_circle_outline,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              'Download Berhasil!',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              'File tersimpan di: ${fileName}',
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                              ),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.green.shade700,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                  ),
+                                                  duration: Duration(
+                                                    seconds: 4,
+                                                  ),
+                                                  action: SnackBarAction(
+                                                    label: 'Buka',
+                                                    textColor: Colors.white,
+                                                    onPressed: () {
+                                                      if (Platform.isWindows) {
+                                                        Process.run(
+                                                          'explorer',
+                                                          [
+                                                            '/select,',
+                                                            outputPath!,
+                                                          ],
+                                                        );
+                                                      } else if (Platform
+                                                          .isMacOS) {
+                                                        Process.run('open', [
+                                                          '-R',
+                                                          outputPath!,
+                                                        ]);
+                                                      } else if (Platform
+                                                          .isLinux) {
+                                                        Process.run(
+                                                          'xdg-open',
+                                                          [
+                                                            File(
+                                                              outputPath!,
+                                                            ).parent.path,
+                                                          ],
+                                                        );
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                              refreshState();
+                                            } else {
+                                              throw Exception(
+                                                'Server tidak mengembalikan file',
+                                              );
+                                            }
+                                          } catch (e) {
+                                            isDownloading.value = false;
+                                            downloadProgress.value = 0.0;
+                                            statusText.value = '';
+
+                                            print("[ERROR] Download: $e");
+
+                                            // Error handling yang lebih spesifik
+                                            String errorMsg =
+                                                'Terjadi kesalahan saat mengunduh';
+                                            if (e.toString().contains(
+                                              'SocketException',
+                                            )) {
+                                              errorMsg =
+                                                  'Tidak ada koneksi internet';
+                                            } else if (e.toString().contains(
+                                              'TimeoutException',
+                                            )) {
+                                              errorMsg =
+                                                  'Koneksi timeout, coba lagi';
+                                            } else if (e.toString().contains(
+                                              'Permission',
+                                            )) {
+                                              errorMsg =
+                                                  'Tidak ada izin akses penyimpanan';
+                                            }
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.error_outline,
+                                                      color: Colors.white,
+                                                    ),
+                                                    SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Text(
+                                                            'Download Gagal',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            errorMsg,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                backgroundColor:
+                                                    Colors.red.shade700,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                duration: Duration(seconds: 4),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isLoading
+                                        ? accentColor.withValues(alpha: 0.6)
+                                        : accentColor,
+                                    foregroundColor: Colors.white,
+                                    disabledBackgroundColor: accentColor
+                                        .withValues(alpha: 0.4),
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    elevation: isLoading ? 0 : 8,
+                                    shadowColor: accentColor.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      if (isLoading)
+                                        SizedBox(
+                                          width: 22,
+                                          height: 22,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          ),
+                                        )
+                                      else
+                                        Icon(Icons.download_rounded, size: 20),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        isLoading ? 'Mengunduh...' : 'Download',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 12),
+
+                              // Cancel Button
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                width: double.infinity,
+                                child: TextButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () => Navigator.pop(context),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    side: BorderSide(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Batal',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernDownloadFileSuratMasukMobileDialog(
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+  SuratMasukModel? suratData,
+) {
+  Size size = MediaQuery.of(context).size;
+
+  // State untuk loading dan status
+  ValueNotifier<bool> isDownloading = ValueNotifier<bool>(false);
+  ValueNotifier<double> downloadProgress = ValueNotifier<double>(0.0);
+  ValueNotifier<String> statusText = ValueNotifier<String>('');
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Download File Surat Masuk Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack, // Lebih smooth dari elasticOut
+        ),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width /
+                      2.5 // Sedikit lebih kecil, lebih compact
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30), // Lebih spacious
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon container dengan animasi pulse
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.file_download_outlined,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                          fontFamily: 'SF Pro Display', // Opsional
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Progress Section dengan animasi smooth
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            height: isLoading ? null : 0,
+                            child: isLoading
+                                ? Column(
+                                    children: [
+                                      // Status text
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: statusText,
+                                        builder: (context, status, child) {
+                                          return AnimatedOpacity(
+                                            opacity: status.isNotEmpty
+                                                ? 1.0
+                                                : 0.0,
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: Text(
+                                              status,
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 12),
+
+                                      // Progress Bar
+                                      ValueListenableBuilder<double>(
+                                        valueListenable: downloadProgress,
+                                        builder: (context, progress, child) {
+                                          return Column(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Container(
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.15,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      // Animated progress bar
+                                                      AnimatedContainer(
+                                                        duration: Duration(
+                                                          milliseconds: 300,
+                                                        ),
+                                                        curve: Curves.easeOut,
+                                                        width:
+                                                            MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            progress,
+                                                        decoration: BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                                colors: [
+                                                                  accentColor,
+                                                                  accentColor2,
+                                                                ],
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      // Shimmer effect
+                                                      Positioned.fill(
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                          child: LinearProgressIndicator(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                  Color
+                                                                >(
+                                                                  Colors.white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10),
+
+                                              // Percentage with file size (optional)
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    '${(progress * 100).toInt()}%',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      decoration:
+                                                          TextDecoration.none,
+                                                    ),
+                                                  ),
+                                                  // Tambahkan file size info kalau lu punya
+                                                  // Text(' • 2.4MB / 5.0MB', ...)
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 24),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          );
+                        },
+                      ),
+
+                      // Buttons
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return Column(
+                            children: [
+                              // Download Button
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () async {
+                                          try {
+                                            statusText.value =
+                                                'Memilih lokasi penyimpanan...';
+
+                                            // Ambil default path
+                                            String defaultPath =
+                                                await _suratMasukService
+                                                    .getDefaultDownloadPath();
+
+                                            // Ambil nama file
+                                            String fileName = "file_download";
+                                            if (suratData?.link_scan != null &&
+                                                suratData!.link_scan!.contains(
+                                                  '/',
+                                                )) {
+                                              fileName = suratData!.link_scan!
+                                                  .split('/')
+                                                  .last;
+                                            }
+
+                                            // File picker
+                                            String? outputPath;
+                                            if (Platform.isWindows ||
+                                                Platform.isMacOS ||
+                                                Platform.isLinux) {
+                                              outputPath = await FilePicker
+                                                  .platform
+                                                  .saveFile(
+                                                    dialogTitle: 'Simpan File',
+                                                    fileName: fileName,
+                                                    initialDirectory:
+                                                        defaultPath,
+                                                    type: FileType.custom,
+                                                    allowedExtensions: [
+                                                      'pdf',
+                                                      'doc',
+                                                      'docx',
+                                                      'jpg',
+                                                      'png',
+                                                      'jpeg',
+                                                    ],
+                                                  );
+                                            } else {
+                                              // outputPath = await FilePicker
+                                              //     .platform
+                                              //     .saveFile(
+                                              //       dialogTitle: 'Simpan File',
+                                              //       fileName: fileName,
+                                              //       type: FileType.custom,
+                                              //       allowedExtensions: [
+                                              //         'pdf',
+                                              //         'doc',
+                                              //         'docx',
+                                              //         'jpg',
+                                              //         'png',
+                                              //         'jpeg',
+                                              //       ],
+                                              //     );
+                                              outputPath = defaultPath + "/" + fileName;
+                                            }
+
+                                            if (outputPath == null) {
+                                              statusText.value = '';
+                                              return; // User canceled
+                                            }
+
+                                            // Start download
+                                            isDownloading.value = true;
+                                            downloadProgress.value = 0.0;
+                                            statusText.value =
+                                                'Mengunduh file...';
+
+                                            // TODO: GANTI DENGAN REAL PROGRESS CALLBACK!
+                                            // Contoh implementasi:
+                                            /*
+                                            final result = await _suratMasukService
+                                                .downloadFileWithProgress(
+                                              suratData!.nomor_urut,
+                                              outputPath,
+                                              onProgress: (received, total) {
+                                                if (total > 0) {
+                                                  downloadProgress.value = 
+                                                    received / total;
+                                                  statusText.value = 
+                                                    'Mengunduh... ${(received / 1024 / 1024).toStringAsFixed(1)}MB / ${(total / 1024 / 1024).toStringAsFixed(1)}MB';
+                                                }
+                                              },
+                                            );
+                                            */
+
+                                            // TEMPORARY: Fake progress for demo
+                                            // HAPUS INI setelah implement real progress!
+                                            for (int i = 0; i <= 100; i += 5) {
+                                              await Future.delayed(
+                                                Duration(milliseconds: 50),
+                                              );
+                                              downloadProgress.value = i / 100;
+                                            }
+
+                                            final result =
+                                                await _suratMasukService
+                                                    .downloadFile(
+                                                      suratData!.nomor_urut,
+                                                      outputPath,
+                                                    );
+
+                                            isDownloading.value = false;
+
+                                            if (result != null) {
+                                              Navigator.pop(context);
+
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Row(
+                                                    children: [
+                                                      Container(
+                                                        padding: EdgeInsets.all(
+                                                          8,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.2,
+                                                                  ),
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                        child: Icon(
+                                                          Icons
+                                                              .check_circle_outline,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              'Download Berhasil!',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              'File tersimpan di: ${fileName}',
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                              ),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.green.shade700,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                  ),
+                                                  duration: Duration(
+                                                    seconds: 4,
+                                                  ),
+                                                  action: SnackBarAction(
+                                                    label: 'Buka',
+                                                    textColor: Colors.white,
+                                                    onPressed: () async {
+                                                      // if (Platform.isWindows) {
+                                                      //   Process.run(
+                                                      //     'explorer',
+                                                      //     [
+                                                      //       '/select,',
+                                                      //       outputPath!,
+                                                      //     ],
+                                                      //   );
+                                                      // } else if (Platform
+                                                      //     .isMacOS) {
+                                                      //   Process.run('open', [
+                                                      //     '-R',
+                                                      //     outputPath!,
+                                                      //   ]);
+                                                      // } else if (Platform
+                                                      //     .isLinux) {
+                                                      //   Process.run(
+                                                      //     'xdg-open',
+                                                      //     [
+                                                      //       File(
+                                                      //         outputPath!,
+                                                      //       ).parent.path,
+                                                      //     ],
+                                                      //   );
+                                                      // if (Platform.isAndroid) {
+                                                      //   Process.run()
+                                                      // }
+                                                      final saved = await _suratMasukService.downloadToDefaultAuto(
+                                                        fileId: suratData.nomor_urut,
+                                                        fileName: 'dok_final.pdf',
+                                                        desktopDefaultDir: defaultPath,     // dipakai di desktop
+                                                        overwrite: false,                   // jangan timpa kalau sudah ada
+                                                        uniqueWhenExists: true,             // otomatis bikin " (1)", " (2)", dst
+                                                        onProgress: (rx, total) {
+                                                          // update progress bar lo di UI
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              throw Exception(
+                                                'Server tidak mengembalikan file',
+                                              );
+                                            }
+                                          } catch (e) {
+                                            isDownloading.value = false;
+                                            downloadProgress.value = 0.0;
+                                            statusText.value = '';
+
+                                            print("[ERROR] Download: $e");
+
+                                            // Error handling yang lebih spesifik
+                                            String errorMsg =
+                                                'Terjadi kesalahan saat mengunduh';
+                                            if (e.toString().contains(
+                                              'SocketException',
+                                            )) {
+                                              errorMsg =
+                                                  'Tidak ada koneksi internet';
+                                            } else if (e.toString().contains(
+                                              'TimeoutException',
+                                            )) {
+                                              errorMsg =
+                                                  'Koneksi timeout, coba lagi';
+                                            } else if (e.toString().contains(
+                                              'Permission',
+                                            )) {
+                                              errorMsg =
+                                                  'Tidak ada izin akses penyimpanan';
+                                            }
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.error_outline,
+                                                      color: Colors.white,
+                                                    ),
+                                                    SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Text(
+                                                            'Download Gagal',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            errorMsg,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                backgroundColor:
+                                                    Colors.red.shade700,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                duration: Duration(seconds: 4),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isLoading
+                                        ? accentColor.withValues(alpha: 0.6)
+                                        : accentColor,
+                                    foregroundColor: Colors.white,
+                                    disabledBackgroundColor: accentColor
+                                        .withValues(alpha: 0.4),
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    elevation: isLoading ? 0 : 8,
+                                    shadowColor: accentColor.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      if (isLoading)
+                                        SizedBox(
+                                          width: 22,
+                                          height: 22,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          ),
+                                        )
+                                      else
+                                        Icon(Icons.download_rounded, size: 20),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        isLoading ? 'Mengunduh...' : 'Download',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 12),
+
+                              // Cancel Button
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                width: double.infinity,
+                                child: TextButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () => Navigator.pop(context),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    side: BorderSide(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Batal',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernDownloadFileSuratKeluarMobileDialog(
+  String title,
+  String message,
+  Color accentColor,
+  Color accentColor2,
+  BuildContext context,
+  SuratKeluarModel? suratData,
+) {
+  Size size = MediaQuery.of(context).size;
+
+  // State untuk loading dan status
+  ValueNotifier<bool> isDownloading = ValueNotifier<bool>(false);
+  ValueNotifier<double> downloadProgress = ValueNotifier<double>(0.0);
+  ValueNotifier<String> statusText = ValueNotifier<String>('');
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Download File Surat Keluar Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack, // Lebih smooth dari elasticOut
+        ),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width /
+                      2.5 // Sedikit lebih kecil, lebih compact
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30), // Lebih spacious
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon container dengan animasi pulse
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.file_download_outlined,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                          fontFamily: 'SF Pro Display', // Opsional
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Progress Section dengan animasi smooth
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            height: isLoading ? null : 0,
+                            child: isLoading
+                                ? Column(
+                                    children: [
+                                      // Status text
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: statusText,
+                                        builder: (context, status, child) {
+                                          return AnimatedOpacity(
+                                            opacity: status.isNotEmpty
+                                                ? 1.0
+                                                : 0.0,
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: Text(
+                                              status,
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 12),
+
+                                      // Progress Bar
+                                      ValueListenableBuilder<double>(
+                                        valueListenable: downloadProgress,
+                                        builder: (context, progress, child) {
+                                          return Column(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Container(
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.15,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      // Animated progress bar
+                                                      AnimatedContainer(
+                                                        duration: Duration(
+                                                          milliseconds: 300,
+                                                        ),
+                                                        curve: Curves.easeOut,
+                                                        width:
+                                                            MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            progress,
+                                                        decoration: BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                                colors: [
+                                                                  accentColor,
+                                                                  accentColor2,
+                                                                ],
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      // Shimmer effect
+                                                      Positioned.fill(
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                          child: LinearProgressIndicator(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                  Color
+                                                                >(
+                                                                  Colors.white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10),
+
+                                              // Percentage with file size (optional)
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    '${(progress * 100).toInt()}%',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.9,
+                                                          ),
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      decoration:
+                                                          TextDecoration.none,
+                                                    ),
+                                                  ),
+                                                  // Tambahkan file size info kalau lu punya
+                                                  // Text(' • 2.4MB / 5.0MB', ...)
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 24),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          );
+                        },
+                      ),
+
+                      // Buttons
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return Column(
+                            children: [
+                              // Download Button
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () async {
+                                          try {
+                                            statusText.value =
+                                                'Memilih lokasi penyimpanan...';
+
+                                            // Ambil default path
+                                            String defaultPath =
+                                                await _suratKeluarService
+                                                    .getDefaultDownloadPath();
+
+                                            // Ambil nama file
+                                            String fileName = "file_download";
+                                            if (suratData?.dok_final != null &&
+                                                suratData!.dok_final!.contains(
+                                                  '/',
+                                                )) {
+                                              fileName = suratData!.dok_final!
+                                                  .split('/')
+                                                  .last;
+                                            }
+
+                                            // File picker
+                                            String? outputPath;
+                                            if (Platform.isWindows ||
+                                                Platform.isMacOS ||
+                                                Platform.isLinux) {
+                                              outputPath = await FilePicker
+                                                  .platform
+                                                  .saveFile(
+                                                    dialogTitle: 'Simpan File',
+                                                    fileName: fileName,
+                                                    initialDirectory:
+                                                        defaultPath,
+                                                    type: FileType.custom,
+                                                    allowedExtensions: [
+                                                      'pdf',
+                                                      'doc',
+                                                      'docx',
+                                                      'jpg',
+                                                      'png',
+                                                      'jpeg',
+                                                    ],
+                                                  );
+                                            } else {
+                                              outputPath = await FilePicker
+                                                  .platform
+                                                  .saveFile(
+                                                    dialogTitle: 'Simpan File',
+                                                    fileName: fileName,
+                                                    type: FileType.custom,
+                                                    allowedExtensions: [
+                                                      'pdf',
+                                                      'doc',
+                                                      'docx',
+                                                      'jpg',
+                                                      'png',
+                                                      'jpeg',
+                                                    ],
+                                                  );
+                                            }
+
+                                            if (outputPath == null) {
+                                              statusText.value = '';
+                                              return; // User canceled
+                                            }
+
+                                            // Start download
+                                            isDownloading.value = true;
+                                            downloadProgress.value = 0.0;
+                                            statusText.value =
+                                                'Mengunduh file...';
+
+
+                                            // TEMPORARY: Fake progress for demo
+                                            // HAPUS INI setelah implement real progress!
+                                            for (int i = 0; i <= 100; i += 5) {
+                                              await Future.delayed(
+                                                Duration(milliseconds: 50),
+                                              );
+                                              downloadProgress.value = i / 100;
+                                            }
+
+                                            final result =
+                                                await _suratKeluarService
+                                                    .downloadFile(
+                                                      suratData!.nomor_urut,
+                                                      outputPath,
+                                                    );
+
+                                            isDownloading.value = false;
+
+                                            if (result != null) {
+                                              Navigator.pop(context);
+
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Row(
+                                                    children: [
+                                                      Container(
+                                                        padding: EdgeInsets.all(
+                                                          8,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.2,
+                                                                  ),
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                            ),
+                                                        child: Icon(
+                                                          Icons
+                                                              .check_circle_outline,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 12),
+                                                      Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              'Download Berhasil!',
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                            Text(
+                                                              'File tersimpan di: ${fileName}',
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                              ),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.green.shade700,
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
+                                                  ),
+                                                  duration: Duration(
+                                                    seconds: 4,
+                                                  ),
+                                                  action: SnackBarAction(
+                                                    label: 'Buka',
+                                                    textColor: Colors.white,
+                                                    onPressed: () {
+                                                      if (Platform.isWindows) {
+                                                        Process.run(
+                                                          'explorer',
+                                                          [
+                                                            '/select,',
+                                                            outputPath!,
+                                                          ],
+                                                        );
+                                                      } else if (Platform
+                                                          .isMacOS) {
+                                                        Process.run('open', [
+                                                          '-R',
+                                                          outputPath!,
+                                                        ]);
+                                                      } else if (Platform
+                                                          .isLinux) {
+                                                        Process.run(
+                                                          'xdg-open',
+                                                          [
+                                                            File(
+                                                              outputPath!,
+                                                            ).parent.path,
+                                                          ],
+                                                        );
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              throw Exception(
+                                                'Server tidak mengembalikan file',
+                                              );
+                                            }
+                                          } catch (e) {
+                                            isDownloading.value = false;
+                                            downloadProgress.value = 0.0;
+                                            statusText.value = '';
+
+                                            print("[ERROR] Download: $e");
+
+                                            // Error handling yang lebih spesifik
+                                            String errorMsg =
+                                                'Terjadi kesalahan saat mengunduh';
+                                            if (e.toString().contains(
+                                              'SocketException',
+                                            )) {
+                                              errorMsg =
+                                                  'Tidak ada koneksi internet';
+                                            } else if (e.toString().contains(
+                                              'TimeoutException',
+                                            )) {
+                                              errorMsg =
+                                                  'Koneksi timeout, coba lagi';
+                                            } else if (e.toString().contains(
+                                              'Permission',
+                                            )) {
+                                              errorMsg =
+                                                  'Tidak ada izin akses penyimpanan';
+                                            }
+
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.error_outline,
+                                                      color: Colors.white,
+                                                    ),
+                                                    SizedBox(width: 12),
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Text(
+                                                            'Download Gagal',
+                                                            style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            errorMsg,
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                backgroundColor:
+                                                    Colors.red.shade700,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                duration: Duration(seconds: 4),
+                                              ),
+                                            );
+                                          }
+                                        },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: isLoading
+                                        ? accentColor.withValues(alpha: 0.6)
+                                        : accentColor,
+                                    foregroundColor: Colors.white,
+                                    disabledBackgroundColor: accentColor
+                                        .withValues(alpha: 0.4),
+                                    padding: EdgeInsets.symmetric(vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    elevation: isLoading ? 0 : 8,
+                                    shadowColor: accentColor.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      if (isLoading)
+                                        SizedBox(
+                                          width: 22,
+                                          height: 22,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.5,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                  Colors.white,
+                                                ),
+                                          ),
+                                        )
+                                      else
+                                        Icon(Icons.download_rounded, size: 20),
+                                      SizedBox(width: 10),
+                                      Text(
+                                        isLoading ? 'Mengunduh...' : 'Download',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 12),
+
+                              // Cancel Button
+                              AnimatedContainer(
+                                duration: Duration(milliseconds: 200),
+                                width: double.infinity,
+                                child: TextButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () => Navigator.pop(context),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15),
+                                    ),
+                                    side: BorderSide(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.3,
+                                      ),
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Batal',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+
+// Tambah Surat Masuk dan Keluar
 
 void showModernTambahSuratDialog(
   String title,
@@ -5632,6 +8350,8 @@ void showEditSuratDialog(
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
   Size size = MediaQuery.of(context).size;
 
+  PlatformFile? fileTarget;
+
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -5645,904 +8365,1322 @@ void showEditSuratDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      bool _isLoading = false;
+
       return StatefulBuilder(
         builder: (context, setState) {
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                height: MediaQuery.of(context).size.height * 0.9,
-                width:
-                    (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                    ? size.width / 2
-                    : size.width,
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.9,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 30,
-                      spreadRadius: 5,
-                      offset: Offset(0, 15),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Container(
-                        padding: EdgeInsets.all(25),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withValues(alpha: 0.2),
-                              Colors.white.withValues(alpha: 0.1),
-                            ],
+              child: _isLoading
+                  ? Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 40,
+                      ),
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      width:
+                          (Platform.isWindows ||
+                              Platform.isLinux ||
+                              Platform.isMacOS)
+                          ? size.width / 2
+                          : size.width,
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.9,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 30,
+                            spreadRadius: 5,
+                            offset: Offset(0, 15),
                           ),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Header
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Color(
-                                            0xFF4F46E5,
-                                          ).withValues(alpha: 0.3),
-                                          Color(
-                                            0xFF7C3AED,
-                                          ).withValues(alpha: 0.2),
-                                        ],
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(
-                                            0xFF4F46E5,
-                                          ).withValues(alpha: 0.3),
-                                          blurRadius: 15,
-                                          spreadRadius: 2,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Icon(
-                                      Icons.edit_document,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Expanded(
-                                    child: Text(
-                                      'Edit Surat',
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => Navigator.pop(context),
-                                    child: Container(
-                                      padding: EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.1,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.8,
-                                        ),
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Container(
+                              padding: EdgeInsets.all(25),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.2),
+                                    Colors.white.withValues(alpha: 0.1),
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  width: 1.5,
+                                ),
+                                borderRadius: BorderRadius.circular(24),
                               ),
-
-                              SizedBox(height: 25),
-
-                              // Form Fields
-                              buildInputField(
-                                'Judul Surat',
-                                judulController,
-                                Icons.title_rounded,
-                                maxLines: 2,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDateInputField(
-                                'Diterima Tanggal',
-                                tanggalController,
-                                Icons.event_available_rounded,
-                                context,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDateInputField(
-                                'Tanggal Surat',
-                                tanggalSuratController,
-                                Icons.event_note_rounded,
-                                context,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Kode',
-                                kodeController,
-                                Icons.qr_code_2_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'No Agenda',
-                                noagendaController,
-                                Icons.assignment_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'No Surat',
-                                nosuratController,
-                                Icons.markunread_mailbox_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Hal',
-                                perihalController,
-                                Icons.subject_rounded,
-                                maxLines: 2,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDayDateTimeInputField(
-                                'Hari - Tanggal - Waktu',
-                                hariTanggalWaktuController,
-                                Icons.today_rounded,
-                                context,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Tempat',
-                                tempatController,
-                                Icons.location_on_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              // Multi-Select Disposisi Dropdown
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Disposisi',
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.9,
-                                      ),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.none,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white.withValues(alpha: 0.1),
-                                          Colors.white.withValues(alpha: 0.05),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Header
+                                    Row(
                                       children: [
-                                        // tampilkan disposisi yang sudah ada
-                                        if (selectedDisposisi.isNotEmpty) ...[
-                                          Wrap(
-                                            spacing: 8,
-                                            runSpacing: 8,
-                                            children: selectedDisposisi.map((
-                                              disp,
-                                            ) {
-                                              return Container(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                  vertical: 6,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  gradient: LinearGradient(
-                                                    colors: [
-                                                      Color(
-                                                        0xFF4F46E5,
-                                                      ).withValues(alpha: 0.3),
-                                                      Color(
-                                                        0xFF7C3AED,
-                                                      ).withValues(alpha: 0.2),
-                                                    ],
-                                                  ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                  border: Border.all(
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.3),
-                                                  ),
-                                                ),
-                                                child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      disp,
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        decoration:
-                                                            TextDecoration.none,
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 6),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        setState(() {
-                                                          selectedDisposisi
-                                                              .remove(disp);
-                                                        });
-                                                      },
-                                                      child: Icon(
-                                                        Icons.close,
-                                                        size: 16,
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.8,
-                                                            ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            }).toList(),
-                                          ),
-                                          SizedBox(height: 12),
-                                        ],
-
-                                        // dropdown untuk tambah disposisi lagi
                                         Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                          ),
+                                          padding: EdgeInsets.all(12),
                                           decoration: BoxDecoration(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.05,
+                                            shape: BoxShape.circle,
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(
+                                                  0xFF4F46E5,
+                                                ).withValues(alpha: 0.3),
+                                                Color(
+                                                  0xFF7C3AED,
+                                                ).withValues(alpha: 0.2),
+                                              ],
                                             ),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color(
+                                                  0xFF4F46E5,
+                                                ).withValues(alpha: 0.3),
+                                                blurRadius: 15,
+                                                spreadRadius: 2,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Icon(
+                                            Icons.edit_document,
+                                            color: Colors.white,
+                                            size: 24,
+                                          ),
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Text(
+                                            'Edit Surat',
+                                            style: TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              letterSpacing: 0.5,
+                                              decoration: TextDecoration.none,
                                             ),
-                                            border: Border.all(
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () => Navigator.pop(context),
+                                          child: Container(
+                                            padding: EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
                                               color: Colors.white.withValues(
                                                 alpha: 0.1,
                                               ),
                                             ),
+                                            child: Icon(
+                                              Icons.close,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.8,
+                                              ),
+                                              size: 20,
+                                            ),
                                           ),
-                                          child: DropdownButtonHideUnderline(
-                                            child: DropdownButton<String>(
-                                              hint: Text(
-                                                'Pilih Disposisi',
-                                                style: TextStyle(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.6),
-                                                  fontSize: 14,
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(height: 25),
+
+                                    // Form Fields
+                                    buildInputField(
+                                      'Judul Surat',
+                                      judulController,
+                                      Icons.title_rounded,
+                                      maxLines: 2,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDateInputField(
+                                      'Diterima Tanggal',
+                                      tanggalController,
+                                      Icons.event_available_rounded,
+                                      context,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDateInputField(
+                                      'Tanggal Surat',
+                                      tanggalSuratController,
+                                      Icons.event_note_rounded,
+                                      context,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Kode',
+                                      kodeController,
+                                      Icons.qr_code_2_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'No Agenda',
+                                      noagendaController,
+                                      Icons.assignment_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'No Surat',
+                                      nosuratController,
+                                      Icons.markunread_mailbox_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Hal',
+                                      perihalController,
+                                      Icons.subject_rounded,
+                                      maxLines: 2,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDayDateTimeInputField(
+                                      'Hari - Tanggal - Waktu',
+                                      hariTanggalWaktuController,
+                                      Icons.today_rounded,
+                                      context,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Tempat',
+                                      tempatController,
+                                      Icons.location_on_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    // Multi-Select Disposisi Dropdown
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Disposisi',
+                                          style: TextStyle(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.9,
+                                            ),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Container(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.all(15),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.1,
                                                 ),
-                                              ),
-                                              value: null,
-                                              isExpanded: true,
-                                              dropdownColor: Color(0xFF1F2937),
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 14,
-                                                fontFamily: 'Roboto',
-                                              ),
-                                              icon: Icon(
-                                                Icons.add,
-                                                color: Colors.white.withValues(
-                                                  alpha: 0.7,
+                                                Colors.white.withValues(
+                                                  alpha: 0.05,
                                                 ),
-                                                size: 20,
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.2,
                                               ),
-                                              items: listWorkfields
-                                                  .where(
-                                                    (field) =>
-                                                        !selectedDisposisi
-                                                            .contains(field),
-                                                  )
-                                                  .map((field) {
-                                                    return DropdownMenuItem<
-                                                      String
-                                                    >(
-                                                      value: field,
-                                                      child: Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons.work_outline,
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.7,
-                                                                ),
-                                                            size: 16,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              // tampilkan disposisi yang sudah ada
+                                              if (selectedDisposisi
+                                                  .isNotEmpty) ...[
+                                                Wrap(
+                                                  spacing: 8,
+                                                  runSpacing: 8,
+                                                  children: selectedDisposisi.map((
+                                                    disp,
+                                                  ) {
+                                                    return Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            horizontal: 12,
+                                                            vertical: 6,
                                                           ),
-                                                          SizedBox(width: 8),
-                                                          Expanded(
-                                                            child: Text(
-                                                              field,
-                                                              style: TextStyle(
-                                                                fontSize: 14,
+                                                      decoration: BoxDecoration(
+                                                        gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                  0xFF4F46E5,
+                                                                ).withValues(
+                                                                  alpha: 0.3,
+                                                                ),
+                                                                Color(
+                                                                  0xFF7C3AED,
+                                                                ).withValues(
+                                                                  alpha: 0.2,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              20,
+                                                            ),
+                                                        border: Border.all(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.3,
                                                               ),
+                                                        ),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Text(
+                                                            disp,
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                            ),
+                                                          ),
+                                                          SizedBox(width: 6),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                selectedDisposisi
+                                                                    .remove(
+                                                                      disp,
+                                                                    );
+                                                              });
+                                                            },
+                                                            child: Icon(
+                                                              Icons.close,
+                                                              size: 16,
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.8,
+                                                                  ),
                                                             ),
                                                           ),
                                                         ],
                                                       ),
                                                     );
-                                                  })
-                                                  .toList(),
-                                              onChanged: (String? value) {
-                                                if (value != null &&
-                                                    !selectedDisposisi.contains(
-                                                      value,
-                                                    )) {
-                                                  setState(() {
-                                                    selectedDisposisi.add(
-                                                      value,
-                                                    );
-                                                  });
-                                                }
+                                                  }).toList(),
+                                                ),
+                                                SizedBox(height: 12),
+                                              ],
+
+                                              // dropdown untuk tambah disposisi lagi
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.05),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.1),
+                                                  ),
+                                                ),
+                                                child: DropdownButtonHideUnderline(
+                                                  child: DropdownButton<String>(
+                                                    hint: Text(
+                                                      'Pilih Disposisi',
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.6,
+                                                            ),
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    value: null,
+                                                    isExpanded: true,
+                                                    dropdownColor: Color(
+                                                      0xFF1F2937,
+                                                    ),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                    icon: Icon(
+                                                      Icons.add,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                      size: 20,
+                                                    ),
+                                                    items: listWorkfields
+                                                        .where(
+                                                          (field) =>
+                                                              !selectedDisposisi
+                                                                  .contains(
+                                                                    field,
+                                                                  ),
+                                                        )
+                                                        .map((field) {
+                                                          return DropdownMenuItem<
+                                                            String
+                                                          >(
+                                                            value: field,
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .work_outline,
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.7,
+                                                                      ),
+                                                                  size: 16,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 8,
+                                                                ),
+                                                                Expanded(
+                                                                  child: Text(
+                                                                    field,
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        })
+                                                        .toList(),
+                                                    onChanged: (String? value) {
+                                                      if (value != null &&
+                                                          !selectedDisposisi
+                                                              .contains(
+                                                                value,
+                                                              )) {
+                                                        setState(() {
+                                                          selectedDisposisi.add(
+                                                            value,
+                                                          );
+                                                        });
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Index',
+                                      indexController,
+                                      Icons.people_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Pengolah',
+                                      pengolahController,
+                                      Icons.manage_accounts_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Sifat',
+                                      sifatController,
+                                      Icons.priority_high_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    StatefulBuilder(
+                                      builder: (context, setStateLocal) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Link Scan (PDF)',
+                                              style: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                            SizedBox(height: 8),
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Colors.white.withValues(
+                                                      alpha: 0.1,
+                                                    ),
+                                                    Colors.white.withValues(
+                                                      alpha: 0.05,
+                                                    ),
+                                                  ],
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                border: Border.all(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                  width: 1,
+                                                ),
+                                              ),
+                                              child: Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    try {
+                                                      FilePickerResult?
+                                                      result = await FilePicker
+                                                          .platform
+                                                          .pickFiles(
+                                                            type:
+                                                                FileType.custom,
+                                                            allowedExtensions: [
+                                                              'pdf',
+                                                            ],
+                                                            allowMultiple:
+                                                                false,
+                                                          );
+
+                                                      if (result != null &&
+                                                          result
+                                                              .files
+                                                              .isNotEmpty) {
+                                                        PlatformFile file =
+                                                            result.files.first;
+
+                                                        // Update controller dengan path file baru
+                                                        linkscanController
+                                                                .text =
+                                                            file.path ?? '';
+
+                                                        setStateLocal(() {
+                                                          fileTarget = file;
+                                                          String? fileName =
+                                                              fileTarget
+                                                                  ?.name ??
+                                                              null;
+                                                          print(
+                                                            "[DEBUG] -> [STATE] :: File Target? = $fileName",
+                                                          );
+                                                        }); // Update UI lokal
+
+                                                        ScaffoldMessenger.of(
+                                                          context,
+                                                        ).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              'File berhasil dipilih: ${file.name}',
+                                                            ),
+                                                            backgroundColor:
+                                                                Color(
+                                                                  0xFF10B981,
+                                                                ),
+                                                            behavior:
+                                                                SnackBarBehavior
+                                                                    .floating,
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    10,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                    } catch (e) {
+                                                      ScaffoldMessenger.of(
+                                                        context,
+                                                      ).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                            'Gagal memilih file: $e',
+                                                          ),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                          behavior:
+                                                              SnackBarBehavior
+                                                                  .floating,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(15),
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                10,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            gradient:
+                                                                LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                      0xFF4F46E5,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.3,
+                                                                    ),
+                                                                    Color(
+                                                                      0xFF7C3AED,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                          ),
+                                                          child: Icon(
+                                                            linkscanController
+                                                                    .text
+                                                                    .isEmpty
+                                                                ? Icons
+                                                                      .upload_file_rounded
+                                                                : Icons
+                                                                      .insert_drive_file_rounded,
+                                                            color: Colors.white,
+                                                            size: 24,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 15),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                linkscanController
+                                                                        .text
+                                                                        .isEmpty
+                                                                    ? 'Pilih File PDF Baru'
+                                                                    : 'File Terpilih',
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.9,
+                                                                      ),
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  decoration:
+                                                                      TextDecoration
+                                                                          .none,
+                                                                ),
+                                                              ),
+                                                              if (linkscanController
+                                                                  .text
+                                                                  .isNotEmpty) ...[
+                                                                SizedBox(
+                                                                  height: 4,
+                                                                ),
+                                                                Text(
+                                                                  linkscanController
+                                                                      .text
+                                                                      .split(
+                                                                        '/',
+                                                                      )
+                                                                      .last
+                                                                      .split(
+                                                                        '\\',
+                                                                      )
+                                                                      .last,
+                                                                  style: TextStyle(
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.6,
+                                                                        ),
+                                                                    fontSize:
+                                                                        12,
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .none,
+                                                                  ),
+                                                                  maxLines: 1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        if (linkscanController
+                                                            .text
+                                                            .isNotEmpty)
+                                                          Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              // Button untuk clear file
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  linkscanController
+                                                                      .clear();
+                                                                  setStateLocal(
+                                                                    () {},
+                                                                  );
+                                                                },
+                                                                child: Container(
+                                                                  padding:
+                                                                      EdgeInsets.all(
+                                                                        8,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: Colors
+                                                                        .red
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.2,
+                                                                        ),
+                                                                  ),
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .close_rounded,
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.8,
+                                                                        ),
+                                                                    size: 16,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 8,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        Icon(
+                                                          Icons
+                                                              .chevron_right_rounded,
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.5,
+                                                              ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDateInputField(
+                                      'Disposisi Kadin',
+                                      disposisikadinController,
+                                      Icons.people_alt_rounded,
+                                      context,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Catatan Disposisi Kadin',
+                                      notesDisposisiKadinController,
+                                      Icons.sticky_note_2_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDateInputField(
+                                      'Disposisi Sekdin',
+                                      disposisisekdinController,
+                                      Icons.people_alt_rounded,
+                                      context,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Catatan Disposisi Sekdin',
+                                      notesDisposisiSekdinController,
+                                      Icons.sticky_note_2_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDateInputField(
+                                      'Disposisi Kabid',
+                                      disposisikabidController,
+                                      Icons.people_alt_rounded,
+                                      context,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Catatan Disposisi Kabid',
+                                      notesDisposisiKabidController,
+                                      Icons.sticky_note_2_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDateInputField(
+                                      'Disposisi Kasubag',
+                                      disposisikasubagController,
+                                      Icons.people_alt_rounded,
+                                      context,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Catatan Disposisi Kasubag',
+                                      notesDisposisiKasubagController,
+                                      Icons.sticky_note_2_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDateInputField(
+                                      'Tindak Lanjut 1',
+                                      tindaklanjut1Controller,
+                                      FontAwesomeIcons.circleCheck,
+                                      context,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Notes Tindak Lanjut 1',
+                                      notestindaklanjut1Controller,
+                                      Icons.notes,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDateInputField(
+                                      'Tindak Lanjut 2',
+                                      tindaklanjut2Controller,
+                                      FontAwesomeIcons.circleCheck,
+                                      context,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Notes Tindak Lanjut 2',
+                                      notestindaklanjut2Controller,
+                                      Icons.notes,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    // Status Dropdown
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Status',
+                                          style: TextStyle(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.9,
+                                            ),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 15,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                                Colors.white.withValues(
+                                                  alpha: 0.05,
+                                                ),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.2,
+                                              ),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              value: selectedStatus,
+                                              isExpanded: true,
+                                              dropdownColor: Color(0xFF1F2937),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                              icon: Icon(
+                                                Icons
+                                                    .keyboard_arrow_down_rounded,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                              ),
+                                              items: statusOptions.map((
+                                                String status,
+                                              ) {
+                                                return DropdownMenuItem<String>(
+                                                  value: status,
+                                                  child: Row(
+                                                    children: [
+                                                      Container(
+                                                        width: 10,
+                                                        height: 10,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              color:
+                                                                  getStatusColor(
+                                                                    status,
+                                                                  ),
+                                                            ),
+                                                      ),
+                                                      SizedBox(width: 10),
+                                                      Text(status),
+                                                    ],
+                                                  ),
+                                                );
+                                              }).toList(),
+                                              onChanged: (String? newValue) {
+                                                setState(() {
+                                                  selectedStatus = newValue!;
+                                                });
                                               },
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
 
-                              SizedBox(height: 20),
+                                    SizedBox(height: 30),
 
-                              buildInputField(
-                                'Index',
-                                indexController,
-                                Icons.people_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Pengolah',
-                                pengolahController,
-                                Icons.manage_accounts_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Sifat',
-                                sifatController,
-                                Icons.priority_high_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Link Scan',
-                                linkscanController,
-                                Icons.link_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDateInputField(
-                                'Disposisi Kadin',
-                                disposisikadinController,
-                                Icons.people_alt_rounded,
-                                context,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Catatan Disposisi Kadin',
-                                notesDisposisiKadinController,
-                                Icons.sticky_note_2_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDateInputField(
-                                'Disposisi Sekdin',
-                                disposisisekdinController,
-                                Icons.people_alt_rounded,
-                                context,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Catatan Disposisi Sekdin',
-                                notesDisposisiSekdinController,
-                                Icons.sticky_note_2_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDateInputField(
-                                'Disposisi Kabid',
-                                disposisikabidController,
-                                Icons.people_alt_rounded,
-                                context,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Catatan Disposisi Kabid',
-                                notesDisposisiKabidController,
-                                Icons.sticky_note_2_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDateInputField(
-                                'Disposisi Kasubag',
-                                disposisikasubagController,
-                                Icons.people_alt_rounded,
-                                context,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Catatan Disposisi Kasubag',
-                                notesDisposisiKasubagController,
-                                Icons.sticky_note_2_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDateInputField(
-                                'Tindak Lanjut 1',
-                                tindaklanjut1Controller,
-                                FontAwesomeIcons.circleCheck,
-                                context,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Notes Tindak Lanjut 1',
-                                notestindaklanjut1Controller,
-                                Icons.notes,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDateInputField(
-                                'Tindak Lanjut 2',
-                                tindaklanjut2Controller,
-                                FontAwesomeIcons.circleCheck,
-                                context,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Notes Tindak Lanjut 2',
-                                notestindaklanjut2Controller,
-                                Icons.notes,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              // Status Dropdown
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Status',
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.9,
-                                      ),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.none,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 15,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white.withValues(alpha: 0.1),
-                                          Colors.white.withValues(alpha: 0.05),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton<String>(
-                                        value: selectedStatus,
-                                        isExpanded: true,
-                                        dropdownColor: Color(0xFF1F2937),
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontFamily: 'Roboto',
-                                        ),
-                                        icon: Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.7,
+                                    // Action Buttons
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            style: OutlinedButton.styleFrom(
+                                              foregroundColor: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 15,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                              ),
+                                              side: BorderSide(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.3,
+                                                ),
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'Batal',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0.5,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        items: statusOptions.map((
-                                          String status,
-                                        ) {
-                                          return DropdownMenuItem<String>(
-                                            value: status,
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 10,
-                                                  height: 10,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: getStatusColor(
-                                                      status,
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          flex: 2,
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              // Parse DateTime dari string controllers
+                                              DateTime? tanggalSurat =
+                                                  parseDateTime(
+                                                    tanggalSuratController.text,
+                                                  );
+                                              DateTime? tanggalDiterima =
+                                                  parseDateTime(
+                                                    tanggalController.text,
+                                                  );
+                                              DateTime?
+                                              tanggalWaktu = parseDateTime(
+                                                hariTanggalWaktuController.text,
+                                              );
+                                              DateTime?
+                                              tindakLanjut1 = parseDateTime(
+                                                tindaklanjut1Controller.text,
+                                              );
+                                              DateTime?
+                                              tindakLanjut2 = parseDateTime(
+                                                tindaklanjut2Controller.text,
+                                              );
+                                              DateTime?
+                                              dispKadin = parseDateTime(
+                                                disposisikadinController.text,
+                                              );
+                                              DateTime?
+                                              dispSekdin = parseDateTime(
+                                                disposisisekdinController.text,
+                                              );
+                                              DateTime?
+                                              dispKabid = parseDateTime(
+                                                disposisikabidController.text,
+                                              );
+                                              DateTime?
+                                              dispKasubag = parseDateTime(
+                                                disposisikasubagController.text,
+                                              );
+
+                                              // Validasi tanggal wajib
+                                              if (tanggalSurat == null ||
+                                                  tanggalDiterima == null ||
+                                                  tanggalWaktu == null) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Tanggal Surat dan Tanggal Diterima wajib diisi!',
+                                                    ),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                                return;
+                                              }
+
+                                              if (dispKadin == null ||
+                                                  dispSekdin == null) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Tanggal Surat dan Tanggal Diterima wajib diisi!',
+                                                    ),
+                                                    backgroundColor: Colors.red,
+                                                  ),
+                                                );
+                                                return;
+                                              }
+
+                                              try {
+                                                // Update data
+                                                setState(
+                                                  () => _isLoading = true,
+                                                );
+
+                                                final data = await _suratMasukService.editSurat(
+                                                  nomor_urut:
+                                                      selectedSurat.nomor_urut,
+                                                  disp1Kadin: dispKadin,
+                                                  disp2Sekdin: dispSekdin,
+                                                  disp3Kabid: dispKabid,
+                                                  disp4Kasubag: dispKasubag,
+                                                  disp1Notes:
+                                                      notesDisposisiKadinController
+                                                          .text,
+                                                  disp2Notes:
+                                                      notesDisposisiSekdinController
+                                                          .text,
+                                                  disp3Notes:
+                                                      notesDisposisiKabidController
+                                                          .text,
+                                                  disp4Notes:
+                                                      notesDisposisiKasubagController
+                                                          .text,
+                                                  dispLanjut:
+                                                      disposisilanjutanController
+                                                          .text,
+                                                  hal: perihalController.text,
+                                                  index: indexController.text,
+                                                  kode: kodeController.text,
+                                                  linkScan:
+                                                      linkscanController.text,
+                                                  noAgenda:
+                                                      noagendaController.text,
+                                                  noSurat:
+                                                      nosuratController.text,
+                                                  pengolah:
+                                                      pengolahController.text,
+                                                  sifat: sifatController.text,
+                                                  suratDari:
+                                                      judulController.text,
+                                                  tempat: tempatController.text,
+                                                  status: selectedStatus,
+                                                  tanggalSurat:
+                                                      tanggalSurat, // Udah DateTime
+                                                  tanggalDiterima:
+                                                      tanggalDiterima, // Udah DateTime
+                                                  tanggalWaktu:
+                                                      tanggalWaktu, // Bisa null
+                                                  tindakLanjut1:
+                                                      tindakLanjut1, // Bisa null
+                                                  tindakLanjut2: tindakLanjut2,
+                                                  tl1Notes:
+                                                      notestindaklanjut1Controller
+                                                          .text, // Bisa null
+                                                  tl2Notes:
+                                                      notestindaklanjut2Controller
+                                                          .text, // Bisa null
+                                                  disposisi:
+                                                      selectedDisposisi, // Convert list to comma-separated string
+                                                );
+
+                                                if (fileTarget != null) {
+                                                  final fileStatus =
+                                                      await _suratMasukService
+                                                          .editUploadFile(
+                                                            data!.nomor_urut,
+                                                            fileTarget!,
+                                                          );
+                                                  print(
+                                                    '[DEBUG] -> [STATE] :: File Status? = $fileStatus',
+                                                  );
+                                                }
+                                                if (linkscanController.text ==
+                                                    '') {
+                                                  final fileDeleteStatus =
+                                                      await _suratMasukService
+                                                          .deleteFile(
+                                                            data!.nomor_urut,
+                                                          );
+                                                  print(
+                                                    '[DEBUG] -> [STATE] :: File Deleted? = $fileDeleteStatus',
+                                                  );
+                                                }
+                                                print(
+                                                  '[DEBUG] -> [STATE] :: Link Scan? = ${linkscanController.text}',
+                                                );
+                                                print(data);
+
+                                                // Refresh state
+                                                refreshState();
+
+                                                // Close dialog
+                                                Navigator.pop(context);
+
+                                                // Show success message
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Surat berhasil diperbarui!',
+                                                    ),
+                                                    backgroundColor: Color(
+                                                      0xFF10B981,
+                                                    ),
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
                                                     ),
                                                   ),
-                                                ),
-                                                SizedBox(width: 10),
-                                                Text(status),
-                                              ],
-                                            ),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            selectedStatus = newValue!;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                              SizedBox(height: 30),
-
-                              // Action Buttons
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: OutlinedButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 15,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            15,
-                                          ),
-                                        ),
-                                        side: BorderSide(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                          width: 1.5,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Batal',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Expanded(
-                                    flex: 2,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        // Parse DateTime dari string controllers
-                                        DateTime? tanggalSurat = parseDateTime(
-                                          tanggalSuratController.text,
-                                        );
-                                        DateTime? tanggalDiterima =
-                                            parseDateTime(
-                                              tanggalController.text,
-                                            );
-                                        DateTime? tanggalWaktu = parseDateTime(
-                                          hariTanggalWaktuController.text,
-                                        );
-                                        DateTime? tindakLanjut1 = parseDateTime(
-                                          tindaklanjut1Controller.text,
-                                        );
-                                        DateTime? tindakLanjut2 = parseDateTime(
-                                          tindaklanjut2Controller.text,
-                                        );
-                                        DateTime? dispKadin = parseDateTime(
-                                          disposisikadinController.text,
-                                        );
-                                        DateTime? dispSekdin = parseDateTime(
-                                          disposisisekdinController.text,
-                                        );
-                                        DateTime? dispKabid = parseDateTime(
-                                          disposisikabidController.text,
-                                        );
-                                        DateTime? dispKasubag = parseDateTime(
-                                          disposisikasubagController.text,
-                                        );
-
-                                        // Validasi tanggal wajib
-                                        if (tanggalSurat == null ||
-                                            tanggalDiterima == null ||
-                                            tanggalWaktu == null) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Tanggal Surat dan Tanggal Diterima wajib diisi!',
-                                              ),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                          return;
-                                        }
-
-                                        if (dispKadin == null ||
-                                            dispSekdin == null) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Tanggal Surat dan Tanggal Diterima wajib diisi!',
-                                              ),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                          return;
-                                        }
-
-                                        try {
-                                          // Update data
-                                          final data = await _suratMasukService.editSurat(
-                                            nomor_urut:
-                                                selectedSurat.nomor_urut,
-                                            disp1Kadin: dispKadin,
-                                            disp2Sekdin: dispSekdin,
-                                            disp3Kabid: dispKabid,
-                                            disp4Kasubag: dispKasubag,
-                                            disp1Notes:
-                                                notesDisposisiKadinController
-                                                    .text,
-                                            disp2Notes:
-                                                notesDisposisiSekdinController
-                                                    .text,
-                                            disp3Notes:
-                                                notesDisposisiKabidController
-                                                    .text,
-                                            disp4Notes:
-                                                notesDisposisiKasubagController
-                                                    .text,
-                                            dispLanjut:
-                                                disposisilanjutanController
-                                                    .text,
-                                            hal: perihalController.text,
-                                            index: indexController.text,
-                                            kode: kodeController.text,
-                                            linkScan: linkscanController.text,
-                                            noAgenda: noagendaController.text,
-                                            noSurat: nosuratController.text,
-                                            pengolah: pengolahController.text,
-                                            sifat: sifatController.text,
-                                            suratDari: judulController.text,
-                                            tempat: tempatController.text,
-                                            status: selectedStatus,
-                                            tanggalSurat:
-                                                tanggalSurat, // Udah DateTime
-                                            tanggalDiterima:
-                                                tanggalDiterima, // Udah DateTime
-                                            tanggalWaktu:
-                                                tanggalWaktu, // Bisa null
-                                            tindakLanjut1:
-                                                tindakLanjut1, // Bisa null
-                                            tindakLanjut2: tindakLanjut2,
-                                            tl1Notes:
-                                                notestindaklanjut1Controller
-                                                    .text, // Bisa null
-                                            tl2Notes:
-                                                notestindaklanjut2Controller
-                                                    .text, // Bisa null
-                                            disposisi:
-                                                selectedDisposisi, // Convert list to comma-separated string
-                                          );
-
-                                          print(data);
-
-                                          // Refresh state
-                                          refreshState();
-
-                                          // Close dialog
-                                          Navigator.pop(context);
-
-                                          // Show success message
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Surat berhasil diperbarui!',
-                                              ),
+                                                );
+                                              } catch (e) {
+                                                // Handle error
+                                                print(
+                                                  'Error updating surat: $e',
+                                                );
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text('Error: $e'),
+                                                    backgroundColor: Colors.red,
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                );
+                                              } finally {
+                                                setState(
+                                                  () => _isLoading = false,
+                                                );
+                                              }
+                                            },
+                                            style: ElevatedButton.styleFrom(
                                               backgroundColor: Color(
                                                 0xFF10B981,
                                               ),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
+                                              foregroundColor: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 15,
+                                              ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                    BorderRadius.circular(15),
                                               ),
+                                              elevation: 8,
+                                              shadowColor: Color(
+                                                0xFF10B981,
+                                              ).withValues(alpha: 0.4),
                                             ),
-                                          );
-                                        } catch (e) {
-                                          // Handle error
-                                          print('Error updating surat: $e');
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text('Error: $e'),
-                                              backgroundColor: Colors.red,
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.save_rounded,
+                                                  size: 20,
+                                                ),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  'Simpan Perubahan',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    letterSpacing: 0.5,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          );
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFF10B981),
-                                        foregroundColor: Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 15,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            15,
                                           ),
                                         ),
-                                        elevation: 8,
-                                        shadowColor: Color(
-                                          0xFF10B981,
-                                        ).withValues(alpha: 0.4),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.save_rounded, size: 20),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            'Simpan Perubahan',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 0.5,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
             ),
           );
         },
@@ -6634,6 +9772,8 @@ void showEditSuratKeluarDialog(
   String selectedStatus = selectedSurat!.status!;
   List<String> statusOptions = ['Proses', 'Selesai', 'Pending', 'Ditolak'];
   Size size = MediaQuery.of(context).size;
+
+  PlatformFile? fileTarget;
   showGeneralDialog(
     context: context,
     barrierDismissible: true,
@@ -6647,12 +9787,22 @@ void showEditSuratKeluarDialog(
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
+      bool _isLoading = false;
       return StatefulBuilder(
         builder: (context, setState) {
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
-              child: Container(
+              child: _isLoading ? 
+              Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+              ) :
+              Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
                 height: MediaQuery.of(context).size.height * 0.9,
                 width:
@@ -7082,10 +10232,279 @@ void showEditSuratKeluarDialog(
 
                               SizedBox(height: 30),
 
-                              buildInputField(
-                                "Dok Final",
-                                dokfinalController,
-                                Icons.document_scanner,
+                              StatefulBuilder(
+                                builder: (context, setStateLocal) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Link Scan (PDF)',
+                                        style: TextStyle(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.9,
+                                          ),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          decoration: TextDecoration.none,
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Container(
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white.withValues(
+                                                alpha: 0.1,
+                                              ),
+                                              Colors.white.withValues(
+                                                alpha: 0.05,
+                                              ),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            15,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Material(
+                                          color: Colors.transparent,
+                                          child: InkWell(
+                                            onTap: () async {
+                                              try {
+                                                FilePickerResult? result =
+                                                    await FilePicker.platform
+                                                        .pickFiles(
+                                                          type: FileType.custom,
+                                                          allowedExtensions: [
+                                                            'pdf',
+                                                          ],
+                                                          allowMultiple: false,
+                                                        );
+
+                                                if (result != null &&
+                                                    result.files.isNotEmpty) {
+                                                  PlatformFile file =
+                                                      result.files.first;
+
+                                                  // Update controller dengan path file baru
+                                                  dokfinalController.text =
+                                                      file.path ?? '';
+
+                                                  setStateLocal(
+                                                    () {
+                                                      fileTarget = file;
+                                                      print("[DEBUG] -> [STATE] :: File Target? = $fileTarget");
+                                                    },
+                                                  ); // Update UI lokal
+
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    SnackBar(
+                                                      content: Text(
+                                                        'File berhasil dipilih: ${file.name}',
+                                                      ),
+                                                      backgroundColor: Color(
+                                                        0xFF10B981,
+                                                      ),
+                                                      behavior: SnackBarBehavior
+                                                          .floating,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              } catch (e) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Gagal memilih file: $e',
+                                                    ),
+                                                    backgroundColor: Colors.red,
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            child: Padding(
+                                              padding: EdgeInsets.all(15),
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                    padding: EdgeInsets.all(10),
+                                                    decoration: BoxDecoration(
+                                                      gradient: LinearGradient(
+                                                        colors: [
+                                                          Color(
+                                                            0xFF4F46E5,
+                                                          ).withValues(
+                                                            alpha: 0.3,
+                                                          ),
+                                                          Color(
+                                                            0xFF7C3AED,
+                                                          ).withValues(
+                                                            alpha: 0.2,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                    child: Icon(
+                                                      dokfinalController
+                                                              .text
+                                                              .isEmpty
+                                                          ? Icons
+                                                                .upload_file_rounded
+                                                          : Icons
+                                                                .insert_drive_file_rounded,
+                                                      color: Colors.white,
+                                                      size: 24,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 15),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          dokfinalController
+                                                                  .text
+                                                                  .isEmpty
+                                                              ? 'Pilih File PDF Baru'
+                                                              : 'File Terpilih',
+                                                          style: TextStyle(
+                                                            color: Colors.white
+                                                                .withValues(
+                                                                  alpha: 0.9,
+                                                                ),
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .none,
+                                                          ),
+                                                        ),
+                                                        if (dokfinalController
+                                                            .text
+                                                            .isNotEmpty) ...[
+                                                          SizedBox(height: 4),
+                                                          Text(
+                                                            dokfinalController
+                                                                .text
+                                                                .split('/')
+                                                                .last
+                                                                .split('\\')
+                                                                .last,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.6,
+                                                                  ),
+                                                              fontSize: 12,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .none,
+                                                            ),
+                                                            maxLines: 1,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  if (dokfinalController
+                                                      .text
+                                                      .isNotEmpty)
+                                                    Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        // Button untuk clear file
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            dokfinalController
+                                                                .clear();
+                                                            setStateLocal(
+                                                              () {},
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                  8,
+                                                                ),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .red
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
+                                                            child: Icon(
+                                                              Icons
+                                                                  .close_rounded,
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.8,
+                                                                  ),
+                                                              size: 16,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 8),
+                                                      ],
+                                                    ),
+                                                  Icon(
+                                                    Icons.chevron_right_rounded,
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.5),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
 
                               SizedBox(height: 30),
@@ -7149,6 +10568,8 @@ void showEditSuratKeluarDialog(
                                           pengolahController.text =
                                               selectedPengolah ?? '';
 
+                                          setState(() => _isLoading = true);
+
                                           // Update data
                                           final data = await _suratKeluarService
                                               .editSurat(
@@ -7193,6 +10614,14 @@ void showEditSuratKeluarDialog(
                                           print(
                                             "[DEBUG] -> [STATUS] : Edit Status",
                                           );
+
+                                          if (fileTarget != null) {
+                                            final fileUpload = await _suratKeluarService.editUploadFile(data!.nomor_urut, fileTarget!);
+                                            print("[DEBUG] -> [STATE] :: File Uploaded? = $fileUpload");
+                                          } else if (dokfinalController.text == '') {
+                                            final fileDeleted = await _suratKeluarService.deleteFile(data!.nomor_urut);
+                                            print("[DEBUG] -> [STATE] :: File deleted? = $fileDeleted");
+                                          }
                                           print(data);
 
                                           // Refresh state
@@ -7239,6 +10668,8 @@ void showEditSuratKeluarDialog(
                                               ),
                                             ),
                                           );
+                                        } finally {
+                                          setState(() => _isLoading = false);
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -8879,10 +12310,10 @@ void showModernHapusUserManagementDesktop(
 }
 
 // Action menu detailPage
-void showDetailActionMenu(
+void showDetailActionMenuMasuk(
   BuildContext context,
   String? nomor_urut,
-  VoidCallback onDelete,
+  SuratMasukModel? suratData,
 ) {
   showModalBottomSheet(
     context: context,
@@ -8940,26 +12371,94 @@ void showDetailActionMenu(
                     // Download Button
                     buildActionMenuItem(
                       icon: Icons.download_rounded,
-                      title: 'Download PDF',
-                      subtitle: 'Unduh dokumen dalam format PDF',
+                      title: 'Download Excel',
+                      subtitle: 'Unduh dokumen dalam format Excel',
                       color: Color(0xFF10B981),
                       onTap: () {
                         Navigator.pop(context);
-                        showDownloadDialog(context, nomor_urut);
+                        DownloadDokumenMobileAdminMasuk(context, nomor_urut, suratData);
                       },
                     ),
 
                     SizedBox(height: 15),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+}
 
-                    // Share Button
+void showDetailActionMenuKeluar(
+  BuildContext context,
+  String? nomor_urut,
+  SuratKeluarModel? suratData,
+) {
+  showModalBottomSheet(
+    context: context,
+    backgroundColor: Colors.transparent,
+    builder: (context) => Container(
+      margin: EdgeInsets.all(10),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white.withValues(alpha: 0.2),
+                      Colors.white.withValues(alpha: 0.1),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+
+                    Text(
+                      'Menu Aksi',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+
+                    SizedBox(height: 15),
+
+                    // Download Button
                     buildActionMenuItem(
-                      icon: Icons.share_rounded,
-                      title: 'Bagikan',
-                      subtitle: 'Bagikan dokumen ke orang lain',
-                      color: Color(0xFF8B5CF6),
+                      icon: Icons.download_rounded,
+                      title: 'Download Excel',
+                      subtitle: 'Unduh dokumen dalam format Excel',
+                      color: Color(0xFF10B981),
                       onTap: () {
                         Navigator.pop(context);
-                        showShareDownloadDialog(context);
+                        DownloadDokumenMobileAdminKeluar(context, nomor_urut, suratData);
                       },
                     ),
 
@@ -9747,16 +13246,91 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                       ),
                       SizedBox(height: 20),
 
-                      // Print Button
+                      // upload Button
                       buildActionMenuItem(
                         icon: Icons.print,
                         title: 'Print Surat Disposisi',
-                        subtitle: 'Edit Nomor Urut untuk mengubah informasi',
+                        subtitle: 'print surat yang diinginkan',
                         color: Color(0xFF3B82F6),
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
 
-                          showFeatureNotAvailableDialog(context);
+                          // Simpan context rootNavigator di luar biar bisa dipop dengan aman
+                          final rootNavigator = Navigator.of(context, rootNavigator: true);
+
+                          // Munculkan dialog loading TANPA await
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (ctx) {
+                              return const AlertDialog(
+                                content: Row(
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(width: 20),
+                                    Expanded(child: Text("Mengunduh dokumen...")),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+
+                          try {
+                            // Jalankan proses download
+                            final dirPath = await _suratMasukService.getDefaultDownloadPath();
+                            final savePath = "$dirPath/disposisi_$currentNomorUrut.pdf";
+
+                            final file = await _suratMasukService.downloadDisposisi(
+                              (currentNomorUrut != null ? int.parse(currentNomorUrut) : 0),
+                              savePath,
+                            );
+
+                            // Tutup dialog download
+                            if (rootNavigator.mounted) rootNavigator.pop();
+
+                            if (file != null && await file.exists()) {
+                              // Jalankan proses print
+                              await Printing.layoutPdf(
+                                onLayout: (PdfPageFormat format) async {
+                                  final bytes = await file.readAsBytes();
+                                  return bytes;
+                                },
+                              );
+
+                              // Tutup dialog kalau entah gimana masih kebuka
+                              if (rootNavigator.mounted) rootNavigator.popUntil((r) => r.isFirst);
+
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Dokumen berhasil diprint!'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                            } else {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Gagal mengunduh dokumen untuk diprint.'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            }
+                          } catch (err) {
+                            // Tutup dialog kalau error
+                            if (rootNavigator.mounted) rootNavigator.pop();
+
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Terjadi kesalahan: $err'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
                         },
                       ),
 
@@ -10806,13 +14380,13 @@ void showPrintDocumentFormat(BuildContext context) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      // PDF Button dengan custom icon
+                      // Excel Button dengan custom icon
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            // Handle Excel selection
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -11504,182 +15078,202 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
-      return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 30,
-                  spreadRadius: 5,
-                  offset: Offset(0, 15),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: Container(
-                  padding: EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.2),
-                        Colors.white.withValues(alpha: 0.1),
-                      ],
+      bool _isLoading = false;
+
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Center(
+              child: _isLoading ?
+                Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
                     ),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF7C2D12).withValues(alpha: 0.8),
-                              Color(0xFF9A3412).withValues(alpha: 0.6),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
+                ) :
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 30),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: Offset(0, 15),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Container(
+                      padding: EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.2),
+                            Colors.white.withValues(alpha: 0.1),
                           ],
                         ),
-                        child: Icon(
-                          Icons.document_scanner,
-                          color: Colors.white,
-                          size: 30,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          width: 1.5,
                         ),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Format Dokumen',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Text(
-                        'Pilih jenis format dokumen yang anda inginkan',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      // PDF Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            final dirPath = await _suratMasukService
-                                .getDefaultDownloadPath();
-                            final savePath =
-                                "$dirPath/disposisi_$nomor_urut.xlsx";
-                            final data = await _suratMasukService
-                                .downloadDisposisi(
-                                  (nomor_urut != null
-                                      ? int.parse(nomor_urut)
-                                      : 0),
-                                  savePath,
-                                );
-
-                            Navigator.pop(context);
-                            
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Dokumen berhasil didownload!'),
-                                backgroundColor: Colors.green,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFF7C2D12).withValues(alpha: 0.8),
+                                  Color(0xFF9A3412).withValues(alpha: 0.6),
+                                ],
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFDC2626),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+                                  blurRadius: 15,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFFDC2626,
-                            ).withValues(alpha: 0.4),
+                            child: Icon(
+                              Icons.document_scanner,
+                              color: Colors.white,
+                              size: 30,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PdfIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'PDF',
+                          SizedBox(height: 20),
+                          Text(
+                            'Format Dokumen',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Text(
+                            'Pilih jenis format dokumen yang anda inginkan',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white.withValues(alpha: 0.9),
+                              height: 1.4,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(height: 25),
+                          // Excel Button dengan custom icon
+                          Container(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  setState(() => _isLoading = true);
+                                  final dirPath = await _suratMasukService
+                                    .getDefaultDownloadPath();
+                                  final savePath =
+                                    "$dirPath/disposisi_$nomor_urut.pdf";
+                                  final data = await _suratMasukService
+                                    .downloadDisposisi(
+                                      (nomor_urut != null
+                                          ? int.parse(nomor_urut)
+                                          : 0),
+                                      savePath,
+                                    );
+                                } catch (err) {
+                                  print(err);
+                                } finally {
+                                  setState(() => _isLoading = false);
+                                }
+          
+                                Navigator.pop(context);
+          
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Dokumen berhasil didownload!'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                elevation: 8,
+                                shadowColor: Colors.green.withValues(alpha: 0.4),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  PdfIcon(size: 20, color: Colors.white),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'PDF',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                side: BorderSide(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Text(
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            'Batal',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }
       );
     },
   );
@@ -11700,188 +15294,207 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
     },
     pageBuilder: (context, animation, secondaryAnimation) {
       Size size = MediaQuery.of(context).size;
-      return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Center(
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 30),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.3),
-                  blurRadius: 30,
-                  spreadRadius: 5,
-                  offset: Offset(0, 15),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                child: Container(
-                  width:
-                      (Platform.isWindows ||
-                          Platform.isLinux ||
-                          Platform.isMacOS)
-                      ? size.width / 2
-                      : size.width,
-                  padding: EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white.withValues(alpha: 0.2),
-                        Colors.white.withValues(alpha: 0.1),
-                      ],
+      bool _isLoading = false;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Center(
+              child: _isLoading ?
+                Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
                     ),
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.2),
-                      width: 1.5,
-                    ),
-                    borderRadius: BorderRadius.circular(24),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFF7C2D12).withValues(alpha: 0.8),
-                              Color(0xFF9A3412).withValues(alpha: 0.6),
-                            ],
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
+                ) :
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 30),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 30,
+                      spreadRadius: 5,
+                      offset: Offset(0, 15),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                    child: Container(
+                      width:
+                          (Platform.isWindows ||
+                              Platform.isLinux ||
+                              Platform.isMacOS)
+                          ? size.width / 2
+                          : size.width,
+                      padding: EdgeInsets.all(25),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.2),
+                            Colors.white.withValues(alpha: 0.1),
                           ],
                         ),
-                        child: Icon(
-                          Icons.document_scanner,
-                          color: Colors.white,
-                          size: 30,
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          width: 1.5,
                         ),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Format Dokumen',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          letterSpacing: 0.5,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      Text(
-                        'Pilih jenis format dokumen yang anda inginkan',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
-                        ),
-                      ),
-                      SizedBox(height: 25),
-                      // PDF Button dengan custom icon
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            final dirPath = await _suratMasukService
-                                .getDefaultDownloadPath();
-                            final savePath =
-                                '$dirPath/disposisi_$nomor_urut.xlsx';
-                            final data = await _suratMasukService
-                                .downloadDisposisi(
-                                  (nomor_urut == null
-                                      ? 0
-                                      : int.parse(nomor_urut)),
-                                  savePath,
-                                );
-
-                            Navigator.pop(context);
-                            
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Dokumen berhasil didownload!'),
-                                backgroundColor: Colors.green,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFF7C2D12).withValues(alpha: 0.8),
+                                  Color(0xFF9A3412).withValues(alpha: 0.6),
+                                ],
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFDC2626),
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0xFF7C2D12).withValues(alpha: 0.4),
+                                  blurRadius: 15,
+                                  spreadRadius: 2,
+                                ),
+                              ],
                             ),
-                            elevation: 8,
-                            shadowColor: Color(
-                              0xFFDC2626,
-                            ).withValues(alpha: 0.4),
+                            child: Icon(
+                              Icons.document_scanner,
+                              color: Colors.white,
+                              size: 30,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              PdfIcon(size: 20, color: Colors.white),
-                              SizedBox(width: 8),
-                              Text(
-                                'PDF',
+                          SizedBox(height: 20),
+                          Text(
+                            'Format Dokumen',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Text(
+                            'Pilih jenis format dokumen yang anda inginkan',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white.withValues(alpha: 0.9),
+                              height: 1.4,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                          SizedBox(height: 25),
+                          // Excel Button dengan custom icon
+                          Container(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  setState(() => _isLoading = true);
+                                  final dirPath = await _suratMasukService
+                                      .getDefaultDownloadPath();
+                                  final savePath =
+                                      "$dirPath/disposisi_$nomor_urut.pdf";
+                                  final data = await _suratMasukService
+                                      .downloadDisposisi(
+                                        (nomor_urut != null
+                                            ? int.parse(nomor_urut)
+                                            : 0),
+                                        savePath,
+                                      );
+                                } catch (err) {
+                                  print("[ERR] : $err");
+                                } finally {
+                                  setState(() => _isLoading = false);
+                                }
+          
+                                Navigator.pop(context);
+          
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Dokumen berhasil didownload!'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                elevation: 8,
+                                shadowColor: Colors.red.withValues(alpha: 0.4),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  PdfIcon(size: 20, color: Colors.white),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    'PDF',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                            width: double.infinity,
+                            child: OutlinedButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                side: BorderSide(
+                                  color: Colors.white.withValues(alpha: 0.3),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Text(
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   letterSpacing: 0.5,
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            side: BorderSide(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            'Batal',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        }
       );
     },
   );
@@ -12166,13 +15779,13 @@ void showShareDocumentFormat(BuildContext context) {
                         ),
                       ),
                       SizedBox(height: 25),
-                      // PDF Button dengan custom icon
+                      // Excel Button dengan custom icon
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Handle PDF selection
+                            // Handle Excel selection
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFDC2626),
@@ -12192,7 +15805,7 @@ void showShareDocumentFormat(BuildContext context) {
                               PdfIcon(size: 20, color: Colors.white),
                               SizedBox(width: 8),
                               Text(
-                                'PDF',
+                                'Excel',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -12502,6 +16115,61 @@ void showDeleteConfirmationDisposisiAdmin(BuildContext context) {
           ),
         ),
       ),
+    ),
+  );
+}
+
+void showErrorSnackbar(
+  BuildContext context,
+  String title,
+  String message,
+  IconData icon,
+  Color backgroundColor,
+) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  message,
+                  style: TextStyle(fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: backgroundColor,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      duration: Duration(seconds: 3),
     ),
   );
 }

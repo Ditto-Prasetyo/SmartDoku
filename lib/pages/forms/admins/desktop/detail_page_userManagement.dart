@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/user.dart';
-import 'package:smart_doku/utils/widget.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 
 class DetailPageUsermanagement extends StatefulWidget {
   final UserModel? userModel;
@@ -528,7 +528,7 @@ class _DetailPageUsermanagement extends State<DetailPageUsermanagement> with Tic
                         padding: EdgeInsets.only(top: 35, left: 15, right: 15),
                         child: Center(
                           child: Text(
-                            "Detail User ${userData?.name}",
+                            "Detail User",
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,

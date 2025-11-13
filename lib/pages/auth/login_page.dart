@@ -1,10 +1,9 @@
-import 'dart:io';
-
+import 'package:smart_doku/utils/platform/platform_info.dart';
 import 'package:smart_doku/services/auth.dart';
 import 'package:smart_doku/services/service.dart';
 import 'package:smart_doku/pages/auth/register_pages.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'dart:ui';
 import 'dart:math';
 
@@ -204,7 +203,7 @@ class LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             Center(
               child: Container(
                 height: size.height,
-                width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? size.width / 2 : size.width,
+                width: (PlatformInfo.isDesktop) ? size.width / 2 : size.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[

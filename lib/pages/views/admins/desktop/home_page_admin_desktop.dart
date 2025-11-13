@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
+import 'package:smart_doku/services/logs.dart'; // TAMBAH INI
 import 'dart:ui';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:intl/intl.dart'; // TAMBAH INI untuk format waktu
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
@@ -29,25 +32,35 @@ class _AdminDashboardState extends State<AdminDashboard>
   int _selectedIndex = 0;
 
   List<Map<String, dynamic>> _statsData = [];
+  StatService _statService = StatService();
+
+  // TAMBAH INI
+  LogService _logService = LogService();
+  List<dynamic> _recentLogs = [];
+  bool _isLoadingLogs = true;
+
   UserService _userService = UserService();
-  SuratMasuk _suratMasukService = SuratMasuk();
-  SuratKeluar _suratKeluarService = SuratKeluar();
+  UserModel? _user;
 
   int? totalUsers;
   int? totalSuratMasuk;
   int? totalSuratKeluar;
+  int? totalDisposisi;
 
   Future<void> _loadAllData() async {
-    final users = await _userService.listUsers();
-    final suratMasuk = await _suratMasukService.listSurat();
-    final SuratKeluar = await _suratKeluarService.listSurat();
-    
-    setState(() {
-      totalUsers = users.length;
-      totalSuratMasuk = suratMasuk.length;
-      totalSuratKeluar = SuratKeluar.length;
+    final users = await _statService.getUsers();
+    final suratMasuk = await _statService.getSuratMasuk();
+    final SuratKeluar = await _statService.getSuratKeluar();
+    final disposisi = await _statService.getDisposisi();
 
-      // Sample data for dashboard
+    if (!mounted) return;
+
+    setState(() {
+      totalUsers = users['totalUsers'];
+      totalSuratMasuk = suratMasuk['total'];
+      totalSuratKeluar = SuratKeluar['total'];
+      totalDisposisi = disposisi['total'];
+
       _statsData = [
         {
           'title': 'Total Surat Masuk',
@@ -72,13 +85,35 @@ class _AdminDashboardState extends State<AdminDashboard>
         },
         {
           'title': 'Total Bidang',
-          'value': '6',
+          'value': totalDisposisi ?? 0,
           'icon': Icons.work_rounded,
           'color': Colors.lightBlue,
           'isPositive': true,
         },
       ];
     });
+  }
+
+  // TAMBAH FUNGSI INI
+  Future<void> _loadLogs() async {
+    if (!mounted) return;
+    try {
+      setState(() {
+        _isLoadingLogs = true;
+      });
+
+      final logs = await _logService.getLogs(limit: 5);
+
+      setState(() {
+        _recentLogs = logs;
+        _isLoadingLogs = false;
+      });
+    } catch (e) {
+      print('Error loading logs: $e');
+      setState(() {
+        _isLoadingLogs = false;
+      });
+    }
   }
 
   final List<Map<String, dynamic>> _sidebarItems = [
@@ -131,12 +166,22 @@ class _AdminDashboardState extends State<AdminDashboard>
     Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+    if (!mounted) return;
+    setState(() {
+      _user = user;
+      print(_user?.name);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _loadAllData();
+    _loadUser();
+    _loadLogs(); // TAMBAH INI
 
-    // Initialize animations
     _backgroundController = AnimationController(
       duration: Duration(seconds: 6),
       vsync: this,
@@ -189,7 +234,6 @@ class _AdminDashboardState extends State<AdminDashboard>
       ),
       child: Column(
         children: [
-          // Header with logo
           Container(
             height: 120,
             padding: EdgeInsets.all(20),
@@ -205,9 +249,9 @@ class _AdminDashboardState extends State<AdminDashboard>
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                        color: const Color(0xFF4F46E5).withValues(alpha: 0.5),
                         blurRadius: 10,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                     border: Border(
@@ -216,12 +260,19 @@ class _AdminDashboardState extends State<AdminDashboard>
                       ),
                     ),
                   ),
-                  child: Image.asset(
-                    'images/Icon_App.png',
-                    width: 180,
-                    height: 180,
-                    fit: BoxFit.cover,
-                    color: Colors.white,
+                  clipBehavior: Clip.antiAlias,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Image.asset(
+                          'images/logoApps.png',
+                          color: Colors.white,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(width: 15),
@@ -261,7 +312,6 @@ class _AdminDashboardState extends State<AdminDashboard>
             endIndent: 20,
           ),
 
-          // Menu items
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -347,7 +397,6 @@ class _AdminDashboardState extends State<AdminDashboard>
             ),
           ),
 
-          // Logout button
           Container(
             padding: EdgeInsets.all(20),
             child: ClipRRect(
@@ -404,7 +453,6 @@ class _AdminDashboardState extends State<AdminDashboard>
             ),
           ),
 
-          // Build Number items
           Container(
             padding: EdgeInsets.all(20),
             child: FutureBuilder<PackageInfo>(
@@ -431,6 +479,21 @@ class _AdminDashboardState extends State<AdminDashboard>
                   ],
                 );
               },
+            ),
+          ),
+
+          Padding(
+            padding: EdgeInsets.only(top: 40, bottom: 10),
+            child: Text(
+              'Created by PKL UIN Malang @ 2025',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white.withValues(alpha: 0.7),
+                fontFamily: 'Roboto',
+                letterSpacing: 0.5,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -509,7 +572,7 @@ class _AdminDashboardState extends State<AdminDashboard>
                   height: 200,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
-                    child: Column (
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Row(
@@ -577,31 +640,8 @@ class _AdminDashboardState extends State<AdminDashboard>
     );
   }
 
+  // FUNGSI INI DIGANTI SEPENUHNYA
   Widget _buildRecentActivity(Animation<double> _cardAnimation) {
-    final recentActivities = [
-      {
-        'title': 'Surat permohonan dari PT. ABC',
-        'time': '2 jam lalu',
-        'type': 'masuk',
-      },
-      {
-        'title': 'Disposisi surat ke bagian HRD',
-        'time': '4 jam lalu',
-        'type': 'disposisi',
-      },
-      {
-        'title': 'Surat keluar ke vendor',
-        'time': '6 jam lalu',
-        'type': 'keluar',
-      },
-      {'title': 'User baru mendaftar', 'time': '1 hari lalu', 'type': 'user'},
-      {
-        'title': 'Backup data berhasil',
-        'time': '2 hari lalu',
-        'type': 'system',
-      },
-    ];
-
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -634,117 +674,453 @@ class _AdminDashboardState extends State<AdminDashboard>
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Aktivitas Terbaru',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Roboto',
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Aktivitas Terbaru',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Roboto',
+                    ),
+                  ),
+                  if (_isLoadingLogs)
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    ),
+                ],
               ),
               SizedBox(height: 20),
               Expanded(
-                child: ListView.builder(
-                  itemCount: recentActivities.length,
-                  itemBuilder: (context, index) {
-                    final activity = recentActivities[index];
-                    IconData icon;
-                    Color color;
-
-                    switch (activity['type']) {
-                      case 'masuk':
-                        icon = LineIcons.envelopeOpen;
-                        color = Color(0xFF4F46E5);
-                        break;
-                      case 'keluar':
-                        icon = FontAwesomeIcons.envelopeCircleCheck;
-                        color = Color(0xFF059669);
-                        break;
-                      case 'disposisi':
-                        icon = Icons.assignment_turned_in_rounded;
-                        color = Color(0xFFDC2626);
-                        break;
-                      case 'user':
-                        icon = Icons.person_add_rounded;
-                        color = Color(0xFF7C2D12);
-                        break;
-                      default:
-                        icon = Icons.info_outline_rounded;
-                        color = Color(0xFF6B7280);
-                    }
-
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 12),
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withAlpha(64),
-                            Colors.white.withAlpha(25),
-                            Colors.white.withAlpha(12),
-                          ],
+                child: _isLoadingLogs
+                    ? Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey[200]!, width: 1),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
+                      )
+                    : _recentLogs.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Belum ada aktivitas',
+                          style: TextStyle(
+                            color: Colors.white.withValues(alpha: 0.7),
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: _recentLogs.length,
+                        itemBuilder: (context, index) {
+                          final log = _recentLogs[index];
+
+                          // Parse data dari API
+                          final action = log['action'] ?? 'unknown';
+                          final rawDescription = log['details'] ?? '';
+                          final username = log['user']['name'] ?? 'Unknown';
+                          final timestamp = log['timestamp'] ?? '';
+                          final model = log['model'];
+
+                          // Generate description dan icon/color yang lebih spesifik
+                          final activityData = _parseLogActivity(
+                            model,
+                            action,
+                            rawDescription,
+                            username,
+                          );
+
+                          final description = activityData['description'];
+                          final icon = activityData['icon'];
+                          final color = activityData['color'];
+
+                          // Format waktu dengan lebih user-friendly
+                          String formattedTime = _formatTimestamp(timestamp);
+
+                          return Container(
+                            margin: EdgeInsets.only(bottom: 12),
+                            padding: EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: color.withAlpha(200),
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: color.withAlpha(150),
-                                  blurRadius: 6,
-                                  spreadRadius: 1,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.white.withAlpha(64),
+                                  Colors.white.withAlpha(25),
+                                  Colors.white.withAlpha(12),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.grey[200]!,
+                                width: 1,
+                              ),
                             ),
-                            child: Icon(icon, color: Colors.white, size: 18),
-                          ),
-                          SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            child: Row(
                               children: [
-                                Text(
-                                  activity['title']!,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
+                                Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: color.withAlpha(200),
+                                    borderRadius: BorderRadius.circular(8),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: color.withAlpha(150),
+                                        blurRadius: 6,
+                                        spreadRadius: 1,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    icon,
                                     color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                    size: 18,
                                   ),
                                 ),
-                                SizedBox(height: 4),
-                                Text(
-                                  activity['time']!,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        description,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.white,
+                                          fontFamily: 'Roboto',
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: 4),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.person_outline,
+                                            size: 12,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            username,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.7,
+                                              ),
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Icon(
+                                            Icons.access_time,
+                                            size: 12,
+                                            color: Colors.white.withValues(
+                                              alpha: 0.7,
+                                            ),
+                                          ),
+                                          SizedBox(width: 4),
+                                          Text(
+                                            formattedTime,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.7,
+                                              ),
+                                              fontFamily: 'Roboto',
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  // TAMBAH HELPER FUNCTION INI
+  Map<String, dynamic> _parseLogActivity(
+    String model,
+    String action,
+    String rawDescription,
+    String username,
+  ) {
+    String description = rawDescription;
+    IconData icon = Icons.info_outline_rounded;
+    Color color = Color(0xFF6B7280);
+
+    final modelState = model;
+
+    // === SURAT MASUK ===
+    if (modelState == 'DataSurat') {
+      if (action == 'CREATE') {
+        description = rawDescription.isNotEmpty
+            ? rawDescription
+            : 'Menambahkan surat masuk baru';
+        icon = LineIcons.envelopeOpen;
+        color = Color(0xFF4F46E5);
+      } else if (action == 'UPDATE') {
+        description = rawDescription.isNotEmpty
+            ? rawDescription
+            : 'Mengupdate data surat masuk';
+        icon = LineIcons.edit;
+        color = Color(0xFF4F46E5);
+      } else if (action == 'DELETE') {
+        description = rawDescription.isNotEmpty
+            ? rawDescription
+            : 'Menghapus surat masuk';
+        icon = Icons.delete_outline;
+        color = Color(0xFFDC2626);
+      }
+      // else if (modelState.contains('view') || modelState.contains('read')) {
+      //   description = rawDescription.isNotEmpty
+      //       ? rawDescription
+      //       : 'Membaca detail surat masuk';
+      //   icon = Icons.visibility_outlined;
+      //   color = Color(0xFF4F46E5);
+      // }
+    }
+    // === SURAT KELUAR ===
+    else if (modelState == 'SuratKeluar') {
+      if (action == 'CREATE') {
+        description = rawDescription.isNotEmpty
+            ? rawDescription
+            : 'Membuat surat keluar baru';
+        icon = FontAwesomeIcons.envelopeCircleCheck;
+        color = Color(0xFF059669);
+      } else if (action == 'UPDATE') {
+        description = rawDescription.isNotEmpty
+            ? rawDescription
+            : 'Mengupdate data surat keluar';
+        icon = Icons.edit_outlined;
+        color = Color(0xFF059669);
+      } else if (action == 'DELETE') {
+        description = rawDescription.isNotEmpty
+            ? rawDescription
+            : 'Menghapus surat keluar';
+        icon = Icons.delete_outline;
+        color = Color(0xFFDC2626);
+      }
+      // else if (modelState.contains('send') || modelState.contains('kirim')) {
+      //   description = rawDescription.isNotEmpty
+      //       ? rawDescription
+      //       : 'Mengirim surat keluar';
+      //   icon = Icons.send_rounded;
+      //   color = Color(0xFF059669);
+      // }
+    }
+    // === DISPOSISI ===
+    // else if (modelState.contains('disposisi')) {
+    //   if (modelState.contains('create') || modelState.contains('tambah')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Membuat disposisi surat';
+    //     icon = Icons.assignment_turned_in_rounded;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('update') || modelState.contains('edit')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Mengupdate disposisi';
+    //     icon = Icons.edit_note_rounded;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('forward') || modelState.contains('teruskan')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Meneruskan disposisi ke bidang';
+    //     icon = Icons.forward_rounded;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('approve') || modelState.contains('setuju')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Menyetujui disposisi';
+    //     icon = Icons.check_circle_outline;
+    //     color = Color(0xFF059669);
+    //   } else if (modelState.contains('reject') || modelState.contains('tolak')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Menolak disposisi';
+    //     icon = Icons.cancel_outlined;
+    //     color = Color(0xFFDC2626);
+    //   }
+    // }
+    // === USER MANAGEMENT ===
+    // else if (modelState.contains('user') || modelState.contains('pengguna')) {
+    //   if (modelState.contains('create') || modelState.contains('tambah') || modelState.contains('register')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Menambahkan pengguna baru';
+    //     icon = Icons.person_add_rounded;
+    //     color = Color(0xFF7C2D12);
+    //   } else if (modelState.contains('update') || modelState.contains('edit')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Mengupdate data pengguna';
+    //     icon = Icons.edit_outlined;
+    //     color = Color(0xFF7C2D12);
+    //   } else if (modelState.contains('delete') || modelState.contains('hapus')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Menghapus pengguna';
+    //     icon = Icons.person_remove_rounded;
+    //     color = Color(0xFFDC2626);
+    //   } else if (modelState.contains('activate') || modelState.contains('aktifkan')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Mengaktifkan akun pengguna';
+    //     icon = Icons.check_circle_outline;
+    //     color = Color(0xFF059669);
+    //   } else if (modelState.contains('deactivate') || modelState.contains('nonaktifkan')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Menonaktifkan akun pengguna';
+    //     icon = Icons.block_rounded;
+    //     color = Color(0xFFDC2626);
+    //   }
+    // }
+    // === AUTHENTICATION ===
+    // else if (modelState.contains('login') || modelState.contains('masuk')) {
+    //   description = rawDescription.isNotEmpty
+    //       ? rawDescription
+    //       : '$username berhasil login';
+    //   icon = Icons.login_rounded;
+    //   color = Color(0xFF059669);
+    // }
+    // else if (modelState.contains('logout') || modelState.contains('keluar')) {
+    //   description = rawDescription.isNotEmpty
+    //       ? rawDescription
+    //       : '$username telah logout';
+    //   icon = Icons.logout_rounded;
+    //   color = Color(0xFF6B7280);
+    // }
+    // === BIDANG / DEPARTEMEN ===
+    // else if (modelState.contains('bidang') || modelState.contains('departemen') || modelState.contains('department')) {
+    //   if (modelState.contains('create') || modelState.contains('tambah')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Menambahkan bidang baru';
+    //     icon = Icons.work_outline_rounded;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('update') || modelState.contains('edit')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Mengupdate data bidang';
+    //     icon = Icons.edit_outlined;
+    //     color = Colors.lightBlue;
+    //   } else if (modelState.contains('delete') || modelState.contains('hapus')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Menghapus bidang';
+    //     icon = Icons.delete_outline;
+    //     color = Color(0xFFDC2626);
+    //   }
+    // }
+    // === SETTINGS / SYSTEM ===
+    // else if (modelState.contains('setting') || modelState.contains('pengaturan') || modelState.contains('config')) {
+    //   description = rawDescription.isNotEmpty
+    //       ? rawDescription
+    //       : 'Mengubah pengaturan sistem';
+    //   icon = Icons.settings_outlined;
+    //   color = Color(0xFF6B7280);
+    // }
+    // else if (modelState.contains('backup')) {
+    //   description = rawDescription.isNotEmpty
+    //       ? rawDescription
+    //       : 'Melakukan backup data';
+    //   icon = Icons.backup_rounded;
+    //   color = Color(0xFF059669);
+    // }
+    // else if (modelState.contains('restore')) {
+    //   description = rawDescription.isNotEmpty
+    //       ? rawDescription
+    //       : 'Melakukan restore data';
+    //   icon = Icons.restore_rounded;
+    //   color = Color(0xFF4F46E5);
+    // }
+    // === FILE / DOCUMENT ===
+    // else if (modelState.contains('upload') || modelState.contains('unggah')) {
+    //   description = rawDescription.isNotEmpty
+    //       ? rawDescription
+    //       : 'Mengunggah file dokumen';
+    //   icon = Icons.upload_file_rounded;
+    //   color = Color(0xFF4F46E5);
+    // }
+    // else if (modelState.contains('download') || modelState.contains('unduh')) {
+    //   description = rawDescription.isNotEmpty
+    //       ? rawDescription
+    //       : 'Mengunduh file dokumen';
+    //   icon = Icons.download_rounded;
+    //   color = Color(0xFF059669);
+    // }
+    // === LAPORAN ===
+    // else if (modelState.contains('laporan') || modelState.contains('report')) {
+    //   if (modelState.contains('generate') || modelState.contains('buat')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Generate laporan';
+    //     icon = Icons.assessment_rounded;
+    //     color = Color(0xFF7C2D12);
+    //   } else if (modelState.contains('export')) {
+    //     description = rawDescription.isNotEmpty
+    //         ? rawDescription
+    //         : 'Export laporan';
+    //     icon = Icons.file_download_outlined;
+    //     color = Color(0xFF059669);
+    //   }
+    // }
+    // === DEFAULT / UNKNOWN ===
+    else {
+      description = rawDescription.isNotEmpty
+          ? rawDescription
+          : 'Melakukan aktivitas';
+      icon = Icons.info_outline_rounded;
+      color = Color(0xFF6B7280);
+    }
+
+    return {'description': description, 'icon': icon, 'color': color};
+  }
+
+  String _formatTimestamp(String timestamp) {
+    try {
+      final dateTime = DateTime.parse(timestamp);
+      final now = DateTime.now();
+      final difference = now.difference(dateTime);
+
+      if (difference.inMinutes < 1) {
+        return 'Baru saja';
+      } else if (difference.inMinutes < 60) {
+        return '${difference.inMinutes} menit lalu';
+      } else if (difference.inHours < 24) {
+        return '${difference.inHours} jam lalu';
+      } else if (difference.inDays < 7) {
+        return '${difference.inDays} hari lalu';
+      } else {
+        return DateFormat('dd MMM yyyy', 'id_ID').format(dateTime);
+      }
+    } catch (e) {
+      return timestamp;
+    }
   }
 
   @override
@@ -810,12 +1186,24 @@ class _AdminDashboardState extends State<AdminDashboard>
                                   ),
                                 ),
                                 SizedBox(height: 8),
-                                Text(
-                                  'Selamat datang kembali, Admin!',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto',
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                        text: 'Selamat datang kembali, ',
+                                      ),
+                                      TextSpan(
+                                        text: '${_user?.username ?? '-'}!',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],

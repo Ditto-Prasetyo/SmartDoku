@@ -82,3 +82,53 @@ final Map<String, String> roleField = {
   'Admin': 'ADMIN',
   'SuperAdmin': 'SUPERADMIN',
 };
+
+List<int> flexSuratKeluar = [
+  25, // Kode
+  55, // Klasifikasi
+  55, // No. Register
+  20, // Tujuan Surat
+  90, // Perihal
+  20, // Tanggal Surat
+  90, // Akses Arsip
+  40, // Pengolah
+  38, // Pembuat
+  22, // Catatan
+  70, // Link Surat
+  30, // Koreksi 1
+  31, // Koreksi 2
+  39, // Dokumen Dikirim
+  35, // Dokumen Final
+  35, // Tanda Terima
+  30 // Status
+];
+
+List<int> flexSuratMasuk = [
+  170, // Surat Dari/Nama Surat 0
+  140, // Tanggal Diterima 1
+  120, // Tanggal Surat 2
+  80, // Kode 3
+  110, // No. Urut 4
+  120, // No. Agenda 5 
+  60, // No Surat 6
+  220, // Perihal 7
+  150, // Hari, tanggal, waktu 8
+  80, // Tempat 9
+  110, // Disposisi 10
+  100, // Index 11
+  100, // Pengolah 12
+  120, // Sifat 13
+  100, // Link Scan 14
+  125, // Disposisi kadin 15
+  100, // Disposisi Sekdin 16
+  125, // Diposisi Kabid 17
+  130, // Disposisi Kasubag 18
+  130, // Catatan Disposisi Kadin 19
+  110, // Catatan Disposisi Sekdin 20
+  120, // Catatan Disposisi Kabid 21
+  130, // Catatan Disposisi Kasubag 22
+  110, // Disposisi Lanjutan 23
+  100, // Tindak Lanjut 1 24
+  110, // Tindak Lanjut 2 25
+  100, // Status 26
+];

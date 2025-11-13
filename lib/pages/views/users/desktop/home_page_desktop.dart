@@ -1,10 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_doku/models/user.dart';
 import 'package:smart_doku/services/surat.dart';
+import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:smart_doku/services/bookmarks.dart' as bk;
 
 class UserDashboard extends StatefulWidget {
   const UserDashboard({super.key});
@@ -16,6 +21,9 @@ class UserDashboard extends StatefulWidget {
 class _UserDashboardState extends State<UserDashboard>
     with TickerProviderStateMixin {
   var height, width;
+  bool _expandedMasuk = false;
+  bool _expandedKeluar = false;
+  bool _loadingBookmarks = true;
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -26,22 +34,31 @@ class _UserDashboardState extends State<UserDashboard>
 
   // Selected sidebar item
   int _selectedIndex = 0;
+  static const int _defaultLimit = 5;
 
   // Sample data for dashboard
   List<Map<String, dynamic>> _statsData = [];
-  SuratMasuk _suratMasukService = SuratMasuk();
-  SuratKeluar _suratKeluarService = SuratKeluar();
+  List<bk.BookmarkItem> _bookmarks = [];
+  List<bk.BookmarkItem> _bmMasuk = [];
+  List<bk.BookmarkItem> _bmKeluar = [];
+  List<bk.BookmarkItem> _bmLainnya = [];
+  UserService _userService = UserService();
+  UserModel? _user;
+
+  StatService _statService = StatService();
 
   int? totalSuratMasuk;
   int? totalSuratKeluar;
 
   Future<void> _loadAllData() async {
-    final suratMasuk = await _suratMasukService.listSurat();
-    final SuratKeluar = await _suratKeluarService.listSurat();
-    
+    final suratMasuk = await _statService.getSuratMasuk();
+    final SuratKeluar = await _statService.getSuratKeluar();
+
+    if (!mounted) return;
+
     setState(() {
-      totalSuratMasuk = suratMasuk.length;
-      totalSuratKeluar = SuratKeluar.length;
+      totalSuratMasuk = suratMasuk['total'];
+      totalSuratKeluar = SuratKeluar['total'];
 
       // Sample data for dashboard
       _statsData = [
@@ -58,8 +75,17 @@ class _UserDashboardState extends State<UserDashboard>
           'icon': FontAwesomeIcons.envelopeCircleCheck,
           'color': Color(0xFF059669),
           'isPositive': true,
-        }
+        },
       ];
+    });
+  }
+
+  void _loadUser() async {
+    final user = await _userService.getCurrentUser();
+    if (!mounted) return;
+    setState(() {
+      _user = user;
+      print(_user?.name);
     });
   }
 
@@ -91,22 +117,87 @@ class _UserDashboardState extends State<UserDashboard>
     },
   ];
 
-  void _navigateToPage(BuildContext context, Map<String, dynamic> item, int index) {
+  void _navigateToPage(
+    BuildContext context,
+    Map<String, dynamic> item,
+    int index,
+  ) {
     setState(() {
       _selectedIndex = index;
     });
 
-    Navigator.pushNamedAndRemoveUntil(
-      context, 
-      item['route'], 
-      (route) => false, 
-    );
+    Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
+  }
+
+  Future<void> _loadBookmarkUiPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _expandedMasuk = prefs.getBool('bm_masuk_expanded') ?? false;
+      _expandedKeluar = prefs.getBool('bm_keluar_expanded') ?? false;
+    });
+  }
+
+  Future<void> _saveBookmarkUiPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('bm_masuk_expanded', _expandedMasuk);
+    await prefs.setBool('bm_keluar_expanded', _expandedKeluar);
+  }
+
+  Future<void> _loadBookmarks() async {
+    if (!mounted) return;
+    setState(() => _loadingBookmarks = true);
+    try {
+      await bk.Bookmarks.normalize(); // beresin format lama + dedup
+      final items = await bk.Bookmarks.list(); // udah typed & bersih
+
+      final masuk = <bk.BookmarkItem>[];
+      final keluar = <bk.BookmarkItem>[];
+      final lainnya = <bk.BookmarkItem>[];
+
+      for (final b in items) {
+        switch ((b.type ?? '').toLowerCase()) {
+          case 'surat_masuk':
+            masuk.add(b);
+            break;
+          case 'surat_keluar':
+            keluar.add(b);
+            break;
+          default:
+            lainnya.add(b);
+        }
+      }
+      if (!mounted) return;
+
+      setState(() {
+        _bookmarks = items;
+        _bmMasuk = masuk;
+        _bmKeluar = keluar;
+        _bmLainnya = lainnya;
+      });
+    } finally {
+      if (mounted) setState(() => _loadingBookmarks = false);
+    }
+  }
+
+  Future<void> _removeBookmark(String id) async {
+    await bk.Bookmarks.normalize();
+    await bk.Bookmarks.removeById(id);
+
+    if (!mounted) return;
+    await _loadBookmarks(); // refresh section Masuk/Keluar
+
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Dihapus dari Favorit')));
   }
 
   @override
   void initState() {
     super.initState();
+    _loadUser();
     _loadAllData();
+    _loadBookmarks();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -177,9 +268,9 @@ class _UserDashboardState extends State<UserDashboard>
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                        color: const Color(0xFF4F46E5).withValues(alpha: 0.5),
                         blurRadius: 10,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                     border: Border(
@@ -188,12 +279,19 @@ class _UserDashboardState extends State<UserDashboard>
                       ),
                     ),
                   ),
-                  child: Image.asset(
-                    'images/Icon_App.png',
-                    width: 180,
-                    height: 180,
-                    fit: BoxFit.cover,
-                    color: Colors.white,
+                  clipBehavior: Clip.antiAlias,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Image.asset(
+                          'images/logoApps.png',
+                          color: Colors.white,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(width: 15),
@@ -375,7 +473,7 @@ class _UserDashboardState extends State<UserDashboard>
               ),
             ),
           ),
-        
+
           // Build Number items
           Container(
             padding: EdgeInsets.all(20),
@@ -405,11 +503,26 @@ class _UserDashboardState extends State<UserDashboard>
               },
             ),
           ),
+
+          // Credit Section
+          Padding(
+            padding: EdgeInsets.only(top: 40, bottom: 10),
+            child: Text(
+              'Created by PKL UIN Malang @ 2025',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white.withValues(alpha: 0.7),
+                fontFamily: 'Roboto',
+                letterSpacing: 0.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ),
     );
   }
-  
 
   Widget _buildStatsCard(Map<String, dynamic> data, int index) {
     return AnimatedBuilder(
@@ -422,15 +535,24 @@ class _UserDashboardState extends State<UserDashboard>
             child: InkWell(
               onTap: () {
                 switch (index) {
-                case 0:
-                  Navigator.pushNamed(context, '/user/desktop/surat_permohonan_page_desktop');
-                  break;
-                case 1:
-                  Navigator.pushNamed(context, '/user/desktop/surat_keluar_page_desktop');
-                  break;
-                default:
-                  Navigator.pushNamed(context, '/admin/desktop/home_page_admin_desktop');
-              }
+                  case 0:
+                    Navigator.pushNamed(
+                      context,
+                      '/user/desktop/surat_permohonan_page_desktop',
+                    );
+                    break;
+                  case 1:
+                    Navigator.pushNamed(
+                      context,
+                      '/user/desktop/surat_keluar_page_desktop',
+                    );
+                    break;
+                  default:
+                    Navigator.pushNamed(
+                      context,
+                      '/admin/desktop/home_page_admin_desktop',
+                    );
+                }
               },
               child: Container(
                 padding: EdgeInsets.all(24),
@@ -444,7 +566,9 @@ class _UserDashboardState extends State<UserDashboard>
                       Colors.white.withValues(alpha: 0.05),
                     ],
                   ),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.6)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.6),
+                  ),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
@@ -527,175 +651,273 @@ class _UserDashboardState extends State<UserDashboard>
     );
   }
 
-  Widget _buildRecentActivity(Animation<double> _cardAnimation) {
-    final recentActivities = [
-      {
-        'title': 'Surat permohonan dari PT. ABC',
-        'time': '2 jam lalu',
-        'type': 'masuk',
-      },
-      {
-        'title': 'Disposisi surat ke bagian HRD',
-        'time': '4 jam lalu',
-        'type': 'disposisi',
-      },
-      {
-        'title': 'Surat keluar ke vendor',
-        'time': '6 jam lalu',
-        'type': 'keluar',
-      },
-      {'title': 'User baru mendaftar', 'time': '1 hari lalu', 'type': 'user'},
-      {
-        'title': 'Backup data berhasil',
-        'time': '2 hari lalu',
-        'type': 'system',
-      },
-    ];
-
+  Widget _buildBookmarksPanel(Animation<double> anim) {
     return Transform.translate(
-      offset: Offset(0, 50 * (1 - _cardAnimation.value)),
+      offset: Offset(0, 50 * (1 - anim.value)),
       child: Opacity(
-        opacity: _cardAnimation.value.clamp(0.0, 1.0),
-        child: Container(
-          padding: EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromRGBO(255, 255, 255, 0.2),
-                Color.fromRGBO(248, 250, 252, 0.05),
-                Color.fromRGBO(241, 245, 249, 0.05),
-                Color.fromRGBO(255, 255, 255, 0.2),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withAlpha(150)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.white.withAlpha(25),
-                blurRadius: 8,
-                spreadRadius: 1,
-                offset: Offset(0, -4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Aktivitas Terbaru',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-              SizedBox(height: 20),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: recentActivities.length,
-                  itemBuilder: (context, index) {
-                    final activity = recentActivities[index];
-                    IconData icon;
-                    Color color;
+        opacity: anim.value.clamp(0.0, 1.0),
+        child: _glassCard(
+          title: 'Favorit Saya',
+          child: _loadingBookmarks
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Surat Masuk
+                    _sectionList(
+                      title: 'Surat Masuk',
+                      items: _bmMasuk,
+                      expanded: _expandedMasuk,
+                      onToggle: () {
+                        setState(() => _expandedMasuk = !_expandedMasuk);
+                        _saveBookmarkUiPrefs();
+                      },
+                    ),
 
-                    switch (activity['type']) {
-                      case 'masuk':
-                        icon = LineIcons.envelopeOpen;
-                        color = Color(0xFF4F46E5);
-                        break;
-                      case 'keluar':
-                        icon = FontAwesomeIcons.envelopeCircleCheck;
-                        color = Color(0xFF059669);
-                        break;
-                      case 'disposisi':
-                        icon = Icons.assignment_turned_in_rounded;
-                        color = Color(0xFFDC2626);
-                        break;
-                      case 'user':
-                        icon = Icons.person_add_rounded;
-                        color = Color(0xFF7C2D12);
-                        break;
-                      default:
-                        icon = Icons.info_outline_rounded;
-                        color = Color(0xFF6B7280);
-                    }
+                    // Surat Keluar
+                    _sectionList(
+                      title: 'Surat Keluar',
+                      items: _bmKeluar,
+                      expanded: _expandedKeluar,
+                      onToggle: () {
+                        setState(() => _expandedKeluar = !_expandedKeluar);
+                        _saveBookmarkUiPrefs();
+                      },
+                    ),
 
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 12),
-                      padding: EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withAlpha(64),
-                            Colors.white.withAlpha(25),
-                            Colors.white.withAlpha(12),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey[200]!, width: 1),
+                    // (opsional) Lainnya
+                    if (_bmLainnya.isNotEmpty)
+                      _sectionList(
+                        title: 'Lainnya',
+                        items: _bmLainnya,
+                        expanded: true, // biasanya biarin selalu kebuka
+                        onToggle: () {},
                       ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: color.withAlpha(200),
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: color.withAlpha(150),
-                                  blurRadius: 6,
-                                  spreadRadius: 1,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Icon(icon, color: Colors.white, size: 18),
-                          ),
-                          SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  activity['title']!,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                                SizedBox(height: 4),
-                                Text(
-                                  activity['time']!,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );
   }
+
+  Widget _glassCard({required String title, required Widget child}) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: 0.20),
+            Colors.white.withValues(alpha: 0.08),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.60)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 12),
+          child,
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionHeader(String title, int count) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          ),
+          SizedBox(width: 8),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+            ),
+            child: Text(
+              '$count',
+              style: TextStyle(color: Colors.white70, fontSize: 12),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sectionList({
+    required String title,
+    required List<bk.BookmarkItem> items,
+    required bool expanded,
+    required VoidCallback onToggle,
+  }) {
+    final limit = expanded ? items.length : _defaultLimit;
+    final shown = items.take(limit).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // header kecil + badge jumlah
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Row(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(color: Colors.white.withOpacity(0.25)),
+                ),
+                child: Text(
+                  '${items.length}',
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+              ),
+              const Spacer(),
+              if (items.length > _defaultLimit)
+                TextButton.icon(
+                  onPressed: onToggle,
+                  icon: Icon(
+                    expanded ? Icons.unfold_less : Icons.unfold_more,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    expanded ? 'Tutup' : 'Lihat semua (${items.length})',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+            ],
+          ),
+        ),
+
+        // isi
+        if (items.isEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Text(
+              'Belum ada $title yang di-pin',
+              style: TextStyle(color: Colors.white70),
+            ),
+          )
+        else
+          AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
+            child: Column(children: shown.map(_bookmarkTile).toList()),
+          ),
+
+        const SizedBox(height: 16),
+      ],
+    );
+  }
+
+  Widget _bookmarkTile(bk.BookmarkItem b) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            b.type == 'surat_keluar'
+                ? FontAwesomeIcons.envelopeCircleCheck
+                : LineIcons.envelopeOpen,
+            size: 18,
+            color: Colors.white,
+          ),
+          SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  b.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (b.savedAt != null || b.type != null)
+                  Text(
+                    [
+                      if (b.type != null)
+                        (b.type == 'surat_keluar'
+                            ? 'Surat Keluar'
+                            : 'Surat Masuk'),
+                      if (b.savedAt != null) _fmt(b.savedAt!),
+                    ].join(' • '),
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                  ),
+              ],
+            ),
+          ),
+          if (b.route != null)
+            TextButton.icon(
+              onPressed: () => Navigator.pushNamed(context, b.route!),
+              icon: Icon(Icons.open_in_new, size: 16, color: Colors.white),
+              label: Text('Buka', style: TextStyle(color: Colors.white)),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              ),
+            ),
+          IconButton(
+            tooltip: 'Hapus Pin',
+            onPressed: () => _removeBookmark(b.id),
+            icon: Icon(Icons.close_rounded, color: Colors.white70, size: 18),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _fmt(DateTime d) =>
+      '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   @override
   Widget build(BuildContext context) {
@@ -738,8 +960,11 @@ class _UserDashboardState extends State<UserDashboard>
 
                 // Main content
                 Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(30),
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 24,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -760,12 +985,24 @@ class _UserDashboardState extends State<UserDashboard>
                                   ),
                                 ),
                                 SizedBox(height: 8),
-                                Text(
-                                  'Selamat datang kembali, User!',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                RichText(
+                                  text: TextSpan(
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontFamily: 'Roboto',
+                                    ),
+                                    children: [
+                                      const TextSpan(
+                                        text: 'Selamat datang kembali, ',
+                                      ),
+                                      TextSpan(
+                                        text: '${_user?.username ?? '-'}!',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -820,8 +1057,8 @@ class _UserDashboardState extends State<UserDashboard>
 
                         SizedBox(height: 40),
 
-                        // Recent activity
-                        Expanded(child: _buildRecentActivity(_cardAnimation)),
+                        // Bookmark
+                        _buildBookmarksPanel(_cardAnimation),
                       ],
                     ),
                   ),

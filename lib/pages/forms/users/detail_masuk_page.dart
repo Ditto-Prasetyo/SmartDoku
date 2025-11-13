@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/widget.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 
 class DetailPage extends StatefulWidget {
   final SuratMasukModel? suratData; // Parameter untuk data surat
@@ -612,7 +612,7 @@ class _DetailPage extends State<DetailPage>
                           buildInfoCard([
                             buildDetailRow(
                               'No. Agenda',
-                              detailData.no_agenda == null ? 'Data Kosong!' : detailData.no_agenda,
+                              detailData.no_agenda == null ? 'Data Kosong!' : detailData.no_agenda!,
                             ),
                             buildDetailRow('No. Surat', detailData.no_surat == null ? 'Data Kosong!' : detailData.no_surat),
                             buildDetailRow('Hal', detailData.hal == null ? 'Data Kosong!' : detailData.hal),

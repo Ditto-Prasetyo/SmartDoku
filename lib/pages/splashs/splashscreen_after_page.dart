@@ -479,28 +479,32 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                       child: Column(
                         children: [
                           Container(
-                            padding: EdgeInsets.all(12.0),
+                            width: 150,
+                            height: 150,
+                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(16),
-                              gradient: LinearGradient(
+                              gradient: const LinearGradient(
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [Color(0xFF667eea), Color(0xFF764ba2)],
                               ),
                               border: Border.all(
-                                color: Color(0xFF764ba2).withValues(alpha: 0.4),
+                                color: const Color(0xFF764ba2).withValues(alpha: 
+                                  0.4,
+                                ), 
                                 width: 2,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Color(
+                                  color: const Color(
                                     0xFF667eea,
                                   ).withValues(alpha: 0.3),
                                   blurRadius: 20.0,
                                   spreadRadius: 5,
                                 ),
-                                BoxShadow(
+                                const BoxShadow(
                                   color: Colors.black26,
                                   blurRadius: 15.0,
                                   offset: Offset(3, 6),
@@ -508,17 +512,23 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                                 BoxShadow(
                                   color: Colors.white.withValues(alpha: 0.3),
                                   blurRadius: 15,
-                                  offset: Offset(-5, -3),
+                                  offset: const Offset(-5, -3),
                                 ),
                               ],
                             ),
-                            child: Image.asset(
-                              'images/Icon_App.png',
-                              width: 125.0,
-                              height: 125.0,
-                              color: Colors.white,
+                            clipBehavior:
+                                Clip.antiAlias, 
+                            child: FittedBox(
+                              fit: BoxFit.contain, 
+                              child: Image.asset(
+                                'images/logoApps.png',
+                                color: Colors.white, 
+                                filterQuality: FilterQuality
+                                    .high, 
+                              ),
                             ),
                           ),
+
                           SizedBox(height: 20),
 
                           Container(
@@ -611,7 +621,10 @@ class _SplashState extends State<Splash> with TickerProviderStateMixin {
                       opacity: _helloFadeAnimation,
                       child: Container(
                         width: size.width,
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 20,
+                        ),
                         child: Text(
                           "Hello ${_user?.name}",
                           textAlign: TextAlign.center,

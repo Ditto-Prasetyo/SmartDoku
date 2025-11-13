@@ -1,17 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/models/surat.dart';
+import 'package:smart_doku/services/bookmarks.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'package:smart_doku/services/user.dart';
 import 'dart:ui';
 import 'dart:io';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/search/SuratMasukFunction.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:smart_doku/utils/map.dart';
+import 'package:smart_doku/utils/helper/map.dart';
 
 class PermohonanLettersPageDesktop extends StatefulWidget {
   const PermohonanLettersPageDesktop({Key? key}) : super(key: key);
@@ -26,8 +31,14 @@ class _PermohonanLettersPageDesktopState
     with TickerProviderStateMixin {
   var height, width;
   bool isLoading = true;
+  bool isSearchExpanded = false;
+  bool _isPinned(dynamic surat) => _pins.contains(_pinId(surat));
+  Set<String> _pins = {};
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
+
+  FocusNode _searchFocusNode = FocusNode();
+  TextEditingController _searchController = TextEditingController();
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -36,9 +47,15 @@ class _PermohonanLettersPageDesktopState
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
 
+  late AnimationController _searchAnimationController;
+  late Animation<double> _searchAnimation;
+
   SuratMasuk _suratService = SuratMasuk();
   UserService _userService = UserService();
   List<SuratMasukModel?>? _listSurat = [];
+  List<SuratMasukModel?>? _filteredList = [];
+  List<SuratMasukModel?>? get _visibleList =>
+      _searchController.text.trim().isEmpty ? _listSurat : _filteredList;
 
   Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
@@ -55,8 +72,10 @@ class _PermohonanLettersPageDesktopState
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : null;
+      if (!mounted) return;
       setState(() {
-        _listSurat = data ?? null;
+        _listSurat = data;
+        _filteredList = data != null ? List.from(data) : null;
         isLoading = false;
       });
       print("[DEBUG] -> [STATE] : Set Surat Masuk data to listSurat!");
@@ -133,10 +152,66 @@ class _PermohonanLettersPageDesktopState
     Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
+  Future<void> _loadPins() async {
+    final items = await Bookmarks.list();
+    setState(() {
+      _pins = items.map((e) => e.id).toSet();
+    });
+  }
+
+  // bikin ID unik dari data surat
+  String _pinId(dynamic surat) {
+    // idealnya pake surat.index (ada di file lo)
+    final idx = surat?.index;
+    if (idx != null && idx is String && idx.isNotEmpty) return idx;
+    // fallback kalau index null → gabung beberapa field
+    final no = surat?.no_surat ?? '';
+    final tgl = surat?.tanggal_surat ?? '';
+    final urut = surat?.nomor_urut?.toString() ?? '';
+    final pengolah = surat?.pengolah ?? '';
+    return '$no|$tgl|$urut|$pengolah';
+  }
+
+  // Title buat ditampilkan di daftar favorit
+  String _pinTitle(dynamic surat) {
+    return (surat?.no_surat ?? surat?.nama_surat ?? surat?.hal ?? 'Surat')
+        .toString();
+  }
+
+  Future<void> _togglePin(dynamic surat) async {
+    if (surat == null) return;
+    final id = _pinId(surat);
+    final title = _pinTitle(surat);
+
+    await Bookmarks.toggle(
+      BookmarkItem(
+        id: id,
+        title: title,
+        type: 'surat_masuk',
+        route: '/user/desktop/surat_permohonan_page_desktop',
+      ),
+    );
+
+    await _loadPins();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _pins.contains(id)
+              ? 'Ditambahkan ke Favorit'
+              : 'Dihapus dari Favorit',
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
     _loadAllData();
+    _filteredList = _listSurat;
+    _loadPins();
+    Bookmarks.normalize();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -158,6 +233,17 @@ class _PermohonanLettersPageDesktopState
       CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
 
+    _searchAnimationController = AnimationController(
+      duration: Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _searchAnimation = CurvedAnimation(
+      parent: _searchAnimationController,
+      curve: Curves.easeInOut,
+    );
+    _searchController.addListener(_performSearch);
+
     _backgroundController.repeat(reverse: true);
     _cardController.forward();
   }
@@ -168,7 +254,75 @@ class _PermohonanLettersPageDesktopState
     _cardController.dispose();
     _horizontalScrollController.dispose();
     _verticalScrollController.dispose();
+    _searchAnimationController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
     super.dispose();
+  }
+
+  void _performSearch() {
+    final q = _searchController.text;
+    final result = SuratMasukSearch.filterAndSort(_listSurat!, q);
+    setState(() {
+      _filteredList = result;
+    });
+  }
+
+  void _toggleSearch() {
+    setState(() {
+      isSearchExpanded = !isSearchExpanded;
+
+      if (isSearchExpanded) {
+        _searchAnimationController.forward();
+      } else {
+        _searchAnimationController.reverse();
+        _searchController.clear();
+        _filteredList = _listSurat != null ? List.from(_listSurat!) : null;
+      }
+    });
+  }
+
+  Widget _favoriteButton(dynamic surat) {
+    if (surat == null) return SizedBox.shrink();
+    final pinned = _isPinned(surat);
+
+    return Container(
+      margin: EdgeInsets.only(right: 4),
+      padding: EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: pinned
+              ? [
+                  Color(0xFFF59E0B).withValues(alpha: 0.30),
+                  Color(0xFFD97706).withValues(alpha: 0.30),
+                ]
+              : [
+                  Colors.white.withValues(alpha: 0.12),
+                  Colors.white.withValues(alpha: 0.06),
+                ],
+        ),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.30),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () => _togglePin(surat),
+        child: Icon(
+          pinned ? Icons.bookmark : Icons.bookmark_border,
+          color: Colors.white,
+          size: 14,
+        ),
+      ),
+    );
   }
 
   Widget _buildSidebar() {
@@ -209,9 +363,9 @@ class _PermohonanLettersPageDesktopState
                     borderRadius: BorderRadius.circular(15),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0xFF4F46E5).withValues(alpha: 0.5),
+                        color: const Color(0xFF4F46E5).withValues(alpha: 0.5),
                         blurRadius: 10,
-                        offset: Offset(0, 4),
+                        offset: const Offset(0, 4),
                       ),
                     ],
                     border: Border(
@@ -220,12 +374,19 @@ class _PermohonanLettersPageDesktopState
                       ),
                     ),
                   ),
-                  child: Image.asset(
-                    'images/Icon_App.png',
-                    width: 180,
-                    height: 180,
-                    fit: BoxFit.cover,
-                    color: Colors.white,
+                  clipBehavior: Clip.antiAlias,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Image.asset(
+                          'images/logoApps.png',
+                          color: Colors.white,
+                          filterQuality: FilterQuality.high,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(width: 15),
@@ -437,12 +598,30 @@ class _PermohonanLettersPageDesktopState
               },
             ),
           ),
+
+          // Credit Section
+          Padding(
+            padding: EdgeInsets.only(top: 40, bottom: 10),
+            child: Text(
+              'Created by PKL UIN Malang @ 2025',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.white.withValues(alpha: 0.7),
+                fontFamily: 'Roboto',
+                letterSpacing: 0.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildTableDataLetters(Animation<double> _cardAnimation) {
+    final isSearching = _searchController.text.trim().isNotEmpty;
+    final count = isSearching ? _filteredList!.length : _listSurat!.length;
     return Transform.translate(
       offset: Offset(0, 50 * (1 - _cardAnimation.value)),
       child: Opacity(
@@ -605,7 +784,7 @@ class _PermohonanLettersPageDesktopState
                                         // 2. Surat dari - flex: 200
                                         SizedBox(width: 20),
                                         Expanded(
-                                          flex: 170,
+                                          flex: flexSuratMasuk[0],
                                           child: Text(
                                             'Surat Dari',
                                             style: TextStyle(
@@ -621,7 +800,7 @@ class _PermohonanLettersPageDesktopState
                                         // 3. Diterima TGL - flex: 100
                                         SizedBox(width: 8),
                                         Expanded(
-                                          flex: 140,
+                                          flex: flexSuratMasuk[1],
                                           child: Text(
                                             'Diterima \nTGL',
                                             style: TextStyle(
@@ -637,7 +816,7 @@ class _PermohonanLettersPageDesktopState
                                         // 4. Tanggal Surat - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 120,
+                                          flex: flexSuratMasuk[2],
                                           child: Text(
                                             'TGL Surat',
                                             style: TextStyle(
@@ -652,7 +831,7 @@ class _PermohonanLettersPageDesktopState
                                         // 5. Kode - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 80,
+                                          flex: flexSuratMasuk[3],
                                           child: Text(
                                             'Kode',
                                             style: TextStyle(
@@ -667,7 +846,7 @@ class _PermohonanLettersPageDesktopState
                                         // 6. No Urut - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 110,
+                                          flex: flexSuratMasuk[4],
                                           child: Text(
                                             'No Urut',
                                             style: TextStyle(
@@ -682,7 +861,7 @@ class _PermohonanLettersPageDesktopState
                                         // 7. No Agenda - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 120,
+                                          flex: flexSuratMasuk[5],
                                           child: Text(
                                             'No Agenda',
                                             style: TextStyle(
@@ -697,7 +876,7 @@ class _PermohonanLettersPageDesktopState
                                         // 8. No Surat - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 60,
+                                          flex: flexSuratMasuk[6],
                                           child: Text(
                                             'No \nSurat',
                                             style: TextStyle(
@@ -711,7 +890,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 9. Perihal - flex: 200
                                         Expanded(
-                                          flex: 220,
+                                          flex: flexSuratMasuk[7],
                                           child: Text(
                                             'Perihal',
                                             style: TextStyle(
@@ -727,7 +906,7 @@ class _PermohonanLettersPageDesktopState
                                         // 10. Hari/Tanggal - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 150,
+                                          flex: flexSuratMasuk[8],
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8.0),
                                             child: Text(
@@ -746,7 +925,7 @@ class _PermohonanLettersPageDesktopState
                                         // 12. Tempat - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 80,
+                                          flex: flexSuratMasuk[9],
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -764,7 +943,7 @@ class _PermohonanLettersPageDesktopState
                                         // 13. Disposisi - flex: 100
                                         SizedBox(width: 5),
                                         Expanded(
-                                          flex: 110,
+                                          flex: flexSuratMasuk[10],
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -781,7 +960,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 14. Index - flex: 100
                                         Expanded(
-                                          flex: 100,
+                                          flex: flexSuratMasuk[11],
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -798,7 +977,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 15. Pengolah - flex: 100
                                         Expanded(
-                                          flex: 100,
+                                          flex: flexSuratMasuk[12],
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -816,7 +995,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 16. Sifat - flex: 100
                                         Expanded(
-                                          flex: 120,
+                                          flex: flexSuratMasuk[13],
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -834,7 +1013,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 17. Link Scan - flex: 200
                                         Expanded(
-                                          flex: 200,
+                                          flex: flexSuratMasuk[14],
                                           child: Text(
                                             'Link Scan',
                                             style: TextStyle(
@@ -849,7 +1028,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 18. Disposisi Kadin - flex: 100
                                         Expanded(
-                                          flex: 115,
+                                          flex: flexSuratMasuk[15],
                                           child: Padding(
                                             padding: EdgeInsets.only(left: 8),
                                             child: Text(
@@ -867,7 +1046,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 19. Disposisi Sekdin - flex: 100
                                         Expanded(
-                                          flex: 75,
+                                          flex: flexSuratMasuk[16],
                                           child: Text(
                                             'Disposisi \nSekdin',
                                             style: TextStyle(
@@ -882,7 +1061,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 20. Disposisi Kabid - flex: 100
                                         Expanded(
-                                          flex: 130,
+                                          flex: flexSuratMasuk[17],
                                           child: Text(
                                             'Disposisi\nKabid/ \nKaUPT',
                                             style: TextStyle(
@@ -897,7 +1076,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 21. Disposisi Kasubag - flex: 100
                                         Expanded(
-                                          flex: 80,
+                                          flex: flexSuratMasuk[18],
                                           child: Text(
                                             'Disposisi \nKasubag/ \nKasi',
                                             style: TextStyle(
@@ -913,7 +1092,7 @@ class _PermohonanLettersPageDesktopState
                                         ),
 
                                         Expanded(
-                                          flex: 140,
+                                          flex: flexSuratMasuk[19],
                                           child: Text(
                                             'Catatan Disposisi \nKadin',
                                             style: TextStyle(
@@ -929,7 +1108,7 @@ class _PermohonanLettersPageDesktopState
                                         ),
 
                                         Expanded(
-                                          flex: 100,
+                                          flex: flexSuratMasuk[20],
                                           child: Text(
                                             'Catatan Disposisi \nSekdin',
                                             style: TextStyle(
@@ -945,7 +1124,7 @@ class _PermohonanLettersPageDesktopState
                                         ),
 
                                         Expanded(
-                                          flex: 120,
+                                          flex: flexSuratMasuk[21],
                                           child: Text(
                                             'Catatan Disposisi\nKabid/ \nKaUPT',
                                             style: TextStyle(
@@ -961,7 +1140,7 @@ class _PermohonanLettersPageDesktopState
                                         ),
 
                                         Expanded(
-                                          flex: 140,
+                                          flex: flexSuratMasuk[22],
                                           child: Text(
                                             'Catatan Disposisi \nKasubag/ \nKasi',
                                             style: TextStyle(
@@ -978,7 +1157,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 22. Disposisi Lanjutan - flex: 200
                                         Expanded(
-                                          flex: 120,
+                                          flex: flexSuratMasuk[23],
                                           child: Text(
                                             'Disposisi \nLanjutan',
                                             style: TextStyle(
@@ -992,7 +1171,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 23. Tindak Lanjut 1 - flex: 100
                                         Expanded(
-                                          flex: 100,
+                                          flex: flexSuratMasuk[24],
                                           child: Text(
                                             'Tindak \nLanjut 1',
                                             style: TextStyle(
@@ -1006,7 +1185,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 24. Tindak Lanjut 2 - flex: 100
                                         Expanded(
-                                          flex: 110,
+                                          flex: flexSuratMasuk[25],
                                           child: Text(
                                             'Tindak \nLanjut 2',
                                             style: TextStyle(
@@ -1020,7 +1199,7 @@ class _PermohonanLettersPageDesktopState
 
                                         // 25. Status - flex: 100
                                         Expanded(
-                                          flex: 60,
+                                          flex: flexSuratMasuk[26],
                                           child: Text(
                                             'Status',
                                             style: TextStyle(
@@ -1064,7 +1243,7 @@ class _PermohonanLettersPageDesktopState
                                         child: Column(
                                           children: isLoading
                                               ? [
-                                                  // 👇 Kalau lagi loading
+                                                  // if it's still loading
                                                   Container(
                                                     alignment: Alignment.center,
                                                     padding:
@@ -1078,9 +1257,9 @@ class _PermohonanLettersPageDesktopState
                                                         ),
                                                   ),
                                                 ]
-                                              : _listSurat == null
+                                              : _visibleList == null
                                               ? [
-                                                  // 👇 Kalau kosong
+                                                  // if it's empty
                                                   Container(
                                                     alignment: Alignment.center,
                                                     padding:
@@ -1099,11 +1278,11 @@ class _PermohonanLettersPageDesktopState
                                                     ),
                                                   ),
                                                 ]
-                                              : List.generate(_listSurat?.length ?? 0, (
+                                              : List.generate(_visibleList?.length ?? 0, (
                                                   index,
                                                 ) {
                                                   final surat =
-                                                      _listSurat?[index] ??
+                                                      _visibleList?[index] ??
                                                       null;
                                                   return Container(
                                                     padding:
@@ -1200,7 +1379,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 2. Surat dari - flex: 200
                                                             SizedBox(width: 20),
                                                             Expanded(
-                                                              flex: 200,
+                                                              flex:
+                                                                  flexSuratMasuk[0],
                                                               child: Column(
                                                                 crossAxisAlignment:
                                                                     CrossAxisAlignment
@@ -1261,7 +1441,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 3. Diterima tgl - flex: 100
                                                             SizedBox(width: 8),
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[1],
                                                               child: Text(
                                                                 surat?.tanggal_diterima ==
                                                                         null
@@ -1287,7 +1468,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 4. Tanggal - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[2],
                                                               child: Text(
                                                                 surat?.tanggal_surat ==
                                                                         null
@@ -1313,7 +1495,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 5. Kode - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[3],
                                                               child: Text(
                                                                 surat?.kode ==
                                                                         null
@@ -1337,7 +1520,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 6. No_urut - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 80,
+                                                              flex:
+                                                                  flexSuratMasuk[4],
                                                               child: Text(
                                                                 surat?.nomor_urut ==
                                                                         null
@@ -1362,7 +1546,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 7. No_agenda - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 130,
+                                                              flex:
+                                                                  flexSuratMasuk[5],
                                                               child: Text(
                                                                 surat?.kode ==
                                                                         null
@@ -1391,7 +1576,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 8. No surat - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 60,
+                                                              flex:
+                                                                  flexSuratMasuk[6],
                                                               child: Text(
                                                                 surat?.no_surat ==
                                                                         null
@@ -1415,7 +1601,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 9. Perihal - flex: 200
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 230,
+                                                              flex:
+                                                                  flexSuratMasuk[7],
                                                               child: Text(
                                                                 surat?.hal ==
                                                                         null
@@ -1443,7 +1630,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 10. Hari/tanggal - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[8],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1481,7 +1669,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 12. Tempat - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[9],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1512,7 +1701,8 @@ class _PermohonanLettersPageDesktopState
                                                             // 13. Disposisi - flex: 100
                                                             SizedBox(width: 5),
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[10],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1545,7 +1735,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 14. Index - flex: 100
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[11],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1571,7 +1762,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 15. Pengolah - flex: 100
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[12],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1606,7 +1798,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 16. Sifat - flex: 100
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[13],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1632,7 +1825,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 17. Link scan - flex: 200
                                                             Expanded(
-                                                              flex: 200,
+                                                              flex:
+                                                                  flexSuratMasuk[14],
                                                               child: Text(
                                                                 surat.link_scan ??
                                                                     "-",
@@ -1656,7 +1850,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 18. Disposisi kadin - flex: 100
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[15],
                                                               child: Padding(
                                                                 padding:
                                                                     EdgeInsets.only(
@@ -1693,7 +1888,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 19. Disposisi Sekdin - flex: 100
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[16],
                                                               child: Text(
                                                                 surat.disp_2 ==
                                                                         null
@@ -1722,7 +1918,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 20. Disposisi Kabid - flex: 100
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[17],
                                                               child: Text(
                                                                 surat.disp_3 !=
                                                                         null
@@ -1751,7 +1948,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 21. Disposisi Kasubag - flex: 100
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[18],
                                                               child: Text(
                                                                 surat.disp_4 !=
                                                                         null
@@ -1779,30 +1977,36 @@ class _PermohonanLettersPageDesktopState
                                                             ),
 
                                                             Expanded(
-                                                              flex: 100,
-                                                              child: Text(
-                                                                surat.disp_1_notes ??
-                                                                    "-",
-                                                                style: TextStyle(
-                                                                  color: Colors
-                                                                      .white
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            0.7,
-                                                                      ),
-                                                                  fontSize: 11,
-                                                                  fontFamily:
-                                                                      'Roboto',
+                                                              flex:
+                                                                  flexSuratMasuk[19],
+                                                              child: Center(
+                                                                child: Text(
+                                                                  surat.disp_1_notes ??
+                                                                      "-",
+                                                                  style: TextStyle(
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.7,
+                                                                        ),
+                                                                    fontSize:
+                                                                        11,
+                                                                    fontFamily:
+                                                                        'Roboto',
+                                                                  ),
+                                                                  softWrap:
+                                                                      true,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .visible,
                                                                 ),
-                                                                softWrap: true,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .visible,
                                                               ),
                                                             ),
 
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[20],
                                                               child: Text(
                                                                 surat.disp_2_notes ??
                                                                     "-",
@@ -1825,7 +2029,8 @@ class _PermohonanLettersPageDesktopState
                                                             ),
 
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[21],
                                                               child: Text(
                                                                 surat
                                                                     .disp_3_notes!,
@@ -1848,7 +2053,8 @@ class _PermohonanLettersPageDesktopState
                                                             ),
 
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[22],
                                                               child: Text(
                                                                 surat.disp_4_notes ??
                                                                     "-",
@@ -1872,7 +2078,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 22. Disposisi Lanjutan - flex: 200
                                                             Expanded(
-                                                              flex: 130,
+                                                              flex:
+                                                                  flexSuratMasuk[23],
                                                               child: Text(
                                                                 surat.disp_lanjut ??
                                                                     "-",
@@ -1896,7 +2103,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 23. Tindak lanjut 1 - flex: 100
                                                             Expanded(
-                                                              flex: 100,
+                                                              flex:
+                                                                  flexSuratMasuk[24],
                                                               child: Text(
                                                                 surat.tindak_lanjut_1 !=
                                                                         null
@@ -1925,7 +2133,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 24. Tindak lanjut 2 - flex: 100
                                                             Expanded(
-                                                              flex: 110,
+                                                              flex:
+                                                                  flexSuratMasuk[25],
                                                               child: Text(
                                                                 surat.tindak_lanjut_2 !=
                                                                         null
@@ -1954,7 +2163,8 @@ class _PermohonanLettersPageDesktopState
 
                                                             // 25. Status - flex: 100
                                                             Expanded(
-                                                              flex: 60,
+                                                              flex:
+                                                                  flexSuratMasuk[26],
                                                               child: Align(
                                                                 alignment: Alignment
                                                                     .centerLeft,
@@ -2037,6 +2247,10 @@ class _PermohonanLettersPageDesktopState
                                                                     MainAxisAlignment
                                                                         .center,
                                                                 children: [
+                                                                  // favorites button
+                                                                  _favoriteButton(
+                                                                    surat,
+                                                                  ),
                                                                   // View button
                                                                   Container(
                                                                     margin:
@@ -2075,7 +2289,7 @@ class _PermohonanLettersPageDesktopState
                                                                         viewDetail(
                                                                           context,
                                                                           index,
-                                                                          _listSurat!,
+                                                                          _filteredList!,
                                                                         );
                                                                       },
                                                                       child: Icon(
@@ -2185,7 +2399,7 @@ class _PermohonanLettersPageDesktopState
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Surat Masuk',
                                   style: TextStyle(
                                     fontSize: 32,
@@ -2194,52 +2408,221 @@ class _PermohonanLettersPageDesktopState
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Anda Dapat Melihat isi dalam Surat Masuk di Sini!',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Anda Dapat Melihat Surat Masuk di Sini!',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                    if (_searchController.text.isNotEmpty) ...[
+                                      const SizedBox(width: 12),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              const Color(
+                                                0xFF4F46E5,
+                                              ).withValues(alpha: 0.3),
+                                              const Color(
+                                                0xFF7C3AED,
+                                              ).withValues(alpha: 0.2),
+                                            ],
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                          border: Border.all(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.3,
+                                            ),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${_filteredList!.length} hasil',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                AnimatedContainer(
+                                  duration: const Duration(milliseconds: 350),
+                                  curve: Curves.easeInOutCubic,
+                                  width: isSearchExpanded ? 450 : 0,
+                                  height: 48,
+                                  child: isSearchExpanded
+                                      ? Container(
+                                          margin: const EdgeInsets.only(
+                                            right: 16,
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.25,
+                                                ),
+                                                Colors.white.withValues(
+                                                  alpha: 0.15,
+                                                ),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.35,
+                                              ),
+                                              width: 1.5,
+                                            ),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: const Color(
+                                                  0xFF4F46E5,
+                                                ).withValues(alpha: 0.2),
+                                                blurRadius: 15,
+                                                offset: const Offset(0, 5),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.search,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.6,
+                                                ),
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: _searchController,
+                                                  focusNode: _searchFocusNode,
+                                                  style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    hintText:
+                                                        'Cari nama, nomor, perihal surat...',
+                                                    hintStyle: TextStyle(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.5,
+                                                          ),
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                    border: InputBorder.none,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                  ),
+                                                  onChanged: (value) =>
+                                                      setState(() {}),
+                                                ),
+                                              ),
+                                              if (_searchController
+                                                  .text
+                                                  .isNotEmpty)
+                                                InkWell(
+                                                  onTap: () {
+                                                    _searchController.clear();
+                                                    _searchFocusNode
+                                                        .requestFocus();
+                                                  },
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(4),
+                                                    child: Icon(
+                                                      Icons.clear,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                      size: 18,
+                                                    ),
+                                                  ),
+                                                ),
+                                            ],
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                                InkWell(
+                                  onTap: _toggleSearch,
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: AnimatedContainer(
+                                    duration: const Duration(milliseconds: 300),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        colors: isSearchExpanded
+                                            ? [
+                                                const Color(0xFFEF4444),
+                                                const Color(0xFFDC2626),
+                                              ]
+                                            : [
+                                                const Color(0xFF4F46E5),
+                                                const Color(0xFF7C3AED),
+                                              ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(15),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color:
+                                              (isSearchExpanded
+                                                      ? const Color(0xFFEF4444)
+                                                      : const Color(0xFF4F46E5))
+                                                  .withValues(alpha: 0.3),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Icon(
+                                      isSearchExpanded
+                                          ? Icons.close
+                                          : LineIcons.search,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            InkWell(
-                              onTap: () =>
-                                  showFeatureNotAvailableDialog(context),
-                              borderRadius: BorderRadius.circular(15),
-                              child: Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFF4F46E5),
-                                      Color(0xFF7C3AED),
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Color(
-                                        0xFF4F46E5,
-                                      ).withValues(alpha: 0.3),
-                                      blurRadius: 10,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  LineIcons.search,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
 
-                        SizedBox(height: 40),
+                        const SizedBox(height: 40),
 
                         // Recent activity
                         Expanded(child: _buildTableDataLetters(_cardAnimation)),

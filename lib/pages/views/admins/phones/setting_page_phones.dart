@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_doku/services/settings.dart';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/function.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 
 class SettingPagePhones extends StatefulWidget {
   const SettingPagePhones({super.key});

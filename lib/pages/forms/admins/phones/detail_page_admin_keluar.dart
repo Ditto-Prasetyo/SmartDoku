@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/widget.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 
 class DetailPageAdminKeluar extends StatefulWidget {
   final SuratKeluarModel? suratData; // Parameter untuk data surat
@@ -32,6 +32,7 @@ class _DetailPageAdminKeluar extends State<DetailPageAdminKeluar>
   late AnimationController _backgroundController;
 
   late Animation<double> _backgroundAnimation;
+
 
   @override
   void initState() {
@@ -538,7 +539,7 @@ class _DetailPageAdminKeluar extends State<DetailPageAdminKeluar>
                         padding: EdgeInsets.only(top: 35, left: 15, right: 15),
                         child: Center(
                           child: Text(
-                            "Detail Surat",
+                            "Detail Surat Masuk",
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,
@@ -673,6 +674,31 @@ class _DetailPageAdminKeluar extends State<DetailPageAdminKeluar>
 
                           SizedBox(height: 20),
 
+                          buildSectionTitle('Informasi File Surat'),
+                          SizedBox(height: 15),
+                          buildInfoCard([
+                            buildDetailRow(
+                              'Dokumen Final',
+                              detailData?.dok_final == null
+                                  ? 'File Dokumen Tidak Ditemukan!'
+                                  : detailData!.dok_final!,
+                            ),
+                            buildDetailRow(
+                              'Tanggal Dokumen Diterima',
+                              detailData?.dok_dikirim == null
+                                  ? 'Tanggal Diterima Belum Ditentukan!'
+                                  : parseDateFormat(detailData!.dok_dikirim!),
+                            ),
+                            buildDetailRow(
+                              'Tanda Terima',
+                              detailData?.tanda_terima == null
+                                  ? 'Tanda Terima Belum Ditentukan!'
+                                  : parseDateFormat(detailData!.tanda_terima!),
+                            ),
+                          ]),
+
+                          SizedBox(height: 20),
+
                           // Disposition Section
                           buildSectionTitle('Catatan Tambahan'),
                           SizedBox(height: 15),
@@ -687,7 +713,9 @@ class _DetailPageAdminKeluar extends State<DetailPageAdminKeluar>
 
                           SizedBox(height: 30),
 
-                          buildBackButtonSection(context),
+                          buildBackButtonSectionKeluar(context, detailData?.nomor_urut == null
+                                  ? 'Data Kosong!'
+                                  : detailData!.nomor_urut.toString(), detailData),
                         ],
                       ),
                     ),

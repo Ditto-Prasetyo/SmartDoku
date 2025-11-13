@@ -4,10 +4,10 @@ import 'package:smart_doku/models/surat.dart';
 import 'package:smart_doku/services/surat.dart';
 import 'dart:ui';
 import 'dart:io';
-import 'package:smart_doku/utils/dialog.dart';
-import 'package:smart_doku/utils/function.dart';
+import 'package:smart_doku/utils/handlers/dialog.dart';
+import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:smart_doku/utils/handlers/dateparser.dart';
-import 'package:smart_doku/utils/widget.dart';
+import 'package:smart_doku/utils/widget/widget.dart';
 
 class DispositionLetterPage extends StatefulWidget {
   final Map<String, dynamic>? suratData;
