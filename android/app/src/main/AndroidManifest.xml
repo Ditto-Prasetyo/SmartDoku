@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    
     <queries>
         <!-- biar bisa detect aplikasi external seperti WhatsApp -->
         <intent>
@@ -12,9 +14,11 @@
     </queries>
 
     <application
-        android:label="smart_doku"
+        android:label="SmartDoku"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="false"
+        android:networkSecurityConfig="@xml/network_security_config">
         <activity
             android:name=".MainActivity"
             android:exported="true"
