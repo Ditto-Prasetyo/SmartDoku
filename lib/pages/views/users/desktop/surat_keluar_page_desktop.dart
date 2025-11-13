@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:line_icons/line_icons.dart';
@@ -197,6 +196,7 @@ class _OutgoingLetterPageDesktopState extends State<OutgoingLetterPageDesktop>
 
   Future<void> _loadPins() async {
     final items = await Bookmarks.list();
+    if (!mounted) return;
     setState(() {
       _pins = items.map((e) => e.id).toSet();
     });

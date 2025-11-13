@@ -10,6 +10,7 @@ import 'dart:ui';
 import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/services/bookmarks.dart' as bk;
+import 'package:smart_doku/utils/helper/todolist.dart';
 
 class UserDashboard extends StatefulWidget {
   const UserDashboard({super.key});
@@ -24,6 +25,7 @@ class _UserDashboardState extends State<UserDashboard>
   bool _expandedMasuk = false;
   bool _expandedKeluar = false;
   bool _loadingBookmarks = true;
+  bool _todosLoading = true;
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -36,19 +38,31 @@ class _UserDashboardState extends State<UserDashboard>
   int _selectedIndex = 0;
   static const int _defaultLimit = 5;
 
+  String _todoFilter = 'all';
+  static const _kTodoKey = 'todos_user_home';
+
   // Sample data for dashboard
   List<Map<String, dynamic>> _statsData = [];
   List<bk.BookmarkItem> _bookmarks = [];
   List<bk.BookmarkItem> _bmMasuk = [];
   List<bk.BookmarkItem> _bmKeluar = [];
   List<bk.BookmarkItem> _bmLainnya = [];
+  List<TodoItem> _todos = [];
   UserService _userService = UserService();
   UserModel? _user;
-
   StatService _statService = StatService();
+
+  final TextEditingController _todoCtrl = TextEditingController();
+  final FocusNode _todoFocus = FocusNode();
 
   int? totalSuratMasuk;
   int? totalSuratKeluar;
+
+  static const _INDIGO = Color(0xFF4F46E5); // indigo-600
+  static const _VIOLET = Color(0xFF7C3AED); // violet-600
+  static const _AMBER = Color(0xFFF59E0B); // amber-500
+  static const _EMERALD = Color(0xFF10B981); // emerald-500
+  static const _SLATE = Color.fromARGB(255, 17, 79, 167); // slate-500
 
   Future<void> _loadAllData() async {
     final suratMasuk = await _statService.getSuratMasuk();
@@ -192,12 +206,97 @@ class _UserDashboardState extends State<UserDashboard>
     ).showSnackBar(const SnackBar(content: Text('Dihapus dari Favorit')));
   }
 
+  // Load & Save
+  Future<void> _loadTodos() async {
+    setState(() => _todosLoading = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_kTodoKey);
+      if (raw != null && raw.isNotEmpty) {
+        final list = (jsonDecode(raw) as List)
+            .map((e) => TodoItem.fromMap(Map<String, dynamic>.from(e)))
+            .toList();
+        _todos = list;
+      } else {
+        _todos = [];
+      }
+    } finally {
+      setState(() => _todosLoading = false);
+    }
+  }
+
+  Future<void> _saveTodos() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = jsonEncode(_todos.map((e) => e.toMap()).toList());
+    await prefs.setString(_kTodoKey, data);
+  }
+
+  // CRUD
+  Future<void> _addTodo([String? text]) async {
+    final t = (text ?? _todoCtrl.text).trim();
+    if (t.isEmpty) return;
+    _todos.insert(
+      0,
+      TodoItem(id: '${DateTime.now().millisecondsSinceEpoch}', text: t),
+    );
+    _todoCtrl.clear();
+    setState(() {});
+    await _saveTodos();
+  }
+
+  Future<void> _toggleTodo(TodoItem item) async {
+    item.done = !item.done;
+    setState(() {});
+    await _saveTodos();
+  }
+
+  Future<void> _removeTodo(TodoItem item) async {
+    final idx = _todos.indexWhere((e) => e.id == item.id);
+    if (idx < 0) return;
+    final removed = _todos.removeAt(idx);
+    setState(() {});
+    await _saveTodos();
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Kegiatan dihapus'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () async {
+            _todos.insert(idx, removed);
+            setState(() {});
+            await _saveTodos();
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<void> _clearCompleted() async {
+    _todos.removeWhere((e) => e.done);
+    setState(() {});
+    await _saveTodos();
+  }
+
+  List<TodoItem> get _visibleTodos {
+    switch (_todoFilter) {
+      case 'active':
+        return _todos.where((e) => !e.done).toList();
+      case 'done':
+        return _todos.where((e) => e.done).toList();
+      default:
+        return _todos;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadUser();
     _loadAllData();
     _loadBookmarks();
+    _loadTodos();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -228,6 +327,293 @@ class _UserDashboardState extends State<UserDashboard>
     _backgroundController.dispose();
     _cardController.dispose();
     super.dispose();
+  }
+
+  Widget _buildTodoPanel() {
+    return _glassCard(
+      // pakai glass card yang sudah kamu punya
+      title: 'List Kegiatan Saya Hari ini',
+      child: _todosLoading
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Input bar
+                Row(
+                  children: [
+                    Expanded(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.06),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: _todoFocus.hasFocus
+                                ? _INDIGO.withValues(alpha: 0.50)
+                                : Colors.white.withValues(alpha: 0.25),
+                            width: _todoFocus.hasFocus ? 1.2 : 1.0,
+                          ),
+                          boxShadow: _todoFocus.hasFocus
+                              ? [
+                                  BoxShadow(
+                                    color: _INDIGO.withValues(alpha: 0.25),
+                                    blurRadius: 16,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ]
+                              : [],
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: TextField(
+                          controller: _todoCtrl,
+                          focusNode: _todoFocus,
+                          onSubmitted: (_) => _addTodo(),
+                          style: const TextStyle(color: Colors.white),
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Tambah kegiatan baru... (Enter)',
+                            hintStyle: TextStyle(color: Colors.white70),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton.icon(
+                      onPressed: _addTodo,
+                      icon: const Icon(Icons.add, size: 16),
+                      label: const Text('Tambah'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _VIOLET.withValues(
+                          alpha: 0.22,
+                        ), // tinted violet glass
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: BorderSide(
+                            color: Colors.white.withValues(alpha: 0.25),
+                          ), // kaca vibe
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Filter chips + actions
+                Row(
+                  children: [
+                    _filterChip('Semua', 'all'),
+                    const SizedBox(width: 6),
+                    _filterChip('Aktif', 'active'),
+                    const SizedBox(width: 6),
+                    _filterChip('Selesai', 'done'),
+                    const Spacer(),
+                    TextButton.icon(
+                      onPressed: _todos.any((e) => e.done)
+                          ? _clearCompleted
+                          : null,
+                      icon: const Icon(Icons.cleaning_services, size: 16),
+                      label: const Text('Bersihkan Kegiatan dalam Selesai'),
+                      style: ButtonStyle(
+                        // background merah untuk semua state:
+                        backgroundColor: WidgetStateProperty.resolveWith((
+                          states,
+                        ) {
+                          if (states.contains(WidgetState.disabled)) {
+                            return const Color(0xFFDC2626).withValues(
+                              alpha: 0.25,
+                            ); // merah redup saat disabled
+                          }
+                          if (states.contains(WidgetState.pressed) ||
+                              states.contains(WidgetState.hovered) ||
+                              states.contains(WidgetState.focused)) {
+                            return const Color(
+                              0xFFB91C1C,
+                            ); // darker pas interaksi
+                          }
+                          return const Color(0xFFDC2626); // red-600
+                        }),
+                        foregroundColor: WidgetStateProperty.all(
+                          Colors.white,
+                        ), // teks & icon putih
+                        overlayColor: WidgetStateProperty.all(
+                          Colors.white.withValues(alpha: 0.08),
+                        ), // ripple halus
+                        padding: WidgetStateProperty.all(
+                          const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                        ),
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.25),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
+                // List item (no inner scroll biar ga tabrakan)
+                if (_visibleTodos.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Text(
+                      _todoFilter == 'done'
+                          ? 'Belum ada kegiatan yang selesai'
+                          : 'Belum ada kegiatan',
+                      style: const TextStyle(color: Colors.white70),
+                    ),
+                  )
+                else
+                  ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (_, i) => _todoTile(_visibleTodos[i]),
+                    separatorBuilder: (_, __) => const SizedBox(height: 6),
+                    itemCount: _visibleTodos.length,
+                  ),
+              ],
+            ),
+    );
+  }
+
+  Widget _filterChip(String label, String value) {
+    final selected = _todoFilter == value;
+
+    // mapping warna dasar
+    Color base;
+    IconData? icon;
+    switch (value) {
+      case 'active':
+        base = _AMBER;
+        icon = Icons.flash_on_rounded;
+        break;
+      case 'done':
+        base = _EMERALD;
+        icon = Icons.check_circle_rounded;
+        break;
+      default:
+        base = _SLATE;
+        icon = Icons.all_inbox_rounded;
+        break;
+    }
+
+    final grad = selected
+        ? [base.withValues(alpha: 0.28), base.withValues(alpha: 0.18)]
+        : [
+            Colors.white.withValues(alpha: 0.12),
+            Colors.white.withValues(alpha: 0.06),
+          ];
+
+    final border = selected
+        ? base.withValues(alpha: 0.45)
+        : Colors.white.withValues(alpha: 0.25);
+
+    return InkWell(
+      onTap: () => setState(() => _todoFilter = value),
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: grad,
+          ),
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: border),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: Colors.white),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _todoTile(TodoItem item) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.06),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.20)),
+      ),
+      child: Row(
+        children: [
+          // centang
+          InkWell(
+            onTap: () => _toggleTodo(item),
+            child: Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(color: Colors.white70),
+                color: item.done
+                    ? Colors.white.withValues(alpha: 0.2)
+                    : Colors.transparent,
+              ),
+              child: item.done
+                  ? const Icon(Icons.check, size: 16, color: Colors.white)
+                  : null,
+            ),
+          ),
+          const SizedBox(width: 10),
+
+          // teks
+          Expanded(
+            child: Text(
+              item.text,
+              style: TextStyle(
+                color: Colors.white,
+                decoration: item.done ? TextDecoration.lineThrough : null,
+                decorationColor: Colors.white70,
+              ),
+            ),
+          ),
+
+          // hapus
+          IconButton(
+            tooltip: 'Hapus',
+            onPressed: () => _removeTodo(item),
+            icon: const Icon(
+              Icons.delete_outline,
+              color: Colors.white70,
+              size: 18,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildSidebar() {
@@ -802,9 +1188,11 @@ class _UserDashboardState extends State<UserDashboard>
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.12),
+                  color: Colors.white.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: Colors.white.withOpacity(0.25)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.25),
+                  ),
                 ),
                 child: Text(
                   '${items.length}',
@@ -814,15 +1202,30 @@ class _UserDashboardState extends State<UserDashboard>
               const Spacer(),
               if (items.length > _defaultLimit)
                 TextButton.icon(
-                  onPressed: onToggle,
-                  icon: Icon(
-                    expanded ? Icons.unfold_less : Icons.unfold_more,
+                  onPressed: _todos.any((e) => e.done) ? _clearCompleted : null,
+                  icon: const Icon(
+                    Icons.cleaning_services,
                     size: 16,
                     color: Colors.white,
                   ),
-                  label: Text(
-                    expanded ? 'Tutup' : 'Lihat semua (${items.length})',
+                  label: const Text(
+                    'Bersihkan Selesai',
                     style: TextStyle(color: Colors.white),
+                  ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white.withValues(
+                      alpha: _todos.any((e) => e.done) ? 0.12 : 0.06,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(999),
+                      side: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.25),
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                   ),
                 ),
             ],
@@ -1056,7 +1459,8 @@ class _UserDashboardState extends State<UserDashboard>
                         ),
 
                         SizedBox(height: 40),
-
+                        _buildTodoPanel(),
+                        const SizedBox(height: 16),
                         // Bookmark
                         _buildBookmarksPanel(_cardAnimation),
                       ],

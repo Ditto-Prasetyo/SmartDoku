@@ -72,7 +72,7 @@ class _PermohonanLettersPageDesktopState
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : null;
-      if (!mounted) return;
+       if (!mounted) return;    
       setState(() {
         _listSurat = data;
         _filteredList = data != null ? List.from(data) : null;
@@ -154,6 +154,7 @@ class _PermohonanLettersPageDesktopState
 
   Future<void> _loadPins() async {
     final items = await Bookmarks.list();
+    if (!mounted) return;
     setState(() {
       _pins = items.map((e) => e.id).toSet();
     });
