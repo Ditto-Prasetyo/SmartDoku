@@ -88,7 +88,7 @@ class _OutgoingLetterPage extends State<OutgoingLetterPage>
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : await _suratService.listSurat();
-
+       if (!mounted) return;
       setState(() {
         print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
         _listSurat = data;
