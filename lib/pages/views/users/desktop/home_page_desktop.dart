@@ -10,7 +10,11 @@ import 'dart:ui';
 import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:smart_doku/services/bookmarks.dart' as bk;
+import 'package:smart_doku/utils/helper/quotes.dart';
 import 'package:smart_doku/utils/helper/todolist.dart';
+import 'dart:math';
+import 'package:flutter/services.dart'; // Clipboard
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDashboard extends StatefulWidget {
   const UserDashboard({super.key});
@@ -26,6 +30,7 @@ class _UserDashboardState extends State<UserDashboard>
   bool _expandedKeluar = false;
   bool _loadingBookmarks = true;
   bool _todosLoading = true;
+  bool _quotesLoading = true;
 
   // Animation controllers
   late AnimationController _backgroundController;
@@ -63,6 +68,26 @@ class _UserDashboardState extends State<UserDashboard>
   static const _AMBER = Color(0xFFF59E0B); // amber-500
   static const _EMERALD = Color(0xFF10B981); // emerald-500
   static const _SLATE = Color.fromARGB(255, 17, 79, 167); // slate-500
+  static const _CYAN = Color(0xFF06B6D4); // buat Copy
+
+  int _quoteIdx = 0;
+  final List<QuoteItem> _quotesBase = [
+    QuoteItem(
+      text:
+          'Sesulit apa pun pekerjaan, jangan pernah meragukan potensimu sendiri.',
+      source: 'Positive Quotes',
+    ),
+    QuoteItem(text: 'Kemajuan kecil tiap hari tetap kemajuan.'),
+    QuoteItem(text: 'Fokus pada yang bisa kamu kendalikan, sisanya lepaskan.'),
+    QuoteItem(text: 'Disiplin mengalahkan motivasi.'),
+    QuoteItem(
+      text:
+          'Belajar hal baru bukan maraton sekali jalan, tapi kebiasaan yang dirawat.',
+    ),
+  ];
+  List<QuoteItem> _quotesCustom = [];
+  List<QuoteItem> get _allQuotes => [..._quotesBase, ..._quotesCustom];
+  QuoteItem get _currentQuote => _allQuotes[_quoteIdx];
 
   Future<void> _loadAllData() async {
     final suratMasuk = await _statService.getSuratMasuk();
@@ -130,6 +155,175 @@ class _UserDashboardState extends State<UserDashboard>
       'route': '/user/desktop/profile_user_page',
     },
   ];
+
+  ButtonStyle _accentBtn(Color base) {
+    return ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.disabled))
+          return base.withValues(alpha: 0.16);
+        if (states.contains(WidgetState.hovered) ||
+            states.contains(WidgetState.focused) ||
+            states.contains(WidgetState.pressed))
+          return base.withValues(alpha: 0.30);
+        return base.withValues(alpha: 0.22); // default kaca tipis
+      }),
+      foregroundColor: WidgetStateProperty.all(Colors.white),
+      overlayColor: WidgetStateProperty.all(
+        Colors.white.withValues(alpha: 0.06),
+      ),
+      padding: WidgetStateProperty.all(
+        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      ),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+          side: BorderSide(color: Colors.white.withValues(alpha: 0.25)),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _loadQuotes() async {
+    if (!mounted) return;
+    setState(() => _quotesLoading = true);
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString('custom_quotes');
+      if (raw != null && raw.isNotEmpty) {
+        final list = (jsonDecode(raw) as List)
+            .map((e) => QuoteItem.fromMap(Map<String, dynamic>.from(e)))
+            .toList();
+        _quotesCustom = list;
+      }
+
+      // pick “Daily” index (stabil per hari)
+      final now = DateTime.now();
+      final dayOfYear = int.parse(
+        DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).difference(DateTime(now.year, 1, 1)).inDays.toString(),
+      );
+      final total = max(1, _allQuotes.length);
+      _quoteIdx = (dayOfYear + now.year) % total;
+    } finally {
+      setState(() => _quotesLoading = false);
+    }
+  }
+
+  Future<void> _saveCustomQuotes() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      'custom_quotes',
+      jsonEncode(_quotesCustom.map((e) => e.toMap()).toList()),
+    );
+  }
+
+  // actions
+  void _nextQuote() {
+    if (_allQuotes.isEmpty) return;
+    setState(() => _quoteIdx = (_quoteIdx + 1) % _allQuotes.length);
+  }
+
+  Future<void> _copyQuote() async {
+    final q = _currentQuote;
+    final s = q.source != null ? ' — ${q.source}' : '';
+    await Clipboard.setData(ClipboardData(text: '"${q.text}"$s'));
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Disalin ke clipboard')));
+  }
+
+  Future<void> _addQuoteDialog() async {
+    final textCtrl = TextEditingController();
+    final srcCtrl = TextEditingController();
+    await showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Tambah Quote'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: textCtrl,
+              decoration: const InputDecoration(labelText: 'Teks'),
+              maxLines: 3,
+            ),
+            TextField(
+              controller: srcCtrl,
+              decoration: const InputDecoration(labelText: 'Sumber (opsional)'),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final t = textCtrl.text.trim();
+              if (t.isEmpty) return;
+              setState(() {
+                _quotesCustom.insert(
+                  0,
+                  QuoteItem(
+                    text: t,
+                    source: srcCtrl.text.trim().isEmpty
+                        ? null
+                        : srcCtrl.text.trim(),
+                    isCustom: true,
+                  ),
+                );
+                _quoteIdx = _allQuotes.length - 1;
+              });
+              await _saveCustomQuotes();
+              if (context.mounted) Navigator.pop(context);
+            },
+            child: const Text('Simpan'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _deleteCurrentIfCustom() async {
+    final q = _currentQuote;
+    if (!q.isCustom) return;
+    final ok =
+        await showDialog<bool>(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Hapus quote ini?'),
+            content: const Text(
+              'Quote buatanmu akan dihapus dari perangkat ini.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Batal'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Hapus'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (!ok) return;
+    setState(() {
+      _quotesCustom.remove(q);
+      _quoteIdx = 0;
+    });
+    await _saveCustomQuotes();
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Quote dihapus')));
+  }
 
   void _navigateToPage(
     BuildContext context,
@@ -297,6 +491,7 @@ class _UserDashboardState extends State<UserDashboard>
     _loadAllData();
     _loadBookmarks();
     _loadTodos();
+    _loadQuotes();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -613,6 +808,190 @@ class _UserDashboardState extends State<UserDashboard>
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildQuotePanel() {
+    return _glassCard(
+      title: 'Positive Quotes',
+      child: _quotesLoading
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+            )
+          : Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: 0.12),
+                    Colors.white.withValues(alpha: 0.06),
+                  ],
+                ),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Quote text
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // icon kecil
+                      Container(
+                        width: 28,
+                        height: 28,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                          ),
+                        ),
+                        child: const Icon(
+                          Icons.format_quote_rounded,
+                          color: Colors.white,
+                          size: 18,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      // text
+                      Expanded(
+                        child: Text(
+                          '“${_currentQuote.text}”',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            height: 1.5,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  // source
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.label_rounded,
+                        color: Colors.white70,
+                        size: 14,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        _currentQuote.source ?? 'Positive Quotes',
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const Spacer(),
+                      if (_currentQuote.isCustom)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(999),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.25),
+                            ),
+                          ),
+                          child: const Text(
+                            'Custom',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  // actions
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      TextButton.icon(
+                        onPressed: _nextQuote,
+                        icon: const Icon(
+                          Icons.navigate_next_rounded,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                        label: const Text(
+                          'Next',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: _accentBtn(_INDIGO), // ungu/indigo untuk Next
+                      ),
+
+                      TextButton.icon(
+                        onPressed: _copyQuote,
+                        icon: const Icon(
+                          Icons.copy_all_rounded,
+                          size: 16,
+                          color: Colors.white,
+                        ),
+                        label: const Text(
+                          'Copy',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: _accentBtn(_CYAN), // cyan/sky untuk Copy
+                      ),
+                      if (_currentQuote.isCustom)
+                        TextButton.icon(
+                          onPressed: _deleteCurrentIfCustom,
+                          icon: const Icon(
+                            Icons.delete_outline_rounded,
+                            size: 16,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            'Hapus',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          style: _accentBtnStyle(
+                            const Color(0xFFDC2626),
+                          ), // red
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+    );
+  }
+
+  // ——— Button styles biar konsisten kaca
+  ButtonStyle _glassBtnStyle() {
+    return TextButton.styleFrom(
+      backgroundColor: Colors.white.withValues(alpha: 0.12),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.25)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    );
+  }
+
+  ButtonStyle _accentBtnStyle(Color color) {
+    return TextButton.styleFrom(
+      backgroundColor: color.withValues(alpha: 0.22),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(color: Colors.white.withValues(alpha: 0.25)),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
     );
   }
 
@@ -1463,6 +1842,9 @@ class _UserDashboardState extends State<UserDashboard>
                         const SizedBox(height: 16),
                         // Bookmark
                         _buildBookmarksPanel(_cardAnimation),
+                        const SizedBox(height: 16),
+                        // qoutes
+                        _buildQuotePanel(),
                       ],
                     ),
                   ),
