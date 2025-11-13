@@ -1,4 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:smart_doku/utils/widget/widget.dart';
@@ -13250,10 +13252,85 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                         title: 'Print Surat Disposisi',
                         subtitle: 'print surat yang diinginkan',
                         color: Color(0xFF3B82F6),
-                        onTap: () {
+                        onTap: () async {
                           Navigator.pop(context);
 
-                          showFeatureNotAvailableDialog(context);
+                          // Simpan context rootNavigator di luar biar bisa dipop dengan aman
+                          final rootNavigator = Navigator.of(context, rootNavigator: true);
+
+                          // Munculkan dialog loading TANPA await
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (ctx) {
+                              return const AlertDialog(
+                                content: Row(
+                                  children: [
+                                    CircularProgressIndicator(),
+                                    SizedBox(width: 20),
+                                    Expanded(child: Text("Mengunduh dokumen...")),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+
+                          try {
+                            // Jalankan proses download
+                            final dirPath = await _suratMasukService.getDefaultDownloadPath();
+                            final savePath = "$dirPath/disposisi_$currentNomorUrut.pdf";
+
+                            final file = await _suratMasukService.downloadDisposisi(
+                              (currentNomorUrut != null ? int.parse(currentNomorUrut) : 0),
+                              savePath,
+                            );
+
+                            // Tutup dialog download
+                            if (rootNavigator.mounted) rootNavigator.pop();
+
+                            if (file != null && await file.exists()) {
+                              // Jalankan proses print
+                              await Printing.layoutPdf(
+                                onLayout: (PdfPageFormat format) async {
+                                  final bytes = await file.readAsBytes();
+                                  return bytes;
+                                },
+                              );
+
+                              // Tutup dialog kalau entah gimana masih kebuka
+                              if (rootNavigator.mounted) rootNavigator.popUntil((r) => r.isFirst);
+
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Dokumen berhasil diprint!'),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
+                            } else {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Gagal mengunduh dokumen untuk diprint.'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
+                            }
+                          } catch (err) {
+                            // Tutup dialog kalau error
+                            if (rootNavigator.mounted) rootNavigator.pop();
+
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('Terjadi kesalahan: $err'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
                         },
                       ),
 
