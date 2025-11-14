@@ -52,6 +52,7 @@ class RegisterCredPageState extends State<RegisterCredPage>
     Icons.location_city,
     Icons.house_rounded,
     Icons.map_outlined,
+    Icons.map,
     Icons.water_drop_outlined,
     Icons.park_rounded,
   ];

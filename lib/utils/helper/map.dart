@@ -52,10 +52,19 @@ List<Map<String, dynamic>> boxData = [
   },
   {
     'icon': Icons.map_outlined,
-    'title': 'Sekretariat',
+    'title': 'Sekretariat - Renvapor',
     'colors': [
       Color(0xFF06B6D4),
       Color(0xFF0EA5E9),
+    ],
+    'route': 'tables_page_admin.dart',
+  },
+  {
+    'icon': Icons.map,
+    'title': 'Sekretariat - UKP',
+    'colors': [
+      Color.fromARGB(255, 57, 114, 184),
+      Color.fromARGB(255, 6, 99, 212),
     ],
     'route': 'tables_page_admin.dart',
   },

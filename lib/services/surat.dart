@@ -18,6 +18,12 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 class SuratMasuk {
   final AuthService _authService = AuthService();
 
+  Future<bool> isSekretariat() async {
+    final disposisi = await _authService.getDisposisi();
+
+    return (disposisi == 'Sekretariat_Renvapor' || disposisi == 'Sekretariat_UKP');
+  }
+
   Future<List<SuratMasukModel?>> listSurat() async {
     final url = Uri.parse('${dotenv.env['API_URL']}/surat/masuk');
     final token = await _authService.getToken();

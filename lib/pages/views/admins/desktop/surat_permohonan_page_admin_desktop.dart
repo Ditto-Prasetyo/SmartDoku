@@ -28,6 +28,7 @@ class _PermohonanLettersPageAdminDesktopState
   var height, width;
   bool isLoading = true;
   bool isSearchExpanded = false;
+  bool _isSekretariat = false;
   final ScrollController _horizontalScrollController = ScrollController();
   final ScrollController _verticalScrollController = ScrollController();
 
@@ -156,11 +157,20 @@ class _PermohonanLettersPageAdminDesktopState
     Navigator.pushNamedAndRemoveUntil(context, item['route'], (route) => false);
   }
 
+  void _checkSekretariat() async {
+    final check = await _suratService.isSekretariat();
+
+    setState(() {
+      _isSekretariat = check;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _loadAllData();
     _filteredList = _listSurat;
+    _checkSekretariat();
 
     // Initialize animations
     _backgroundController = AnimationController(
@@ -600,44 +610,45 @@ class _PermohonanLettersPageAdminDesktopState
                           ),
                         ),
                         SizedBox(width: 10),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(0xFF10B981).withValues(alpha: 0.3),
-                                Color(0xFF059669).withValues(alpha: 0.2),
+                        if (_isSekretariat)
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color(0xFF10B981).withValues(alpha: 0.3),
+                                  Color(0xFF059669).withValues(alpha: 0.2),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    tambahSuratMasukDesktop(
+                                      context,
+                                      (newSurat) {},
+                                      refreshState,
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.add,
+                                    color: Colors.white,
+                                    size: 24,
+                                  ),
+                                ),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1,
-                            ),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  tambahSuratMasukDesktop(
-                                    context,
-                                    (newSurat) {},
-                                    refreshState,
-                                  );
-                                },
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                   ),
