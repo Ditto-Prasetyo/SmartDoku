@@ -25,7 +25,7 @@ class PermohonanLetterPageAdmin extends StatefulWidget {
 class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
     with TickerProviderStateMixin {
   var height, width;
-
+  bool _isSekretariat = false;
   bool isRefreshing = false;
   bool isSearchExpanded = false;
   late Function(Map<String, dynamic>) onSuratAdded;
@@ -62,7 +62,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : await _suratService.listSurat();
-       if (!mounted) return;
+      if (!mounted) return;
       setState(() {
         print('[DEBUG] -> [STATE] : Surat Masuk Setted from API!');
         _listSurat = data;
@@ -120,6 +120,14 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
       default:
         return Color(0xFF6366F1);
     }
+  }
+
+  void _checkSekretariat() async {
+    final check = await _suratService.isSekretariat();
+
+    setState(() {
+      _isSekretariat = check;
+    });
   }
 
   @override
@@ -1061,6 +1069,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                               index,
                                               items,
                                               refreshEditState,
+                                              _isSekretariat,
                                             ),
                                             (i) => viewDetailAdmin(
                                               context,
@@ -1085,6 +1094,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                               index,
                                               items,
                                               refreshEditState,
+                                              _isSekretariat,
                                             ),
                                             (i) => viewDetailAdmin(
                                               context,
@@ -1099,7 +1109,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
                                             ),
                                           );
                                         },
-                                      ); 
+                                      );
                                     },
                                   ),
                                 ),
@@ -1116,7 +1126,8 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
           );
         },
       ),
-      floatingActionButton: Container(
+      floatingActionButton: _isSekretariat
+      ? Container(
         margin: EdgeInsets.only(bottom: 10),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -1177,7 +1188,7 @@ class _PermohonanLetterPageAdmin extends State<PermohonanLetterPageAdmin>
             ),
           ),
         ),
-      ),
+      ) : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }

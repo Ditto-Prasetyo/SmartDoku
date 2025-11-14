@@ -631,12 +631,13 @@ void editDokumen(
   int index,
   List<SuratMasukModel?> suratData,
   void Function() refreshEditState,
+  bool isSekretariat,
 ) {
   final surat = suratData[index];
   print(
     'Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengolah : ${surat?.pengolah}',
   );
-  showEditSuratDialog(context, index, suratData, refreshEditState);
+  showEditSuratDialog(context, index, suratData, refreshEditState, isSekretariat);
 }
 
 void editDokumenAdmin(
@@ -644,12 +645,13 @@ void editDokumenAdmin(
   int index,
   List<SuratMasukModel?> suratData,
   void Function() refreshEditState,
+  bool isSekretariat,
 ) {
   final surat = suratData[index];
   print(
     '[DEBUG] -> [STATE] :: Edit Document - ID: ${surat?.id}, Judul: ${surat?.nama_surat}, \nPengirim : ${surat?.pengolah}',
   );
-  showEditSuratDialog(context, index, suratData, refreshEditState);
+  showEditSuratDialog(context, index, suratData, refreshEditState, isSekretariat);
 }
 
 void editDokumenAdminKeluar(

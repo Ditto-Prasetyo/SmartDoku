@@ -2182,6 +2182,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                         index,
                                                                         _listSurat,
                                                                         refreshState,
+                                                                        _isSekretariat
                                                                       );
                                                                     },
                                                                     child: Icon(

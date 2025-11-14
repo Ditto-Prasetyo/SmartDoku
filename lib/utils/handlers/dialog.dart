@@ -5217,7 +5217,6 @@ void showModernDownloadFileSuratKeluarDesktopDialog(
                                             statusText.value =
                                                 'Mengunduh file...';
 
-
                                             // TEMPORARY: Fake progress for demo
                                             // HAPUS INI setelah implement real progress!
                                             for (int i = 0; i <= 100; i += 5) {
@@ -5888,7 +5887,8 @@ void showModernDownloadFileSuratMasukMobileDialog(
                                               //         'jpeg',
                                               //       ],
                                               //     );
-                                              outputPath = defaultPath + "/" + fileName;
+                                              outputPath =
+                                                  defaultPath + "/" + fileName;
                                             }
 
                                             if (outputPath == null) {
@@ -6044,16 +6044,23 @@ void showModernDownloadFileSuratMasukMobileDialog(
                                                       // if (Platform.isAndroid) {
                                                       //   Process.run()
                                                       // }
-                                                      final saved = await _suratMasukService.downloadToDefaultAuto(
-                                                        fileId: suratData.nomor_urut,
-                                                        fileName: 'dok_final.pdf',
-                                                        desktopDefaultDir: defaultPath,     // dipakai di desktop
-                                                        overwrite: false,                   // jangan timpa kalau sudah ada
-                                                        uniqueWhenExists: true,             // otomatis bikin " (1)", " (2)", dst
-                                                        onProgress: (rx, total) {
-                                                          // update progress bar lo di UI
-                                                        },
-                                                      );
+                                                      final saved = await _suratMasukService
+                                                          .downloadToDefaultAuto(
+                                                            fileId: suratData
+                                                                .nomor_urut,
+                                                            fileName:
+                                                                'dok_final.pdf',
+                                                            desktopDefaultDir:
+                                                                defaultPath, // dipakai di desktop
+                                                            overwrite:
+                                                                false, // jangan timpa kalau sudah ada
+                                                            uniqueWhenExists:
+                                                                true, // otomatis bikin " (1)", " (2)", dst
+                                                            onProgress:
+                                                                (rx, total) {
+                                                                  // update progress bar lo di UI
+                                                                },
+                                                          );
                                                     },
                                                   ),
                                                 ),
@@ -6614,7 +6621,6 @@ void showModernDownloadFileSuratKeluarMobileDialog(
                                             statusText.value =
                                                 'Mengunduh file...';
 
-
                                             // TEMPORARY: Fake progress for demo
                                             // HAPUS INI setelah implement real progress!
                                             for (int i = 0; i <= 100; i += 5) {
@@ -6918,7 +6924,6 @@ void showModernDownloadFileSuratKeluarMobileDialog(
     },
   );
 }
-
 
 // Tambah Surat Masuk dan Keluar
 
@@ -8226,6 +8231,7 @@ void showEditSuratDialog(
   int index,
   List<SuratMasukModel?> suratData,
   void Function() refreshState,
+  bool isSekretariat,
 ) {
   final selectedSurat = suratData[index];
   // Controllers untuk form
@@ -8504,362 +8510,370 @@ void showEditSuratDialog(
                                     SizedBox(height: 25),
 
                                     // Form Fields
-                                    buildInputField(
-                                      'Judul Surat',
-                                      judulController,
-                                      Icons.title_rounded,
-                                      maxLines: 2,
-                                    ),
+                                    if (isSekretariat) ...[
+                                      buildInputField(
+                                        'Judul Surat',
+                                        judulController,
+                                        Icons.title_rounded,
+                                        maxLines: 2,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildDateInputField(
-                                      'Diterima Tanggal',
-                                      tanggalController,
-                                      Icons.event_available_rounded,
-                                      context,
-                                      maxLines: 1,
-                                    ),
+                                      buildDateInputField(
+                                        'Diterima Tanggal',
+                                        tanggalController,
+                                        Icons.event_available_rounded,
+                                        context,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildDateInputField(
-                                      'Tanggal Surat',
-                                      tanggalSuratController,
-                                      Icons.event_note_rounded,
-                                      context,
-                                      maxLines: 1,
-                                    ),
+                                      buildDateInputField(
+                                        'Tanggal Surat',
+                                        tanggalSuratController,
+                                        Icons.event_note_rounded,
+                                        context,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'Kode',
-                                      kodeController,
-                                      Icons.qr_code_2_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'Kode',
+                                        kodeController,
+                                        Icons.qr_code_2_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'No Agenda',
-                                      noagendaController,
-                                      Icons.assignment_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'No Agenda',
+                                        noagendaController,
+                                        Icons.assignment_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'No Surat',
-                                      nosuratController,
-                                      Icons.markunread_mailbox_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'No Surat',
+                                        nosuratController,
+                                        Icons.markunread_mailbox_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'Hal',
-                                      perihalController,
-                                      Icons.subject_rounded,
-                                      maxLines: 2,
-                                    ),
+                                      buildInputField(
+                                        'Hal',
+                                        perihalController,
+                                        Icons.subject_rounded,
+                                        maxLines: 2,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildDayDateTimeInputField(
-                                      'Hari - Tanggal - Waktu',
-                                      hariTanggalWaktuController,
-                                      Icons.today_rounded,
-                                      context,
-                                      maxLines: 1,
-                                    ),
+                                      buildDayDateTimeInputField(
+                                        'Hari - Tanggal - Waktu',
+                                        hariTanggalWaktuController,
+                                        Icons.today_rounded,
+                                        context,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'Tempat',
-                                      tempatController,
-                                      Icons.location_on_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'Tempat',
+                                        tempatController,
+                                        Icons.location_on_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    // Multi-Select Disposisi Dropdown
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Disposisi',
-                                          style: TextStyle(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.9,
-                                            ),
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                            decoration: TextDecoration.none,
-                                          ),
-                                        ),
-                                        SizedBox(height: 8),
-                                        Container(
-                                          width: double.infinity,
-                                          padding: EdgeInsets.all(15),
-                                          decoration: BoxDecoration(
-                                            gradient: LinearGradient(
-                                              colors: [
-                                                Colors.white.withValues(
-                                                  alpha: 0.1,
-                                                ),
-                                                Colors.white.withValues(
-                                                  alpha: 0.05,
-                                                ),
-                                              ],
-                                            ),
-                                            borderRadius: BorderRadius.circular(
-                                              15,
-                                            ),
-                                            border: Border.all(
+                                      // Multi-Select Disposisi Dropdown
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Disposisi',
+                                            style: TextStyle(
                                               color: Colors.white.withValues(
-                                                alpha: 0.2,
+                                                alpha: 0.9,
                                               ),
-                                              width: 1,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                              decoration: TextDecoration.none,
                                             ),
                                           ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // tampilkan disposisi yang sudah ada
-                                              if (selectedDisposisi
-                                                  .isNotEmpty) ...[
-                                                Wrap(
-                                                  spacing: 8,
-                                                  runSpacing: 8,
-                                                  children: selectedDisposisi.map((
-                                                    disp,
-                                                  ) {
-                                                    return Container(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                            horizontal: 12,
-                                                            vertical: 6,
-                                                          ),
-                                                      decoration: BoxDecoration(
-                                                        gradient:
-                                                            LinearGradient(
-                                                              colors: [
-                                                                Color(
-                                                                  0xFF4F46E5,
-                                                                ).withValues(
+                                          SizedBox(height: 8),
+                                          Container(
+                                            width: double.infinity,
+                                            padding: EdgeInsets.all(15),
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                colors: [
+                                                  Colors.white.withValues(
+                                                    alpha: 0.1,
+                                                  ),
+                                                  Colors.white.withValues(
+                                                    alpha: 0.05,
+                                                  ),
+                                                ],
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              border: Border.all(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.2,
+                                                ),
+                                                width: 1,
+                                              ),
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                // tampilkan disposisi yang sudah ada
+                                                if (selectedDisposisi
+                                                    .isNotEmpty) ...[
+                                                  Wrap(
+                                                    spacing: 8,
+                                                    runSpacing: 8,
+                                                    children: selectedDisposisi.map((
+                                                      disp,
+                                                    ) {
+                                                      return Container(
+                                                        padding:
+                                                            EdgeInsets.symmetric(
+                                                              horizontal: 12,
+                                                              vertical: 6,
+                                                            ),
+                                                        decoration: BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                                colors: [
+                                                                  Color(
+                                                                    0xFF4F46E5,
+                                                                  ).withValues(
+                                                                    alpha: 0.3,
+                                                                  ),
+                                                                  Color(
+                                                                    0xFF7C3AED,
+                                                                  ).withValues(
+                                                                    alpha: 0.2,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                20,
+                                                              ),
+                                                          border: Border.all(
+                                                            color: Colors.white
+                                                                .withValues(
                                                                   alpha: 0.3,
                                                                 ),
-                                                                Color(
-                                                                  0xFF7C3AED,
-                                                                ).withValues(
-                                                                  alpha: 0.2,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                        border: Border.all(
-                                                          color: Colors.white
-                                                              .withValues(
-                                                                alpha: 0.3,
-                                                              ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Text(
-                                                            disp,
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 12,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .none,
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              disp,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .none,
+                                                              ),
                                                             ),
-                                                          ),
-                                                          SizedBox(width: 6),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              setState(() {
-                                                                selectedDisposisi
-                                                                    .remove(
-                                                                      disp,
-                                                                    );
-                                                              });
-                                                            },
-                                                            child: Icon(
-                                                              Icons.close,
-                                                              size: 16,
-                                                              color: Colors
-                                                                  .white
-                                                                  .withValues(
-                                                                    alpha: 0.8,
-                                                                  ),
+                                                            SizedBox(width: 6),
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  selectedDisposisi
+                                                                      .remove(
+                                                                        disp,
+                                                                      );
+                                                                });
+                                                              },
+                                                              child: Icon(
+                                                                Icons.close,
+                                                                size: 16,
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.8,
+                                                                    ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                                SizedBox(height: 12),
-                                              ],
-
-                                              // dropdown untuk tambah disposisi lagi
-                                              Container(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: 12,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.05),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  border: Border.all(
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.1),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }).toList(),
                                                   ),
-                                                ),
-                                                child: DropdownButtonHideUnderline(
-                                                  child: DropdownButton<String>(
-                                                    hint: Text(
-                                                      'Pilih Disposisi',
-                                                      style: TextStyle(
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.6,
-                                                            ),
-                                                        fontSize: 14,
-                                                      ),
-                                                    ),
-                                                    value: null,
-                                                    isExpanded: true,
-                                                    dropdownColor: Color(
-                                                      0xFF1F2937,
-                                                    ),
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 14,
-                                                      fontFamily: 'Roboto',
-                                                    ),
-                                                    icon: Icon(
-                                                      Icons.add,
+                                                  SizedBox(height: 12),
+                                                ],
+
+                                                // dropdown untuk tambah disposisi lagi
+                                                Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.05,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                    border: Border.all(
                                                       color: Colors.white
                                                           .withValues(
-                                                            alpha: 0.7,
+                                                            alpha: 0.1,
                                                           ),
-                                                      size: 20,
                                                     ),
-                                                    items: listWorkfields
-                                                        .where(
-                                                          (field) =>
-                                                              !selectedDisposisi
-                                                                  .contains(
-                                                                    field,
+                                                  ),
+                                                  child: DropdownButtonHideUnderline(
+                                                    child: DropdownButton<String>(
+                                                      hint: Text(
+                                                        'Pilih Disposisi',
+                                                        style: TextStyle(
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.6,
+                                                              ),
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      value: null,
+                                                      isExpanded: true,
+                                                      dropdownColor: Color(
+                                                        0xFF1F2937,
+                                                      ),
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 14,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                      icon: Icon(
+                                                        Icons.add,
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.7,
+                                                            ),
+                                                        size: 20,
+                                                      ),
+                                                      items: listWorkfields
+                                                          .where(
+                                                            (field) =>
+                                                                !selectedDisposisi
+                                                                    .contains(
+                                                                      field,
+                                                                    ),
+                                                          )
+                                                          .map((field) {
+                                                            return DropdownMenuItem<
+                                                              String
+                                                            >(
+                                                              value: field,
+                                                              child: Row(
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .work_outline,
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.7,
+                                                                        ),
+                                                                    size: 16,
                                                                   ),
-                                                        )
-                                                        .map((field) {
-                                                          return DropdownMenuItem<
-                                                            String
-                                                          >(
-                                                            value: field,
-                                                            child: Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .work_outline,
-                                                                  color: Colors
-                                                                      .white
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            0.7,
+                                                                  SizedBox(
+                                                                    width: 8,
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      field,
+                                                                      style: TextStyle(
+                                                                        fontSize:
+                                                                            14,
                                                                       ),
-                                                                  size: 16,
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 8,
-                                                                ),
-                                                                Expanded(
-                                                                  child: Text(
-                                                                    field,
-                                                                    style: TextStyle(
-                                                                      fontSize:
-                                                                          14,
                                                                     ),
                                                                   ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        })
-                                                        .toList(),
-                                                    onChanged: (String? value) {
-                                                      if (value != null &&
-                                                          !selectedDisposisi
-                                                              .contains(
-                                                                value,
-                                                              )) {
-                                                        setState(() {
-                                                          selectedDisposisi.add(
-                                                            value,
-                                                          );
-                                                        });
-                                                      }
-                                                    },
+                                                                ],
+                                                              ),
+                                                            );
+                                                          })
+                                                          .toList(),
+                                                      onChanged: (String? value) {
+                                                        if (value != null &&
+                                                            !selectedDisposisi
+                                                                .contains(
+                                                                  value,
+                                                                )) {
+                                                          setState(() {
+                                                            selectedDisposisi
+                                                                .add(value);
+                                                          });
+                                                        }
+                                                      },
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
+                                        ],
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'Index',
-                                      indexController,
-                                      Icons.people_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'Index',
+                                        indexController,
+                                        Icons.people_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'Pengolah',
-                                      pengolahController,
-                                      Icons.manage_accounts_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'Pengolah',
+                                        pengolahController,
+                                        Icons.manage_accounts_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'Sifat',
-                                      sifatController,
-                                      Icons.priority_high_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'Sifat',
+                                        sifatController,
+                                        Icons.priority_high_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
+                                    ],
 
+                                    // link scan
                                     StatefulBuilder(
                                       builder: (context, setStateLocal) {
                                         return Column(
@@ -9171,43 +9185,45 @@ void showEditSuratDialog(
 
                                     SizedBox(height: 20),
 
-                                    buildDateInputField(
-                                      'Disposisi Kadin',
-                                      disposisikadinController,
-                                      Icons.people_alt_rounded,
-                                      context,
-                                      maxLines: 1,
-                                    ),
+                                    if (isSekretariat) ...[
+                                      buildDateInputField(
+                                        'Disposisi Kadin',
+                                        disposisikadinController,
+                                        Icons.people_alt_rounded,
+                                        context,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'Catatan Disposisi Kadin',
-                                      notesDisposisiKadinController,
-                                      Icons.sticky_note_2_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'Catatan Disposisi Kadin',
+                                        notesDisposisiKadinController,
+                                        Icons.sticky_note_2_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildDateInputField(
-                                      'Disposisi Sekdin',
-                                      disposisisekdinController,
-                                      Icons.people_alt_rounded,
-                                      context,
-                                      maxLines: 1,
-                                    ),
+                                      buildDateInputField(
+                                        'Disposisi Sekdin',
+                                        disposisisekdinController,
+                                        Icons.people_alt_rounded,
+                                        context,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
 
-                                    buildInputField(
-                                      'Catatan Disposisi Sekdin',
-                                      notesDisposisiSekdinController,
-                                      Icons.sticky_note_2_rounded,
-                                      maxLines: 1,
-                                    ),
+                                      buildInputField(
+                                        'Catatan Disposisi Sekdin',
+                                        notesDisposisiSekdinController,
+                                        Icons.sticky_note_2_rounded,
+                                        maxLines: 1,
+                                      ),
 
-                                    SizedBox(height: 20),
+                                      SizedBox(height: 20),
+                                    ],
 
                                     buildDateInputField(
                                       'Disposisi Kabid',
@@ -9793,269 +9809,427 @@ void showEditSuratKeluarDialog(
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
-              child: _isLoading ? 
-              Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  ),
-              ) :
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 40),
-                height: MediaQuery.of(context).size.height * 0.9,
-                width:
-                    (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                    ? size.width / 2
-                    : size.width,
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.9,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 30,
-                      spreadRadius: 5,
-                      offset: Offset(0, 15),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Container(
-                        padding: EdgeInsets.all(25),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.white.withValues(alpha: 0.2),
-                              Colors.white.withValues(alpha: 0.1),
-                            ],
+              child: _isLoading
+                  ? Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
+                      ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 40,
+                      ),
+                      height: MediaQuery.of(context).size.height * 0.9,
+                      width:
+                          (Platform.isWindows ||
+                              Platform.isLinux ||
+                              Platform.isMacOS)
+                          ? size.width / 2
+                          : size.width,
+                      constraints: BoxConstraints(
+                        maxHeight: MediaQuery.of(context).size.height * 0.9,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 30,
+                            spreadRadius: 5,
+                            offset: Offset(0, 15),
                           ),
-                          border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            width: 1.5,
-                          ),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Header
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Color(
-                                            0xFF4F46E5,
-                                          ).withValues(alpha: 0.3),
-                                          Color(
-                                            0xFF7C3AED,
-                                          ).withValues(alpha: 0.2),
-                                        ],
-                                      ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(
-                                            0xFF4F46E5,
-                                          ).withValues(alpha: 0.3),
-                                          blurRadius: 15,
-                                          spreadRadius: 2,
-                                        ),
-                                      ],
-                                    ),
-                                    child: Icon(
-                                      Icons.edit_document,
-                                      color: Colors.white,
-                                      size: 24,
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Expanded(
-                                    child: Text(
-                                      'Edit Surat',
-                                      style: TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () => Navigator.pop(context),
-                                    child: Container(
-                                      padding: EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.1,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: Colors.white.withValues(
-                                          alpha: 0.8,
-                                        ),
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Container(
+                              padding: EdgeInsets.all(25),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.white.withValues(alpha: 0.2),
+                                    Colors.white.withValues(alpha: 0.1),
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.2),
+                                  width: 1.5,
+                                ),
+                                borderRadius: BorderRadius.circular(24),
                               ),
-
-                              SizedBox(height: 25),
-
-                              // Form Fields
-                              buildInputField(
-                                'Kode',
-                                kodeController,
-                                Icons.qr_code_2_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-                              buildInputField(
-                                'Klasifikasi',
-                                klasifikasiController,
-                                Icons.category_rounded,
-                                maxLines: 2,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Nomor Register',
-                                noregisterController,
-                                Icons.receipt_long_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Tujuan Surat',
-                                tujuansuratController,
-                                Icons.send_rounded,
-                                maxLines: 2,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Perihal',
-                                perihalController,
-                                Icons.subject_rounded,
-                                maxLines: 2,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildDatePickerField(
-                                label: 'Tanggal Surat',
-                                controller: tglsuratController,
-                                icon: Icons.date_range_rounded,
-                                context: context,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Ket. Klasifikasi Keamanan \n& Akses Arsip',
-                                klasifikasiarsipController,
-                                Icons.lock_clock_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              // Multi-Select Pengolah Dropdown
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Pengolah',
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.9,
-                                      ),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.none,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    width: double.infinity,
-                                    padding: EdgeInsets.all(15),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white.withValues(alpha: 0.1),
-                                          Colors.white.withValues(alpha: 0.05),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Header
+                                    Row(
                                       children: [
-                                        // Dropdown to add more disposisi
                                         Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                          ),
+                                          padding: EdgeInsets.all(12),
                                           decoration: BoxDecoration(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.05,
+                                            shape: BoxShape.circle,
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Color(
+                                                  0xFF4F46E5,
+                                                ).withValues(alpha: 0.3),
+                                                Color(
+                                                  0xFF7C3AED,
+                                                ).withValues(alpha: 0.2),
+                                              ],
                                             ),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Color(
+                                                  0xFF4F46E5,
+                                                ).withValues(alpha: 0.3),
+                                                blurRadius: 15,
+                                                spreadRadius: 2,
+                                              ),
+                                            ],
+                                          ),
+                                          child: Icon(
+                                            Icons.edit_document,
+                                            color: Colors.white,
+                                            size: 24,
+                                          ),
+                                        ),
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          child: Text(
+                                            'Edit Surat',
+                                            style: TextStyle(
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                              letterSpacing: 0.5,
+                                              decoration: TextDecoration.none,
                                             ),
-                                            border: Border.all(
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () => Navigator.pop(context),
+                                          child: Container(
+                                            padding: EdgeInsets.all(8),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
                                               color: Colors.white.withValues(
                                                 alpha: 0.1,
                                               ),
                                             ),
+                                            child: Icon(
+                                              Icons.close,
+                                              color: Colors.white.withValues(
+                                                alpha: 0.8,
+                                              ),
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(height: 25),
+
+                                    // Form Fields
+                                    buildInputField(
+                                      'Kode',
+                                      kodeController,
+                                      Icons.qr_code_2_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+                                    buildInputField(
+                                      'Klasifikasi',
+                                      klasifikasiController,
+                                      Icons.category_rounded,
+                                      maxLines: 2,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Nomor Register',
+                                      noregisterController,
+                                      Icons.receipt_long_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Tujuan Surat',
+                                      tujuansuratController,
+                                      Icons.send_rounded,
+                                      maxLines: 2,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Perihal',
+                                      perihalController,
+                                      Icons.subject_rounded,
+                                      maxLines: 2,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildDatePickerField(
+                                      label: 'Tanggal Surat',
+                                      controller: tglsuratController,
+                                      icon: Icons.date_range_rounded,
+                                      context: context,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Ket. Klasifikasi Keamanan \n& Akses Arsip',
+                                      klasifikasiarsipController,
+                                      Icons.lock_clock_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    // Multi-Select Pengolah Dropdown
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Pengolah',
+                                          style: TextStyle(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.9,
+                                            ),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Container(
+                                          width: double.infinity,
+                                          padding: EdgeInsets.all(15),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                                Colors.white.withValues(
+                                                  alpha: 0.05,
+                                                ),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.2,
+                                              ),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              // Dropdown to add more disposisi
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.05),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                    color: Colors.white
+                                                        .withValues(alpha: 0.1),
+                                                  ),
+                                                ),
+                                                child: DropdownButtonHideUnderline(
+                                                  child: DropdownButton<String>(
+                                                    hint: Text(
+                                                      'Pilih Pengolah',
+                                                      style: TextStyle(
+                                                        color: Colors.white
+                                                            .withValues(
+                                                              alpha: 0.6,
+                                                            ),
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    value: selectedPengolah,
+                                                    isExpanded: true,
+                                                    dropdownColor: Color(
+                                                      0xFF1F2937,
+                                                    ),
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                    ),
+                                                    icon: Icon(
+                                                      Icons
+                                                          .keyboard_arrow_down_rounded,
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.7,
+                                                          ),
+                                                    ),
+                                                    items: workFields.entries.map((
+                                                      entry,
+                                                    ) {
+                                                      return DropdownMenuItem<
+                                                        String
+                                                      >(
+                                                        value: entry.value,
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .work_outline,
+                                                              color: Colors
+                                                                  .white
+                                                                  .withValues(
+                                                                    alpha: 0.7,
+                                                                  ),
+                                                              size: 16,
+                                                            ),
+                                                            SizedBox(width: 8),
+                                                            Expanded(
+                                                              child: Text(
+                                                                entry.key,
+                                                                style:
+                                                                    TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged: (String? value) {
+                                                      setState(() {
+                                                        selectedPengolah =
+                                                            value;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Pembuat',
+                                      pembuatController,
+                                      Icons.edit_note_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Catatan',
+                                      catatanController,
+                                      Icons.notes_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Koreksi 1',
+                                      koreksi1Controller,
+                                      Icons.notes_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    buildInputField(
+                                      'Koreksi 2',
+                                      koreksi2Controller,
+                                      Icons.notes_rounded,
+                                      maxLines: 1,
+                                    ),
+
+                                    SizedBox(height: 20),
+
+                                    // Status Dropdown
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Status',
+                                          style: TextStyle(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.9,
+                                            ),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            decoration: TextDecoration.none,
+                                          ),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 15,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                                Colors.white.withValues(
+                                                  alpha: 0.05,
+                                                ),
+                                              ],
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
+                                            border: Border.all(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.2,
+                                              ),
+                                              width: 1,
+                                            ),
                                           ),
                                           child: DropdownButtonHideUnderline(
                                             child: DropdownButton<String>(
-                                              hint: Text(
-                                                'Pilih Pengolah',
-                                                style: TextStyle(
-                                                  color: Colors.white
-                                                      .withValues(alpha: 0.6),
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              value: selectedPengolah,
+                                              value: selectedStatus,
                                               isExpanded: true,
                                               dropdownColor: Color(0xFF1F2937),
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: 14,
+                                                fontSize: 16,
                                                 fontFamily: 'Roboto',
                                               ),
                                               icon: Icon(
@@ -10065,37 +10239,35 @@ void showEditSuratKeluarDialog(
                                                   alpha: 0.7,
                                                 ),
                                               ),
-                                              items: workFields.entries.map((
-                                                entry,
+                                              items: statusOptions.map((
+                                                String status,
                                               ) {
                                                 return DropdownMenuItem<String>(
-                                                  value: entry.value,
+                                                  value: status,
                                                   child: Row(
                                                     children: [
-                                                      Icon(
-                                                        Icons.work_outline,
-                                                        color: Colors.white
-                                                            .withValues(
-                                                              alpha: 0.7,
+                                                      Container(
+                                                        width: 10,
+                                                        height: 10,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              color:
+                                                                  getStatusColor(
+                                                                    status,
+                                                                  ),
                                                             ),
-                                                        size: 16,
                                                       ),
-                                                      SizedBox(width: 8),
-                                                      Expanded(
-                                                        child: Text(
-                                                          entry.key,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ),
+                                                      SizedBox(width: 10),
+                                                      Text(status),
                                                     ],
                                                   ),
                                                 );
                                               }).toList(),
-                                              onChanged: (String? value) {
+                                              onChanged: (String? newValue) {
                                                 setState(() {
-                                                  selectedPengolah = value;
+                                                  selectedStatus = newValue!;
                                                 });
                                               },
                                             ),
@@ -10103,235 +10275,502 @@ void showEditSuratKeluarDialog(
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
 
-                              SizedBox(height: 20),
+                                    SizedBox(height: 30),
 
-                              buildInputField(
-                                'Pembuat',
-                                pembuatController,
-                                Icons.edit_note_rounded,
-                                maxLines: 1,
-                              ),
+                                    StatefulBuilder(
+                                      builder: (context, setStateLocal) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Link Scan (PDF)',
+                                              style: TextStyle(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.9,
+                                                ),
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                            SizedBox(height: 8),
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Colors.white.withValues(
+                                                      alpha: 0.1,
+                                                    ),
+                                                    Colors.white.withValues(
+                                                      alpha: 0.05,
+                                                    ),
+                                                  ],
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                border: Border.all(
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.2),
+                                                  width: 1,
+                                                ),
+                                              ),
+                                              child: Material(
+                                                color: Colors.transparent,
+                                                child: InkWell(
+                                                  onTap: () async {
+                                                    try {
+                                                      FilePickerResult?
+                                                      result = await FilePicker
+                                                          .platform
+                                                          .pickFiles(
+                                                            type:
+                                                                FileType.custom,
+                                                            allowedExtensions: [
+                                                              'pdf',
+                                                            ],
+                                                            allowMultiple:
+                                                                false,
+                                                          );
 
-                              SizedBox(height: 20),
+                                                      if (result != null &&
+                                                          result
+                                                              .files
+                                                              .isNotEmpty) {
+                                                        PlatformFile file =
+                                                            result.files.first;
 
-                              buildInputField(
-                                'Catatan',
-                                catatanController,
-                                Icons.notes_rounded,
-                                maxLines: 1,
-                              ),
+                                                        // Update controller dengan path file baru
+                                                        dokfinalController
+                                                                .text =
+                                                            file.path ?? '';
 
-                              SizedBox(height: 20),
+                                                        setStateLocal(() {
+                                                          fileTarget = file;
+                                                          print(
+                                                            "[DEBUG] -> [STATE] :: File Target? = $fileTarget",
+                                                          );
+                                                        }); // Update UI lokal
 
-                              buildInputField(
-                                'Koreksi 1',
-                                koreksi1Controller,
-                                Icons.notes_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              buildInputField(
-                                'Koreksi 2',
-                                koreksi2Controller,
-                                Icons.notes_rounded,
-                                maxLines: 1,
-                              ),
-
-                              SizedBox(height: 20),
-
-                              // Status Dropdown
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Status',
-                                    style: TextStyle(
-                                      color: Colors.white.withValues(
-                                        alpha: 0.9,
-                                      ),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: TextDecoration.none,
-                                    ),
-                                  ),
-                                  SizedBox(height: 8),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 15,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.white.withValues(alpha: 0.1),
-                                          Colors.white.withValues(alpha: 0.05),
-                                        ],
-                                      ),
-                                      borderRadius: BorderRadius.circular(15),
-                                      border: Border.all(
-                                        color: Colors.white.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                        width: 1,
-                                      ),
-                                    ),
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton<String>(
-                                        value: selectedStatus,
-                                        isExpanded: true,
-                                        dropdownColor: Color(0xFF1F2937),
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontFamily: 'Roboto',
-                                        ),
-                                        icon: Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: Colors.white.withValues(
-                                            alpha: 0.7,
-                                          ),
-                                        ),
-                                        items: statusOptions.map((
-                                          String status,
-                                        ) {
-                                          return DropdownMenuItem<String>(
-                                            value: status,
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 10,
-                                                  height: 10,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    color: getStatusColor(
-                                                      status,
+                                                        ScaffoldMessenger.of(
+                                                          context,
+                                                        ).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              'File berhasil dipilih: ${file.name}',
+                                                            ),
+                                                            backgroundColor:
+                                                                Color(
+                                                                  0xFF10B981,
+                                                                ),
+                                                            behavior:
+                                                                SnackBarBehavior
+                                                                    .floating,
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    10,
+                                                                  ),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                    } catch (e) {
+                                                      ScaffoldMessenger.of(
+                                                        context,
+                                                      ).showSnackBar(
+                                                        SnackBar(
+                                                          content: Text(
+                                                            'Gagal memilih file: $e',
+                                                          ),
+                                                          backgroundColor:
+                                                              Colors.red,
+                                                          behavior:
+                                                              SnackBarBehavior
+                                                                  .floating,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                  },
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                  child: Padding(
+                                                    padding: EdgeInsets.all(15),
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                10,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            gradient:
+                                                                LinearGradient(
+                                                                  colors: [
+                                                                    Color(
+                                                                      0xFF4F46E5,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.3,
+                                                                    ),
+                                                                    Color(
+                                                                      0xFF7C3AED,
+                                                                    ).withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  10,
+                                                                ),
+                                                          ),
+                                                          child: Icon(
+                                                            dokfinalController
+                                                                    .text
+                                                                    .isEmpty
+                                                                ? Icons
+                                                                      .upload_file_rounded
+                                                                : Icons
+                                                                      .insert_drive_file_rounded,
+                                                            color: Colors.white,
+                                                            size: 24,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 15),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                dokfinalController
+                                                                        .text
+                                                                        .isEmpty
+                                                                    ? 'Pilih File PDF Baru'
+                                                                    : 'File Terpilih',
+                                                                style: TextStyle(
+                                                                  color: Colors
+                                                                      .white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.9,
+                                                                      ),
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  decoration:
+                                                                      TextDecoration
+                                                                          .none,
+                                                                ),
+                                                              ),
+                                                              if (dokfinalController
+                                                                  .text
+                                                                  .isNotEmpty) ...[
+                                                                SizedBox(
+                                                                  height: 4,
+                                                                ),
+                                                                Text(
+                                                                  dokfinalController
+                                                                      .text
+                                                                      .split(
+                                                                        '/',
+                                                                      )
+                                                                      .last
+                                                                      .split(
+                                                                        '\\',
+                                                                      )
+                                                                      .last,
+                                                                  style: TextStyle(
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.6,
+                                                                        ),
+                                                                    fontSize:
+                                                                        12,
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .none,
+                                                                  ),
+                                                                  maxLines: 1,
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        if (dokfinalController
+                                                            .text
+                                                            .isNotEmpty)
+                                                          Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              // Button untuk clear file
+                                                              GestureDetector(
+                                                                onTap: () {
+                                                                  dokfinalController
+                                                                      .clear();
+                                                                  setStateLocal(
+                                                                    () {},
+                                                                  );
+                                                                },
+                                                                child: Container(
+                                                                  padding:
+                                                                      EdgeInsets.all(
+                                                                        8,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: Colors
+                                                                        .red
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.2,
+                                                                        ),
+                                                                  ),
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .close_rounded,
+                                                                    color: Colors
+                                                                        .white
+                                                                        .withValues(
+                                                                          alpha:
+                                                                              0.8,
+                                                                        ),
+                                                                    size: 16,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                width: 8,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        Icon(
+                                                          Icons
+                                                              .chevron_right_rounded,
+                                                          color: Colors.white
+                                                              .withValues(
+                                                                alpha: 0.5,
+                                                              ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ),
-                                                SizedBox(width: 10),
-                                                Text(status),
-                                              ],
+                                              ),
                                             ),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            selectedStatus = newValue!;
-                                          });
-                                        },
-                                      ),
+                                          ],
+                                        );
+                                      },
                                     ),
-                                  ),
-                                ],
-                              ),
 
-                              SizedBox(height: 30),
+                                    SizedBox(height: 30),
 
-                              StatefulBuilder(
-                                builder: (context, setStateLocal) {
-                                  return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Link Scan (PDF)',
-                                        style: TextStyle(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.9,
-                                          ),
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          decoration: TextDecoration.none,
-                                        ),
-                                      ),
-                                      SizedBox(height: 8),
-                                      Container(
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              Colors.white.withValues(
-                                                alpha: 0.1,
+                                    buildDatePickerField(
+                                      context: context,
+                                      controller: dokdikirimtglController,
+                                      label: "Dok Dikirim",
+                                      icon: Icons.date_range,
+                                    ),
+
+                                    SizedBox(height: 30),
+
+                                    buildDatePickerField(
+                                      context: context,
+                                      controller: tandaterimaController,
+                                      label: "Tanda Terima",
+                                      icon: Icons.document_scanner,
+                                    ),
+
+                                    // Action Buttons
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: OutlinedButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context),
+                                            style: OutlinedButton.styleFrom(
+                                              foregroundColor: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 15,
                                               ),
-                                              Colors.white.withValues(
-                                                alpha: 0.05,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
                                               ),
-                                            ],
-                                          ),
-                                          borderRadius: BorderRadius.circular(
-                                            15,
-                                          ),
-                                          border: Border.all(
-                                            color: Colors.white.withValues(
-                                              alpha: 0.2,
+                                              side: BorderSide(
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.3,
+                                                ),
+                                                width: 1.5,
+                                              ),
                                             ),
-                                            width: 1,
+                                            child: Text(
+                                              'Batal',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                letterSpacing: 0.5,
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        child: Material(
-                                          color: Colors.transparent,
-                                          child: InkWell(
-                                            onTap: () async {
+                                        SizedBox(width: 15),
+                                        Expanded(
+                                          flex: 2,
+                                          child: ElevatedButton(
+                                            onPressed: () async {
                                               try {
-                                                FilePickerResult? result =
-                                                    await FilePicker.platform
-                                                        .pickFiles(
-                                                          type: FileType.custom,
-                                                          allowedExtensions: [
-                                                            'pdf',
-                                                          ],
-                                                          allowMultiple: false,
-                                                        );
+                                                // Update pengolah controller dengan selected values
+                                                pengolahController.text =
+                                                    selectedPengolah ?? '';
 
-                                                if (result != null &&
-                                                    result.files.isNotEmpty) {
-                                                  PlatformFile file =
-                                                      result.files.first;
+                                                setState(
+                                                  () => _isLoading = true,
+                                                );
 
-                                                  // Update controller dengan path file baru
-                                                  dokfinalController.text =
-                                                      file.path ?? '';
-
-                                                  setStateLocal(
-                                                    () {
-                                                      fileTarget = file;
-                                                      print("[DEBUG] -> [STATE] :: File Target? = $fileTarget");
-                                                    },
-                                                  ); // Update UI lokal
-
-                                                  ScaffoldMessenger.of(
-                                                    context,
-                                                  ).showSnackBar(
-                                                    SnackBar(
-                                                      content: Text(
-                                                        'File berhasil dipilih: ${file.name}',
+                                                // Update data
+                                                final data = await _suratKeluarService
+                                                    .editSurat(
+                                                      nomor_urut: selectedSurat
+                                                          .nomor_urut,
+                                                      kode: kodeController.text,
+                                                      akses_arsip:
+                                                          klasifikasiarsipController
+                                                              .text,
+                                                      tanggal_surat:
+                                                          parseDateTime(
+                                                            tglsuratController
+                                                                .text,
+                                                          ),
+                                                      catatan: catatanController
+                                                          .text,
+                                                      status:
+                                                          selectedStatus, // FIX: Gunakan selectedStatus yang sebenarnya
+                                                      tujuan_surat:
+                                                          tujuansuratController
+                                                              .text,
+                                                      pembuat: pembuatController
+                                                          .text,
+                                                      klasifikasi:
+                                                          klasifikasiController
+                                                              .text,
+                                                      koreksi_1:
+                                                          koreksi1Controller
+                                                              .text,
+                                                      koreksi_2:
+                                                          koreksi2Controller
+                                                              .text,
+                                                      link_surat:
+                                                          linksuratController
+                                                              .text,
+                                                      no_register:
+                                                          noregisterController
+                                                              .text,
+                                                      pengolah:
+                                                          pengolahController
+                                                              .text,
+                                                      perihal: perihalController
+                                                          .text,
+                                                      tanda_terima:
+                                                          parseDateTime(
+                                                            tandaterimaController
+                                                                .text,
+                                                          ),
+                                                      dok_final:
+                                                          dokfinalController
+                                                              .text,
+                                                      dok_dikirim: parseDateTime(
+                                                        dokdikirimtglController
+                                                            .text,
                                                       ),
-                                                      backgroundColor: Color(
-                                                        0xFF10B981,
-                                                      ),
-                                                      behavior: SnackBarBehavior
-                                                          .floating,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              10,
-                                                            ),
-                                                      ),
-                                                    ),
+                                                    );
+
+                                                print(
+                                                  "[DEBUG] -> [STATUS] : Edit Status",
+                                                );
+
+                                                if (fileTarget != null) {
+                                                  final fileUpload =
+                                                      await _suratKeluarService
+                                                          .editUploadFile(
+                                                            data!.nomor_urut,
+                                                            fileTarget!,
+                                                          );
+                                                  print(
+                                                    "[DEBUG] -> [STATE] :: File Uploaded? = $fileUpload",
+                                                  );
+                                                } else if (dokfinalController
+                                                        .text ==
+                                                    '') {
+                                                  final fileDeleted =
+                                                      await _suratKeluarService
+                                                          .deleteFile(
+                                                            data!.nomor_urut,
+                                                          );
+                                                  print(
+                                                    "[DEBUG] -> [STATE] :: File deleted? = $fileDeleted",
                                                   );
                                                 }
-                                              } catch (e) {
+                                                print(data);
+
+                                                // Refresh state
+                                                refreshState();
+
+                                                // Close dialog
+                                                Navigator.pop(context);
+
+                                                // Show success message
                                                 ScaffoldMessenger.of(
                                                   context,
                                                 ).showSnackBar(
                                                   SnackBar(
                                                     content: Text(
-                                                      'Gagal memilih file: $e',
+                                                      'Surat berhasil diperbarui!',
+                                                    ),
+                                                    backgroundColor: Color(
+                                                      0xFF10B981,
+                                                    ),
+                                                    behavior: SnackBarBehavior
+                                                        .floating,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            10,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                );
+                                              } catch (e) {
+                                                // Handle error
+                                                print(
+                                                  "[ERROR] -> Edit Surat: $e",
+                                                );
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Gagal memperbarui surat: $e',
                                                     ),
                                                     backgroundColor: Colors.red,
                                                     behavior: SnackBarBehavior
@@ -10344,378 +10783,60 @@ void showEditSuratKeluarDialog(
                                                     ),
                                                   ),
                                                 );
+                                              } finally {
+                                                setState(
+                                                  () => _isLoading = false,
+                                                );
                                               }
                                             },
-                                            borderRadius: BorderRadius.circular(
-                                              15,
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(15),
-                                              child: Row(
-                                                children: [
-                                                  Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    decoration: BoxDecoration(
-                                                      gradient: LinearGradient(
-                                                        colors: [
-                                                          Color(
-                                                            0xFF4F46E5,
-                                                          ).withValues(
-                                                            alpha: 0.3,
-                                                          ),
-                                                          Color(
-                                                            0xFF7C3AED,
-                                                          ).withValues(
-                                                            alpha: 0.2,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            10,
-                                                          ),
-                                                    ),
-                                                    child: Icon(
-                                                      dokfinalController
-                                                              .text
-                                                              .isEmpty
-                                                          ? Icons
-                                                                .upload_file_rounded
-                                                          : Icons
-                                                                .insert_drive_file_rounded,
-                                                      color: Colors.white,
-                                                      size: 24,
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 15),
-                                                  Expanded(
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          dokfinalController
-                                                                  .text
-                                                                  .isEmpty
-                                                              ? 'Pilih File PDF Baru'
-                                                              : 'File Terpilih',
-                                                          style: TextStyle(
-                                                            color: Colors.white
-                                                                .withValues(
-                                                                  alpha: 0.9,
-                                                                ),
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            decoration:
-                                                                TextDecoration
-                                                                    .none,
-                                                          ),
-                                                        ),
-                                                        if (dokfinalController
-                                                            .text
-                                                            .isNotEmpty) ...[
-                                                          SizedBox(height: 4),
-                                                          Text(
-                                                            dokfinalController
-                                                                .text
-                                                                .split('/')
-                                                                .last
-                                                                .split('\\')
-                                                                .last,
-                                                            style: TextStyle(
-                                                              color: Colors
-                                                                  .white
-                                                                  .withValues(
-                                                                    alpha: 0.6,
-                                                                  ),
-                                                              fontSize: 12,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .none,
-                                                            ),
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ],
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  if (dokfinalController
-                                                      .text
-                                                      .isNotEmpty)
-                                                    Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        // Button untuk clear file
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            dokfinalController
-                                                                .clear();
-                                                            setStateLocal(
-                                                              () {},
-                                                            );
-                                                          },
-                                                          child: Container(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                  8,
-                                                                ),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .circle,
-                                                                  color: Colors
-                                                                      .red
-                                                                      .withValues(
-                                                                        alpha:
-                                                                            0.2,
-                                                                      ),
-                                                                ),
-                                                            child: Icon(
-                                                              Icons
-                                                                  .close_rounded,
-                                                              color: Colors
-                                                                  .white
-                                                                  .withValues(
-                                                                    alpha: 0.8,
-                                                                  ),
-                                                              size: 16,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 8),
-                                                      ],
-                                                    ),
-                                                  Icon(
-                                                    Icons.chevron_right_rounded,
-                                                    color: Colors.white
-                                                        .withValues(alpha: 0.5),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-
-                              SizedBox(height: 30),
-
-                              buildDatePickerField(
-                                context: context,
-                                controller: dokdikirimtglController,
-                                label: "Dok Dikirim",
-                                icon: Icons.date_range,
-                              ),
-
-                              SizedBox(height: 30),
-
-                              buildDatePickerField(
-                                context: context,
-                                controller: tandaterimaController,
-                                label: "Tanda Terima",
-                                icon: Icons.document_scanner,
-                              ),
-
-                              // Action Buttons
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: OutlinedButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 15,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            15,
-                                          ),
-                                        ),
-                                        side: BorderSide(
-                                          color: Colors.white.withValues(
-                                            alpha: 0.3,
-                                          ),
-                                          width: 1.5,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        'Batal',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Expanded(
-                                    flex: 2,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        try {
-                                          // Update pengolah controller dengan selected values
-                                          pengolahController.text =
-                                              selectedPengolah ?? '';
-
-                                          setState(() => _isLoading = true);
-
-                                          // Update data
-                                          final data = await _suratKeluarService
-                                              .editSurat(
-                                                nomor_urut:
-                                                    selectedSurat.nomor_urut,
-                                                kode: kodeController.text,
-                                                akses_arsip:
-                                                    klasifikasiarsipController
-                                                        .text,
-                                                tanggal_surat: parseDateTime(
-                                                  tglsuratController.text,
-                                                ),
-                                                catatan: catatanController.text,
-                                                status:
-                                                    selectedStatus, // FIX: Gunakan selectedStatus yang sebenarnya
-                                                tujuan_surat:
-                                                    tujuansuratController.text,
-                                                pembuat: pembuatController.text,
-                                                klasifikasi:
-                                                    klasifikasiController.text,
-                                                koreksi_1:
-                                                    koreksi1Controller.text,
-                                                koreksi_2:
-                                                    koreksi2Controller.text,
-                                                link_surat:
-                                                    linksuratController.text,
-                                                no_register:
-                                                    noregisterController.text,
-                                                pengolah:
-                                                    pengolahController.text,
-                                                perihal: perihalController.text,
-                                                tanda_terima: parseDateTime(
-                                                  tandaterimaController.text,
-                                                ),
-                                                dok_final:
-                                                    dokfinalController.text,
-                                                dok_dikirim: parseDateTime(
-                                                  dokdikirimtglController.text,
-                                                ),
-                                              );
-
-                                          print(
-                                            "[DEBUG] -> [STATUS] : Edit Status",
-                                          );
-
-                                          if (fileTarget != null) {
-                                            final fileUpload = await _suratKeluarService.editUploadFile(data!.nomor_urut, fileTarget!);
-                                            print("[DEBUG] -> [STATE] :: File Uploaded? = $fileUpload");
-                                          } else if (dokfinalController.text == '') {
-                                            final fileDeleted = await _suratKeluarService.deleteFile(data!.nomor_urut);
-                                            print("[DEBUG] -> [STATE] :: File deleted? = $fileDeleted");
-                                          }
-                                          print(data);
-
-                                          // Refresh state
-                                          refreshState();
-
-                                          // Close dialog
-                                          Navigator.pop(context);
-
-                                          // Show success message
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Surat berhasil diperbarui!',
-                                              ),
+                                            style: ElevatedButton.styleFrom(
                                               backgroundColor: Color(
                                                 0xFF10B981,
                                               ),
-                                              behavior:
-                                                  SnackBarBehavior.floating,
+                                              foregroundColor: Colors.white,
+                                              padding: EdgeInsets.symmetric(
+                                                vertical: 15,
+                                              ),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                    BorderRadius.circular(15),
                                               ),
+                                              elevation: 8,
+                                              shadowColor: Color(
+                                                0xFF10B981,
+                                              ).withValues(alpha: 0.4),
                                             ),
-                                          );
-                                        } catch (e) {
-                                          // Handle error
-                                          print("[ERROR] -> Edit Surat: $e");
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Gagal memperbarui surat: $e',
-                                              ),
-                                              backgroundColor: Colors.red,
-                                              behavior:
-                                                  SnackBarBehavior.floating,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                            ),
-                                          );
-                                        } finally {
-                                          setState(() => _isLoading = false);
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Color(0xFF10B981),
-                                        foregroundColor: Colors.white,
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 15,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            15,
-                                          ),
-                                        ),
-                                        elevation: 8,
-                                        shadowColor: Color(
-                                          0xFF10B981,
-                                        ).withValues(alpha: 0.4),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.save_rounded, size: 20),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            'Simpan Perubahan',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
-                                              letterSpacing: 0.5,
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.save_rounded,
+                                                  size: 20,
+                                                ),
+                                                SizedBox(width: 8),
+                                                Text(
+                                                  'Simpan Perubahan',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.w600,
+                                                    letterSpacing: 0.5,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
             ),
           );
         },
@@ -12376,7 +12497,11 @@ void showDetailActionMenuMasuk(
                       color: Color(0xFF10B981),
                       onTap: () {
                         Navigator.pop(context);
-                        DownloadDokumenMobileAdminMasuk(context, nomor_urut, suratData);
+                        DownloadDokumenMobileAdminMasuk(
+                          context,
+                          nomor_urut,
+                          suratData,
+                        );
                       },
                     ),
 
@@ -12458,7 +12583,11 @@ void showDetailActionMenuKeluar(
                       color: Color(0xFF10B981),
                       onTap: () {
                         Navigator.pop(context);
-                        DownloadDokumenMobileAdminKeluar(context, nomor_urut, suratData);
+                        DownloadDokumenMobileAdminKeluar(
+                          context,
+                          nomor_urut,
+                          suratData,
+                        );
                       },
                     ),
 
@@ -13259,7 +13388,8 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                           _showModernDownloadDisposisiDialog(
                             context: context,
                             title: 'Mengunduh Dokumen',
-                            message: 'Sedang mempersiapkan dokumen disposisi untuk diprint...',
+                            message:
+                                'Sedang mempersiapkan dokumen disposisi untuk diprint...',
                             accentColor: Color(0xFF3B82F6),
                             accentColor2: Color(0xFF2563EB),
                             currentNomorUrut: currentNomorUrut,
@@ -13294,12 +13424,16 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                       buildActionMenuItem(
                         icon: Icons.download_rounded,
                         title: 'Download Disposisi',
-                        subtitle: 'Unduh dokumen dalam format yang anda inginkan',
+                        subtitle:
+                            'Unduh dokumen dalam format yang anda inginkan',
                         color: Color(0xFF10B981),
                         onTap: () {
                           Navigator.pop(context);
                           // Ganti ke modern download dialog
-                          _showModernDownloadChoiceDialog(context, currentNomorUrut);
+                          _showModernDownloadChoiceDialog(
+                            context,
+                            currentNomorUrut,
+                          );
                         },
                       ),
                     ],
@@ -13325,10 +13459,7 @@ void _showModernDownloadChoiceDialog(BuildContext context, String? nomorUrut) {
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOutBack,
-        ),
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         child: FadeTransition(opacity: animation, child: child),
       );
     },
@@ -13455,7 +13586,9 @@ void _showModernDownloadChoiceDialog(BuildContext context, String? nomorUrut) {
                               borderRadius: BorderRadius.circular(16),
                             ),
                             elevation: 8,
-                            shadowColor: Color(0xFF2962FF).withValues(alpha: 0.5),
+                            shadowColor: Color(
+                              0xFF2962FF,
+                            ).withValues(alpha: 0.5),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -13525,10 +13658,7 @@ void _showModernFormatDialog(BuildContext context, String? nomorUrut) {
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOutBack,
-        ),
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         child: FadeTransition(opacity: animation, child: child),
       );
     },
@@ -13644,12 +13774,13 @@ void _showModernFormatDialog(BuildContext context, String? nomorUrut) {
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            
+
                             // Trigger modern download dialog dengan progress
                             _showModernDownloadDisposisiDialog(
                               context: context,
                               title: 'Mengunduh PDF',
-                              message: 'Sedang mengunduh dokumen disposisi dalam format PDF...',
+                              message:
+                                  'Sedang mengunduh dokumen disposisi dalam format PDF...',
                               accentColor: Colors.red,
                               accentColor2: Colors.red.shade700,
                               currentNomorUrut: nomorUrut,
@@ -13736,7 +13867,9 @@ void _showModernDownloadDisposisiDialog({
 
   ValueNotifier<bool> isDownloading = ValueNotifier<bool>(true);
   ValueNotifier<double> downloadProgress = ValueNotifier<double>(0.0);
-  ValueNotifier<String> statusText = ValueNotifier<String>('Memulai download...');
+  ValueNotifier<String> statusText = ValueNotifier<String>(
+    'Memulai download...',
+  );
 
   showGeneralDialog(
     context: context,
@@ -13746,10 +13879,7 @@ void _showModernDownloadDisposisiDialog({
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOutBack,
-        ),
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         child: FadeTransition(opacity: animation, child: child),
       );
     },
@@ -13758,7 +13888,7 @@ void _showModernDownloadDisposisiDialog({
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         try {
           statusText.value = 'Mengunduh dokumen...';
-          
+
           // Simulasi progress (ganti dengan real progress kalau ada)
           for (int i = 0; i <= 100; i += 10) {
             await Future.delayed(Duration(milliseconds: 100));
@@ -13780,7 +13910,7 @@ void _showModernDownloadDisposisiDialog({
           if (file != null && await file.exists()) {
             if (isPrint) {
               Navigator.pop(context);
-              
+
               await Printing.layoutPdf(
                 onLayout: (PdfPageFormat format) async {
                   final bytes = await file.readAsBytes();
@@ -13835,7 +13965,7 @@ void _showModernDownloadDisposisiDialog({
               }
             } else {
               Navigator.pop(context);
-              
+
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -13899,7 +14029,7 @@ void _showModernDownloadDisposisiDialog({
             }
           } else {
             Navigator.pop(context);
-            
+
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -14048,7 +14178,9 @@ void _showModernDownloadDisposisiDialog({
                             ],
                           ),
                           child: Icon(
-                            isPrint ? Icons.print : Icons.file_download_outlined,
+                            isPrint
+                                ? Icons.print
+                                : Icons.file_download_outlined,
                             color: Colors.white,
                             size: 36,
                           ),
@@ -14105,13 +14237,19 @@ void _showModernDownloadDisposisiDialog({
                                         valueListenable: statusText,
                                         builder: (context, status, child) {
                                           return AnimatedOpacity(
-                                            opacity: status.isNotEmpty ? 1.0 : 0.0,
-                                            duration: Duration(milliseconds: 200),
+                                            opacity: status.isNotEmpty
+                                                ? 1.0
+                                                : 0.0,
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
                                             child: Text(
                                               status,
                                               style: TextStyle(
                                                 fontSize: 13,
-                                                color: Colors.white.withValues(alpha: 0.7),
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
                                                 decoration: TextDecoration.none,
                                               ),
                                             ),
@@ -14127,34 +14265,66 @@ void _showModernDownloadDisposisiDialog({
                                           return Column(
                                             children: [
                                               ClipRRect(
-                                                borderRadius: BorderRadius.circular(10),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                                 child: Container(
                                                   height: 10,
                                                   decoration: BoxDecoration(
-                                                    color: Colors.white.withValues(alpha: 0.15),
-                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.15,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
                                                   ),
                                                   child: Stack(
                                                     children: [
                                                       AnimatedContainer(
-                                                        duration: Duration(milliseconds: 300),
+                                                        duration: Duration(
+                                                          milliseconds: 300,
+                                                        ),
                                                         curve: Curves.easeOut,
-                                                        width: MediaQuery.of(context).size.width * progress,
+                                                        width:
+                                                            MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            progress,
                                                         decoration: BoxDecoration(
-                                                          gradient: LinearGradient(
-                                                            colors: [accentColor, accentColor2],
-                                                          ),
-                                                          borderRadius: BorderRadius.circular(10),
+                                                          gradient:
+                                                              LinearGradient(
+                                                                colors: [
+                                                                  accentColor,
+                                                                  accentColor2,
+                                                                ],
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
                                                         ),
                                                       ),
                                                       Positioned.fill(
                                                         child: ClipRRect(
-                                                          borderRadius: BorderRadius.circular(10),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
                                                           child: LinearProgressIndicator(
-                                                            backgroundColor: Colors.transparent,
-                                                            valueColor: AlwaysStoppedAnimation<Color>(
-                                                              Colors.white.withValues(alpha: 0.2),
-                                                            ),
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                  Color
+                                                                >(
+                                                                  Colors.white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
                                                           ),
                                                         ),
                                                       ),
@@ -14169,9 +14339,11 @@ void _showModernDownloadDisposisiDialog({
                                                 '${(progress * 100).toInt()}%',
                                                 style: TextStyle(
                                                   fontSize: 16,
-                                                  color: Colors.white.withValues(alpha: 0.9),
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.9),
                                                   fontWeight: FontWeight.w600,
-                                                  decoration: TextDecoration.none,
+                                                  decoration:
+                                                      TextDecoration.none,
                                                 ),
                                               ),
                                             ],
@@ -15902,195 +16074,212 @@ void showDocumentFormat(BuildContext context, String? nomor_urut) {
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
-              child: _isLoading ?
-                Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  ),
-                ) :
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 30),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 30,
-                      spreadRadius: 5,
-                      offset: Offset(0, 15),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                    child: Container(
-                      padding: EdgeInsets.all(25),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                          ],
-                        ),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(24),
+              child: _isLoading
+                  ? Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFF7C2D12).withValues(alpha: 0.8),
-                                  Color(0xFF9A3412).withValues(alpha: 0.6),
-                                ],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                                  blurRadius: 15,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.document_scanner,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Text(
-                            'Format Dokumen',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 0.5,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          Text(
-                            'Pilih jenis format dokumen yang anda inginkan',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white.withValues(alpha: 0.9),
-                              height: 1.4,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          SizedBox(height: 25),
-                          // Excel Button dengan custom icon
-                          Container(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                try {
-                                  setState(() => _isLoading = true);
-                                  final dirPath = await _suratMasukService
-                                    .getDefaultDownloadPath();
-                                  final savePath =
-                                    "$dirPath/disposisi_$nomor_urut.pdf";
-                                  final data = await _suratMasukService
-                                    .downloadDisposisi(
-                                      (nomor_urut != null
-                                          ? int.parse(nomor_urut)
-                                          : 0),
-                                      savePath,
-                                    );
-                                } catch (err) {
-                                  print(err);
-                                } finally {
-                                  setState(() => _isLoading = false);
-                                }
-          
-                                Navigator.pop(context);
-          
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Dokumen berhasil didownload!'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 8,
-                                shadowColor: Colors.green.withValues(alpha: 0.4),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  PdfIcon(size: 20, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'PDF',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: () => Navigator.pop(context),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                side: BorderSide(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: Text(
-                                'Batal',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 30,
+                            spreadRadius: 5,
+                            offset: Offset(0, 15),
                           ),
                         ],
                       ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                          child: Container(
+                            padding: EdgeInsets.all(25),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.white.withValues(alpha: 0.2),
+                                  Colors.white.withValues(alpha: 0.1),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color(
+                                          0xFF7C2D12,
+                                        ).withValues(alpha: 0.8),
+                                        Color(
+                                          0xFF9A3412,
+                                        ).withValues(alpha: 0.6),
+                                      ],
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(
+                                          0xFF7C2D12,
+                                        ).withValues(alpha: 0.4),
+                                        blurRadius: 15,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.document_scanner,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  'Format Dokumen',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                                SizedBox(height: 15),
+                                Text(
+                                  'Pilih jenis format dokumen yang anda inginkan',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    height: 1.4,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                                SizedBox(height: 25),
+                                // Excel Button dengan custom icon
+                                Container(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      try {
+                                        setState(() => _isLoading = true);
+                                        final dirPath = await _suratMasukService
+                                            .getDefaultDownloadPath();
+                                        final savePath =
+                                            "$dirPath/disposisi_$nomor_urut.pdf";
+                                        final data = await _suratMasukService
+                                            .downloadDisposisi(
+                                              (nomor_urut != null
+                                                  ? int.parse(nomor_urut)
+                                                  : 0),
+                                              savePath,
+                                            );
+                                      } catch (err) {
+                                        print(err);
+                                      } finally {
+                                        setState(() => _isLoading = false);
+                                      }
+
+                                      Navigator.pop(context);
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Dokumen berhasil didownload!',
+                                          ),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      elevation: 8,
+                                      shadowColor: Colors.green.withValues(
+                                        alpha: 0.4,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        PdfIcon(size: 20, color: Colors.white),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'PDF',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width: double.infinity,
+                                  child: OutlinedButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      side: BorderSide(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Batal',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ),
           );
-        }
+        },
       );
     },
   );
@@ -16117,201 +16306,218 @@ void showDocumentDesktopFormat(BuildContext context, String? nomor_urut) {
           return BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Center(
-              child: _isLoading ?
-                Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
-                  ),
-                ) :
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 30),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.3),
-                      blurRadius: 30,
-                      spreadRadius: 5,
-                      offset: Offset(0, 15),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                    child: Container(
-                      width:
-                          (Platform.isWindows ||
-                              Platform.isLinux ||
-                              Platform.isMacOS)
-                          ? size.width / 2
-                          : size.width,
-                      padding: EdgeInsets.all(25),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Colors.white.withValues(alpha: 0.2),
-                            Colors.white.withValues(alpha: 0.1),
-                          ],
-                        ),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          width: 1.5,
-                        ),
-                        borderRadius: BorderRadius.circular(24),
+              child: _isLoading
+                  ? Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(color: Colors.white),
                       ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color(0xFF7C2D12).withValues(alpha: 0.8),
-                                  Color(0xFF9A3412).withValues(alpha: 0.6),
-                                ],
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Color(0xFF7C2D12).withValues(alpha: 0.4),
-                                  blurRadius: 15,
-                                  spreadRadius: 2,
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.document_scanner,
-                              color: Colors.white,
-                              size: 30,
-                            ),
-                          ),
-                          SizedBox(height: 20),
-                          Text(
-                            'Format Dokumen',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 0.5,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          SizedBox(height: 15),
-                          Text(
-                            'Pilih jenis format dokumen yang anda inginkan',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white.withValues(alpha: 0.9),
-                              height: 1.4,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                          SizedBox(height: 25),
-                          // Excel Button dengan custom icon
-                          Container(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                try {
-                                  setState(() => _isLoading = true);
-                                  final dirPath = await _suratMasukService
-                                      .getDefaultDownloadPath();
-                                  final savePath =
-                                      "$dirPath/disposisi_$nomor_urut.pdf";
-                                  final data = await _suratMasukService
-                                      .downloadDisposisi(
-                                        (nomor_urut != null
-                                            ? int.parse(nomor_urut)
-                                            : 0),
-                                        savePath,
-                                      );
-                                } catch (err) {
-                                  print("[ERR] : $err");
-                                } finally {
-                                  setState(() => _isLoading = false);
-                                }
-          
-                                Navigator.pop(context);
-          
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Dokumen berhasil didownload!'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                elevation: 8,
-                                shadowColor: Colors.red.withValues(alpha: 0.4),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  PdfIcon(size: 20, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'PDF',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
-                            width: double.infinity,
-                            child: OutlinedButton(
-                              onPressed: () => Navigator.pop(context),
-                              style: OutlinedButton.styleFrom(
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                side: BorderSide(
-                                  color: Colors.white.withValues(alpha: 0.3),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: Text(
-                                'Batal',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ),
+                    )
+                  : Container(
+                      margin: EdgeInsets.symmetric(horizontal: 30),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.3),
+                            blurRadius: 30,
+                            spreadRadius: 5,
+                            offset: Offset(0, 15),
                           ),
                         ],
                       ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                          child: Container(
+                            width:
+                                (Platform.isWindows ||
+                                    Platform.isLinux ||
+                                    Platform.isMacOS)
+                                ? size.width / 2
+                                : size.width,
+                            padding: EdgeInsets.all(25),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.white.withValues(alpha: 0.2),
+                                  Colors.white.withValues(alpha: 0.1),
+                                ],
+                              ),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.2),
+                                width: 1.5,
+                              ),
+                              borderRadius: BorderRadius.circular(24),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(15),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color(
+                                          0xFF7C2D12,
+                                        ).withValues(alpha: 0.8),
+                                        Color(
+                                          0xFF9A3412,
+                                        ).withValues(alpha: 0.6),
+                                      ],
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(
+                                          0xFF7C2D12,
+                                        ).withValues(alpha: 0.4),
+                                        blurRadius: 15,
+                                        spreadRadius: 2,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.document_scanner,
+                                    color: Colors.white,
+                                    size: 30,
+                                  ),
+                                ),
+                                SizedBox(height: 20),
+                                Text(
+                                  'Format Dokumen',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                                SizedBox(height: 15),
+                                Text(
+                                  'Pilih jenis format dokumen yang anda inginkan',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    height: 1.4,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                                SizedBox(height: 25),
+                                // Excel Button dengan custom icon
+                                Container(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      try {
+                                        setState(() => _isLoading = true);
+                                        final dirPath = await _suratMasukService
+                                            .getDefaultDownloadPath();
+                                        final savePath =
+                                            "$dirPath/disposisi_$nomor_urut.pdf";
+                                        final data = await _suratMasukService
+                                            .downloadDisposisi(
+                                              (nomor_urut != null
+                                                  ? int.parse(nomor_urut)
+                                                  : 0),
+                                              savePath,
+                                            );
+                                      } catch (err) {
+                                        print("[ERR] : $err");
+                                      } finally {
+                                        setState(() => _isLoading = false);
+                                      }
+
+                                      Navigator.pop(context);
+
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Dokumen berhasil didownload!',
+                                          ),
+                                          backgroundColor: Colors.green,
+                                        ),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      elevation: 8,
+                                      shadowColor: Colors.red.withValues(
+                                        alpha: 0.4,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        PdfIcon(size: 20, color: Colors.white),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          'PDF',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10),
+                                Container(
+                                  width: double.infinity,
+                                  child: OutlinedButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    style: OutlinedButton.styleFrom(
+                                      foregroundColor: Colors.white,
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 15,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      side: BorderSide(
+                                        color: Colors.white.withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Batal',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ),
           );
-        }
+        },
       );
     },
   );
@@ -16953,11 +17159,7 @@ void showErrorSnackbar(
               color: Colors.white.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-              size: 20,
-            ),
+            child: Icon(icon, color: Colors.white, size: 20),
           ),
           SizedBox(width: 12),
           Expanded(
@@ -16967,15 +17169,9 @@ void showErrorSnackbar(
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
-                Text(
-                  message,
-                  style: TextStyle(fontSize: 12),
-                ),
+                Text(message, style: TextStyle(fontSize: 12)),
               ],
             ),
           ),
@@ -16983,9 +17179,7 @@ void showErrorSnackbar(
       ),
       backgroundColor: backgroundColor,
       behavior: SnackBarBehavior.floating,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       duration: Duration(seconds: 3),
     ),
   );
