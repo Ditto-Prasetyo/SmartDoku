@@ -42,8 +42,8 @@ class _PermohonanLettersPageAdminDesktopState
   late AnimationController _cardController;
   late Animation<double> _cardAnimation;
 
-  late AnimationController _searchAnimationController;
-  late Animation<double> _searchAnimation;
+  // late AnimationController _searchAnimationController;
+  // late Animation<double> _searchAnimation;
 
   SuratMasuk _suratService = SuratMasuk();
   UserService _userService = UserService();
@@ -192,15 +192,15 @@ class _PermohonanLettersPageAdminDesktopState
       CurvedAnimation(parent: _cardController, curve: Curves.easeOutCubic),
     );
 
-    _searchAnimationController = AnimationController(
-      duration: Duration(milliseconds: 300),
-      vsync: this,
-    );
+    // _searchAnimationController = AnimationController(
+    //   duration: Duration(milliseconds: 300),
+    //   vsync: this,
+    // );
 
-    _searchAnimation = CurvedAnimation(
-      parent: _searchAnimationController,
-      curve: Curves.easeInOut,
-    );
+    // _searchAnimation = CurvedAnimation(
+    //   parent: _searchAnimationController,
+    //   curve: Curves.easeInOut,
+    // );
     _searchController.addListener(_performSearch);
 
     _backgroundController.repeat(reverse: true);
@@ -213,7 +213,7 @@ class _PermohonanLettersPageAdminDesktopState
     _cardController.dispose();
     _horizontalScrollController.dispose();
     _verticalScrollController.dispose();
-    _searchAnimationController.dispose();
+    // _searchAnimationController.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
@@ -228,17 +228,31 @@ class _PermohonanLettersPageAdminDesktopState
   }
 
   void _toggleSearch() {
-    setState(() {
-      isSearchExpanded = !isSearchExpanded;
+    final nextExpanded = !isSearchExpanded;
 
-      if (isSearchExpanded) {
-        _searchAnimationController.forward();
+    setState(() {
+      isSearchExpanded = nextExpanded;
+
+      if (nextExpanded) {
+        // _searchAnimationController.forward();
+        // Optional: auto focus kalau mau
+        _searchFocusNode.requestFocus();
       } else {
-        _searchAnimationController.reverse();
-        _searchController.clear();
-        _filteredList = List.from(_listSurat);
+        // _searchAnimationController.reverse();
+        // Buang focus dulu
+        _searchFocusNode.unfocus();
       }
     });
+
+    if (!nextExpanded) {
+      // Clear text & reset list setelah frame ini selesai
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _searchController.clear();
+        setState(() {
+          _filteredList = List.from(_listSurat);
+        });
+      });
+    }
   }
 
   Widget _buildSidebar() {
@@ -2182,7 +2196,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                         index,
                                                                         _listSurat,
                                                                         refreshState,
-                                                                        _isSekretariat
+                                                                        _isSekretariat,
                                                                       );
                                                                     },
                                                                     child: Icon(
@@ -2495,8 +2509,11 @@ class _PermohonanLettersPageAdminDesktopState
                                                 InkWell(
                                                   onTap: () {
                                                     _searchController.clear();
-                                                    _searchFocusNode
-                                                        .requestFocus();
+                                                    if (!_searchFocusNode
+                                                        .hasFocus) {
+                                                      _searchFocusNode
+                                                          .requestFocus();
+                                                    }
                                                   },
                                                   borderRadius:
                                                       BorderRadius.circular(20),
