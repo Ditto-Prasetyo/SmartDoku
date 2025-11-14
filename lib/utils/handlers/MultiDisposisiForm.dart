@@ -13,7 +13,8 @@ class _MultiDisposisiFormState extends State<MultiDisposisiForm> {
     'Penataan Ruang dan PB': 'PRPB',
     'Perumahan': 'Perumahan',
     'Permukiman': 'Permukiman',
-    'Sekretariat': 'Sekretariat',
+    'Sekretariat - Renvapor': 'Sekretariat_Renvapor',
+    'Sekretariat - UKP': 'Sekretariat_UKP',
     'UPT Pengelolaan Air Limbah Domestik': 'UPT_PALD',
     'UPT Pertamanan': 'UPT_Taman',
   };
@@ -65,20 +66,22 @@ class _MultiDisposisiFormState extends State<MultiDisposisiForm> {
   }
 }
 
-
 class MultiSelectDropdownExample extends StatefulWidget {
   const MultiSelectDropdownExample({super.key});
 
   @override
-  State<MultiSelectDropdownExample> createState() => _MultiSelectDropdownExampleState();
+  State<MultiSelectDropdownExample> createState() =>
+      _MultiSelectDropdownExampleState();
 }
 
-class _MultiSelectDropdownExampleState extends State<MultiSelectDropdownExample> {
+class _MultiSelectDropdownExampleState
+    extends State<MultiSelectDropdownExample> {
   final Map<String, String> workFields = {
     'Penataan Ruang dan PB': 'PRPB',
     'Perumahan': 'Perumahan',
     'Permukiman': 'Permukiman',
-    'Sekretariat': 'Sekretariat',
+    'Sekretariat - Renvapor': 'Sekretariat_Renvapor',
+    'Sekretariat - UKP': 'Sekretariat_UKP',
     'UPT Pengelolaan Air Limbah Domestik': 'UPT_PALD',
     'UPT Pertamanan': 'UPT_Taman',
   };
@@ -87,7 +90,9 @@ class _MultiSelectDropdownExampleState extends State<MultiSelectDropdownExample>
 
   @override
   Widget build(BuildContext context) {
-    final items = workFields.keys.map((key) => MultiSelectItem<String>(key, key)).toList();
+    final items = workFields.keys
+        .map((key) => MultiSelectItem<String>(key, key))
+        .toList();
 
     return Scaffold(
       appBar: AppBar(title: const Text("Pilih Disposisi")),

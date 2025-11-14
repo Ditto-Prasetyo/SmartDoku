@@ -4,7 +4,8 @@ final Map<String, String> workFields = {
   'Penataan Ruang dan PB': 'PRPB',
   'Perumahan': 'Perumahan',
   'Permukiman': 'Permukiman',
-  'Sekretariat': 'Sekretariat',
+  'Sekretariat - Renvapor': 'Sekretariat_Renvapor',
+  'Sekretariat - UKP': 'Sekretariat_UKP',
   'UPT Pengelolaan Air Limbah Domestik': 'UPT_PALD',
   'UPT Pertamanan': 'UPT_Taman',
 };
@@ -13,7 +14,8 @@ final List<String> listWorkfields = [
   'Penataan Ruang dan PB',
   'Perumahan',
   'Permukiman',
-  'Sekretariat',
+  'Sekretariat - Renvapor',
+  'Sekretariat - UKP',
   'UPT Pengelolaan Air Limbah Domestik',
   'UPT Pertamanan',
 ];
