@@ -13298,7 +13298,8 @@ void showDetailActionMenuDisposisiDesktopAdmin(
                         color: Color(0xFF10B981),
                         onTap: () {
                           Navigator.pop(context);
-                          showDownloadDesktopDialog(context, currentNomorUrut);
+                          // Ganti ke modern download dialog
+                          _showModernDownloadChoiceDialog(context, currentNomorUrut);
                         },
                       ),
                     ],
@@ -13313,26 +13314,13 @@ void showDetailActionMenuDisposisiDesktopAdmin(
   );
 }
 
-void _showModernDownloadDisposisiDialog({
-  required BuildContext context,
-  required String title,
-  required String message,
-  required Color accentColor,
-  required Color accentColor2,
-  String? currentNomorUrut,
-  bool isPrint = false,
-}) {
+void _showModernDownloadChoiceDialog(BuildContext context, String? nomorUrut) {
   Size size = MediaQuery.of(context).size;
-
-  // State untuk loading dan status
-  ValueNotifier<bool> isDownloading = ValueNotifier<bool>(true);
-  ValueNotifier<double> downloadProgress = ValueNotifier<double>(0.0);
-  ValueNotifier<String> statusText = ValueNotifier<String>('Memulai download...');
 
   showGeneralDialog(
     context: context,
-    barrierDismissible: false,
-    barrierLabel: "Modern Download Disposisi Dialog",
+    barrierDismissible: true,
+    barrierLabel: "Modern Download Choice Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
@@ -13345,7 +13333,428 @@ void _showModernDownloadDisposisiDialog({
       );
     },
     pageBuilder: (context, animation, secondaryAnimation) {
-      // Auto start download saat dialog muncul
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2.5
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF7C2D12).withValues(alpha: 0.9),
+                                Color(0xFF9A3412).withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF7C2D12).withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.download,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        'Download File',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Text(
+                        'Pilih format file apa yang anda inginkan',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white.withValues(alpha: 0.85),
+                          height: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Download Dokumen Button
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            // Langsung ke format dialog (atau langsung download kalau cuma PDF)
+                            _showModernFormatDialog(context, nomorUrut);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF2962FF),
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 8,
+                            shadowColor: Color(0xFF2962FF).withValues(alpha: 0.5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.document_scanner, size: 20),
+                              SizedBox(width: 10),
+                              Text(
+                                'Download Dokumen',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Cancel Button
+                      Container(
+                        width: double.infinity,
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Text(
+                            'Batal',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void _showModernFormatDialog(BuildContext context, String? nomorUrut) {
+  Size size = MediaQuery.of(context).size;
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Format Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+        ),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2.5
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF7C2D12).withValues(alpha: 0.9),
+                                Color(0xFF9A3412).withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF7C2D12).withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.document_scanner,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        'Format Dokumen',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Text(
+                        'Pilih jenis format dokumen yang anda inginkan',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white.withValues(alpha: 0.85),
+                          height: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // PDF Button
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            
+                            // Trigger modern download dialog dengan progress
+                            _showModernDownloadDisposisiDialog(
+                              context: context,
+                              title: 'Mengunduh PDF',
+                              message: 'Sedang mengunduh dokumen disposisi dalam format PDF...',
+                              accentColor: Colors.red,
+                              accentColor2: Colors.red.shade700,
+                              currentNomorUrut: nomorUrut,
+                              isPrint: false,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 8,
+                            shadowColor: Colors.red.withValues(alpha: 0.5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              PdfIcon(size: 20, color: Colors.white),
+                              SizedBox(width: 10),
+                              Text(
+                                'PDF',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Cancel Button
+                      Container(
+                        width: double.infinity,
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Text(
+                            'Batal',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void _showModernDownloadDisposisiDialog({
+  required BuildContext context,
+  required String title,
+  required String message,
+  required Color accentColor,
+  required Color accentColor2,
+  String? currentNomorUrut,
+  bool isPrint = false,
+}) {
+  Size size = MediaQuery.of(context).size;
+
+  ValueNotifier<bool> isDownloading = ValueNotifier<bool>(true);
+  ValueNotifier<double> downloadProgress = ValueNotifier<double>(0.0);
+  ValueNotifier<String> statusText = ValueNotifier<String>('Memulai download...');
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierLabel: "Modern Download Progress Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOutBack,
+        ),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      // Auto start download
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         try {
           statusText.value = 'Mengunduh dokumen...';
@@ -13370,10 +13779,8 @@ void _showModernDownloadDisposisiDialog({
 
           if (file != null && await file.exists()) {
             if (isPrint) {
-              // Tutup dialog download
               Navigator.pop(context);
               
-              // Jalankan proses print
               await Printing.layoutPdf(
                 onLayout: (PdfPageFormat format) async {
                   final bytes = await file.readAsBytes();
@@ -13427,14 +13834,65 @@ void _showModernDownloadDisposisiDialog({
                 );
               }
             } else {
-              // Untuk download biasa (bukan print)
               Navigator.pop(context);
               
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Dokumen berhasil diunduh!'),
-                    backgroundColor: Colors.green,
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.check_circle_outline,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Download Berhasil!',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'File tersimpan di: disposisi_$currentNomorUrut.pdf',
+                                style: TextStyle(fontSize: 12),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    backgroundColor: Colors.green.shade700,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    duration: Duration(seconds: 4),
+                    action: SnackBarAction(
+                      label: 'Buka',
+                      textColor: Colors.white,
+                      onPressed: () {
+                        if (Platform.isWindows) {
+                          Process.run('explorer', ['/select,', savePath]);
+                        } else if (Platform.isMacOS) {
+                          Process.run('open', ['-R', savePath]);
+                        } else if (Platform.isLinux) {
+                          Process.run('xdg-open', [File(savePath).parent.path]);
+                        }
+                      },
+                    ),
                   ),
                 );
               }
