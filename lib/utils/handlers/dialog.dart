@@ -1,6 +1,8 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
+import 'package:smart_doku/services/download_path_service.dart';
 import 'package:smart_doku/services/user.dart';
 import 'package:smart_doku/utils/handlers/function.dart';
 import 'package:smart_doku/utils/widget/widget.dart';
@@ -2699,41 +2701,6 @@ void showActionSuratMasukForUserDialog(
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.of(context).pop();
-                            showErrorPermisionDialog(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor4,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: accentColor3.withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.cloud_upload),
-                              SizedBox(width: 14),
-                              Text(
-                                'Upload Dokumen',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
                             viewDetail(selectedIndex);
                           },
                           style: ElevatedButton.styleFrom(
@@ -2997,41 +2964,6 @@ void showActionSuratKeluarForUserDialog(
                         ),
                       ),
                       SizedBox(height: 25),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            showErrorPermisionDialog(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor4,
-                            foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            elevation: 8,
-                            shadowColor: accentColor3.withValues(alpha: 0.4),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.cloud_upload),
-                              SizedBox(width: 14),
-                              Text(
-                                'Upload Dokumen',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -9506,9 +9438,9 @@ void showEditSuratDialog(
                                               }
 
                                               try {
-                                                // Update data
-                                                setState(
-                                                  () => _isLoading = true,
+                                                // GANTI: Dari setState loading ke Modern Dialog
+                                                _showModernSavingDialog(
+                                                  context,
                                                 );
 
                                                 final data = await _suratMasukService.editSurat(
@@ -9601,13 +9533,68 @@ void showEditSuratDialog(
                                                 // Close dialog
                                                 Navigator.pop(context);
 
-                                                // Show success message
+                                                // Close edit dialog
+                                                Navigator.pop(context);
+
+                                                // Show success dengan modern snackbar
                                                 ScaffoldMessenger.of(
                                                   context,
                                                 ).showSnackBar(
                                                   SnackBar(
-                                                    content: Text(
-                                                      'Surat berhasil diperbarui!',
+                                                    content: Row(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.all(8),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                          child: Icon(
+                                                            Icons
+                                                                .check_circle_outline,
+                                                            color: Colors.white,
+                                                            size: 20,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 12),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                'Berhasil!',
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 15,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                'Surat berhasil diperbarui',
+                                                                style:
+                                                                    TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                    ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                     backgroundColor: Color(
                                                       0xFF10B981,
@@ -9617,35 +9604,85 @@ void showEditSuratDialog(
                                                     shape: RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                            10,
+                                                            12,
                                                           ),
                                                     ),
+                                                    duration: Duration(
+                                                      seconds: 3,
+                                                    ),
+                                                    margin: EdgeInsets.all(16),
                                                   ),
                                                 );
                                               } catch (e) {
-                                                // Handle error
+                                                // Close loading dialog kalau error
+                                                Navigator.pop(context);
+
+                                                // Handle error dengan modern snackbar
                                                 print(
-                                                  'Error updating surat: $e',
+                                                  "[ERROR] -> Edit Surat: $e",
                                                 );
                                                 ScaffoldMessenger.of(
                                                   context,
                                                 ).showSnackBar(
                                                   SnackBar(
-                                                    content: Text('Error: $e'),
-                                                    backgroundColor: Colors.red,
+                                                    content: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.error_outline,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                        SizedBox(width: 12),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                'Gagal Menyimpan',
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 15,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                'Terjadi kesalahan: ${e.toString()}',
+                                                                style:
+                                                                    TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                    ),
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    backgroundColor:
+                                                        Colors.red.shade700,
                                                     behavior: SnackBarBehavior
                                                         .floating,
                                                     shape: RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                            10,
+                                                            12,
                                                           ),
                                                     ),
+                                                    duration: Duration(
+                                                      seconds: 4,
+                                                    ),
+                                                    margin: EdgeInsets.all(16),
                                                   ),
-                                                );
-                                              } finally {
-                                                setState(
-                                                  () => _isLoading = false,
                                                 );
                                               }
                                             },
@@ -9700,6 +9737,656 @@ void showEditSuratDialog(
             ),
           );
         },
+      );
+    },
+  );
+}
+
+void _showModernSavingDialog(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierLabel: "Saving Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.7),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            padding: EdgeInsets.all(35),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(35),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Animated Icon with Pulse Effect
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.8, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFF10B981).withValues(alpha: 0.9),
+                                    Color(0xFF059669).withValues(alpha: 0.7),
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(
+                                      0xFF10B981,
+                                    ).withValues(alpha: 0.5),
+                                    blurRadius: 25,
+                                    spreadRadius: 5,
+                                  ),
+                                ],
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Rotating Circle Progress
+                                  SizedBox(
+                                    width: 45,
+                                    height: 45,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white.withValues(alpha: 0.8),
+                                      ),
+                                    ),
+                                  ),
+                                  // Icon
+                                  Icon(
+                                    Icons.save_rounded,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 25),
+
+                      // Title dengan animasi shimmer
+                      ShaderMask(
+                        shaderCallback: (bounds) {
+                          return LinearGradient(
+                            colors: [
+                              Colors.white,
+                              Colors.white.withValues(alpha: 0.7),
+                              Colors.white,
+                            ],
+                            stops: [0.0, 0.5, 1.0],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        child: Text(
+                          'Menyimpan Perubahan',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                            decoration: TextDecoration.none,
+                            fontFamily: 'SF Pro Display',
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Subtitle
+                      Text(
+                        'Mohon tunggu sebentar...',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white.withValues(alpha: 0.75),
+                          height: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernAddingDialog(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierLabel: "Saving Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.7),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            padding: EdgeInsets.all(35),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(35),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Animated Icon with Pulse Effect
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.8, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFF10B981).withValues(alpha: 0.9),
+                                    Color(0xFF059669).withValues(alpha: 0.7),
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(
+                                      0xFF10B981,
+                                    ).withValues(alpha: 0.5),
+                                    blurRadius: 25,
+                                    spreadRadius: 5,
+                                  ),
+                                ],
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Rotating Circle Progress
+                                  SizedBox(
+                                    width: 45,
+                                    height: 45,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white.withValues(alpha: 0.8),
+                                      ),
+                                    ),
+                                  ),
+                                  // Icon
+                                  Icon(
+                                    Icons.save_rounded,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 25),
+
+                      // Title dengan animasi shimmer
+                      ShaderMask(
+                        shaderCallback: (bounds) {
+                          return LinearGradient(
+                            colors: [
+                              Colors.white,
+                              Colors.white.withValues(alpha: 0.7),
+                              Colors.white,
+                            ],
+                            stops: [0.0, 0.5, 1.0],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        child: Text(
+                          'Menambah Surat',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                            decoration: TextDecoration.none,
+                            fontFamily: 'SF Pro Display',
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Subtitle
+                      Text(
+                        'Mohon tunggu sebentar...',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white.withValues(alpha: 0.75),
+                          height: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernUserAddDialog(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierLabel: "Saving Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.7),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            padding: EdgeInsets.all(35),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(35),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Animated Icon with Pulse Effect
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.8, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFF10B981).withValues(alpha: 0.9),
+                                    Color(0xFF059669).withValues(alpha: 0.7),
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color(
+                                      0xFF10B981,
+                                    ).withValues(alpha: 0.5),
+                                    blurRadius: 25,
+                                    spreadRadius: 5,
+                                  ),
+                                ],
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Rotating Circle Progress
+                                  SizedBox(
+                                    width: 45,
+                                    height: 45,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white.withValues(alpha: 0.8),
+                                      ),
+                                    ),
+                                  ),
+                                  // Icon
+                                  Icon(
+                                    Icons.save_rounded,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 25),
+
+                      // Title dengan animasi shimmer
+                      ShaderMask(
+                        shaderCallback: (bounds) {
+                          return LinearGradient(
+                            colors: [
+                              Colors.white,
+                              Colors.white.withValues(alpha: 0.7),
+                              Colors.white,
+                            ],
+                            stops: [0.0, 0.5, 1.0],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        child: Text(
+                          'Menambah User',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                            decoration: TextDecoration.none,
+                            fontFamily: 'SF Pro Display',
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Subtitle
+                      Text(
+                        'Mohon tunggu sebentar...',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white.withValues(alpha: 0.75),
+                          height: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void showModernDeletingDialog(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierLabel: "Deleting Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.7),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            padding: EdgeInsets.all(35),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(35),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Animated Icon with Pulse Effect
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.8, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(
+                            scale: scale,
+                            child: Container(
+                              padding: EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.red.withValues(alpha: 0.9),
+                                    Colors.red.shade700.withValues(alpha: 0.7),
+                                  ],
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.red.withValues(alpha: 0.5),
+                                    blurRadius: 25,
+                                    spreadRadius: 5,
+                                  ),
+                                ],
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Rotating Circle Progress
+                                  SizedBox(
+                                    width: 45,
+                                    height: 45,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 3,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white.withValues(alpha: 0.8),
+                                      ),
+                                    ),
+                                  ),
+                                  // Icon
+                                  Icon(
+                                    Icons.delete_forever_rounded,
+                                    color: Colors.white,
+                                    size: 28,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 25),
+
+                      // Title dengan animasi shimmer
+                      ShaderMask(
+                        shaderCallback: (bounds) {
+                          return LinearGradient(
+                            colors: [
+                              Colors.white,
+                              Colors.white.withValues(alpha: 0.7),
+                              Colors.white,
+                            ],
+                            stops: [0.0, 0.5, 1.0],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ).createShader(bounds);
+                        },
+                        child: Text(
+                          'Menghapus Surat',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                            decoration: TextDecoration.none,
+                            fontFamily: 'SF Pro Display',
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Subtitle
+                      Text(
+                        'Sedang menghapus data...',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white.withValues(alpha: 0.75),
+                          height: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       );
     },
   );
@@ -10644,8 +11331,9 @@ void showEditSuratKeluarDialog(
                                                 pengolahController.text =
                                                     selectedPengolah ?? '';
 
-                                                setState(
-                                                  () => _isLoading = true,
+                                                // GANTI: Dari setState loading ke Modern Dialog
+                                                _showModernSavingDialog(
+                                                  context,
                                                 );
 
                                                 // Update data
@@ -10664,8 +11352,7 @@ void showEditSuratKeluarDialog(
                                                           ),
                                                       catatan: catatanController
                                                           .text,
-                                                      status:
-                                                          selectedStatus, // FIX: Gunakan selectedStatus yang sebenarnya
+                                                      status: selectedStatus,
                                                       tujuan_surat:
                                                           tujuansuratController
                                                               .text,
@@ -10736,16 +11423,71 @@ void showEditSuratKeluarDialog(
                                                 // Refresh state
                                                 refreshState();
 
-                                                // Close dialog
+                                                // Close loading dialog DULU
                                                 Navigator.pop(context);
 
-                                                // Show success message
+                                                // Close edit dialog
+                                                Navigator.pop(context);
+
+                                                // Show success dengan modern snackbar
                                                 ScaffoldMessenger.of(
                                                   context,
                                                 ).showSnackBar(
                                                   SnackBar(
-                                                    content: Text(
-                                                      'Surat berhasil diperbarui!',
+                                                    content: Row(
+                                                      children: [
+                                                        Container(
+                                                          padding:
+                                                              EdgeInsets.all(8),
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                color: Colors
+                                                                    .white
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.2,
+                                                                    ),
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                          child: Icon(
+                                                            Icons
+                                                                .check_circle_outline,
+                                                            color: Colors.white,
+                                                            size: 20,
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 12),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                'Berhasil!',
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 15,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                'Surat berhasil diperbarui',
+                                                                style:
+                                                                    TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                    ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                     backgroundColor: Color(
                                                       0xFF10B981,
@@ -10755,13 +11497,20 @@ void showEditSuratKeluarDialog(
                                                     shape: RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                            10,
+                                                            12,
                                                           ),
                                                     ),
+                                                    duration: Duration(
+                                                      seconds: 3,
+                                                    ),
+                                                    margin: EdgeInsets.all(16),
                                                   ),
                                                 );
                                               } catch (e) {
-                                                // Handle error
+                                                // Close loading dialog kalau error
+                                                Navigator.pop(context);
+
+                                                // Handle error dengan modern snackbar
                                                 print(
                                                   "[ERROR] -> Edit Surat: $e",
                                                 );
@@ -10769,23 +11518,64 @@ void showEditSuratKeluarDialog(
                                                   context,
                                                 ).showSnackBar(
                                                   SnackBar(
-                                                    content: Text(
-                                                      'Gagal memperbarui surat: $e',
+                                                    content: Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.error_outline,
+                                                          color: Colors.white,
+                                                          size: 20,
+                                                        ),
+                                                        SizedBox(width: 12),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                'Gagal Menyimpan',
+                                                                style: TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 15,
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                'Terjadi kesalahan: ${e.toString()}',
+                                                                style:
+                                                                    TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                    ),
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                    backgroundColor: Colors.red,
+                                                    backgroundColor:
+                                                        Colors.red.shade700,
                                                     behavior: SnackBarBehavior
                                                         .floating,
                                                     shape: RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
-                                                            10,
+                                                            12,
                                                           ),
                                                     ),
+                                                    duration: Duration(
+                                                      seconds: 4,
+                                                    ),
+                                                    margin: EdgeInsets.all(16),
                                                   ),
-                                                );
-                                              } finally {
-                                                setState(
-                                                  () => _isLoading = false,
                                                 );
                                               }
                                             },
@@ -11335,6 +12125,8 @@ void showEditUserManagementDialog(
                                             '[INFO] Starting user update process...',
                                           );
 
+                                          _showModernSavingDialog(context);
+
                                           // CRITICAL: Pass context and all parameters
                                           final success = await _userService
                                               .editUser(
@@ -11350,63 +12142,136 @@ void showEditUserManagementDialog(
                                                 role: selectedRole,
                                               );
 
-                                          if (success) {
-                                            print(
-                                              '[SUCCESS] Refreshing state...',
-                                            );
-                                            refreshState();
-                                            Navigator.pop(context);
-
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  '✓ User berhasil diperbarui!',
-                                                ),
-                                                backgroundColor: Color(
-                                                  0xFF10B981,
-                                                ),
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                duration: Duration(seconds: 2),
-                                              ),
-                                            );
-                                          }
-                                        } catch (e) {
                                           print(
-                                            '[ERROR] Update process failed: $e',
+                                            '[SUCCESS] Refreshing state...',
                                           );
 
-                                          // Only show error if it's not auth error (auth error has its own dialog)
-                                          if (!e.toString().contains(
-                                                'Token invalid',
-                                              ) &&
-                                              !e.toString().contains(
-                                                'Authentication failed',
-                                              )) {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  '✗ Gagal memperbarui user: ${e.toString()}',
-                                                ),
-                                                backgroundColor: Colors.red,
-                                                behavior:
-                                                    SnackBarBehavior.floating,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                duration: Duration(seconds: 3),
+                                          refreshState();
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Row(
+                                                children: [
+                                                  Container(
+                                                    padding: EdgeInsets.all(8),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white
+                                                          .withValues(
+                                                            alpha: 0.2,
+                                                          ),
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Icon(
+                                                      Icons
+                                                          .check_circle_outline,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 12),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                          'Berhasil!',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 15,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          'User berhasil ditambahkan.',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            );
-                                          }
+                                              backgroundColor: Color(
+                                                0xFF10B981,
+                                              ),
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              duration: Duration(seconds: 3),
+                                              margin: EdgeInsets.all(16),
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          // Close loading dialog kalau error
+                                          Navigator.pop(context);
+
+                                          // Handle error dengan modern snackbar
+                                          print("[ERROR] -> Add Surat: $e");
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.error_outline,
+                                                    color: Colors.white,
+                                                    size: 20,
+                                                  ),
+                                                  SizedBox(width: 12),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                          'Gagal Menyimpan',
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 15,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          'Terjadi kesalahan: ${e.toString()}',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                          ),
+                                                          maxLines: 2,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              backgroundColor:
+                                                  Colors.red.shade700,
+                                              behavior:
+                                                  SnackBarBehavior.floating,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                              duration: Duration(seconds: 4),
+                                              margin: EdgeInsets.all(16),
+                                            ),
+                                          );
                                         }
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -11466,30 +12331,35 @@ void showModernHapusDialog(
   String message,
   Color accentColor,
   Color accentColor2,
-  BuildContext context,
+  BuildContext parentContext,
   int index,
   List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete,
 ) {
+  Size size = MediaQuery.of(parentContext).size;
   final surat = suratData[index];
 
   showGeneralDialog(
-    context: context,
+    context: parentContext, // penting: pakai parentContext di sini
     barrierDismissible: true,
-    barrierLabel: "Modern Error Dialog",
+    barrierLabel: "Modern Delete Confirmation Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         child: FadeTransition(opacity: animation, child: child),
       );
     },
-    pageBuilder: (context, animation, secondaryAnimation) {
+    pageBuilder: (dialogContext, animation, secondaryAnimation) {
+      // ↑ kasih nama “dialogContext” biar nggak ketuker
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2.5
+                : size.width * 0.9,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -11507,7 +12377,7 @@ void showModernHapusDialog(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  padding: EdgeInsets.all(25),
+                  padding: EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -11526,75 +12396,95 @@ void showModernHapusDialog(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              accentColor.withValues(alpha: 0.8),
-                              accentColor.withValues(alpha: 0.6),
+                      //Icon dengan animasi
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
                             ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: accentColor.withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.warning_rounded,
-                          color: Colors.white,
-                          size: 30,
+                          child: Icon(
+                            Icons.warning_rounded,
+                            color: Colors.white,
+                            size: 36,
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 24),
+                      // Title
                       Text(
                         title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 0.5,
                           decoration: TextDecoration.none,
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
+                      SizedBox(height: 12),
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 30),
+
+                      // Cancel Button
                       Container(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          // ↑ pakai dialogContext buat nutup dialog
+                          style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            elevation: 8,
-                            shadowColor: accentColor.withValues(alpha: 0.4),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.cancel),
-                              SizedBox(width: 10),
+                              Icon(Icons.close_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Cancel',
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -11605,31 +12495,152 @@ void showModernHapusDialog(
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 12),
+                      // Delete Button
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            onConfirmDelete(surat!.nomor_urut);
+                          onPressed: () async {
+                            // 1. Tutup dialog konfirmasi (pakai dialogContext)
+                            Navigator.of(dialogContext).pop();
+
+                            // 2. Tampilkan dialog loading (pakai parentContext)
+                            showModernDeletingDialog(parentContext);
+
+                            try {
+                              // kalau mau simulasi delay, silakan
+                              await Future.delayed(Duration(milliseconds: 500));
+
+                              // 3. Panggil delete
+                              onConfirmDelete(surat!.nomor_urut);
+
+                              // 4. Tutup dialog loading (pakai parentContext)
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5. SnackBar sukses (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.2,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.check_circle_outline,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Berhasil Dihapus!',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Surat telah dihapus dari sistem',
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Color(0xFF10B981),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 3),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            } catch (e) {
+                              // 4b. Tutup dialog loading juga
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5b. SnackBar error (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Gagal Menghapus',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Terjadi kesalahan: ${e.toString()}',
+                                              style: TextStyle(fontSize: 12),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.red.shade700,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 4),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
                             foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                             elevation: 8,
-                            shadowColor: accentColor2.withValues(alpha: 0.4),
+                            shadowColor: accentColor2.withValues(alpha: 0.5),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.check),
-                              SizedBox(width: 10),
+                              Icon(Icons.delete_forever_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Yes',
+                                'Ya, Hapus',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -11657,30 +12668,35 @@ void showModernHapusSuratMasukDialog(
   String message,
   Color accentColor,
   Color accentColor2,
-  BuildContext context,
+  BuildContext parentContext,
   int index,
   List<SuratMasukModel?> suratData,
   void Function(int) onConfirmDelete,
 ) {
+  Size size = MediaQuery.of(parentContext).size;
   final surat = suratData[index];
 
   showGeneralDialog(
-    context: context,
+    context: parentContext, // penting: pakai parentContext di sini
     barrierDismissible: true,
-    barrierLabel: "Modern Error Dialog",
+    barrierLabel: "Modern Delete Confirmation Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         child: FadeTransition(opacity: animation, child: child),
       );
     },
-    pageBuilder: (context, animation, secondaryAnimation) {
+    pageBuilder: (dialogContext, animation, secondaryAnimation) {
+      // ↑ kasih nama “dialogContext” biar nggak ketuker
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2.5
+                : size.width * 0.9,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -11698,7 +12714,7 @@ void showModernHapusSuratMasukDialog(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  padding: EdgeInsets.all(25),
+                  padding: EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -11717,75 +12733,95 @@ void showModernHapusSuratMasukDialog(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              accentColor.withValues(alpha: 0.8),
-                              accentColor.withValues(alpha: 0.6),
+                      //Icon dengan animasi
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
                             ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: accentColor.withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.warning_rounded,
-                          color: Colors.white,
-                          size: 30,
+                          child: Icon(
+                            Icons.warning_rounded,
+                            color: Colors.white,
+                            size: 36,
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 24),
+                      // Title
                       Text(
                         title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 0.5,
                           decoration: TextDecoration.none,
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
+                      SizedBox(height: 12),
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 30),
+
+                      // Cancel Button
                       Container(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          // ↑ pakai dialogContext buat nutup dialog
+                          style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            elevation: 8,
-                            shadowColor: accentColor.withValues(alpha: 0.4),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.cancel),
-                              SizedBox(width: 10),
+                              Icon(Icons.close_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Cancel',
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -11796,31 +12832,151 @@ void showModernHapusSuratMasukDialog(
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 12),
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            onConfirmDelete(surat!.nomor_urut);
+                          onPressed: () async {
+                            // 1. Tutup dialog konfirmasi (pakai dialogContext)
+                            Navigator.of(dialogContext).pop();
+
+                            // 2. Tampilkan dialog loading (pakai parentContext)
+                            showModernDeletingDialog(parentContext);
+
+                            try {
+                              // kalau mau simulasi delay, silakan
+                              await Future.delayed(Duration(milliseconds: 500));
+
+                              // 3. Panggil delete
+                              onConfirmDelete(surat!.nomor_urut);
+
+                              // 4. Tutup dialog loading (pakai parentContext)
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5. SnackBar sukses (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.2,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.check_circle_outline,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Berhasil Dihapus!',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Surat telah dihapus dari sistem',
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Color(0xFF10B981),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 3),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            } catch (e) {
+                              // 4b. Tutup dialog loading juga
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5b. SnackBar error (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Gagal Menghapus',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Terjadi kesalahan: ${e.toString()}',
+                                              style: TextStyle(fontSize: 12),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.red.shade700,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 4),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
                             foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                             elevation: 8,
-                            shadowColor: accentColor2.withValues(alpha: 0.4),
+                            shadowColor: accentColor2.withValues(alpha: 0.5),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.check),
-                              SizedBox(width: 10),
+                              Icon(Icons.delete_forever_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Yes',
+                                'Ya, Hapus',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -11848,34 +13004,36 @@ void showModernHapusMasukDialogDesktop(
   String message,
   Color accentColor,
   Color accentColor2,
-  BuildContext context,
+  BuildContext parentContext,
   int index,
   List<SuratMasukModel?> suratData,
   void Function(int) onConfirmDelete,
+  void Function() refreshState,
 ) {
-  Size size = MediaQuery.of(context).size;
+  Size size = MediaQuery.of(parentContext).size;
   final surat = suratData[index];
 
   showGeneralDialog(
-    context: context,
+    context: parentContext, // penting: pakai parentContext di sini
     barrierDismissible: true,
-    barrierLabel: "Modern Error Dialog",
+    barrierLabel: "Modern Delete Confirmation Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         child: FadeTransition(opacity: animation, child: child),
       );
     },
-    pageBuilder: (context, animation, secondaryAnimation) {
+    pageBuilder: (dialogContext, animation, secondaryAnimation) {
+      // ↑ kasih nama “dialogContext” biar nggak ketuker
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
             width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                ? size.width / 2
-                : size.width,
+                ? size.width / 2.5
+                : size.width * 0.9,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -11893,7 +13051,7 @@ void showModernHapusMasukDialogDesktop(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  padding: EdgeInsets.all(25),
+                  padding: EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -11912,75 +13070,95 @@ void showModernHapusMasukDialogDesktop(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              accentColor.withValues(alpha: 0.8),
-                              accentColor.withValues(alpha: 0.6),
+                      //Icon dengan animasi
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
                             ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: accentColor.withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.warning_rounded,
-                          color: Colors.white,
-                          size: 30,
+                          child: Icon(
+                            Icons.warning_rounded,
+                            color: Colors.white,
+                            size: 36,
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 24),
+                      // Title
                       Text(
                         title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 0.5,
                           decoration: TextDecoration.none,
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
+                      SizedBox(height: 12),
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 30),
+
+                      // Cancel Button
                       Container(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          // ↑ pakai dialogContext buat nutup dialog
+                          style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            elevation: 8,
-                            shadowColor: accentColor.withValues(alpha: 0.4),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.cancel),
-                              SizedBox(width: 10),
+                              Icon(Icons.close_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Cancel',
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -11991,31 +13169,155 @@ void showModernHapusMasukDialogDesktop(
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 12),
+
+                      // Delete Button
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            onConfirmDelete(surat!.nomor_urut);
+                          onPressed: () async {
+                            // 1. Tutup dialog konfirmasi (pakai dialogContext)
+                            Navigator.of(dialogContext).pop();
+
+                            // 2. Tampilkan dialog loading (pakai parentContext)
+                            showModernDeletingDialog(parentContext);
+
+                            try {
+                              // kalau mau simulasi delay, silakan
+                              await Future.delayed(Duration(milliseconds: 500));
+
+                              // 3. Panggil delete
+                              onConfirmDelete(surat!.nomor_urut);
+
+                              refreshState();
+
+                              // 4. Tutup dialog loading (pakai parentContext)
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5. SnackBar sukses (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.2,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.check_circle_outline,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Berhasil Dihapus!',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Surat telah dihapus dari sistem',
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Color(0xFF10B981),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 3),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            } catch (e) {
+                              // 4b. Tutup dialog loading juga
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5b. SnackBar error (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Gagal Menghapus',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Terjadi kesalahan: ${e.toString()}',
+                                              style: TextStyle(fontSize: 12),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.red.shade700,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 4),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
                             foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                             elevation: 8,
-                            shadowColor: accentColor2.withValues(alpha: 0.4),
+                            shadowColor: accentColor2.withValues(alpha: 0.5),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.check),
-                              SizedBox(width: 10),
+                              Icon(Icons.delete_forever_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Yes',
+                                'Ya, Hapus',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -12043,34 +13345,37 @@ void showModernHapusDialogDesktop(
   String message,
   Color accentColor,
   Color accentColor2,
-  BuildContext context,
+  BuildContext parentContext, // ← ini context dari page utama
   int index,
   List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete,
+  void Function() refreshState,
 ) {
-  Size size = MediaQuery.of(context).size;
+  // PAKAI parentContext buat hal-hal global (MediaQuery, Scaffold, dsb)
+  Size size = MediaQuery.of(parentContext).size;
   final surat = suratData[index];
 
   showGeneralDialog(
-    context: context,
+    context: parentContext, // penting: pakai parentContext di sini
     barrierDismissible: true,
-    barrierLabel: "Modern Error Dialog",
+    barrierLabel: "Modern Delete Confirmation Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         child: FadeTransition(opacity: animation, child: child),
       );
     },
-    pageBuilder: (context, animation, secondaryAnimation) {
+    pageBuilder: (dialogContext, animation, secondaryAnimation) {
+      // ↑ kasih nama “dialogContext” biar nggak ketuker
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
             width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                ? size.width / 2
-                : size.width,
+                ? size.width / 2.5
+                : size.width * 0.9,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -12088,7 +13393,7 @@ void showModernHapusDialogDesktop(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  padding: EdgeInsets.all(25),
+                  padding: EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -12107,75 +13412,95 @@ void showModernHapusDialogDesktop(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              accentColor.withValues(alpha: 0.8),
-                              accentColor.withValues(alpha: 0.6),
+                      //Icon dengan animasi
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
                             ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: accentColor.withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.warning_rounded,
-                          color: Colors.white,
-                          size: 30,
+                          child: Icon(
+                            Icons.warning_rounded,
+                            color: Colors.white,
+                            size: 36,
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 24),
+                      // Title
                       Text(
                         title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 0.5,
                           decoration: TextDecoration.none,
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
+                      SizedBox(height: 12),
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 30),
+
+                      // Cancel Button
                       Container(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          // ↑ pakai dialogContext buat nutup dialog
+                          style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            elevation: 8,
-                            shadowColor: accentColor.withValues(alpha: 0.4),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.cancel),
-                              SizedBox(width: 10),
+                              Icon(Icons.close_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Cancel',
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -12186,31 +13511,155 @@ void showModernHapusDialogDesktop(
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 12),
+
+                      // Delete Button
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            onConfirmDelete(surat!.nomor_urut);
+                          onPressed: () async {
+                            // 1. Tutup dialog konfirmasi (pakai dialogContext)
+                            Navigator.of(dialogContext).pop();
+
+                            // 2. Tampilkan dialog loading (pakai parentContext)
+                            showModernDeletingDialog(parentContext);
+
+                            try {
+                              // kalau mau simulasi delay, silakan
+                              await Future.delayed(Duration(milliseconds: 500));
+
+                              // 3. Panggil delete
+                              onConfirmDelete(surat!.nomor_urut);
+
+                              refreshState();
+
+                              // 4. Tutup dialog loading (pakai parentContext)
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5. SnackBar sukses (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.2,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.check_circle_outline,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Berhasil Dihapus!',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Surat telah dihapus dari sistem',
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Color(0xFF10B981),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 3),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            } catch (e) {
+                              // 4b. Tutup dialog loading juga
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5b. SnackBar error (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Gagal Menghapus',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Terjadi kesalahan: ${e.toString()}',
+                                              style: TextStyle(fontSize: 12),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.red.shade700,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 4),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
                             foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                             elevation: 8,
-                            shadowColor: accentColor2.withValues(alpha: 0.4),
+                            shadowColor: accentColor2.withValues(alpha: 0.5),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.check),
-                              SizedBox(width: 10),
+                              Icon(Icons.delete_forever_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Yes',
+                                'Ya, Hapus',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -12238,35 +13687,36 @@ void showModernHapusUserManagementDesktop(
   String message,
   Color accentColor,
   Color accentColor2,
-  BuildContext context,
+  BuildContext parentContext,
   int index,
   List<UserModel?> userData,
   void Function(String) onConfirmDelete,
   void Function() refreshState,
 ) {
-  Size size = MediaQuery.of(context).size;
+  Size size = MediaQuery.of(parentContext).size;
   final data = userData[index];
 
   showGeneralDialog(
-    context: context,
+    context: parentContext, // penting: pakai parentContext di sini
     barrierDismissible: true,
-    barrierLabel: "Modern Error Dialog",
+    barrierLabel: "Modern Delete Confirmation Dialog",
     barrierColor: Colors.black.withValues(alpha: 0.6),
     transitionDuration: Duration(milliseconds: 300),
     transitionBuilder: (context, animation, secondaryAnimation, child) {
       return ScaleTransition(
-        scale: CurvedAnimation(parent: animation, curve: Curves.elasticOut),
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
         child: FadeTransition(opacity: animation, child: child),
       );
     },
-    pageBuilder: (context, animation, secondaryAnimation) {
+    pageBuilder: (dialogContext, animation, secondaryAnimation) {
+      // ↑ kasih nama “dialogContext” biar nggak ketuker
       return BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Center(
           child: Container(
             width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
-                ? size.width / 2
-                : size.width,
+                ? size.width / 2.5
+                : size.width * 0.9,
             margin: EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
@@ -12284,7 +13734,7 @@ void showModernHapusUserManagementDesktop(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  padding: EdgeInsets.all(25),
+                  padding: EdgeInsets.all(30),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -12303,75 +13753,95 @@ void showModernHapusUserManagementDesktop(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              accentColor.withValues(alpha: 0.8),
-                              accentColor.withValues(alpha: 0.6),
+                      //Icon dengan animasi
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
                             ],
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: accentColor.withValues(alpha: 0.4),
-                              blurRadius: 15,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.warning_rounded,
-                          color: Colors.white,
-                          size: 30,
+                          child: Icon(
+                            Icons.warning_rounded,
+                            color: Colors.white,
+                            size: 36,
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 24),
+                      // Title
                       Text(
                         title,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                           letterSpacing: 0.5,
                           decoration: TextDecoration.none,
                         ),
                       ),
-                      SizedBox(height: 15),
-                      Text(
-                        message,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withValues(alpha: 0.9),
-                          height: 1.4,
-                          decoration: TextDecoration.none,
+                      SizedBox(height: 12),
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      SizedBox(height: 25),
+                      SizedBox(height: 30),
+
+                      // Cancel Button
                       Container(
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(context),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: accentColor,
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          // ↑ pakai dialogContext buat nutup dialog
+                          style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             padding: EdgeInsets.symmetric(vertical: 15),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            elevation: 8,
-                            shadowColor: accentColor.withValues(alpha: 0.4),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.cancel),
-                              SizedBox(width: 10),
+                              Icon(Icons.close_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Cancel',
+                                'Batal',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -12382,32 +13852,154 @@ void showModernHapusUserManagementDesktop(
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 12),
+                      // Delete Button
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            onConfirmDelete(data!.id);
-                            refreshState();
+                          onPressed: () async {
+                            // 1. Tutup dialog konfirmasi (pakai dialogContext)
+                            Navigator.of(dialogContext).pop();
+
+                            // 2. Tampilkan dialog loading (pakai parentContext)
+                            showModernDeletingDialog(parentContext);
+
+                            try {
+                              // kalau mau simulasi delay, silakan
+                              await Future.delayed(Duration(milliseconds: 500));
+
+                              // 3. Panggil delete
+                              onConfirmDelete(data!.id);
+
+                              refreshState();
+
+                              // 4. Tutup dialog loading (pakai parentContext)
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5. SnackBar sukses (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(
+                                            alpha: 0.2,
+                                          ),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          Icons.check_circle_outline,
+                                          color: Colors.white,
+                                          size: 20,
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Berhasil Dihapus!',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Surat telah dihapus dari sistem',
+                                              style: TextStyle(fontSize: 12),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Color(0xFF10B981),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 3),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            } catch (e) {
+                              // 4b. Tutup dialog loading juga
+                              Navigator.of(
+                                parentContext,
+                                rootNavigator: true,
+                              ).pop();
+
+                              // 5b. SnackBar error (pakai parentContext)
+                              ScaffoldMessenger.of(parentContext).showSnackBar(
+                                SnackBar(
+                                  content: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline,
+                                        color: Colors.white,
+                                        size: 20,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Gagal Menghapus',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15,
+                                              ),
+                                            ),
+                                            Text(
+                                              'Terjadi kesalahan: ${e.toString()}',
+                                              style: TextStyle(fontSize: 12),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  backgroundColor: Colors.red.shade700,
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  duration: Duration(seconds: 4),
+                                  margin: EdgeInsets.all(16),
+                                ),
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accentColor2,
                             foregroundColor: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                             elevation: 8,
-                            shadowColor: accentColor2.withValues(alpha: 0.4),
+                            shadowColor: accentColor2.withValues(alpha: 0.5),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.check),
-                              SizedBox(width: 10),
+                              Icon(Icons.delete_forever_rounded, size: 20),
+                              SizedBox(width: 8),
                               Text(
-                                'Yes',
+                                'Ya, Hapus',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -13300,7 +14892,11 @@ void showDetailActionMenuDisposisiAdmin(
                         color: Color(0xFF10B981),
                         onTap: () {
                           Navigator.pop(context);
-                          showDownloadDialog(context, currentNomorUrut);
+                          // Ganti ke modern download dialog
+                          _showModernDownloadChoiceMobileDialog(
+                            context,
+                            currentNomorUrut,
+                          );
                         },
                       ),
                     ],
@@ -13647,6 +15243,208 @@ void _showModernDownloadChoiceDialog(BuildContext context, String? nomorUrut) {
   );
 }
 
+void _showModernDownloadChoiceMobileDialog(
+  BuildContext context,
+  String? nomorUrut,
+) {
+  Size size = MediaQuery.of(context).size;
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Download Choice Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2.5
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF7C2D12).withValues(alpha: 0.9),
+                                Color(0xFF9A3412).withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF7C2D12).withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.download,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        'Download File',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Text(
+                        'Pilih format file apa yang anda inginkan',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white.withValues(alpha: 0.85),
+                          height: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Download Dokumen Button
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            // Langsung ke format dialog (atau langsung download kalau cuma PDF)
+                            _showModernFormatMobileDialog(context, nomorUrut);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF2962FF),
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 8,
+                            shadowColor: Color(
+                              0xFF2962FF,
+                            ).withValues(alpha: 0.5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.document_scanner, size: 20),
+                              SizedBox(width: 10),
+                              Text(
+                                'Download Dokumen',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Cancel Button
+                      Container(
+                        width: double.infinity,
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Text(
+                            'Batal',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 void _showModernFormatDialog(BuildContext context, String? nomorUrut) {
   Size size = MediaQuery.of(context).size;
 
@@ -13777,6 +15575,213 @@ void _showModernFormatDialog(BuildContext context, String? nomorUrut) {
 
                             // Trigger modern download dialog dengan progress
                             _showModernDownloadDisposisiDialog(
+                              context: context,
+                              title: 'Mengunduh PDF',
+                              message:
+                                  'Sedang mengunduh dokumen disposisi dalam format PDF...',
+                              accentColor: Colors.red,
+                              accentColor2: Colors.red.shade700,
+                              currentNomorUrut: nomorUrut,
+                              isPrint: false,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 8,
+                            shadowColor: Colors.red.withValues(alpha: 0.5),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              PdfIcon(size: 20, color: Colors.white),
+                              SizedBox(width: 10),
+                              Text(
+                                'PDF',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Cancel Button
+                      Container(
+                        width: double.infinity,
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white.withValues(alpha: 0.3),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Text(
+                            'Batal',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void _showModernFormatMobileDialog(BuildContext context, String? nomorUrut) {
+  Size size = MediaQuery.of(context).size;
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: "Modern Format Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2.5
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                Color(0xFF7C2D12).withValues(alpha: 0.9),
+                                Color(0xFF9A3412).withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF7C2D12).withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.document_scanner,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        'Format Dokumen',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Text(
+                        'Pilih jenis format dokumen yang anda inginkan',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white.withValues(alpha: 0.85),
+                          height: 1.5,
+                          decoration: TextDecoration.none,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // PDF Button
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+
+                            // Trigger modern download dialog dengan progress
+                            _showModernDownloadDisposisiMobileDialog(
                               context: context,
                               title: 'Mengunduh PDF',
                               message:
@@ -14020,6 +16025,543 @@ void _showModernDownloadDisposisiDialog({
                           Process.run('open', ['-R', savePath]);
                         } else if (Platform.isLinux) {
                           Process.run('xdg-open', [File(savePath).parent.path]);
+                        }
+                      },
+                    ),
+                  ),
+                );
+              }
+            }
+          } else {
+            Navigator.pop(context);
+
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Row(
+                    children: [
+                      Icon(Icons.error_outline, color: Colors.white),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Download Gagal',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              'Gagal mengunduh dokumen',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  backgroundColor: Colors.red.shade700,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  duration: Duration(seconds: 3),
+                ),
+              );
+            }
+          }
+        } catch (err) {
+          isDownloading.value = false;
+          Navigator.pop(context);
+
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    Icon(Icons.error_outline, color: Colors.white),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Terjadi Kesalahan',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Error: $err',
+                            style: TextStyle(fontSize: 12),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                backgroundColor: Colors.red.shade700,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                duration: Duration(seconds: 4),
+              ),
+            );
+          }
+        }
+      });
+
+      return BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Center(
+          child: Container(
+            width: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                ? size.width / 2.5
+                : size.width * 0.9,
+            margin: EdgeInsets.symmetric(horizontal: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 30,
+                  spreadRadius: 5,
+                  offset: Offset(0, 15),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(
+                  padding: EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Colors.white.withValues(alpha: 0.2),
+                        Colors.white.withValues(alpha: 0.1),
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Icon container dengan animasi
+                      TweenAnimationBuilder<double>(
+                        tween: Tween(begin: 0.9, end: 1.0),
+                        duration: Duration(milliseconds: 800),
+                        curve: Curves.easeInOut,
+                        builder: (context, scale, child) {
+                          return Transform.scale(scale: scale, child: child);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                accentColor.withValues(alpha: 0.9),
+                                accentColor2.withValues(alpha: 0.7),
+                              ],
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: accentColor.withValues(alpha: 0.5),
+                                blurRadius: 20,
+                                spreadRadius: 3,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            isPrint
+                                ? Icons.print
+                                : Icons.file_download_outlined,
+                            color: Colors.white,
+                            size: 36,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 24),
+
+                      // Title
+                      Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          letterSpacing: 0.5,
+                          decoration: TextDecoration.none,
+                          fontFamily: 'SF Pro Display',
+                        ),
+                      ),
+                      SizedBox(height: 12),
+
+                      // Message
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Text(
+                          message,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white.withValues(alpha: 0.85),
+                            height: 1.5,
+                            decoration: TextDecoration.none,
+                          ),
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      SizedBox(height: 30),
+
+                      // Progress Section
+                      ValueListenableBuilder<bool>(
+                        valueListenable: isDownloading,
+                        builder: (context, isLoading, child) {
+                          return AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            height: isLoading ? null : 0,
+                            child: isLoading
+                                ? Column(
+                                    children: [
+                                      // Status text
+                                      ValueListenableBuilder<String>(
+                                        valueListenable: statusText,
+                                        builder: (context, status, child) {
+                                          return AnimatedOpacity(
+                                            opacity: status.isNotEmpty
+                                                ? 1.0
+                                                : 0.0,
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: Text(
+                                              status,
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.white.withValues(
+                                                  alpha: 0.7,
+                                                ),
+                                                decoration: TextDecoration.none,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 12),
+
+                                      // Progress Bar
+                                      ValueListenableBuilder<double>(
+                                        valueListenable: downloadProgress,
+                                        builder: (context, progress, child) {
+                                          return Column(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: Container(
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.15,
+                                                        ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      AnimatedContainer(
+                                                        duration: Duration(
+                                                          milliseconds: 300,
+                                                        ),
+                                                        curve: Curves.easeOut,
+                                                        width:
+                                                            MediaQuery.of(
+                                                              context,
+                                                            ).size.width *
+                                                            progress,
+                                                        decoration: BoxDecoration(
+                                                          gradient:
+                                                              LinearGradient(
+                                                                colors: [
+                                                                  accentColor,
+                                                                  accentColor2,
+                                                                ],
+                                                              ),
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      Positioned.fill(
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                          child: LinearProgressIndicator(
+                                                            backgroundColor:
+                                                                Colors
+                                                                    .transparent,
+                                                            valueColor:
+                                                                AlwaysStoppedAnimation<
+                                                                  Color
+                                                                >(
+                                                                  Colors.white
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.2,
+                                                                      ),
+                                                                ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(height: 10),
+
+                                              // Percentage
+                                              Text(
+                                                '${(progress * 100).toInt()}%',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.white
+                                                      .withValues(alpha: 0.9),
+                                                  fontWeight: FontWeight.w600,
+                                                  decoration:
+                                                      TextDecoration.none,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                      SizedBox(height: 24),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
+void _showModernDownloadDisposisiMobileDialog({
+  required BuildContext context,
+  required String title,
+  required String message,
+  required Color accentColor,
+  required Color accentColor2,
+  String? currentNomorUrut,
+  bool isPrint = false,
+}) {
+  Size size = MediaQuery.of(context).size;
+
+  ValueNotifier<bool> isDownloading = ValueNotifier<bool>(true);
+  ValueNotifier<double> downloadProgress = ValueNotifier<double>(0.0);
+  ValueNotifier<String> statusText = ValueNotifier<String>(
+    'Memulai download...',
+  );
+
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierLabel: "Modern Download Progress Dialog",
+    barrierColor: Colors.black.withValues(alpha: 0.6),
+    transitionDuration: Duration(milliseconds: 300),
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return ScaleTransition(
+        scale: CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+        child: FadeTransition(opacity: animation, child: child),
+      );
+    },
+    pageBuilder: (context, animation, secondaryAnimation) {
+      // Auto start download
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        try {
+          statusText.value = 'Mengunduh dokumen...';
+
+          // progress simulasi lo tetep boleh
+          for (int i = 0; i <= 100; i += 10) {
+            await Future.delayed(Duration(milliseconds: 100));
+            if (isDownloading.value) {
+              downloadProgress.value = i / 100;
+            }
+          }
+
+          // pakai service baru
+          final downloadPathService = DownloadPathService();
+          final dirPath = await downloadPathService.getDefaultDownloadPath();
+          final savePath = "$dirPath/disposisi_$currentNomorUrut.pdf";
+
+          final file = await _suratMasukService.downloadDisposisi(
+            (currentNomorUrut != null ? int.parse(currentNomorUrut) : 0),
+            savePath,
+          );
+
+          isDownloading.value = false;
+
+          if (file != null && await file.exists()) {
+            if (isPrint) {
+              Navigator.pop(context);
+
+              await Printing.layoutPdf(
+                onLayout: (PdfPageFormat format) async {
+                  final bytes = await file.readAsBytes();
+                  return bytes;
+                },
+              );
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.check_circle_outline,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Print Berhasil!',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'Dokumen berhasil diprint',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    backgroundColor: Colors.green.shade700,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+              }
+            } else {
+              Navigator.pop(context);
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.check_circle_outline,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Download Berhasil!',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                'File tersimpan di: disposisi_$currentNomorUrut.pdf',
+                                style: TextStyle(fontSize: 12),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    backgroundColor: Colors.green.shade700,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    duration: Duration(seconds: 4),
+                    action: SnackBarAction(
+                      label: 'Buka',
+                      textColor: Colors.white,
+                      onPressed: () async {
+                        try {
+                          // Kita asumsikan fungsi ini cuma kepake di Android / iOS
+                          // Tapi tetep kasih guard buat jaga-jaga
+                          if (Platform.isAndroid || Platform.isIOS) {
+                            final result = await OpenFilex.open(savePath);
+                            // Optional debug kalau mau cek hasilnya
+                            print('OpenFilex result: ${result.type} - ${result.message}');
+                          } else {
+                            // fallback kalau entah kenapa kepanggil di platform lain
+                            print(
+                              'Open file belum di-handle untuk platform ini',
+                            );
+                          }
+                        } catch (e) {
+                          // optional: kasih feedback kalau gagal
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Gagal membuka file: $e',
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.red.shade700,
+                              ),
+                            );
+                          }
                         }
                       },
                     ),

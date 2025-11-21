@@ -1,8 +1,9 @@
 import 'package:intl/intl.dart';
 
 String parseDateTimeFormat(DateTime date) {
-  final formatted = DateFormat('dd MMMM yyyy, HH:mm', 'id_ID').format(date);
-  return formatted;
+  return DateFormat('dd MMMM yyyy', 'id_ID').format(date)
+      + "\n"
+      + DateFormat('HH:mm', 'id_ID').format(date);
 }
 
 String parseDateFormat(DateTime date) {

@@ -6,7 +6,7 @@ import 'package:smart_doku/services/auth.dart';
 class LogService {
   final AuthService _authService = AuthService();
 
-  Future<List<dynamic>> getLogs({int limit = 100}) async {
+  Future<List<dynamic>> getLogs({int limit = 10}) async {
     final token = await _authService.getToken();
     final uri = Uri.parse('${dotenv.env['API_URL']}/logs?limit=$limit');
 

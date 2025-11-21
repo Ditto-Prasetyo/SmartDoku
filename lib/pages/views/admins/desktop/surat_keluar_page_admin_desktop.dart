@@ -103,19 +103,23 @@ class _OutgoingLetterPageAdminDesktopState
     {'id': 'p8', 'nama_pengolah': 'UKP'},
   ];
 
-  void actionSetState(int index) async {
-    setState(() {
-      _suratService.deleteSurat(index);
-    });
-    refreshState();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Dokumen berhasil dihapus!'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    await _loadAllData();
+  Future<void> actionSetState(int nomorUrut) async {
+  try {
+    // 1. Hapus dulu di backend
+    await _suratService.deleteSurat(nomorUrut);
+
+    // 2. Reload data dari server
+    await _loadAllData(); // ini sudah punya setState sendiri
+
+    // optional: kalau mau ada debug
+    print('[DEBUG] Surat keluar dengan nomorUrut $nomorUrut berhasil dihapus dan data di-reload');
+  } catch (e) {
+    print('[ERROR] Gagal menghapus surat: $e');
+    if (!mounted) return;
+    // di sini lo bisa show dialog / snackbar error juga
   }
+}
+
 
   Future<void> _loadAllData() async {
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
@@ -132,7 +136,7 @@ class _OutgoingLetterPageAdminDesktopState
       final data = disposisi != null
           ? await _suratService.getFilteredListSurat(mappedDisposisi, isSU)
           : await _suratService.listSurat();
-       if (!mounted) return;
+      if (!mounted) return;
       setState(() {
         _listSurat = data;
         _filteredList = List.from(data);
@@ -150,6 +154,19 @@ class _OutgoingLetterPageAdminDesktopState
         Colors.redAccent,
       );
     }
+  }
+
+  String limitFileNameWords(String fileName, int maxWords) {
+    final parts = fileName.split('.');
+    final ext = parts.length > 1 ? parts.last : '';
+    final name = parts.first.replaceAll("_", " ").replaceAll("-", " ");
+
+    final words = name.split(" ");
+    final limited = (words.length <= maxWords)
+        ? name
+        : words.sublist(0, maxWords).join(" ") + "...";
+
+    return ext.isEmpty ? limited : "$limited.$ext";
   }
 
   void refreshState() async {
@@ -933,7 +950,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         Expanded(
                                           flex: flexSuratKeluar[13],
                                           child: Text(
-                                            'Dokumen Dikirim',
+                                            'Dokumen \nDikirim',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -945,7 +962,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         Expanded(
                                           flex: flexSuratKeluar[14],
                                           child: Text(
-                                            'Dokumen Final',
+                                            'Dokumen \nFinal',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -957,7 +974,7 @@ class _OutgoingLetterPageAdminDesktopState
                                         Expanded(
                                           flex: flexSuratKeluar[15],
                                           child: Text(
-                                            'Tanda Terima',
+                                            'Tanda \nTerima',
                                             style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 14,
@@ -1401,7 +1418,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                             child: Text(
                                                               surat?.catatan ==
                                                                       null
-                                                                  ? 'kosong'
+                                                                  ? "-"
                                                                   : surat!
                                                                         .catatan!,
                                                               style: TextStyle(
@@ -1424,7 +1441,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                             child: Text(
                                                               surat?.link_surat ==
                                                                       null
-                                                                  ? 'kosong'
+                                                                  ? "-"
                                                                   : surat!
                                                                         .link_surat!,
                                                               style: TextStyle(
@@ -1450,7 +1467,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                             child: Text(
                                                               surat?.koreksi_1 ==
                                                                       null
-                                                                  ? 'kosong'
+                                                                  ? "-"
                                                                   : surat!
                                                                         .koreksi_1!,
                                                               style: TextStyle(
@@ -1469,11 +1486,11 @@ class _OutgoingLetterPageAdminDesktopState
                                                           // koreksi 2
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 27,
+                                                            flex: 20,
                                                             child: Text(
                                                               surat?.koreksi_2 ==
                                                                       null
-                                                                  ? 'kosong'
+                                                                  ? "-"
                                                                   : surat!
                                                                         .koreksi_2!,
                                                               style: TextStyle(
@@ -1491,7 +1508,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ),
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 37,
+                                                            flex: 34,
                                                             child: Text(
                                                               surat?.dok_dikirim ==
                                                                       null
@@ -1514,13 +1531,16 @@ class _OutgoingLetterPageAdminDesktopState
                                                             ),
                                                           ),
                                                           Expanded(
-                                                            flex: 26,
+                                                            flex: 28,
                                                             child: Text(
                                                               surat?.dok_final ==
                                                                       null
                                                                   ? "-"
-                                                                  : surat!
-                                                                        .dok_final!,
+                                                                  : limitFileNameWords(
+                                                                      surat!
+                                                                          .dok_final!,
+                                                                      1,
+                                                                    ),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1532,10 +1552,14 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 fontFamily:
                                                                     'Roboto',
                                                               ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              maxLines: 1,
                                                             ),
                                                           ),
                                                           Expanded(
-                                                            flex: 20,
+                                                            flex: 28,
                                                             child: Text(
                                                               surat?.tanda_terima ==
                                                                       null
@@ -1555,10 +1579,13 @@ class _OutgoingLetterPageAdminDesktopState
                                                                 fontFamily:
                                                                     'Roboto',
                                                               ),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                             ),
                                                           ),
                                                           // Status
-                                                          SizedBox(width: 5),
+                                                          SizedBox(width: 10),
                                                           Expanded(
                                                             flex: 14,
                                                             child: Align(
@@ -1636,7 +1663,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                           ),
 
                                                           // Actions
-                                                          SizedBox(width: 40),
+                                                          SizedBox(width: 20),
                                                           SizedBox(
                                                             width: 120,
                                                             child: Row(
@@ -1879,6 +1906,7 @@ class _OutgoingLetterPageAdminDesktopState
                                                                         index,
                                                                         _listSurat,
                                                                         actionSetState,
+                                                                        refreshState,
                                                                       );
                                                                     },
                                                                     child: Icon(

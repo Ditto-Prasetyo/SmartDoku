@@ -120,6 +120,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
     try {
       final data = await _suratService.listSurat();
+      if (!mounted) return;
       setState(() {
         _listSurat = data;
         isLoading = false;
@@ -138,10 +139,18 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
     }
   }
 
+  void updateNomorUrut(String newValue) async {
+    final surat = await _suratService.getSurat(int.parse(newValue));
+    setState(() {
+      _targetSurat = surat;
+    });
+    print('Updated nomor urut: $newValue');
+  }
+
   @override
   void initState() {
     super.initState();
-    _loadAllData(); 
+    _loadAllData();
 
     // Initialize background animation
     _backgroundController = AnimationController(
@@ -686,7 +695,18 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                   'Lembar Disposisi',
                                 ),
                               ),
-                              buildMenuActionDisposisiAdmin(context, nomorUrutController),
+                              buildMenuActionDisposisiDesktopUser(
+                                context,
+                                nomorUrutController,
+                                onDelete: () {
+                                  // Handle delete
+                                  print('Delete action');
+                                },
+                                onEditSave:
+                                    updateNomorUrut, // Pass callback untuk save
+                                currentNomorUrut: surat?.nomor_urut
+                                    .toString(), // Pass current value
+                              ),
                             ],
                           ),
                           SizedBox(height: 16),
@@ -762,7 +782,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                     ),
                                     child: Center(
                                       child: Text(
-                                        surat?.nama_surat ?? '404 Not Found',
+                                        surat?.nama_surat ?? '-',
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.white,
@@ -797,7 +817,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Surat Dari: ${surat?.nama_surat ?? '404 Not Found'}',
+                                                'Surat Dari: ${surat?.nama_surat ?? '-'}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -870,7 +890,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Surat Dari: ${surat?.nama_surat ?? '404 Not Found'}',
+                                                  'Surat Dari: ${surat?.nama_surat ?? '-'}',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 10,
@@ -952,7 +972,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Nomor Urut: ${surat?.no_surat ?? '404 Not Found'}',
+                                                'Nomor Urut: ${surat?.no_surat ?? '-'}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -983,7 +1003,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                 ),
                                               ),
                                               child: Text(
-                                                'Nomor Agenda: ${surat?.no_agenda ?? '404 Not Found'}',
+                                                'Nomor Agenda: ${surat?.no_agenda ?? '-'}',
                                                 style: TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 10,
@@ -1025,7 +1045,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Nomor Surat: ${surat?.no_agenda ?? '404 Not Found'}',
+                                                  'Nomor Surat: ${surat?.no_agenda ?? '-'}',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 10,
@@ -1070,7 +1090,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  'Nomor Agenda: ${surat?.no_agenda ?? '404 Not Found'}',
+                                                  'Nomor Agenda: ${surat?.no_agenda ?? '-'}',
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 10,
@@ -1615,7 +1635,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                             CrossAxisAlignment.start,
                                         children: [
                                           buildBorderedText(
-                                            'Hal : ${surat?.hal ?? '404 Not Found'}',
+                                            'Hal : ${surat?.hal ?? '-'}',
                                           ),
                                           buildBorderedText(
                                             'Hari / Tanggal : ${surat?.tanggal_waktu != null ? parseDateFormat(surat!.tanggal_waktu) : "-"}',
@@ -1624,7 +1644,7 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                             'Waktu : ${surat?.tanggal_waktu != null ? parseTimeFormat(surat!.tanggal_waktu) : "-"}',
                                           ),
                                           buildBorderedText(
-                                            'Tempat : ${surat?.tempat ?? '404 Not Found'}',
+                                            'Tempat : ${surat?.tempat ?? '-'}',
                                           ),
                                         ],
                                       ),
@@ -1768,7 +1788,11 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                               minHeight: 80,
                                               maxHeight: 150,
                                             ),
-                                            padding: EdgeInsets.only(bottom: 100, left: 12, right: 12),
+                                            padding: EdgeInsets.only(
+                                              bottom: 100,
+                                              left: 12,
+                                              right: 12,
+                                            ),
                                             decoration: BoxDecoration(
                                               border: Border(
                                                 bottom: BorderSide(
@@ -1799,7 +1823,11 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                     minHeight: 100,
                                                     maxHeight: 150,
                                                   ),
-                                                  padding: EdgeInsets.only(bottom: 80, left: 12, right: 12),
+                                                  padding: EdgeInsets.only(
+                                                    bottom: 80,
+                                                    left: 12,
+                                                    right: 12,
+                                                  ),
                                                   decoration: BoxDecoration(
                                                     border: Border(
                                                       right: BorderSide(
@@ -1832,7 +1860,11 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                                                     minHeight: 100,
                                                     maxHeight: 150,
                                                   ),
-                                                  padding: EdgeInsets.only(bottom: 80, left: 12, right: 12),
+                                                  padding: EdgeInsets.only(
+                                                    bottom: 80,
+                                                    left: 12,
+                                                    right: 12,
+                                                  ),
                                                   child: Center(
                                                     child: Text(
                                                       'DISPOSISI KEPALA BIDANG / UPT',
@@ -1859,7 +1891,6 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
                             ),
                           ),
                         ],
-                      
                       ),
                     ),
                   ),
@@ -1871,5 +1902,4 @@ class _DispositionLetterPage extends State<DispositionLetterPage>
       ),
     );
   }
-
 }

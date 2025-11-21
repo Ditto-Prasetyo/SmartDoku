@@ -128,18 +128,36 @@ class _PermohonanLettersPageAdminDesktopState
     },
   ];
 
-  void actionSetState(int index) async {
-    setState(() {
-      _suratService.deleteSurat(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Dokumen berhasil dihapus!'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    await _loadAllData();
+  String limitFileNameWords(String fileName, int maxWords) {
+    final parts = fileName.split('.');
+    final ext = parts.length > 1 ? parts.last : '';
+    final name = parts.first.replaceAll("_", " ").replaceAll("-", " ");
+
+    final words = name.split(" ");
+    final limited = (words.length <= maxWords)
+        ? name
+        : words.sublist(0, maxWords).join(" ") + "...";
+
+    return ext.isEmpty ? limited : "$limited.$ext";
   }
+
+  Future<void> actionSetState(int nomorUrut) async {
+  try {
+    // 1. Hapus dulu di backend
+    await _suratService.deleteSurat(nomorUrut);
+
+    // 2. Reload data dari server
+    await _loadAllData(); // ini sudah punya setState sendiri
+
+    // optional: kalau mau ada debug
+    print('[DEBUG] Surat keluar dengan nomorUrut $nomorUrut berhasil dihapus dan data di-reload');
+  } catch (e) {
+    print('[ERROR] Gagal menghapus surat: $e');
+    if (!mounted) return;
+    // di sini lo bisa show dialog / snackbar error juga
+  }
+}
+
 
   void refreshState() async {
     await _loadAllData();
@@ -159,7 +177,7 @@ class _PermohonanLettersPageAdminDesktopState
 
   void _checkSekretariat() async {
     final check = await _suratService.isSekretariat();
-
+    if (!mounted) return;
     setState(() {
       _isSekretariat = check;
     });
@@ -1381,7 +1399,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 6. No_urut - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 80,
+                                                            flex: 70,
                                                             child: Text(
                                                               surat.nomor_urut
                                                                   .toString(),
@@ -1402,11 +1420,11 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 7. No_agenda - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 140,
+                                                            flex: 150,
                                                             child: Text(
                                                               surat.no_agenda ==
                                                                       null
-                                                                  ? '404 Not Found'
+                                                                  ? "-"
                                                                   : surat
                                                                         .no_agenda!,
                                                               // +
@@ -1433,7 +1451,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 8. No surat - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 120,
+                                                            flex: 110,
                                                             child: Text(
                                                               surat.no_surat,
                                                               style: TextStyle(
@@ -1453,10 +1471,10 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 9. Perihal - flex: 200
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 90,
+                                                            flex: 100,
                                                             child: Text(
                                                               surat.hal == null
-                                                                  ? '404 Not Found'
+                                                                  ? "-"
                                                                   : surat.hal,
                                                               style: TextStyle(
                                                                 color: Colors
@@ -1479,7 +1497,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                           // 10. Hari/tanggal - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 170,
+                                                            flex: 150,
                                                             child: Padding(
                                                               padding:
                                                                   EdgeInsets.only(
@@ -1503,42 +1521,19 @@ class _PermohonanLettersPageAdminDesktopState
                                                                 ),
                                                                 overflow:
                                                                     TextOverflow
-                                                                        .visible,
+                                                                        .clip,
                                                                 softWrap: true,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
                                                               ),
                                                             ),
                                                           ),
 
-                                                          // // 11. Waktu - flex: 100
-                                                          // SizedBox(width: 5),
-                                                          // Expanded(
-                                                          //   flex: 100,
-                                                          //   child: Padding(
-                                                          //     padding:
-                                                          //         EdgeInsets.only(
-                                                          //           right: 8,
-                                                          //         ),
-                                                          //     child: Text(
-                                                          //       surat.tanggal_waktu.toString(),
-                                                          //       style: TextStyle(
-                                                          //         color: Colors
-                                                          //             .white
-                                                          //             .withValues(
-                                                          //               alpha:
-                                                          //                   0.7,
-                                                          //             ),
-                                                          //         fontSize: 11,
-                                                          //         fontFamily:
-                                                          //             'Roboto',
-                                                          //       ),
-                                                          //     ),
-                                                          //   ),
-                                                          // ),
-
                                                           // 12. Tempat - flex: 100
                                                           SizedBox(width: 5),
                                                           Expanded(
-                                                            flex: 100,
+                                                            flex: 110,
                                                             child: Padding(
                                                               padding:
                                                                   EdgeInsets.only(
@@ -1600,7 +1595,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                               child: Text(
                                                                 surat.index ==
                                                                         null
-                                                                    ? '404 Not Found'
+                                                                    ? "-"
                                                                     : surat
                                                                           .index!,
                                                                 style: TextStyle(
@@ -1649,7 +1644,7 @@ class _PermohonanLettersPageAdminDesktopState
 
                                                           // 16. Sifat - flex: 100
                                                           Expanded(
-                                                            flex: 100,
+                                                            flex: 110,
                                                             child: Padding(
                                                               padding:
                                                                   EdgeInsets.only(
@@ -1658,7 +1653,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                               child: Text(
                                                                 surat.sifat ==
                                                                         null
-                                                                    ? '404 Not Found'
+                                                                    ? "-"
                                                                     : surat
                                                                           .sifat!,
                                                                 style: TextStyle(
@@ -1678,13 +1673,16 @@ class _PermohonanLettersPageAdminDesktopState
 
                                                           // 17. Link scan - flex: 200
                                                           Expanded(
-                                                            flex: 120,
+                                                            flex: 100,
                                                             child: Text(
                                                               surat.link_scan ==
                                                                       null
-                                                                  ? '404 Not Found'
-                                                                  : surat
-                                                                        .link_scan!,
+                                                                  ? "-"
+                                                                  : limitFileNameWords(
+                                                                      surat
+                                                                          .link_scan!,
+                                                                      1,
+                                                                    ),
                                                               style: TextStyle(
                                                                 color: Colors
                                                                     .white
@@ -1705,7 +1703,7 @@ class _PermohonanLettersPageAdminDesktopState
 
                                                           // 18. Disposisi kadin - flex: 100
                                                           Expanded(
-                                                            flex: 180,
+                                                            flex: 160,
                                                             child: Padding(
                                                               padding:
                                                                   EdgeInsets.only(
@@ -1714,7 +1712,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                               child: Text(
                                                                 surat.disp_1 ==
                                                                         null
-                                                                    ? '404 Not Found'
+                                                                    ? "-"
                                                                     : parseDateFormat(
                                                                         surat
                                                                             .disp_1,
@@ -1734,17 +1732,20 @@ class _PermohonanLettersPageAdminDesktopState
                                                                 overflow:
                                                                     TextOverflow
                                                                         .visible,
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center,
                                                               ),
                                                             ),
                                                           ),
 
                                                           // 19. Disposisi Sekdin - flex: 100
                                                           Expanded(
-                                                            flex: 100,
+                                                            flex: 140,
                                                             child: Text(
                                                               surat.disp_2 ==
                                                                       null
-                                                                  ? '404 Not Found'
+                                                                  ? "-"
                                                                   : parseDateFormat(
                                                                       surat
                                                                           .disp_2,
@@ -1764,6 +1765,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                               overflow:
                                                                   TextOverflow
                                                                       .visible,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                             ),
                                                           ),
 
@@ -1773,7 +1777,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.disp_3 ==
                                                                       null
-                                                                  ? '404 Not Found'
+                                                                  ? "-"
                                                                   : parseDateFormat(
                                                                       surat
                                                                           .disp_3!,
@@ -1793,6 +1797,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                               overflow:
                                                                   TextOverflow
                                                                       .visible,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                             ),
                                                           ),
 
@@ -1802,7 +1809,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.disp_4 ==
                                                                       null
-                                                                  ? '404 Not Found'
+                                                                  ? "-"
                                                                   : parseDateFormat(
                                                                       surat
                                                                           .disp_4!,
@@ -1822,6 +1829,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                               overflow:
                                                                   TextOverflow
                                                                       .visible,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                             ),
                                                           ),
 
@@ -1831,7 +1841,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.disp_lanjut ==
                                                                       null
-                                                                  ? '404 Not Found'
+                                                                  ? "-"
                                                                   : surat
                                                                         .disp_lanjut
                                                                         .toString(),
@@ -1850,6 +1860,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                               overflow:
                                                                   TextOverflow
                                                                       .visible,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                             ),
                                                           ),
 
@@ -1859,7 +1872,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.tindak_lanjut_1 ==
                                                                       null
-                                                                  ? '404 Not Found'
+                                                                  ? "-"
                                                                   : parseDateFormat(
                                                                       surat
                                                                           .tindak_lanjut_1!,
@@ -1879,6 +1892,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                               overflow:
                                                                   TextOverflow
                                                                       .visible,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                             ),
                                                           ),
 
@@ -1888,7 +1904,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                             child: Text(
                                                               surat.tindak_lanjut_2 ==
                                                                       null
-                                                                  ? '404 Not Found'
+                                                                  ? "-"
                                                                   : parseDateFormat(
                                                                       surat
                                                                           .tindak_lanjut_2!,
@@ -1908,6 +1924,9 @@ class _PermohonanLettersPageAdminDesktopState
                                                               overflow:
                                                                   TextOverflow
                                                                       .visible,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
                                                             ),
                                                           ),
 
@@ -2182,7 +2201,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                         index,
                                                                         _listSurat,
                                                                         refreshState,
-                                                                        _isSekretariat
+                                                                        _isSekretariat,
                                                                       );
                                                                     },
                                                                     child: Icon(
@@ -2229,6 +2248,7 @@ class _PermohonanLettersPageAdminDesktopState
                                                                         index,
                                                                         _listSurat,
                                                                         actionSetState,
+                                                                        refreshState
                                                                       );
                                                                     },
                                                                     child: Icon(

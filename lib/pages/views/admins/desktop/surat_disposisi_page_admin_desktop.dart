@@ -46,6 +46,7 @@ class _DispositionLetterAdminDesktopState
     print("[DEBUG] -> [INFO] : Loading all data surat masuk ...");
     try {
       final data = await _suratService.listSurat();
+      if (!mounted) return;
       setState(() {
         _listSurat = data;
         isLoading = false;

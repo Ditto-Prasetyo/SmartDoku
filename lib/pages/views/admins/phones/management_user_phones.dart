@@ -107,17 +107,23 @@ class _ManagementUserPhones extends State<ManagementUserPhones>
     }
   }
 
-  void actionSetState(String index) async {
-    setState(() {
-      _serviceUser.deleteUser(index);
-    });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('User berhasil dihapus!'),
-        backgroundColor: Colors.red,
-      ),
-    );
-    await _loadAllData();
+  Future<void> actionSetState(String index) async {
+    try {
+      // 1. Hapus dulu di backend
+      await _serviceUser.deleteUser(index);
+
+      // 2. Reload data dari server
+      await _loadAllData(); // ini sudah punya setState sendiri
+
+      // optional: kalau mau ada debug
+      print(
+        '[DEBUG] user dengan id $index berhasil dihapus dan data di-reload',
+      );
+    } catch (e) {
+      print('[ERROR] Gagal menghapus user: $e');
+      if (!mounted) return;
+      // di sini lo bisa show dialog / snackbar error juga
+    }
   }
 
   void refreshState() async {

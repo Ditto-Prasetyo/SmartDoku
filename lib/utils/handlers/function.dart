@@ -806,6 +806,7 @@ void hapusDokumenDesktop(
   int index,
   List<SuratMasukModel?> suratData,
   void Function(int) onConfirmDelete,
+  void Function() refreshState,
 ) {
   final surat = suratData[index];
   showModernHapusMasukDialogDesktop(
@@ -817,6 +818,7 @@ void hapusDokumenDesktop(
     index,
     suratData,
     onConfirmDelete,
+    refreshState,
   );
 }
 
@@ -826,7 +828,7 @@ void hapusDokumenKeluar(
   List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete, // ⬅️ Tambahin ini
 ) {
-  final surat = suratData?[index];
+  final surat = suratData[index];
   showModernHapusDialog(
     '⚠️ Konfirmasi Hapus',
     'Apakah Anda yakin ingin menghapus surat "${surat?.klasifikasi}"?',
@@ -844,6 +846,7 @@ void hapusDokumenKeluarDesktop(
   int index,
   List<SuratKeluarModel?> suratData,
   void Function(int) onConfirmDelete,
+  void Function() refreshState,
 ) {
   final surat = suratData[index];
   showModernHapusDialogDesktop(
@@ -855,6 +858,7 @@ void hapusDokumenKeluarDesktop(
     index,
     suratData,
     onConfirmDelete,
+    refreshState,
   );
 }
 

@@ -183,16 +183,22 @@ class _OutgoingLetterPageAdmin extends State<OutgoingLetterPageAdmin>
     });
   }
 
-  void actionSetState(int index) async {
+  Future<void> actionSetState(int index) async {
+  try {
+    // 1. Hapus dulu di backend
     await _suratService.deleteSurat(index);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Dokumen berhasil dihapus!'),
-        backgroundColor: Colors.red,
-      ),
-    );
+    // 2. Reload data dari server
+    await _loadAllData(); // ini sudah punya setState sendiri
+
+    // optional: kalau mau ada debug
+    print('[DEBUG] Surat keluar dengan nomorUrut $index berhasil dihapus dan data di-reload');
+  } catch (e) {
+    print('[ERROR] Gagal menghapus surat: $e');
+    if (!mounted) return;
+    // di sini lo bisa show dialog / snackbar error juga
   }
+}
 
   void refreshState() {
     _loadAllData();

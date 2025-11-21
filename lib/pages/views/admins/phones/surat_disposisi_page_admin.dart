@@ -120,7 +120,7 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
   Widget buildNomorUrutDisplay() {
     final surat = getDisposisiData();
     return Text(
-      'Nomor Urut: ${surat['nomor_surat'] == null ? '404 Not Found' : surat['nomor_surat']}',
+      'Nomor Urut: ${surat['nomor_surat'] == null ? '-' : surat['nomor_surat']}',
       style: TextStyle(color: Colors.white, fontSize: 10),
       textAlign: TextAlign.center,
     );
@@ -986,7 +986,7 @@ class _DispositionLetterPageAdmin extends State<DispositionLetterPageAdmin>
                                               child: Column(
                                                 children: [
                                                   Text(
-                                                    'Nomor Urut: ${disposisiData['nomor_surat'] == null ? '404 Not Found' : disposisiData['nomor_surat']}',
+                                                    'Nomor Urut: ${disposisiData['nomor_surat'] == null ? '-' : disposisiData['nomor_surat']}',
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 10,
